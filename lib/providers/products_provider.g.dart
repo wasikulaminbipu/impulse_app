@@ -45,7 +45,7 @@ final class ProductDaoProvider
   }
 }
 
-String _$productDaoHash() => r'f74f7626825c9c6a420928477d35a0d8398bec3e';
+String _$productDaoHash() => r'3cc03203e15900009e0819d07ea430fede92738f';
 
 @ProviderFor(manufacturerDao)
 final manufacturerDaoProvider = ManufacturerDaoProvider._();
@@ -84,7 +84,7 @@ final class ManufacturerDaoProvider
   }
 }
 
-String _$manufacturerDaoHash() => r'9768edcbeca6b68f01e0da8e0b90a0a30313fdd4';
+String _$manufacturerDaoHash() => r'22151f672d2406f003126c14d7b90b39199987af';
 
 @ProviderFor(lookupDao)
 final lookupDaoProvider = LookupDaoProvider._();
@@ -122,7 +122,7 @@ final class LookupDaoProvider
   }
 }
 
-String _$lookupDaoHash() => r'2be23cc7beca8babebc0bb5e814044b227f42836';
+String _$lookupDaoHash() => r'ae369bd812b09a73db905ef0c8bdad496c57abc7';
 
 @ProviderFor(ProductSearchQuery)
 final productSearchQueryProvider = ProductSearchQueryProvider._();

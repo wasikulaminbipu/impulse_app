@@ -1,6 +1,7 @@
 import 'package:impulse_dex/data/app_maintenance_dao.dart';
 import 'package:impulse_dex/models/app_maintenance.dart';
 import 'package:impulse_dex/providers/database_provider.dart';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_maintenance_provider.g.dart';

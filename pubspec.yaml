@@ -80,7 +80,7 @@ flutter_native_splash:
   android_gravity: center
 
   android_12:
-    image: assets/impulse_logo.png
+    image: assets/images/impulse_logo.png
     color: "#ffffff"
 
   web: false  # set true if you want it on web too
@@ -95,7 +95,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/
+    - assets/db/
     - assets/images/
     - assets/icons/
     - assets/product_image/

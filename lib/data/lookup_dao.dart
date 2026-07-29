@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/providers/database_provider.dart';
+import 'package:impulse_dex/data/app_databases.dart';
 
 class LookupDao {
   final ProductsDb db;

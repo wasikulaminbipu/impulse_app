@@ -7,7 +7,7 @@ import 'package:impulse_dex/data/fts_utils.dart';
 // DISTRIBUTOR DAO
 // ============================================================================
 
-import 'package:impulse_dex/providers/database_provider.dart';
+import 'package:impulse_dex/data/app_databases.dart';
 
 class DistributorDao {
   final DistributorsDb db;

@@ -46,7 +46,7 @@ final class DistributorDaoProvider
   }
 }
 
-String _$distributorDaoHash() => r'e08cf9085a38052489d2853237e6106102cb0537';
+String _$distributorDaoHash() => r'3f3ddeae087c29ee1095117577d49e990ad29435';
 
 @ProviderFor(vetDoctorDao)
 final vetDoctorDaoProvider = VetDoctorDaoProvider._();
@@ -85,7 +85,7 @@ final class VetDoctorDaoProvider
   }
 }
 
-String _$vetDoctorDaoHash() => r'69de96a21b86f6860529e49f151353d246ef1211';
+String _$vetDoctorDaoHash() => r'37a454f16a8ea70aed60f96568ee851651120ab1';
 
 @ProviderFor(salesPersonnelDao)
 final salesPersonnelDaoProvider = SalesPersonnelDaoProvider._();
@@ -126,7 +126,7 @@ final class SalesPersonnelDaoProvider
   }
 }
 
-String _$salesPersonnelDaoHash() => r'e3562964f266e55da31ceb3247b3fe4bc774afe5';
+String _$salesPersonnelDaoHash() => r'8f6b9580041ed5a61e3b0f705020eeb2d5c8bcd6';
 
 @ProviderFor(DistributorSearchQuery)
 final distributorSearchQueryProvider = DistributorSearchQueryProvider._();

@@ -1,6 +1,7 @@
-﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_dex/main.dart';
+
 import 'package:impulse_dex/widgets/skeleton_loader.dart';
 
 void main() {

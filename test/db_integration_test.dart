@@ -6,12 +6,13 @@ import 'package:impulse_dex/data/distributor_dao.dart';
 import 'package:impulse_dex/data/product_dao.dart';
 import 'package:impulse_dex/data/lookup_dao.dart';
 import 'package:impulse_dex/models/app_maintenance.dart';
-import 'package:impulse_dex/providers/database_provider.dart';
+
+import 'package:impulse_dex/data/app_databases.dart';
 
 void main() {
   group('Database Tests', () {
     test('Test product loading and hydration', () async {
-      final dbFile = File('assets/products.db');
+      final dbFile = File('assets/db/products.db');
       expect(dbFile.existsSync(), isTrue);
 
       final db = ProductsDb(NativeDatabase(dbFile.absolute));
@@ -42,7 +43,7 @@ void main() {
     test('Test Products FTS search and token sanitization', () async {
       final tempDbFile = File('build/test_products.db');
       if (tempDbFile.existsSync()) tempDbFile.deleteSync();
-      File('assets/products.db').copySync(tempDbFile.path);
+      File('assets/db/products.db').copySync(tempDbFile.path);
 
       final db = ProductsDb(NativeDatabase(tempDbFile));
       final dao = ProductDao(db, LookupDao(db));
@@ -79,7 +80,7 @@ void main() {
     test('Test Distributors FTS search', () async {
       final tempDbFile = File('build/test_distributors.db');
       if (tempDbFile.existsSync()) tempDbFile.deleteSync();
-      File('assets/distributors.db').copySync(tempDbFile.path);
+      File('assets/db/distributors.db').copySync(tempDbFile.path);
 
       final db = DistributorsDb(NativeDatabase(tempDbFile));
       final distDao = DistributorDao(db);

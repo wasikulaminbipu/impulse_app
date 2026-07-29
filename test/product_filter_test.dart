@@ -5,7 +5,8 @@ import 'package:impulse_dex/data/product_dao.dart';
 import 'package:impulse_dex/data/lookup_dao.dart';
 import 'package:impulse_dex/models/product.dart';
 
-import 'package:impulse_dex/providers/database_provider.dart';
+
+import 'package:impulse_dex/data/app_databases.dart';
 
 void main() {
   group('ProductFilter Mechanism Tests', () {
@@ -13,7 +14,7 @@ void main() {
     late ProductDao dao;
 
     setUp(() async {
-      final dbFile = File('assets/products.db');
+      final dbFile = File('assets/db/products.db');
       db = ProductsDb(NativeDatabase(dbFile.absolute));
       dao = ProductDao(db, LookupDao(db));
     });

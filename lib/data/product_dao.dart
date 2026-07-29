@@ -9,7 +9,7 @@ import 'package:impulse_dex/data/db_extensions.dart';
 import 'package:impulse_dex/data/lookup_dao.dart';
 import 'package:impulse_dex/data/manufacturer_dao.dart';
 
-import 'package:impulse_dex/providers/database_provider.dart';
+import 'package:impulse_dex/data/app_databases.dart';
 
 class ProductDao {
   final ProductsDb db;

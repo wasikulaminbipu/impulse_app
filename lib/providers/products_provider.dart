@@ -6,6 +6,7 @@ import 'package:impulse_dex/data/product_dao.dart';
 import 'package:impulse_dex/data/lookup_dao.dart';
 import 'package:impulse_dex/data/manufacturer_dao.dart';
 import 'package:impulse_dex/providers/database_provider.dart';
+
 import 'package:impulse_dex/providers/app_maintenance_provider.dart';
 import 'package:impulse_dex/providers/paginated_state.dart';
 import 'package:impulse_dex/providers/debounced_query.dart';
