@@ -48,7 +48,7 @@ final class AppMaintenanceDaoProvider
   }
 }
 
-String _$appMaintenanceDaoHash() => r'aaf6d917e2fcfe8df3722edd0583e7c7242699eb';
+String _$appMaintenanceDaoHash() => r'829492572bf850afd2635947d848e0c55f43289c';
 
 @ProviderFor(distributorFavorites)
 final distributorFavoritesProvider = DistributorFavoritesProvider._();

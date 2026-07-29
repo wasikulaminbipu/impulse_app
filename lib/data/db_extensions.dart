@@ -36,4 +36,23 @@ extension QueryExecutorX on QueryExecutor {
     if (offset != null) sql += ' OFFSET $offset';
     return customQuery(sql, whereArgs ?? []);
   }
+
+  Future<List<Map<String, dynamic>>> chunkedInQuery({
+    required String prefix,
+    required List<int> ids,
+    String suffix = '',
+    int chunkSize = 500,
+  }) async {
+    if (ids.isEmpty) return [];
+    
+    final results = <Map<String, dynamic>>[];
+    for (var i = 0; i < ids.length; i += chunkSize) {
+      final end = (i + chunkSize > ids.length) ? ids.length : i + chunkSize;
+      final chunk = ids.sublist(i, end);
+      final placeholders = List.filled(chunk.length, '?').join(',');
+      final sql = '$prefix($placeholders)$suffix';
+      results.addAll(await customQuery(sql, chunk));
+    }
+    return results;
+  }
 }

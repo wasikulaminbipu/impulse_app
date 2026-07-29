@@ -1,16 +1,18 @@
-﻿import 'package:impulse_dex/data/fts_utils.dart';
+import 'package:impulse_dex/data/fts_utils.dart';
 // Data access layer for products.db (schema v2).
 // Built on sqflite. See products_schema.sql and products_db_changes.md.
 
 import 'package:impulse_dex/models/product.dart';
-import 'package:drift/drift.dart';
+
 import 'package:impulse_dex/data/db_extensions.dart';
 
 import 'package:impulse_dex/data/lookup_dao.dart';
 import 'package:impulse_dex/data/manufacturer_dao.dart';
 
+import 'package:impulse_dex/providers/database_provider.dart';
+
 class ProductDao {
-  final QueryExecutor db;
+  final ProductsDb db;
   final LookupDao lookupDao;
   final ManufacturerDao manufacturerDao;
 
@@ -22,7 +24,7 @@ class ProductDao {
   // ------------------------------------------------------------
 
   Future<Product?> getById(int id) async {
-    final rows = await db.query(
+    final rows = await db.executor.query(
       'products',
       where: 'id = ?',
       whereArgs: [id],
@@ -80,14 +82,15 @@ class ProductDao {
   Future<List<Product>> _hydrateList(List<Product> products) async {
     if (products.isEmpty) return products;
     final productIds = products.map((p) => p.id).toList();
-    final placeholders = List.filled(productIds.length, '?').join(',');
-
     // Fetch target groups in batch
-    final tgRows = await db.customQuery('''
+    final tgRows = await db.executor.chunkedInQuery(
+      prefix: '''
       SELECT product_id, target_group_id 
       FROM product_target_groups 
-      WHERE product_id IN ($placeholders)
-    ''', productIds);
+      WHERE product_id IN 
+      ''',
+      ids: productIds,
+    );
 
     final tgMap = <int, List<int>>{};
     for (final r in tgRows) {
@@ -97,11 +100,16 @@ class ProductDao {
     }
 
     // Fetch presentations in batch
-    final presRows = await db.customQuery('''
+    final presRows = await db.executor.chunkedInQuery(
+      prefix: '''
       SELECT * FROM presentations 
-      WHERE product_id IN ($placeholders)
+      WHERE product_id IN 
+      ''',
+      suffix: '''
       ORDER BY display_order
-    ''', productIds);
+      ''',
+      ids: productIds,
+    );
 
     final presMap = <int, List<Presentation>>{};
     for (final r in presRows) {
@@ -142,7 +150,7 @@ class ProductDao {
         where.add('p.category_id = ?');
         args.add(categoryId);
       }
-      final rows = await db.customQuery('''
+      final rows = await db.executor.customQuery('''
         SELECT p.* FROM products p
         JOIN product_target_groups ptg ON ptg.product_id = p.id
         WHERE ${where.join(' AND ')}
@@ -158,7 +166,7 @@ class ProductDao {
       where.add('category_id = ?');
       args.add(categoryId);
     }
-    final rows = await db.query(
+    final rows = await db.executor.query(
       'products',
       where: where.isEmpty ? null : where.join(' AND '),
       whereArgs: args.isEmpty ? null : args,
@@ -180,92 +188,98 @@ class ProductDao {
     required int limit,
     required int offset,
   }) async {
-    List<Product> products;
-    if (query.isNotEmpty) {
-      products = await search(query, limit: 1000);
+    final args = <dynamic>[];
+    List<String> where = ['p.is_active = 1'];
+    String join = '';
+    String orderBy = 'ORDER BY p.title_en';
+    
+    if (targetGroupId != null) {
+      join += 'JOIN product_target_groups ptg ON ptg.product_id = p.id\n        ';
+      where.add('ptg.target_group_id = ?');
+      args.add(targetGroupId);
+    }
+    
+    if (isFeedAdditive) {
+      where.add('''
+        (
+          EXISTS (SELECT 1 FROM presentations pr WHERE pr.product_id = p.id AND pr.bulk_item = 1)
+          OR
+          EXISTS (
+            SELECT 1 FROM directions d 
+            JOIN species s ON s.id = d.species_id 
+            JOIN target_groups tg ON tg.id = s.target_group_id 
+            WHERE d.product_id = p.id AND tg.name_en IN ('Feed Additives', 'Feed Additive')
+          )
+        )
+      ''');
+    }
+    
+    if (categoryId != null) {
+      where.add('p.category_id = ?');
+      args.add(categoryId);
+    }
+    
+    List<Map<String, dynamic>> rows = [];
+    final trimmed = query.trim();
+    
+    if (trimmed.isNotEmpty) {
+      final sanitizedTokens = sanitizeFtsQuery(trimmed);
+      if (sanitizedTokens.isNotEmpty) {
+        final isReady = await isFtsReady(db.executor, 'products_fts');
+        if (isReady) {
+          where.add('fts.products_fts MATCH ?');
+          args.add(sanitizedTokens);
+          orderBy = 'ORDER BY bm25(fts.products_fts, 10.0, 10.0, 5.0, 2.0), p.title_en';
+          
+          final ftsJoin = 'JOIN products_fts fts ON fts.rowid = p.id';
+          final sqlQuery = '''
+            SELECT DISTINCT p.* FROM products p
+            $ftsJoin
+            $join
+            WHERE ${where.join(' AND ')}
+            $orderBy
+            LIMIT ? OFFSET ?
+          ''';
+          
+          try {
+            rows = await db.executor.customQuery(sqlQuery, [...args, limit, offset]);
+          } catch (_) {
+            rows = [];
+          }
+        }
+      }
       
-      Set<int> feedAdditiveProductIds = {};
-      if (isFeedAdditive && products.isNotEmpty) {
-        final productIds = products.map((p) => p.id).toList();
-        final placeholders = List.filled(productIds.length, '?').join(',');
-        final rows = await db.customQuery('''
-          SELECT DISTINCT p.id FROM products p
-          WHERE p.id IN ($placeholders) AND (
-            EXISTS (SELECT 1 FROM presentations pr WHERE pr.product_id = p.id AND pr.bulk_item = 1)
-            OR
-            EXISTS (
-              SELECT 1 FROM directions d 
-              JOIN species s ON s.id = d.species_id 
-              JOIN target_groups tg ON tg.id = s.target_group_id 
-              WHERE d.product_id = p.id AND tg.name_en IN ('Feed Additives', 'Feed Additive')
-            )
-          )
-        ''', productIds);
-        feedAdditiveProductIds = rows.map((r) => r['id'] as int).toSet();
+      if (rows.isEmpty) {
+        final pattern = '%$trimmed%';
+        if (where.isNotEmpty && where.last.contains('MATCH')) {
+          where.removeLast();
+          args.removeLast();
+        }
+        where.add('(p.title_en LIKE ? OR p.title_bn LIKE ? OR p.short_description_en LIKE ? OR p.short_description_bn LIKE ?)');
+        args.addAll([pattern, pattern, pattern, pattern]);
+        orderBy = 'ORDER BY p.title_en';
+        
+        final sqlQuery = '''
+          SELECT DISTINCT p.* FROM products p
+          $join
+          WHERE ${where.join(' AND ')}
+          $orderBy
+          LIMIT ? OFFSET ?
+        ''';
+        rows = await db.executor.customQuery(sqlQuery, [...args, limit, offset]);
       }
-
-      products = products.where((p) {
-        if (categoryId != null && p.categoryId != categoryId) return false;
-        if (targetGroupId != null && !p.targetGroupIds.contains(targetGroupId)) {
-          return false;
-        }
-        if (isFeedAdditive && !feedAdditiveProductIds.contains(p.id)) {
-          return false;
-        }
-        return true;
-      }).toList();
-
-      // manual pagination
-      if (offset >= products.length) return [];
-      products = products.sublist(
-        offset,
-        (offset + limit > products.length) ? products.length : offset + limit,
-      );
     } else {
-      // no query, use db query with pagination
-      final where = <String>['p.is_active = 1'];
-      final args = <Object?>[];
-
-      String join = '';
-      if (targetGroupId != null) {
-        join += 'JOIN product_target_groups ptg ON ptg.product_id = p.id\n        ';
-        where.add('ptg.target_group_id = ?');
-        args.add(targetGroupId);
-      }
-
-      if (isFeedAdditive) {
-        where.add('''
-          (
-            EXISTS (SELECT 1 FROM presentations pr WHERE pr.product_id = p.id AND pr.bulk_item = 1)
-            OR
-            EXISTS (
-              SELECT 1 FROM directions d 
-              JOIN species s ON s.id = d.species_id 
-              JOIN target_groups tg ON tg.id = s.target_group_id 
-              WHERE d.product_id = p.id AND tg.name_en IN ('Feed Additives', 'Feed Additive')
-            )
-          )
-        ''');
-      }
-
-      if (categoryId != null) {
-        where.add('p.category_id = ?');
-        args.add(categoryId);
-      }
-
-      final rows = await db.customQuery(
-        '''
+      final sqlQuery = '''
         SELECT DISTINCT p.* FROM products p
         $join
         WHERE ${where.join(' AND ')}
-        ORDER BY p.title_en
+        $orderBy
         LIMIT ? OFFSET ?
-      ''',
-        [...args, limit, offset],
-      );
-
-      products = await _hydrateList(rows.map(Product.fromRow).toList());
+      ''';
+      rows = await db.executor.customQuery(sqlQuery, [...args, limit, offset]);
     }
+
+    final products = await _hydrateList(rows.map(Product.fromRow).toList());
     return products.map((p) => p.toLabel()).toList();
   }
 
@@ -282,7 +296,7 @@ class ProductDao {
     final where = <String>['manufacturer_id = ?'];
     final args = <Object?>[manufacturerId];
     if (activeOnly) where.add('is_active = 1');
-    final rows = await db.query(
+    final rows = await db.executor.query(
       'products',
       where: where.join(' AND '),
       whereArgs: args,
@@ -302,7 +316,7 @@ class ProductDao {
     final sanitized = sanitizeFtsQuery(trimmed);
 
     try {
-      final rows = await db.customQuery(
+      final rows = await db.executor.customQuery(
         '''
         SELECT p.* FROM products p
         JOIN products_fts fts ON fts.rowid = p.id
@@ -315,7 +329,7 @@ class ProductDao {
       return _hydrateList(rows.map(Product.fromRow).toList());
     } catch (e) {
       final pattern = '%$trimmed%';
-      final rows = await db.customQuery(
+      final rows = await db.executor.customQuery(
         '''
         SELECT * FROM products
         WHERE title_en LIKE ? OR title_bn LIKE ? OR short_description_en LIKE ? OR short_description_bn LIKE ?
@@ -333,7 +347,7 @@ class ProductDao {
   // ------------------------------------------------------------
 
   Future<List<int>> _getTargetGroupIds(int productId) async {
-    final rows = await db.query(
+    final rows = await db.executor.query(
       'product_target_groups',
       columns: ['target_group_id'],
       where: 'product_id = ?',
@@ -343,7 +357,7 @@ class ProductDao {
   }
 
   Future<List<Composition>> _getCompositions(int productId) async {
-    final rows = await db.query(
+    final rows = await db.executor.query(
       'compositions',
       where: 'product_id = ?',
       whereArgs: [productId],
@@ -353,7 +367,7 @@ class ProductDao {
   }
 
   Future<List<Indication>> _getIndications(int productId) async {
-    final rows = await db.query(
+    final rows = await db.executor.query(
       'indications',
       where: 'product_id = ?',
       whereArgs: [productId],
@@ -363,7 +377,7 @@ class ProductDao {
   }
 
   Future<List<Direction>> _getDirections(int productId) async {
-    final rows = await db.query(
+    final rows = await db.executor.query(
       'directions',
       where: 'product_id = ?',
       whereArgs: [productId],
@@ -373,7 +387,7 @@ class ProductDao {
   }
 
   Future<List<Precaution>> _getPrecautions(int productId) async {
-    final rows = await db.query(
+    final rows = await db.executor.query(
       'precautions',
       where: 'product_id = ?',
       whereArgs: [productId],
@@ -383,7 +397,7 @@ class ProductDao {
   }
 
   Future<List<Presentation>> _getPresentations(int productId) async {
-    final rows = await db.query(
+    final rows = await db.executor.query(
       'presentations',
       where: 'product_id = ?',
       whereArgs: [productId],

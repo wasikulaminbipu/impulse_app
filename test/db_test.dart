@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_dex/data/app_maintenance_dao.dart';
@@ -15,12 +15,12 @@ void main() {
       expect(dbFile.existsSync(), isTrue);
 
       final db = ProductsDb(NativeDatabase(dbFile.absolute));
-      final dao = ProductDao(db.executor, LookupDao(db.executor));
+      final dao = ProductDao(db, LookupDao(db));
 
       try {
         await db.customSelect('SELECT 1').getSingle();
         final products = await dao.getAllLight(activeOnly: true);
-        final tgs = await LookupDao(db.executor).getTargetGroups();
+        final tgs = await LookupDao(db).getTargetGroups();
         for (final tg in tgs) {
           // ignore: avoid_print
           print('TargetGroup id=${tg.id}, nameEn=${tg.nameEn}, iconName=${tg.iconName}');
@@ -45,7 +45,7 @@ void main() {
       File('assets/products.db').copySync(tempDbFile.path);
 
       final db = ProductsDb(NativeDatabase(tempDbFile));
-      final dao = ProductDao(db.executor, LookupDao(db.executor));
+      final dao = ProductDao(db, LookupDao(db));
 
       try {
         await db.customSelect('SELECT 1').getSingle();
@@ -82,9 +82,9 @@ void main() {
       File('assets/distributors.db').copySync(tempDbFile.path);
 
       final db = DistributorsDb(NativeDatabase(tempDbFile));
-      final distDao = DistributorDao(db.executor);
-      final salesDao = SalesPersonnelDao(db.executor);
-      final vetDao = VetDoctorDao(db.executor);
+      final distDao = DistributorDao(db);
+      final salesDao = SalesPersonnelDao(db);
+      final vetDao = VetDoctorDao(db);
 
       try {
         await db.customSelect('SELECT 1').getSingle();
@@ -123,8 +123,7 @@ void main() {
       }
 
       final db = AppMaintenanceDb(NativeDatabase(tempDbFile));
-      await setupAppMaintenanceTables(db.executor);
-      final dao = AppMaintenanceDao(db.executor);
+      final dao = AppMaintenanceDao(db);
 
       try {
         await db.customSelect('SELECT 1').getSingle();

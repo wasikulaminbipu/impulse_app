@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:impulse_dex/models/distributor.dart';
 import 'package:impulse_dex/providers/database_provider.dart';
 import 'package:impulse_dex/providers/app_maintenance_provider.dart';
@@ -12,19 +12,19 @@ part 'stakeholder_provider.g.dart';
 @Riverpod(keepAlive: true)
 Future<DistributorDao> distributorDao(Ref ref) async {
   final dbWrapper = await ref.watch(distributorsDatabaseProvider.future);
-  return DistributorDao(dbWrapper.executor);
+  return DistributorDao(dbWrapper);
 }
 
 @Riverpod(keepAlive: true)
 Future<VetDoctorDao> vetDoctorDao(Ref ref) async {
   final dbWrapper = await ref.watch(distributorsDatabaseProvider.future);
-  return VetDoctorDao(dbWrapper.executor);
+  return VetDoctorDao(dbWrapper);
 }
 
 @Riverpod(keepAlive: true)
 Future<SalesPersonnelDao> salesPersonnelDao(Ref ref) async {
   final dbWrapper = await ref.watch(distributorsDatabaseProvider.future);
-  return SalesPersonnelDao(dbWrapper.executor);
+  return SalesPersonnelDao(dbWrapper);
 }
 
 @riverpod

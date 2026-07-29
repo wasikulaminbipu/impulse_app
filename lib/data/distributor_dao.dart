@@ -1,5 +1,5 @@
-﻿import 'package:impulse_dex/data/db_extensions.dart';
-import 'package:drift/drift.dart';
+import 'package:impulse_dex/data/db_extensions.dart';
+
 import 'package:impulse_dex/models/distributor.dart';
 import 'package:impulse_dex/data/fts_utils.dart';
 
@@ -7,8 +7,10 @@ import 'package:impulse_dex/data/fts_utils.dart';
 // DISTRIBUTOR DAO
 // ============================================================================
 
+import 'package:impulse_dex/providers/database_provider.dart';
+
 class DistributorDao {
-  final QueryExecutor db;
+  final DistributorsDb db;
 
   DistributorDao(this.db);
 
@@ -34,7 +36,7 @@ class DistributorDao {
       ORDER BY d.name_en
     ''';
 
-    final rows = await db.customQuery(query);
+    final rows = await db.executor.customQuery(query);
     return rows.map(_mapRow).toList();
   }
 
@@ -45,7 +47,7 @@ class DistributorDao {
       WHERE d.id = ?
     ''';
 
-    final rows = await db.customQuery(query, [id]);
+    final rows = await db.executor.customQuery(query, [id]);
     if (rows.isEmpty) return null;
 
     return _mapRow(rows.first);
@@ -61,7 +63,7 @@ class DistributorDao {
       ORDER BY d.name_en
     ''';
 
-    final rows = await db.customQuery(query, [areaId]);
+    final rows = await db.executor.customQuery(query, [areaId]);
     return rows.map(_mapRow).toList();
   }
 
@@ -75,7 +77,7 @@ class DistributorDao {
       ORDER BY d.name_en
     ''';
 
-    final rows = await db.customQuery(query, [regionId]);
+    final rows = await db.executor.customQuery(query, [regionId]);
     return rows.map(_mapRow).toList();
   }
 
@@ -86,7 +88,7 @@ class DistributorDao {
 
     final sanitized = sanitizeFtsQuery(query);
     List<Map<String, dynamic>> rows = [];
-    final isReady = await isFtsReady(db, 'distributors_fts');
+    final isReady = await isFtsReady(db.executor, 'distributors_fts');
     if (isReady && sanitized.isNotEmpty) {
       try {
         const sqlQuery = '''
@@ -105,7 +107,7 @@ class DistributorDao {
           WHERE distributors_fts MATCH ? AND d.is_active = 1
           ORDER BY bm25(distributors_fts, 10.0, 10.0, 5.0, 2.0, 2.0, 1.0)
         ''';
-        rows = await db.customQuery(sqlQuery, [sanitized]);
+        rows = await db.executor.customQuery(sqlQuery, [sanitized]);
       } catch (_) {
         rows = [];
       }
@@ -118,7 +120,7 @@ class DistributorDao {
         WHERE d.is_active = 1 AND (d.name_en LIKE ? OR d.name_bn LIKE ? OR d.address_en LIKE ? OR d.address_bn LIKE ? OR d.mobile LIKE ?)
         ORDER BY d.name_en
       ''';
-      rows = await db.customQuery(fallbackQuery, [
+      rows = await db.executor.customQuery(fallbackQuery, [
         pattern,
         pattern,
         pattern,
@@ -144,7 +146,7 @@ class DistributorDao {
     if (query != null && query.isNotEmpty) {
       final sanitizedTokens = sanitizeFtsQuery(query);
       if (sanitizedTokens.isNotEmpty) {
-        final isReady = await isFtsReady(db, 'distributors_fts');
+        final isReady = await isFtsReady(db.executor, 'distributors_fts');
         if (isReady) {
           where.add('distributors_fts MATCH ?');
           args.add(sanitizedTokens);
@@ -204,7 +206,7 @@ class DistributorDao {
       $limitClause
     ''';
 
-    final rows = await db.customQuery(sqlQuery, args);
+    final rows = await db.executor.customQuery(sqlQuery, args);
     return rows.map(_mapRow).toList();
   }
 
@@ -233,7 +235,7 @@ class DistributorDao {
     final map = distributor.toMap();
     final keys = map.keys.join(',');
     final placeholders = map.keys.map((_) => '?').join(',');
-    await db.customExecute(
+    await db.executor.customExecute(
       'INSERT OR REPLACE INTO distributors ($keys) VALUES ($placeholders)',
       map.values.toList(),
     );
@@ -241,7 +243,7 @@ class DistributorDao {
 
   /// Soft delete (set is_active = 0)
   Future<void> deactivate(int id) async {
-    await db.customExecute(
+    await db.executor.customExecute(
       'UPDATE distributors SET is_active = 0, updated_at = ? WHERE id = ?',
       [DateTime.now().toIso8601String(), id],
     );
@@ -253,7 +255,7 @@ class DistributorDao {
 // ============================================================================
 
 class SalesPersonnelDao {
-  final QueryExecutor db;
+  final DistributorsDb db;
 
   SalesPersonnelDao(this.db);
 
@@ -261,7 +263,7 @@ class SalesPersonnelDao {
   Future<List<SalesPersonnelWithAreas>> getAllSalesPersonnel() async {
     const query =
         'SELECT * FROM sales_personnel WHERE is_active = 1 ORDER BY name_en';
-    final rows = await db.customQuery(query);
+    final rows = await db.executor.customQuery(query);
 
     return _hydrateList(
       rows.map((row) => SalesPersonnel.fromRow(row)).toList(),
@@ -282,7 +284,7 @@ class SalesPersonnelDao {
     if (query != null && query.isNotEmpty) {
       final sanitizedTokens = sanitizeFtsQuery(query);
       if (sanitizedTokens.isNotEmpty) {
-        final isReady = await isFtsReady(db, 'sales_personnel_fts');
+        final isReady = await isFtsReady(db.executor, 'sales_personnel_fts');
         if (isReady) {
           where.add('sales_personnel_fts MATCH ?');
           args.add(sanitizedTokens);
@@ -331,7 +333,7 @@ class SalesPersonnelDao {
       $limitClause
     ''';
 
-    final rows = await db.customQuery(sqlQuery, args);
+    final rows = await db.executor.customQuery(sqlQuery, args);
     return _hydrateList(
       rows.map((row) => SalesPersonnel.fromRow(row)).toList(),
     );
@@ -339,7 +341,7 @@ class SalesPersonnelDao {
 
   /// Get sales personnel by ID with their areas
   Future<SalesPersonnelWithAreas?> getSalesPersonnelById(int id) async {
-    final rows = await db.customQuery(
+    final rows = await db.executor.customQuery(
       'SELECT * FROM sales_personnel WHERE id = ?',
       [id],
     );
@@ -360,7 +362,7 @@ class SalesPersonnelDao {
       ORDER BY a.name_en
     ''';
 
-    final rows = await db.customQuery(query, [salesPersonnelId]);
+    final rows = await db.executor.customQuery(query, [salesPersonnelId]);
     return rows.map((row) => Area.fromRow(row)).toList();
   }
 
@@ -375,7 +377,7 @@ class SalesPersonnelDao {
       ORDER BY sp.name_en
     ''';
 
-    final rows = await db.customQuery(query, [areaId]);
+    final rows = await db.executor.customQuery(query, [areaId]);
     return _hydrateList(
       rows.map((row) => SalesPersonnel.fromRow(row)).toList(),
     );
@@ -390,7 +392,7 @@ class SalesPersonnelDao {
 
     final sanitized = sanitizeFtsQuery(query);
     List<Map<String, dynamic>> rows = [];
-    final isReady = await isFtsReady(db, 'sales_personnel_fts');
+    final isReady = await isFtsReady(db.executor, 'sales_personnel_fts');
     if (isReady && sanitized.isNotEmpty) {
       try {
         const sqlQuery = '''
@@ -399,7 +401,7 @@ class SalesPersonnelDao {
           WHERE sales_personnel_fts MATCH ? AND sp.is_active = 1
           ORDER BY fts.rank
         ''';
-        rows = await db.customQuery(sqlQuery, [sanitized]);
+        rows = await db.executor.customQuery(sqlQuery, [sanitized]);
       } catch (_) {
         rows = [];
       }
@@ -412,7 +414,7 @@ class SalesPersonnelDao {
         WHERE sp.is_active = 1 AND (sp.name_en LIKE ? OR sp.name_bn LIKE ? OR sp.designation LIKE ? OR sp.mobile LIKE ? OR sp.email LIKE ? OR sp.employee_id LIKE ?)
         ORDER BY sp.name_en
       ''';
-      rows = await db.customQuery(fallbackQuery, [
+      rows = await db.executor.customQuery(fallbackQuery, [
         pattern,
         pattern,
         pattern,
@@ -434,17 +436,18 @@ class SalesPersonnelDao {
     if (personnelList.isEmpty) return [];
 
     final ids = personnelList.map((p) => p.id).toList();
-    final placeholders = List.filled(ids.length, '?').join(',');
 
-    final query =
-        '''
+    final rows = await db.executor.chunkedInQuery(
+      prefix: '''
       SELECT spa.sales_personnel_id, a.* FROM areas a
       JOIN sales_personnel_areas spa ON a.id = spa.area_id
-      WHERE spa.sales_personnel_id IN ($placeholders)
+      WHERE spa.sales_personnel_id IN 
+      ''',
+      suffix: '''
       ORDER BY a.name_en
-    ''';
-
-    final rows = await db.customQuery(query, ids);
+      ''',
+      ids: ids,
+    );
     final Map<int, List<Area>> areasByPersonnelId = {};
 
     for (final row in rows) {
@@ -464,7 +467,7 @@ class SalesPersonnelDao {
     final map = personnel.toMap();
     final keys = map.keys.join(',');
     final placeholders = map.keys.map((_) => '?').join(',');
-    await db.customExecute(
+    await db.executor.customExecute(
       'INSERT OR REPLACE INTO sales_personnel ($keys) VALUES ($placeholders)',
       map.values.toList(),
     );
@@ -472,7 +475,7 @@ class SalesPersonnelDao {
 
   /// Add or update area assignment for a sales person
   Future<void> assignArea(int salesPersonnelId, int areaId) async {
-    await db.customExecute(
+    await db.executor.customExecute(
       'INSERT OR REPLACE INTO sales_personnel_areas (sales_personnel_id, area_id) VALUES (?, ?)',
       [salesPersonnelId, areaId],
     );
@@ -480,7 +483,7 @@ class SalesPersonnelDao {
 
   /// Remove area assignment
   Future<void> removeAreaAssignment(int salesPersonnelId, int areaId) async {
-    await db.customExecute(
+    await db.executor.customExecute(
       'DELETE FROM sales_personnel_areas WHERE sales_personnel_id = ? AND area_id = ?',
       [salesPersonnelId, areaId],
     );
@@ -488,7 +491,7 @@ class SalesPersonnelDao {
 
   /// Soft delete
   Future<void> deactivate(int id) async {
-    await db.customExecute(
+    await db.executor.customExecute(
       'UPDATE sales_personnel SET is_active = 0, updated_at = ? WHERE id = ?',
       [DateTime.now().toIso8601String(), id],
     );
@@ -500,7 +503,7 @@ class SalesPersonnelDao {
 // ============================================================================
 
 class VetDoctorDao {
-  final QueryExecutor db;
+  final DistributorsDb db;
 
   VetDoctorDao(this.db);
 
@@ -508,7 +511,7 @@ class VetDoctorDao {
   Future<List<VetDoctorWithAreas>> getAllVetDoctors() async {
     const query =
         'SELECT * FROM vet_doctors WHERE is_active = 1 ORDER BY name_en';
-    final rows = await db.customQuery(query);
+    final rows = await db.executor.customQuery(query);
 
     return _hydrateList(rows.map((row) => VetDoctor.fromRow(row)).toList());
   }
@@ -527,7 +530,7 @@ class VetDoctorDao {
     if (query != null && query.isNotEmpty) {
       final sanitizedTokens = sanitizeFtsQuery(query);
       if (sanitizedTokens.isNotEmpty) {
-        final isReady = await isFtsReady(db, 'vet_doctors_fts');
+        final isReady = await isFtsReady(db.executor, 'vet_doctors_fts');
         if (isReady) {
           where.add('vet_doctors_fts MATCH ?');
           args.add(sanitizedTokens);
@@ -576,13 +579,13 @@ class VetDoctorDao {
       $limitClause
     ''';
 
-    final rows = await db.customQuery(sqlQuery, args);
+    final rows = await db.executor.customQuery(sqlQuery, args);
     return _hydrateList(rows.map((row) => VetDoctor.fromRow(row)).toList());
   }
 
   /// Get vet doctor by ID with their areas
   Future<VetDoctorWithAreas?> getVetDoctorById(int id) async {
-    final rows = await db.customQuery(
+    final rows = await db.executor.customQuery(
       'SELECT * FROM vet_doctors WHERE id = ?',
       [id],
     );
@@ -603,7 +606,7 @@ class VetDoctorDao {
       ORDER BY a.name_en
     ''';
 
-    final rows = await db.customQuery(query, [vetDoctorId]);
+    final rows = await db.executor.customQuery(query, [vetDoctorId]);
     return rows.map((row) => Area.fromRow(row)).toList();
   }
 
@@ -616,7 +619,7 @@ class VetDoctorDao {
       ORDER BY vd.name_en
     ''';
 
-    final rows = await db.customQuery(query, [areaId]);
+    final rows = await db.executor.customQuery(query, [areaId]);
     return _hydrateList(rows.map((row) => VetDoctor.fromRow(row)).toList());
   }
 
@@ -627,7 +630,7 @@ class VetDoctorDao {
 
     final sanitized = sanitizeFtsQuery(query);
     List<Map<String, dynamic>> rows = [];
-    final isReady = await isFtsReady(db, 'vet_doctors_fts');
+    final isReady = await isFtsReady(db.executor, 'vet_doctors_fts');
     if (isReady && sanitized.isNotEmpty) {
       try {
         const sqlQuery = '''
@@ -636,7 +639,7 @@ class VetDoctorDao {
           WHERE vet_doctors_fts MATCH ? AND vd.is_active = 1
           ORDER BY fts.rank
         ''';
-        rows = await db.customQuery(sqlQuery, [sanitized]);
+        rows = await db.executor.customQuery(sqlQuery, [sanitized]);
       } catch (_) {
         rows = [];
       }
@@ -649,7 +652,7 @@ class VetDoctorDao {
         WHERE vd.is_active = 1 AND (vd.name_en LIKE ? OR vd.name_bn LIKE ? OR vd.qualification LIKE ? OR vd.specialization LIKE ? OR vd.address_en LIKE ? OR vd.mobile LIKE ?)
         ORDER BY vd.name_en
       ''';
-      rows = await db.customQuery(fallbackQuery, [
+      rows = await db.executor.customQuery(fallbackQuery, [
         pattern,
         pattern,
         pattern,
@@ -667,17 +670,18 @@ class VetDoctorDao {
     if (doctors.isEmpty) return [];
 
     final ids = doctors.map((d) => d.id).toList();
-    final placeholders = List.filled(ids.length, '?').join(',');
 
-    final query =
-        '''
+    final rows = await db.executor.chunkedInQuery(
+      prefix: '''
       SELECT vda.vet_doctor_id, a.* FROM areas a
       JOIN vet_doctors_areas vda ON a.id = vda.area_id
-      WHERE vda.vet_doctor_id IN ($placeholders)
+      WHERE vda.vet_doctor_id IN 
+      ''',
+      suffix: '''
       ORDER BY a.name_en
-    ''';
-
-    final rows = await db.customQuery(query, ids);
+      ''',
+      ids: ids,
+    );
     final Map<int, List<Area>> areasByDoctorId = {};
 
     for (final row in rows) {
@@ -697,7 +701,7 @@ class VetDoctorDao {
     final map = doctor.toMap();
     final keys = map.keys.join(',');
     final placeholders = map.keys.map((_) => '?').join(',');
-    await db.customExecute(
+    await db.executor.customExecute(
       'INSERT OR REPLACE INTO vet_doctors ($keys) VALUES ($placeholders)',
       map.values.toList(),
     );
@@ -705,7 +709,7 @@ class VetDoctorDao {
 
   /// Add or update area assignment for a vet doctor
   Future<void> assignArea(int vetDoctorId, int areaId) async {
-    await db.customExecute(
+    await db.executor.customExecute(
       'INSERT OR REPLACE INTO vet_doctors_areas (vet_doctor_id, area_id) VALUES (?, ?)',
       [vetDoctorId, areaId],
     );
@@ -713,7 +717,7 @@ class VetDoctorDao {
 
   /// Remove area assignment
   Future<void> removeAreaAssignment(int vetDoctorId, int areaId) async {
-    await db.customExecute(
+    await db.executor.customExecute(
       'DELETE FROM vet_doctors_areas WHERE vet_doctor_id = ? AND area_id = ?',
       [vetDoctorId, areaId],
     );
@@ -721,7 +725,7 @@ class VetDoctorDao {
 
   /// Soft delete
   Future<void> deactivate(int id) async {
-    await db.customExecute(
+    await db.executor.customExecute(
       'UPDATE vet_doctors SET is_active = 0, updated_at = ? WHERE id = ?',
       [DateTime.now().toIso8601String(), id],
     );
@@ -733,7 +737,7 @@ class VetDoctorDao {
 // ============================================================================
 
 class LocationDao {
-  final QueryExecutor db;
+  final DistributorsDb db;
 
   List<Region>? _cachedRegions;
   List<Area>? _cachedAreas;
@@ -751,7 +755,7 @@ class LocationDao {
     if (_cachedRegions != null) {
       return _cachedRegions!;
     }
-    final rows = await db.customQuery('SELECT * FROM regions ORDER BY name_en');
+    final rows = await db.executor.customQuery('SELECT * FROM regions ORDER BY name_en');
     _cachedRegions = rows.map((row) => Region.fromRow(row)).toList();
     return _cachedRegions!;
   }
@@ -759,7 +763,7 @@ class LocationDao {
   /// Get all areas (cached in memory, optionally filtered by region)
   Future<List<Area>> getAllAreas({int? regionId}) async {
     if (_cachedAreas == null) {
-      final rows = await db.customQuery('SELECT * FROM areas ORDER BY name_en');
+      final rows = await db.executor.customQuery('SELECT * FROM areas ORDER BY name_en');
       _cachedAreas = rows.map((row) => Area.fromRow(row)).toList();
     }
 
@@ -778,7 +782,7 @@ class LocationDao {
       }
       return null;
     }
-    final rows = await db.customQuery('SELECT * FROM areas WHERE id = ?', [id]);
+    final rows = await db.executor.customQuery('SELECT * FROM areas WHERE id = ?', [id]);
     return rows.isNotEmpty ? Area.fromRow(rows.first) : null;
   }
 
@@ -790,7 +794,7 @@ class LocationDao {
       }
       return null;
     }
-    final rows = await db.customQuery('SELECT * FROM regions WHERE id = ?', [
+    final rows = await db.executor.customQuery('SELECT * FROM regions WHERE id = ?', [
       id,
     ]);
     return rows.isNotEmpty ? Region.fromRow(rows.first) : null;

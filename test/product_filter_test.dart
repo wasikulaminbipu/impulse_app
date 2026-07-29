@@ -1,18 +1,20 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_dex/data/product_dao.dart';
 import 'package:impulse_dex/data/lookup_dao.dart';
 import 'package:impulse_dex/models/product.dart';
 
+import 'package:impulse_dex/providers/database_provider.dart';
+
 void main() {
   group('ProductFilter Mechanism Tests', () {
-    late NativeDatabase db;
+    late ProductsDb db;
     late ProductDao dao;
 
     setUp(() async {
       final dbFile = File('assets/products.db');
-      db = NativeDatabase(dbFile.absolute);
+      db = ProductsDb(NativeDatabase(dbFile.absolute));
       dao = ProductDao(db, LookupDao(db));
     });
 

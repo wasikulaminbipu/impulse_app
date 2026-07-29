@@ -1,4 +1,4 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:drift/drift.dart';
@@ -8,6 +8,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:impulse_dex/data/db_extensions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:path/path.dart' as p;
+import 'package:impulse_dex/data/maintenance_tables.dart';
+import 'package:impulse_dex/data/products_tables.dart';
+import 'package:impulse_dex/data/distributors_tables.dart';
 
 part 'database_provider.g.dart';
 
@@ -26,31 +29,74 @@ part 'database_provider.g.dart';
 // ---------------------------------------------------------------------------
 
 /// Base wrapper used by [ProductsDb] and [DistributorsDb].
-class _AssetDatabase extends GeneratedDatabase {
-  _AssetDatabase(super.executor);
+// ---------------------------------------------------------------------------
 
-  @override
-  Iterable<TableInfo<Table, dynamic>> get allTables => const [];
+/// Thin Drift wrapper around products.db.
+@DriftDatabase(tables: [
+  Categories,
+  TargetGroups,
+  ContentTypes,
+  ProductTypes,
+  Species,
+  DosageUnits,
+  DosageBases,
+  Manufacturers,
+  Products,
+  ProductTargetGroups,
+  Compositions,
+  Indications,
+  Directions,
+  Precautions,
+  Presentations,
+])
+class ProductsDb extends _$ProductsDb {
+  ProductsDb(super.executor);
 
   @override
   int get schemaVersion => 1;
 }
 
-/// Thin Drift wrapper around products.db.
-class ProductsDb extends _AssetDatabase {
-  ProductsDb(super.executor);
-}
-
 /// Thin Drift wrapper around distributors.db.
-class DistributorsDb extends _AssetDatabase {
+@DriftDatabase(tables: [
+  Regions,
+  Areas,
+  Distributors,
+  SalesPersonnel,
+  SalesPersonnelAreas,
+  VetDoctors,
+  VetDoctorsAreas,
+])
+class DistributorsDb extends _$DistributorsDb {
   DistributorsDb(super.executor);
+
+  @override
+  int get schemaVersion => 1;
 }
 
-/// Thin Drift wrapper around app_maintenance.db.
-/// Tables are created outside of beforeOpen (via _runRaw) to avoid the
-/// serial-executor re-entrancy deadlock described at the top of this file.
-class AppMaintenanceDb extends _AssetDatabase {
-  AppMaintenanceDb(super.executor);
+/// Proper Drift database for app_maintenance.db
+@DriftDatabase(tables: [
+  FavoriteProducts,
+  FavoriteDistributors,
+  FavoriteSalesPersonnel,
+  FavoriteVetDoctors,
+  AppSettings,
+  DbMeta,
+])
+class AppMaintenanceDb extends _$AppMaintenanceDb {
+  AppMaintenanceDb(super.e);
+
+  @override
+  int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (Migrator m) async {
+          await m.createAll();
+        },
+        onUpgrade: (Migrator m, int from, int to) async {
+          // Future schema migrations go here
+        },
+      );
 }
 
 // ---------------------------------------------------------------------------
@@ -131,7 +177,8 @@ Future<T> _copyAndOpen<T extends GeneratedDatabase>(
     setup: (rawDb) {
       try {
         rawDb.execute('PRAGMA journal_mode=OFF;');
-      } catch (e, st) { debugPrint('DB journal setup error: $e\n$st'); }
+        rawDb.execute('PRAGMA foreign_keys=ON;');
+      } catch (e, st) { debugPrint('DB setup error: $e\n$st'); }
     },
   );
 
@@ -476,47 +523,6 @@ Future<DistributorsDb> distributorsDatabase(Ref ref) async {
   return db;
 }
 
-Future<void> setupAppMaintenanceTables(QueryExecutor executor) async {
-  await _runRaw(executor, [
-    '''
-    CREATE TABLE IF NOT EXISTS favorite_products (
-      product_id INTEGER PRIMARY KEY,
-      added_at TEXT DEFAULT CURRENT_TIMESTAMP
-    )
-    ''',
-    '''
-    CREATE TABLE IF NOT EXISTS favorite_distributors (
-      distributor_id INTEGER PRIMARY KEY,
-      added_at TEXT DEFAULT CURRENT_TIMESTAMP
-    )
-    ''',
-    '''
-    CREATE TABLE IF NOT EXISTS favorite_sales_personnel (
-      sales_personnel_id INTEGER PRIMARY KEY,
-      added_at TEXT DEFAULT CURRENT_TIMESTAMP
-    )
-    ''',
-    '''
-    CREATE TABLE IF NOT EXISTS favorite_vet_doctors (
-      vet_doctor_id INTEGER PRIMARY KEY,
-      added_at TEXT DEFAULT CURRENT_TIMESTAMP
-    )
-    ''',
-    '''
-    CREATE TABLE IF NOT EXISTS app_settings (
-      key TEXT PRIMARY KEY,
-      value TEXT
-    )
-    ''',
-    '''
-    CREATE TABLE IF NOT EXISTS db_meta (
-      key TEXT PRIMARY KEY,
-      value TEXT
-    )
-    ''',
-  ]);
-}
-
 @Riverpod(keepAlive: true)
 Future<AppMaintenanceDb> appMaintenanceDatabase(Ref ref) async {
   final dbPath = await _getDbPath('app_maintenance.db');
@@ -526,11 +532,10 @@ Future<AppMaintenanceDb> appMaintenanceDatabase(Ref ref) async {
     setup: (rawDb) {
       try {
         rawDb.execute('PRAGMA journal_mode=WAL;');
+        rawDb.execute('PRAGMA foreign_keys=ON;');
       } catch (e, st) { debugPrint('AppMaintenance DB journal setup error: $e\n$st'); }
     },
   );
-
-  await setupAppMaintenanceTables(executor);
 
   final db = AppMaintenanceDb(executor);
   ref.onDispose(db.close);

@@ -1,4 +1,4 @@
-﻿import 'package:impulse_dex/data/app_maintenance_dao.dart';
+import 'package:impulse_dex/data/app_maintenance_dao.dart';
 import 'package:impulse_dex/models/app_maintenance.dart';
 import 'package:impulse_dex/providers/database_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -8,7 +8,7 @@ part 'app_maintenance_provider.g.dart';
 @Riverpod(keepAlive: true)
 Future<AppMaintenanceDao> appMaintenanceDao(Ref ref) async {
   final dbWrapper = await ref.watch(appMaintenanceDatabaseProvider.future);
-  return AppMaintenanceDao(dbWrapper.executor);
+  return AppMaintenanceDao(dbWrapper);
 }
 
 @Riverpod(keepAlive: true)

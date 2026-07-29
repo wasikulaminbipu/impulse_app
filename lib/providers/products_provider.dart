@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:impulse_dex/models/product.dart';
 import 'package:impulse_dex/models/app_maintenance.dart';
@@ -23,19 +23,21 @@ part 'products_provider.g.dart';
 Future<ProductDao> productDao(Ref ref) async {
   final dbWrapper = await ref.watch(productsDatabaseProvider.future);
   final lookupDao = await ref.watch(lookupDaoProvider.future);
-  return ProductDao(dbWrapper.executor, lookupDao);
+  return ProductDao(dbWrapper, lookupDao);
 }
 
 @Riverpod(keepAlive: true)
 Future<ManufacturerDao> manufacturerDao(Ref ref) async {
   final db = await ref.watch(productsDatabaseProvider.future);
-  return ManufacturerDao(db.executor);
+  return ManufacturerDao(db);
 }
 
 @Riverpod(keepAlive: true)
 Future<LookupDao> lookupDao(Ref ref) async {
   final db = await ref.watch(productsDatabaseProvider.future);
-  return LookupDao(db.executor);
+  final dao = LookupDao(db);
+  await dao.preloadAll();
+  return dao;
 }
 
 // ------------------------------------------------------------

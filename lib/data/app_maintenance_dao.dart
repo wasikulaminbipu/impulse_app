@@ -1,36 +1,77 @@
-﻿import 'package:impulse_dex/data/db_extensions.dart';
 import 'package:drift/drift.dart';
-import 'package:impulse_dex/models/app_maintenance.dart';
+import 'package:impulse_dex/models/app_maintenance.dart' as models;
+import 'package:impulse_dex/providers/database_provider.dart';
 
 class AppMaintenanceDao {
   AppMaintenanceDao(this._db);
 
-  final QueryExecutor _db;
+  final AppMaintenanceDb _db;
 
   // ---------------- Favorites (generic, all four tables) ----------------
-  Future<void> addFavorite(FavoriteType type, int id) async {
-    await _db.customExecute(
-      'INSERT OR IGNORE INTO ${type.table} (${type.idColumn}) VALUES (?)',
-      [id],
-    );
+  Future<void> addFavorite(models.FavoriteType type, int id) async {
+    switch (type) {
+      case models.FavoriteType.product:
+        await _db.into(_db.favoriteProducts).insert(
+              FavoriteProductsCompanion.insert(productId: Value(id)),
+              mode: InsertMode.insertOrIgnore,
+            );
+        break;
+      case models.FavoriteType.distributor:
+        await _db.into(_db.favoriteDistributors).insert(
+              FavoriteDistributorsCompanion.insert(distributorId: Value(id)),
+              mode: InsertMode.insertOrIgnore,
+            );
+        break;
+      case models.FavoriteType.salesPersonnel:
+        await _db.into(_db.favoriteSalesPersonnel).insert(
+              FavoriteSalesPersonnelCompanion.insert(salesPersonnelId: Value(id)),
+              mode: InsertMode.insertOrIgnore,
+            );
+        break;
+      case models.FavoriteType.vetDoctor:
+        await _db.into(_db.favoriteVetDoctors).insert(
+              FavoriteVetDoctorsCompanion.insert(vetDoctorId: Value(id)),
+              mode: InsertMode.insertOrIgnore,
+            );
+        break;
+    }
   }
 
-  Future<void> removeFavorite(FavoriteType type, int id) async {
-    await _db.customExecute(
-      'DELETE FROM ${type.table} WHERE ${type.idColumn} = ?',
-      [id],
-    );
+  Future<void> removeFavorite(models.FavoriteType type, int id) async {
+    switch (type) {
+      case models.FavoriteType.product:
+        await (_db.delete(_db.favoriteProducts)..where((t) => t.productId.equals(id))).go();
+        break;
+      case models.FavoriteType.distributor:
+        await (_db.delete(_db.favoriteDistributors)..where((t) => t.distributorId.equals(id))).go();
+        break;
+      case models.FavoriteType.salesPersonnel:
+        await (_db.delete(_db.favoriteSalesPersonnel)..where((t) => t.salesPersonnelId.equals(id))).go();
+        break;
+      case models.FavoriteType.vetDoctor:
+        await (_db.delete(_db.favoriteVetDoctors)..where((t) => t.vetDoctorId.equals(id))).go();
+        break;
+    }
   }
 
-  Future<bool> isFavorite(FavoriteType type, int id) async {
-    final rows = await _db.customQuery(
-      'SELECT 1 FROM ${type.table} WHERE ${type.idColumn} = ? LIMIT 1',
-      [id],
-    );
-    return rows.isNotEmpty;
+  Future<bool> isFavorite(models.FavoriteType type, int id) async {
+    switch (type) {
+      case models.FavoriteType.product:
+        final q = _db.select(_db.favoriteProducts)..where((t) => t.productId.equals(id))..limit(1);
+        return (await q.get()).isNotEmpty;
+      case models.FavoriteType.distributor:
+        final q = _db.select(_db.favoriteDistributors)..where((t) => t.distributorId.equals(id))..limit(1);
+        return (await q.get()).isNotEmpty;
+      case models.FavoriteType.salesPersonnel:
+        final q = _db.select(_db.favoriteSalesPersonnel)..where((t) => t.salesPersonnelId.equals(id))..limit(1);
+        return (await q.get()).isNotEmpty;
+      case models.FavoriteType.vetDoctor:
+        final q = _db.select(_db.favoriteVetDoctors)..where((t) => t.vetDoctorId.equals(id))..limit(1);
+        return (await q.get()).isNotEmpty;
+    }
   }
 
-  Future<void> toggleFavorite(FavoriteType type, int id) async {
+  Future<void> toggleFavorite(models.FavoriteType type, int id) async {
     if (await isFavorite(type, id)) {
       await removeFavorite(type, id);
     } else {
@@ -38,41 +79,67 @@ class AppMaintenanceDao {
     }
   }
 
-  Future<List<FavoriteEntry>> getFavorites(FavoriteType type) async {
-    final rows = await _db.customQuery(
-      'SELECT * FROM ${type.table} ORDER BY added_at DESC',
-    );
-    return rows.map((m) => FavoriteEntry.fromMap(m, type.idColumn)).toList();
+  Future<List<models.FavoriteEntry>> getFavorites(models.FavoriteType type) async {
+    switch (type) {
+      case models.FavoriteType.product:
+        final rows = await (_db.select(_db.favoriteProducts)
+              ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
+            .get();
+        return rows.map((r) => models.FavoriteEntry(id: r.productId, addedAt: DateTime.parse(r.addedAt))).toList();
+      case models.FavoriteType.distributor:
+        final rows = await (_db.select(_db.favoriteDistributors)
+              ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
+            .get();
+        return rows.map((r) => models.FavoriteEntry(id: r.distributorId, addedAt: DateTime.parse(r.addedAt))).toList();
+      case models.FavoriteType.salesPersonnel:
+        final rows = await (_db.select(_db.favoriteSalesPersonnel)
+              ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
+            .get();
+        return rows.map((r) => models.FavoriteEntry(id: r.salesPersonnelId, addedAt: DateTime.parse(r.addedAt))).toList();
+      case models.FavoriteType.vetDoctor:
+        final rows = await (_db.select(_db.favoriteVetDoctors)
+              ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
+            .get();
+        return rows.map((r) => models.FavoriteEntry(id: r.vetDoctorId, addedAt: DateTime.parse(r.addedAt))).toList();
+    }
   }
 
-  Future<List<int>> getFavoriteIds(FavoriteType type) async {
-    final rows = await _db.customQuery(
-      'SELECT ${type.idColumn} FROM ${type.table}',
-    );
-    return rows.map((m) => m[type.idColumn] as int).toList();
+  Future<List<int>> getFavoriteIds(models.FavoriteType type) async {
+    switch (type) {
+      case models.FavoriteType.product:
+        final rows = await _db.select(_db.favoriteProducts).get();
+        return rows.map((r) => r.productId).toList();
+      case models.FavoriteType.distributor:
+        final rows = await _db.select(_db.favoriteDistributors).get();
+        return rows.map((r) => r.distributorId).toList();
+      case models.FavoriteType.salesPersonnel:
+        final rows = await _db.select(_db.favoriteSalesPersonnel).get();
+        return rows.map((r) => r.salesPersonnelId).toList();
+      case models.FavoriteType.vetDoctor:
+        final rows = await _db.select(_db.favoriteVetDoctors).get();
+        return rows.map((r) => r.vetDoctorId).toList();
+    }
   }
 
   // ---------------- app_settings ----------------
 
   Future<String?> getSetting(String key) async {
-    final rows = await _db.customQuery(
-      'SELECT value FROM app_settings WHERE key = ? LIMIT 1',
-      [key],
-    );
+    final q = _db.select(_db.appSettings)..where((t) => t.key.equals(key))..limit(1);
+    final rows = await q.get();
     if (rows.isEmpty) return null;
-    return rows.first['value'] as String?;
+    return rows.first.value;
   }
 
   Future<void> setSetting(String key, String? value) async {
-    await _db.customExecute(
-      'INSERT OR REPLACE INTO app_settings (key, value) VALUES (?, ?)',
-      [key, value],
-    );
+    await _db.into(_db.appSettings).insert(
+          AppSettingsCompanion.insert(key: key, value: Value(value)),
+          mode: InsertMode.insertOrReplace,
+        );
   }
 
-  Future<List<AppSetting>> getAllSettings() async {
-    final rows = await _db.customQuery('SELECT * FROM app_settings');
-    return rows.map(AppSetting.fromMap).toList();
+  Future<List<models.AppSetting>> getAllSettings() async {
+    final rows = await _db.select(_db.appSettings).get();
+    return rows.map((r) => models.AppSetting(key: r.key, value: r.value)).toList();
   }
 
   Future<bool> getDarkMode() async => (await getSetting('dark_mode')) == 'true';
@@ -85,19 +152,15 @@ class AppMaintenanceDao {
   // ---------------- db_meta ----------------
 
   Future<String?> getSchemaVersion() async {
-    final rows = await _db.customQuery(
-      'SELECT value FROM db_meta WHERE key = ? LIMIT 1',
-      ['schema_version'],
-    );
-    return rows.isEmpty ? null : rows.first['value'] as String?;
+    final q = _db.select(_db.dbMeta)..where((t) => t.key.equals('schema_version'))..limit(1);
+    final rows = await q.get();
+    return rows.isEmpty ? null : rows.first.value;
   }
 
   Future<DateTime?> getGeneratedAt() async {
-    final rows = await _db.customQuery(
-      'SELECT value FROM db_meta WHERE key = ? LIMIT 1',
-      ['generated_at'],
-    );
-    if (rows.isEmpty) return null;
-    return DateTime.parse(rows.first['value'] as String);
+    final q = _db.select(_db.dbMeta)..where((t) => t.key.equals('generated_at'))..limit(1);
+    final rows = await q.get();
+    if (rows.isEmpty || rows.first.value == null) return null;
+    return DateTime.parse(rows.first.value!);
   }
 }
