@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impulse Products — Data Entry</title>
+  <script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.js"></script>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --panel: #ffffff;
+      --border: #e1e4e9;
+      --text: #1c2230;
+      --muted: #6b7280;
+      --accent: #2f6f4f;
+      --accent-dark: #234f39;
+      --accent-soft: #e7f2ec;
+      --danger: #b3432d;
+      --danger-soft: #fbe9e5;
+      --warn: #b8860b;
+      --radius: 8px;
+      --mono: ui-monospace, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+      background: var(--accent-dark);
+      color: #fff;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: .2px;
+    }
+
+    header .spacer {
+      flex: 1;
+    }
+
+    header button,
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    header button:hover,
+    .btn:hover {
+      background: #2a5c40;
+    }
+
+    header button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    #status {
+      font-size: 12px;
+      color: #d8e6de;
+    }
+
+    #dirtyDot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e0a24d;
+      margin-right: 6px;
+      visibility: hidden;
+    }
+
+    .layout {
+      display: flex;
+      min-height: calc(100vh - 48px);
+    }
+
+    nav {
+      width: 210px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      padding: 14px 0;
+      flex-shrink: 0;
+    }
+
+    nav .group-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      padding: 10px 16px 4px;
+    }
+
+    nav button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 9px 16px;
+      font-size: 13.5px;
+      color: var(--text);
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    nav button:hover {
+      background: var(--accent-soft);
+    }
+
+    nav button.active {
+      background: var(--accent-soft);
+      border-left-color: var(--accent);
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    main {
+      flex: 1;
+      padding: 22px 28px;
+      overflow-x: auto;
+    }
+
+    #welcome {
+      max-width: 640px;
+      margin: 60px auto;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    #welcome h2 {
+      color: var(--text);
+    }
+
+    #welcome .btn {
+      font-size: 14px;
+      padding: 12px 22px;
+      margin-top: 10px;
+    }
+
+    #welcome .filepick {
+      margin-top: 26px;
+    }
+
+    h2.pagetitle {
+      margin: 0 0 4px;
+      font-size: 20px;
+    }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    table.list {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+    }
+
+    table.list th {
+      text-align: left;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--muted);
+      background: #fafbfc;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    table.list td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13.5px;
+      vertical-align: top;
+    }
+
+    table.list tr:last-child td {
+      border-bottom: none;
+    }
+
+    table.list tr:hover td {
+      background: #fafcfb;
+    }
+
+    .row-actions {
+      white-space: nowrap;
+    }
+
+    .row-actions button {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-right: 4px;
+    }
+
+    .row-actions button:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    .row-actions button.del:hover {
+      background: var(--danger-soft);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar input[type=search] {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13.5px;
+      min-width: 240px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: var(--accent-dark);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .field input[type=text],
+    .field input[type=number],
+    .field input[type=email],
+    .field input[type=url],
+    .field textarea,
+    .field select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .field textarea {
+      min-height: 56px;
+      resize: vertical;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .field-row .field {
+      flex: 1;
+    }
+
+    .field.checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .field.checkbox label {
+      margin: 0;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 16px;
+    }
+
+    .required::after {
+      content: " *";
+      color: var(--danger);
+    }
+
+    .btnbar {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn.secondary:hover {
+      background: #f2f3f5;
+    }
+
+    .btn.danger {
+      background: var(--danger);
+    }
+
+    .btn.danger:hover {
+      background: #95341f;
+    }
+
+    .btn.small {
+      padding: 6px 11px;
+      font-size: 12.5px;
+    }
+
+    .childtable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+
+    .childtable th {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: left;
+      padding: 6px 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .childtable td {
+      padding: 5px 6px;
+      border-bottom: 1px solid #eef0f2;
+      vertical-align: middle;
+    }
+
+    .childtable input,
+    .childtable select,
+    .childtable textarea {
+      width: 100%;
+      padding: 5px 6px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-size: 12.5px;
+    }
+
+    .childtable textarea {
+      min-height: 32px;
+    }
+
+    .checkgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 6px 12px;
+      max-height: 180px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    .checkgrid label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .pill {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      border-radius: 20px;
+      padding: 2px 9px;
+      font-size: 11.5px;
+      margin: 1px;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-style: italic;
+      font-size: 13px;
+      padding: 14px 0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      background: var(--text);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .2);
+      z-index: 50;
+    }
+
+    .toast.err {
+      background: var(--danger);
+    }
+
+    .backlink {
+      background: none;
+      border: none;
+      color: var(--accent-dark);
+      cursor: pointer;
+      font-size: 13px;
+      margin-bottom: 10px;
+      padding: 0;
+    }
+
+    .backlink:hover {
+      text-decoration: underline;
+    }
+
+    code.mono {
+      font-family: var(--mono);
+      background: #f0f1f3;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 24, 30, .5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
+    }
+
+    .modal-box h3 {
+      margin: 0 0 4px;
+      font-size: 15px;
+      color: var(--accent-dark);
+    }
+
+    .modal-box .subtle {
+      margin-top: 0;
+    }
+
+    .addlink {
+      background: none;
+      border: none;
+      color: var(--accent-dark);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 4px 0 0;
+      text-decoration: underline;
+    }
+
+    .addlink:hover {
+      color: var(--accent);
+    }
+
+    .field-with-add {
+      display: flex;
+      gap: 6px;
+      align-items: flex-end;
+    }
+
+    .field-with-add select {
+      flex: 1;
+    }
+
+    .field-with-add .addbtn {
+      flex-shrink: 0;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .field-with-add .addbtn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Impulse Products — Internal Data Entry</h1>
+    <span class="spacer"></span>
+    <span id="status"><span id="dirtyDot"></span><span id="statusText">No database open</span></span>
+    <button id="btnOpen">Open database…</button>
+    <button id="btnSave" disabled>Save</button>
+    <button id="btnSaveAs" disabled>Save a copy…</button>
+  </header>
+
+  <div class="layout">
+    <nav id="nav" style="display:none;"></nav>
+    <main id="main">
+      <div id="welcome">
+        <h2>Open a database to begin</h2>
+        <p>This tool edits <code class="mono">products.db</code> or <code class="mono">distributors.db</code> directly —
+          nothing is uploaded anywhere, it all runs in this browser tab. It works fully offline once the page has
+          loaded.</p>
+        <p>In Chrome or Edge, changes save straight back into the original file. In other browsers, use "Save a copy…"
+          to download the edited file.</p>
+        <div class="filepick"><button class="btn" id="btnOpen2">Open database…</button></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const CDN_WASM = "https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/";
+    let SQLmod = null, db = null, dbType = null, fileHandle = null, dirty = false, currentFileName = "";
+
+    function setStatus(text) { document.getElementById('statusText').textContent = text; }
+    function setDirty(v) {
+      dirty = v;
+      document.getElementById('dirtyDot').style.visibility = v ? 'visible' : 'hidden';
+      document.getElementById('btnSave').disabled = !db;
+      document.getElementById('btnSaveAs').disabled = !db;
+    }
+    function toast(msg, isErr) {
+      const t = document.createElement('div');
+      t.className = 'toast' + (isErr ? ' err' : '');
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3200);
+    }
+
+    // ---------- low-level db helpers ----------
+    function q(sql, params = []) {
+      const stmt = db.prepare(sql);
+      if (params.length) stmt.bind(params);
+      const rows = [];
+      while (stmt.step()) rows.push(stmt.getAsObject());
+      stmt.free();
+      return rows;
+    }
+    function run(sql, params = []) {
+      db.run(sql, params);
+      setDirty(true);
+    }
+    function nowIso() {
+      return new Date().toISOString().slice(0, 19).replace('T', ' ');
+    }
+
+    // ---------- open / save ----------
+    async function openDb() {
+      try {
+        let arrayBuf, name;
+        if (window.showOpenFilePicker) {
+          const [handle] = await window.showOpenFilePicker({
+            types: [{ description: 'SQLite database', accept: { 'application/octet-stream': ['.db', '.sqlite', '.sqlite3'] } }]
+          });
+          fileHandle = handle;
+          const file = await handle.getFile();
+          arrayBuf = await file.arrayBuffer();
+          name = file.name;
+        } else {
+          const inp = document.createElement('input');
+          inp.type = 'file'; inp.accept = '.db,.sqlite,.sqlite3';
+          const file = await new Promise(res => {
+            inp.onchange = () => res(inp.files[0]);
+            inp.click();
+          });
+          if (!file) return;
+          fileHandle = null;
+          arrayBuf = await file.arrayBuffer();
+          name = file.name;
+        }
+        currentFileName = name;
+        if (!SQLmod) {
+          setStatus('Loading SQLite engine…');
+          SQLmod = await initSqlJs({ locateFile: f => CDN_WASM + f });
+        }
+        db = new SQLmod.Database(new Uint8Array(arrayBuf));
+        detectType();
+        setDirty(false);
+        setStatus(`${name} — ${dbType}`);
+        buildNav();
+        document.getElementById('welcome').style.display = 'none';
+        document.getElementById('nav').style.display = 'block';
+        const firstBtn = document.querySelector('#nav button');
+        if (firstBtn) firstBtn.click();
+      } catch (err) {
+        if (err.name !== 'AbortError') toast('Could not open file: ' + err.message, true);
+      }
+    }
+
+    async function saveDb(forceDialog) {
+      if (!db) return;
+
+      try {
+        const res = q("SELECT value FROM db_meta WHERE key = 'data_version'");
+        if (res && res.length > 0) {
+          let v = parseInt(res[0].value, 10);
+          if (isNaN(v)) v = 1; else v++;
+          run("UPDATE db_meta SET value = ? WHERE key = 'data_version'", [v.toString()]);
+        } else {
+          run("INSERT INTO db_meta (key, value) VALUES ('data_version', '1')");
+        }
+        run("UPDATE db_meta SET value = ? WHERE key = 'generated_at'", [nowIso()]);
+      } catch (e) {
+        console.warn("Could not update db_meta:", e);
+      }
+
+      const data = db.export();
+      try {
+        if (fileHandle && !forceDialog) {
+          try {
+            const writable = await fileHandle.createWritable();
+            await writable.write(data);
+            await writable.close();
+            setDirty(false);
+            toast('Saved to ' + currentFileName);
+            return;
+          } catch (writeErr) {
+            console.warn("Direct save failed, trying save picker:", writeErr);
+          }
+        }
+        if (window.showSaveFilePicker) {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: currentFileName || 'database.db',
+            types: [{ description: 'SQLite database', accept: { 'application/octet-stream': ['.db'] } }]
+          });
+          const writable = await handle.createWritable();
+          await writable.write(data);
+          await writable.close();
+          if (!forceDialog) fileHandle = handle;
+          setDirty(false);
+          toast('Saved.');
+          return;
+        }
+        // fallback: download
+        const blob = new Blob([data], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = currentFileName || 'database.db';
+        a.click();
+        URL.revokeObjectURL(url);
+        setDirty(false);
+        toast('Downloaded ' + (currentFileName || 'database.db'));
+      } catch (err) {
+        if (err.name !== 'AbortError') toast('Save failed: ' + err.message, true);
+      }
+    }
+
+    function detectType() {
+      const tables = q("select name from sqlite_master where type='table'").map(r => r.name);
+      if (tables.includes('products')) dbType = 'products';
+      else if (tables.includes('distributors')) dbType = 'distributors';
+      else dbType = 'unknown';
+    }
+
+    window.addEventListener('beforeunload', e => {
+      if (dirty) { e.preventDefault(); e.returnValue = ''; }
+    });
+
+    document.getElementById('btnOpen').onclick = openDb;
+    document.getElementById('btnOpen2').onclick = openDb;
+    document.getElementById('btnSave').onclick = () => saveDb(false);
+    document.getElementById('btnSaveAs').onclick = () => saveDb(true);
+
+    // ---------- nav ----------
+    const NAV = {
+      products: [
+        {
+          group: 'Catalog', items: [
+            { key: 'products', label: 'Products' },
+          ]
+        },
+        {
+          group: 'Lookup lists', items: [
+            { key: 'categories', label: 'Categories' },
+            { key: 'target_groups', label: 'Target groups' },
+            { key: 'manufacturers', label: 'Manufacturers' },
+            { key: 'species', label: 'Species' },
+            { key: 'content_types', label: 'Content types' },
+            { key: 'product_types', label: 'Product types' },
+            { key: 'dosage_units', label: 'Dosage units' },
+            { key: 'dosage_bases', label: 'Dosage bases' },
+          ]
+        },
+      ],
+      distributors: [
+        {
+          group: 'Directory', items: [
+            { key: 'distributors', label: 'Distributors' },
+            { key: 'sales_personnel', label: 'Sales personnel' },
+            { key: 'vet_doctors', label: 'Vet doctors' },
+          ]
+        },
+        {
+          group: 'Lookup lists', items: [
+            { key: 'regions', label: 'Regions' },
+            { key: 'areas', label: 'Areas' },
+          ]
+        },
+      ]
+    };
+
+    function buildNav() {
+      const nav = document.getElementById('nav');
+      nav.innerHTML = '';
+      (NAV[dbType] || []).forEach(grp => {
+        const lbl = document.createElement('div');
+        lbl.className = 'group-label'; lbl.textContent = grp.group;
+        nav.appendChild(lbl);
+        grp.items.forEach(item => {
+          const b = document.createElement('button');
+          b.textContent = item.label;
+          b.dataset.key = item.key;
+          b.onclick = () => {
+            document.querySelectorAll('#nav button').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            PAGES[item.key]();
+          };
+          nav.appendChild(b);
+        });
+      });
+    }
+
+    function esc(s) {
+      if (s === null || s === undefined) return '';
+      return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function val(v) { return v === null || v === undefined ? '' : v; }
+
+    // =========================================================
+    // Lookup table definitions — shared by the standalone lookup pages
+    // AND the "+ Add new…" quick-add modal used inside dropdowns.
+    // =========================================================
+    const LOOKUP_DEFS = {
+      categories: {
+        table: 'categories', title: 'Categories', orderBy: 'name_en',
+        columns: [{ key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }, { key: 'icon_name', label: 'Icon name' }]
+      },
+      target_groups: {
+        table: 'target_groups', title: 'Target groups', orderBy: 'name_en',
+        columns: [{ key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }, { key: 'icon_name', label: 'Icon name' }]
+      },
+      manufacturers: {
+        table: 'manufacturers', title: 'Manufacturers', orderBy: 'name_en',
+        columns: [
+          { key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)' },
+          { key: 'logo_url', label: 'Logo URL', type: 'url' },
+          { key: 'address_en', label: 'Address (EN)', type: 'textarea' }, { key: 'address_bn', label: 'Address (BN)', type: 'textarea' },
+          { key: 'email', label: 'Email', type: 'email' }, { key: 'website', label: 'Website', type: 'url' }, { key: 'mobile', label: 'Mobile' },
+          { key: 'country_of_origin_en', label: 'Country (EN)' }, { key: 'country_of_origin_bn', label: 'Country (BN)' },
+        ]
+      },
+      species: {
+        table: 'species', title: 'Species', orderBy: 'name_en',
+        columns: [{ key: 'target_group_id', label: 'Target group', ref: { table: 'target_groups', label: 'name_en' }, required: true },
+        { key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
+      },
+      content_types: {
+        table: 'content_types', title: 'Content types', orderBy: 'name_en',
+        columns: [{ key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
+      },
+      product_types: {
+        table: 'product_types', title: 'Product types', orderBy: 'name_en',
+        columns: [{ key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }, { key: 'icon_name', label: 'Icon name' }]
+      },
+      dosage_units: {
+        table: 'dosage_units', title: 'Dosage units', orderBy: 'name_en',
+        columns: [{ key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
+      },
+      dosage_bases: {
+        table: 'dosage_bases', title: 'Dosage bases', orderBy: 'name_en',
+        columns: [{ key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
+      },
+      regions: {
+        table: 'regions', title: 'Regions', orderBy: 'name_en',
+        columns: [{ key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
+      },
+      areas: {
+        table: 'areas', title: 'Areas', orderBy: 'name_en',
+        columns: [{ key: 'region_id', label: 'Region', ref: { table: 'regions', label: 'name_en' }, required: true },
+        { key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
+      },
+    };
+
+    // Opens a small modal to create a new lookup record without leaving the current page.
+    // onCreated(newId, label) is called after a successful save; onCancel() if the user backs out.
+    function openQuickAdd(tableName, onCreated, onCancel) {
+      const def = LOOKUP_DEFS[tableName];
+      if (!def) { toast('Cannot quick-add this list.', true); if (onCancel) onCancel(); return; }
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.innerHTML = `<div class="modal-box">
+    <h3>Add ${def.title.replace(/s$/, '')}</h3>
+    <p class="subtle">Quick add — edit further details later from the ${def.title} list.</p>
+    <div class="grid2" id="qaFields"></div>
+    <div class="btnbar"><button class="btn" id="qaSave">Save</button><button class="btn secondary" id="qaCancel">Cancel</button></div>
+  </div>`;
+      document.body.appendChild(overlay);
+      const fieldsEl = overlay.querySelector('#qaFields');
+      def.columns.forEach(c => fieldsEl.insertAdjacentHTML('beforeend', fieldHtml(c, '', 'qa_')));
+      renderRefSelects(def.columns, {}, 'qa_', false);
+
+      function close() { overlay.remove(); document.removeEventListener('keydown', escHandler); }
+      function escHandler(e) { if (e.key === 'Escape') { close(); if (onCancel) onCancel(); } }
+      document.addEventListener('keydown', escHandler);
+      overlay.addEventListener('mousedown', e => { if (e.target === overlay) { close(); if (onCancel) onCancel(); } });
+      overlay.querySelector('#qaCancel').onclick = () => { close(); if (onCancel) onCancel(); };
+      overlay.querySelector('#qaSave').onclick = () => {
+        const data = {};
+        let ok = true;
+        def.columns.forEach(c => {
+          const v = readFieldValue(c, 'qa_');
+          if (c.required && !v) ok = false;
+          data[c.key] = v;
+        });
+        if (!ok) { toast('Please fill required fields.', true); return; }
+        try {
+          const keys = def.columns.map(c => c.key);
+          run(`insert into ${def.table} (${keys.join(',')}) values (${keys.map(() => '?').join(',')})`, keys.map(k => data[k]));
+          const newId = q('select last_insert_rowid() as id').at(0).id;
+          const newRow = q(`select * from ${def.table} where id=?`, [newId])[0];
+          let label = newRow.name_en;
+          if (tableName === 'species') {
+            const tg = q('select name_en from target_groups where id=?', [newRow.target_group_id])[0];
+            label = (tg ? tg.name_en : '?') + ' / ' + newRow.name_en;
+          } else if (tableName === 'areas') {
+            const rg = q('select name_en from regions where id=?', [newRow.region_id])[0];
+            label = (rg ? rg.name_en : '?') + ' — ' + newRow.name_en;
+          }
+          close();
+          toast('Added.');
+          onCreated(newId, label);
+        } catch (err) { toast('Save failed: ' + err.message, true); }
+      };
+    }
+
+    // Adds a "+ Add new…" option to an already-populated <select> and wires it up
+    // to open the quick-add modal, insert the new option, and select it —
+    // without disturbing any change/blur listeners attached to the select later.
+    function attachCreatableSelect(selectEl, tableName) {
+      const addOpt = document.createElement('option');
+      addOpt.value = '__add__';
+      addOpt.textContent = '+ Add new…';
+      selectEl.appendChild(addOpt);
+      selectEl.dataset.prevValue = selectEl.value;
+      selectEl.addEventListener('change', function (e) {
+        if (selectEl.value !== '__add__') { selectEl.dataset.prevValue = selectEl.value; return; }
+        e.stopImmediatePropagation();
+        openQuickAdd(tableName, (newId, label) => {
+          const newOpt = document.createElement('option');
+          newOpt.value = newId; newOpt.textContent = label;
+          selectEl.insertBefore(newOpt, addOpt);
+          selectEl.value = newId;
+          selectEl.dataset.prevValue = newId;
+          selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        }, () => { selectEl.value = selectEl.dataset.prevValue || ''; });
+      });
+    }
+
+    // Adds a small "+ Add new…" link under a checkbox grid (used for target groups / areas)
+    // that opens the quick-add modal and re-renders the grid with the new item checked.
+    function attachCreatableCheckgrid(container, tableName, renderFn) {
+      const link = document.createElement('button');
+      link.type = 'button';
+      link.className = 'addlink';
+      link.textContent = '+ Add new ' + LOOKUP_DEFS[tableName].title.toLowerCase().replace(/s$/, '');
+      link.onclick = () => openQuickAdd(tableName, (newId) => renderFn(newId));
+      container.insertAdjacentElement('afterend', link);
+    }
+
+    // =========================================================
+    // Generic simple lookup table editor (categories, regions, etc.)
+    // =========================================================
+    function simpleLookupPage(opts) {
+      // opts: {table, title, columns:[{key,label,type,required,ref:{table,label}}], orderBy}
+      const main = document.getElementById('main');
+      function render(filter) {
+        const rows = q(`select * from ${opts.table} order by ${opts.orderBy || 'id'}`);
+        const filtered = filter ? rows.filter(r => JSON.stringify(r).toLowerCase().includes(filter.toLowerCase())) : rows;
+        let html = `<h2 class="pagetitle">${opts.title}</h2><p class="subtle">${rows.length} record(s)</p>`;
+        html += `<div class="toolbar"><input type="search" id="searchBox" placeholder="Search ${opts.title.toLowerCase()}…" value="${esc(filter || '')}"><button class="btn" id="addBtn">+ Add ${opts.title.slice(0, -1) || opts.title}</button></div>`;
+        html += `<div id="formSlot"></div>`;
+        html += `<table class="list"><thead><tr>${opts.columns.map(c => `<th>${c.label}</th>`).join('')}<th></th></tr></thead><tbody>`;
+        if (filtered.length === 0) html += `<tr><td colspan="${opts.columns.length + 1}"><div class="empty">No records.</div></td></tr>`;
+        filtered.forEach(r => {
+          html += '<tr>' + opts.columns.map(c => {
+            let display = r[c.key];
+            if (c.ref) {
+              const refRow = q(`select * from ${c.ref.table} where id=?`, [display])[0];
+              display = refRow ? refRow[c.ref.label] : '—';
+            }
+            return `<td>${esc(display)}</td>`;
+          }).join('') + `<td class="row-actions"><button data-edit="${r.id}">Edit</button><button class="del" data-del="${r.id}">Delete</button></td></tr>`;
+        });
+        html += '</tbody></table>';
+        main.innerHTML = html;
+
+        document.getElementById('searchBox').oninput = e => render(e.target.value);
+        document.getElementById('addBtn').onclick = () => showForm(null);
+        main.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => showForm(+b.dataset.edit));
+        main.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+          const id = +b.dataset.del;
+          if (!confirm(`Delete this ${opts.title.toLowerCase().slice(0, -1)}? This cannot be undone.`)) return;
+          try { run(`delete from ${opts.table} where id=?`, [id]); render(filter); toast('Deleted.'); }
+          catch (err) { toast('Delete failed — it is probably referenced elsewhere: ' + err.message, true); }
+        });
+
+        function showForm(id) {
+          const record = id ? q(`select * from ${opts.table} where id=?`, [id])[0] : {};
+          let f = `<div class="card"><h3>${id ? 'Edit' : 'Add'} ${opts.title.slice(0, -1)}</h3><div class="grid2">`;
+          opts.columns.forEach(c => {
+            f += fieldHtml(c, record[c.key]);
+          });
+          f += `</div><div class="btnbar"><button class="btn" id="saveField">Save</button><button class="btn secondary" id="cancelField">Cancel</button></div></div>`;
+          document.getElementById('formSlot').innerHTML = f;
+          renderRefSelects(opts.columns, record);
+          document.getElementById('cancelField').onclick = () => { document.getElementById('formSlot').innerHTML = ''; };
+          document.getElementById('saveField').onclick = () => {
+            const data = {};
+            let ok = true;
+            opts.columns.forEach(c => {
+              const el = document.getElementById('f_' + c.key);
+              let v = el.value;
+              if (c.required && !v) { ok = false; el.style.borderColor = 'var(--danger)'; }
+              data[c.key] = v === '' ? null : v;
+            });
+            if (!ok) { toast('Please fill required fields.', true); return; }
+            try {
+              if (id) {
+                const sets = opts.columns.map(c => `${c.key}=?`).join(',');
+                run(`update ${opts.table} set ${sets} where id=?`, [...opts.columns.map(c => data[c.key]), id]);
+              } else {
+                const keys = opts.columns.map(c => c.key);
+                run(`insert into ${opts.table} (${keys.join(',')}) values (${keys.map(() => '?').join(',')})`, keys.map(k => data[k]));
+              }
+              toast('Saved.');
+              render(filter);
+            } catch (err) { toast('Save failed: ' + err.message, true); }
+          };
+        }
+      }
+      render('');
+    }
+
+    function fieldHtml(c, value, prefix) {
+      prefix = prefix || 'f_';
+      const reqCls = c.required ? 'required' : '';
+      if (c.ref) {
+        return `<div class="field"><label class="${reqCls}">${c.label}</label><select id="${prefix}${c.key}"></select></div>`;
+      }
+      if (c.type === 'textarea') {
+        return `<div class="field" style="grid-column:1/-1;"><label class="${reqCls}">${c.label}</label><textarea id="${prefix}${c.key}">${esc(val(value))}</textarea></div>`;
+      }
+      if (c.type === 'checkbox') {
+        return `<div class="field checkbox"><input type="checkbox" id="${prefix}${c.key}" ${value ? 'checked' : ''}><label>${c.label}</label></div>`;
+      }
+      const type = c.type === 'number' ? 'number' : (c.type === 'email' ? 'email' : (c.type === 'url' ? 'url' : 'text'));
+      return `<div class="field"><label class="${reqCls}">${c.label}</label><input type="${type}" id="${prefix}${c.key}" value="${esc(val(value))}"></div>`;
+    }
+    function renderRefSelects(columns, record, prefix, creatable) {
+      prefix = prefix || 'f_';
+      creatable = creatable !== false;
+      columns.forEach(c => {
+        if (!c.ref) return;
+        const sel = document.getElementById(prefix + c.key);
+        const opts = q(`select * from ${c.ref.table} order by ${c.ref.label}`);
+        let html = c.required ? '' : `<option value="">—</option>`;
+        opts.forEach(o => {
+          html += `<option value="${o.id}" ${record[c.key] == o.id ? 'selected' : ''}>${esc(o[c.ref.label])}</option>`;
+        });
+        sel.innerHTML = html;
+        if (creatable) attachCreatableSelect(sel, c.ref.table);
+      });
+    }
+    function readFieldValue(c, prefix) {
+      prefix = prefix || 'f_';
+      const el = document.getElementById(prefix + c.key);
+      if (c.type === 'checkbox') return el.checked ? 1 : 0;
+      return el.value === '' ? null : el.value;
+    }
+
+    // override showForm's field collection to support checkbox/select uniformly
+    // (simpleLookupPage already reads .value, which is fine for text/select; checkboxes need special handling)
+    // Patch: re-implement save collection generically by using readFieldValue everywhere.
+    // To keep code simple, simpleLookupPage above uses el.value directly — fine since none of the
+    // simple lookup tables use checkboxes currently.
+
+    // =========================================================
+    // PRODUCTS pages
+    // =========================================================
+    function productsListPage() {
+      const main = document.getElementById('main');
+      function render(filter) {
+        const rows = q(`
+      select p.*, c.name_en as cat_name, m.name_en as man_name
+      from products p
+      left join categories c on c.id=p.category_id
+      left join manufacturers m on m.id=p.manufacturer_id
+      order by p.title_en`);
+        const filtered = filter ? rows.filter(r => JSON.stringify(r).toLowerCase().includes(filter.toLowerCase())) : rows;
+        let html = `<h2 class="pagetitle">Products</h2><p class="subtle">${rows.length} product(s)</p>`;
+        html += `<div class="toolbar"><input type="search" id="searchBox" placeholder="Search products…" value="${esc(filter || '')}"><button class="btn" id="addBtn">+ Add product</button></div>`;
+        html += `<table class="list"><thead><tr><th>Title</th><th>Category</th><th>Manufacturer</th><th>Active</th><th></th></tr></thead><tbody>`;
+        if (filtered.length === 0) html += `<tr><td colspan="5"><div class="empty">No products.</div></td></tr>`;
+        filtered.forEach(r => {
+          html += `<tr><td>${esc(r.title_en)}${r.title_bn ? `<br><span class="subtle" style="margin:0;">${esc(r.title_bn)}</span>` : ''}</td>
+        <td>${esc(r.cat_name)}</td><td>${esc(r.man_name) || '—'}</td><td>${r.is_active ? 'Yes' : 'No'}</td>
+        <td class="row-actions"><button data-edit="${r.id}">Edit</button><button class="del" data-del="${r.id}">Delete</button></td></tr>`;
+        });
+        html += '</tbody></table>';
+        main.innerHTML = html;
+        document.getElementById('searchBox').oninput = e => render(e.target.value);
+        document.getElementById('addBtn').onclick = () => productDetailPage(null, () => render(filter));
+        main.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => productDetailPage(+b.dataset.edit, () => render(filter)));
+        main.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+          if (!confirm('Delete this product and all its compositions, indications, directions, precautions and presentations? This cannot be undone.')) return;
+          try { run('delete from products where id=?', [+b.dataset.del]); render(filter); toast('Deleted.'); }
+          catch (err) { toast('Delete failed: ' + err.message, true); }
+        });
+      }
+      render('');
+    }
+
+    function productDetailPage(id, onDone) {
+      const main = document.getElementById('main');
+      const isNew = !id;
+      const p = isNew ? { is_active: 1 } : q('select * from products where id=?', [id])[0];
+
+      const categories = q('select * from categories order by name_en');
+      const manufacturers = q('select * from manufacturers order by name_en');
+      const targetGroups = q('select * from target_groups order by name_en');
+      const selectedTG = isNew ? [] : q('select target_group_id from product_target_groups where product_id=?', [id]).map(r => r.target_group_id);
+
+      let html = `<button class="backlink" id="back">&larr; Back to products</button>`;
+      html += `<h2 class="pagetitle">${isNew ? 'Add product' : 'Edit: ' + esc(p.title_en)}</h2>`;
+
+      html += `<div class="card"><h3>Basic info</h3><div class="grid2">
+    <div class="field"><label class="required">Title (EN)</label><input type="text" id="f_title_en" value="${esc(val(p.title_en))}"></div>
+    <div class="field"><label>Title (BN)</label><input type="text" id="f_title_bn" value="${esc(val(p.title_bn))}"></div>
+    <div class="field"><label class="required">Category</label><select id="f_category_id"></select></div>
+    <div class="field"><label>Manufacturer</label><select id="f_manufacturer_id"></select></div>
+    <div class="field"><label>Motto (EN)</label><input type="text" id="f_motto_en" value="${esc(val(p.motto_en))}"></div>
+    <div class="field"><label>Motto (BN)</label><input type="text" id="f_motto_bn" value="${esc(val(p.motto_bn))}"></div>
+    <div class="field"><label>Composition basis (EN)</label><input type="text" id="f_composition_basis_en" value="${esc(val(p.composition_basis_en))}" placeholder="e.g. 100 ml"></div>
+    <div class="field"><label>Composition basis (BN)</label><input type="text" id="f_composition_basis_bn" value="${esc(val(p.composition_basis_bn))}" placeholder="e.g. 100 ml"></div>
+    <div class="field" style="grid-column:1/-1;"><label>Short description (EN)</label><textarea id="f_short_description_en">${esc(val(p.short_description_en))}</textarea></div>
+    <div class="field" style="grid-column:1/-1;"><label>Short description (BN)</label><textarea id="f_short_description_bn">${esc(val(p.short_description_bn))}</textarea></div>
+    <div class="field"><label>Image URL</label><input type="url" id="f_image_url" value="${esc(val(p.image_url))}"></div>
+    <div class="field checkbox"><input type="checkbox" id="f_is_active" ${p.is_active ? 'checked' : ''}><label>Active (visible in app)</label></div>
+  </div>
+  <div class="field" style="margin-top:6px;"><label>Target groups</label><div class="checkgrid" id="tgGrid"></div></div>
+  <div class="btnbar"><button class="btn" id="saveBasic">${isNew ? 'Create product' : 'Save basic info'}</button><button class="btn secondary" id="cancelBasic">Cancel</button></div>
+  </div>`;
+
+      if (!isNew) {
+        html += `<div id="childSections"></div>`;
+      } else {
+        html += `<p class="subtle">Save the basic info first — then you can add compositions, indications, dosage directions, precautions and pack presentations.</p>`;
+      }
+
+      main.innerHTML = html;
+      document.getElementById('back').onclick = onDone;
+      document.getElementById('cancelBasic').onclick = onDone;
+
+      const catSel = document.getElementById('f_category_id');
+      catSel.innerHTML = categories.map(c => `<option value="${c.id}" ${p.category_id == c.id ? 'selected' : ''}>${esc(c.name_en)}</option>`).join('');
+      attachCreatableSelect(catSel, 'categories');
+      const manSel = document.getElementById('f_manufacturer_id');
+      manSel.innerHTML = `<option value="">—</option>` + manufacturers.map(m => `<option value="${m.id}" ${p.manufacturer_id == m.id ? 'selected' : ''}>${esc(m.name_en)}</option>`).join('');
+      attachCreatableSelect(manSel, 'manufacturers');
+      const tgGrid = document.getElementById('tgGrid');
+      let tgChecked = selectedTG.slice();
+      function renderTgGrid(justAddedId) {
+        if (justAddedId) {
+          tgChecked = Array.from(tgGrid.querySelectorAll('input:checked')).map(cb => +cb.value);
+          tgChecked.push(justAddedId);
+        }
+        const groups = q('select * from target_groups order by name_en');
+        tgGrid.innerHTML = groups.map(t => `<label><input type="checkbox" value="${t.id}" ${tgChecked.includes(t.id) ? 'checked' : ''}> ${esc(t.name_en)}</label>`).join('');
+      }
+      renderTgGrid();
+      attachCreatableCheckgrid(tgGrid, 'target_groups', renderTgGrid);
+
+      document.getElementById('saveBasic').onclick = () => {
+        const title_en = document.getElementById('f_title_en').value.trim();
+        if (!title_en) { toast('Title (EN) is required.', true); return; }
+        const category_id = +catSel.value;
+        const data = {
+          title_en,
+          title_bn: document.getElementById('f_title_bn').value || null,
+          category_id,
+          manufacturer_id: manSel.value ? +manSel.value : null,
+          motto_en: document.getElementById('f_motto_en').value || null,
+          motto_bn: document.getElementById('f_motto_bn').value || null,
+          composition_basis_en: document.getElementById('f_composition_basis_en').value || null,
+          composition_basis_bn: document.getElementById('f_composition_basis_bn').value || null,
+          short_description_en: document.getElementById('f_short_description_en').value || null,
+          short_description_bn: document.getElementById('f_short_description_bn').value || null,
+          image_url: document.getElementById('f_image_url').value || null,
+          is_active: document.getElementById('f_is_active').checked ? 1 : 0,
+        };
+        const tgSelected = Array.from(tgGrid.querySelectorAll('input:checked')).map(cb => +cb.value);
+        try {
+          let productId = id;
+          if (isNew) {
+            run(`insert into products (manufacturer_id,category_id,title_en,title_bn,motto_en,motto_bn,composition_basis_en,composition_basis_bn,short_description_en,short_description_bn,image_url,is_active)
+             values (?,?,?,?,?,?,?,?,?,?,?,?)`,
+              [data.manufacturer_id, data.category_id, data.title_en, data.title_bn, data.motto_en, data.motto_bn, data.composition_basis_en, data.composition_basis_bn, data.short_description_en, data.short_description_bn, data.image_url, data.is_active]);
+            productId = q('select last_insert_rowid() as id').at(0).id;
+          } else {
+            run(`update products set manufacturer_id=?,category_id=?,title_en=?,title_bn=?,motto_en=?,motto_bn=?,composition_basis_en=?,composition_basis_bn=?,short_description_en=?,short_description_bn=?,image_url=?,is_active=?,updated_at=? where id=?`,
+              [data.manufacturer_id, data.category_id, data.title_en, data.title_bn, data.motto_en, data.motto_bn, data.composition_basis_en, data.composition_basis_bn, data.short_description_en, data.short_description_bn, data.image_url, data.is_active, nowIso(), productId]);
+          }
+          run('delete from product_target_groups where product_id=?', [productId]);
+          tgSelected.forEach(tid => run('insert into product_target_groups (product_id,target_group_id) values (?,?)', [productId, tid]));
+          toast('Saved.');
+          productDetailPage(productId, onDone);
+        } catch (err) { toast('Save failed: ' + err.message, true); }
+      };
+
+      if (!isNew) {
+        renderChildSections(id);
+      }
+
+      function renderChildSections(productId) {
+        const slot = document.getElementById('childSections');
+        slot.innerHTML = `
+      <div class="card"><h3>Compositions</h3><div id="sec_comp"></div></div>
+      <div class="card"><h3>Indications</h3><div id="sec_ind"></div></div>
+      <div class="card"><h3>Dosage &amp; administration (directions)</h3><div id="sec_dir"></div></div>
+      <div class="card"><h3>Precautions</h3><div id="sec_prec"></div></div>
+      <div class="card"><h3>Presentations &amp; MRP</h3><div id="sec_pres"></div></div>
+    `;
+        childRows({
+          mount: 'sec_comp', table: 'compositions', productId,
+          cols: [
+            { key: 'ingredient_en', label: 'Ingredient (EN)', required: true },
+            { key: 'ingredient_bn', label: 'Ingredient (BN)' },
+            { key: 'concentration', label: 'Concentration' },
+            { key: 'display_order', label: 'Order', type: 'number', width: '70px' },
+          ]
+        });
+        childRows({
+          mount: 'sec_ind', table: 'indications', productId,
+          cols: [
+            { key: 'text_en', label: 'Text (EN)', required: true, type: 'textarea' },
+            { key: 'text_bn', label: 'Text (BN)', type: 'textarea' },
+            { key: 'display_order', label: 'Order', type: 'number', width: '70px' },
+          ]
+        });
+        childRows({
+          mount: 'sec_prec', table: 'precautions', productId,
+          cols: [
+            { key: 'text_en', label: 'Text (EN)', required: true, type: 'textarea' },
+            { key: 'text_bn', label: 'Text (BN)', type: 'textarea' },
+            { key: 'display_order', label: 'Order', type: 'number', width: '70px' },
+          ]
+        });
+        childRows({
+          mount: 'sec_pres', table: 'presentations', productId,
+          cols: [
+            { key: 'product_type_id', label: 'Pack type', type: 'select', ref: { table: 'product_types', label: 'name_en' }, required: true },
+            { key: 'content_type_id', label: 'Content type', type: 'select', ref: { table: 'content_types', label: 'name_en' }, required: true },
+            { key: 'size', label: 'Size' },
+            { key: 'mrp', label: 'MRP', type: 'number' },
+            { key: 'image_url', label: 'Image URL', type: 'url' },
+            { key: 'bulk_item', label: 'Bulk', type: 'checkbox', width: '50px' },
+            { key: 'display_order', label: 'Order', type: 'number', width: '70px' },
+          ]
+        });
+        const speciesOptionsFn = () => q('select s.id, tg.name_en as tgn, s.name_en as sn from species s join target_groups tg on tg.id=s.target_group_id order by tg.name_en, s.name_en')
+          .map(s => ({ id: s.id, label: `${s.tgn} / ${s.sn}` }));
+        childRows({
+          mount: 'sec_dir', table: 'directions', productId,
+          cols: [
+            { key: 'content_type_id', label: 'Content type', type: 'select', ref: { table: 'content_types', label: 'name_en' }, required: true },
+            { key: 'species_id', label: 'Species', type: 'select', optionsFn: speciesOptionsFn, creatable: 'species', required: true },
+            { key: 'dose_value_min', label: 'Dose min', type: 'number', required: true, width: '85px' },
+            { key: 'dose_value_max', label: 'Dose max', type: 'number', width: '85px' },
+            { key: 'dose_unit_id', label: 'Unit', type: 'select', ref: { table: 'dosage_units', label: 'name_en' }, required: true },
+            { key: 'dose_basis_id', label: 'Basis', type: 'select', ref: { table: 'dosage_bases', label: 'name_en' }, required: true },
+            { key: 'duration_days_min', label: 'Dur. min (d)', type: 'number', width: '85px' },
+            { key: 'duration_days_max', label: 'Dur. max (d)', type: 'number', width: '85px' },
+            { key: 'administration_en', label: 'Administration (EN)', type: 'textarea' },
+            { key: 'administration_bn', label: 'Administration (BN)', type: 'textarea' },
+            { key: 'dosage_en', label: 'Dosage note (EN)', type: 'textarea' },
+            { key: 'dosage_bn', label: 'Dosage note (BN)', type: 'textarea' },
+            { key: 'display_order', label: 'Order', type: 'number', width: '70px' },
+          ]
+        });
+      }
+    }
+
+    // Generic repeating child-row editor tied to a product_id (or any parent id)
+    function childRows(opts) {
+      // opts: {mount, table, productId, cols}
+      const mount = document.getElementById(opts.mount);
+      function render() {
+        const rows = q(`select * from ${opts.table} where product_id=? order by display_order, id`, [opts.productId]);
+        let html = `<table class="childtable"><thead><tr>${opts.cols.map(c => `<th${c.width ? ` style="width:${c.width}"` : ''}>${c.label}</th>`).join('')}<th></th></tr></thead><tbody>`;
+        rows.forEach(r => {
+          html += `<tr data-id="${r.id}">` + opts.cols.map(c => cellInput(c, r[c.key], r.id)).join('') + `<td><button class="del" data-del="${r.id}">✕</button></td></tr>`;
+        });
+        html += `<tr data-id="new">` + opts.cols.map(c => cellInput(c, c.default !== undefined ? c.default : '', 'new')).join('') + `<td><button data-add="1">+ Add</button></td></tr>`;
+        html += '</tbody></table>';
+        if (rows.length === 0) html = `<p class="empty">No entries yet.</p>` + html.replace('<tbody>', '<tbody>');
+        mount.innerHTML = html;
+
+        // populate selects
+        opts.cols.forEach(c => {
+          if (c.type !== 'select') return;
+          mount.querySelectorAll(`select[data-col="${c.key}"]`).forEach(sel => {
+            const rowId = sel.closest('tr').dataset.id;
+            const current = rowId === 'new' ? '' : rows.find(r => r.id == rowId)[c.key];
+            let items;
+            if (c.ref) items = q(`select id, ${c.ref.label} as label from ${c.ref.table} order by ${c.ref.label}`);
+            else if (c.optionsFn) items = c.optionsFn();
+            else items = c.options;
+            sel.innerHTML = (c.required ? '' : '<option value="">—</option>') + items.map(it => `<option value="${it.id}" ${current == it.id ? 'selected' : ''}>${esc(it.label)}</option>`).join('');
+            const lookupTable = c.ref ? c.ref.table : c.creatable;
+            if (lookupTable) attachCreatableSelect(sel, lookupTable);
+          });
+        });
+
+        mount.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+          if (!confirm('Remove this entry?')) return;
+          run(`delete from ${opts.table} where id=?`, [+b.dataset.del]);
+          render();
+        });
+        mount.querySelector('[data-add]').onclick = () => {
+          const tr = mount.querySelector('tr[data-id="new"]');
+          const data = { product_id: opts.productId };
+          let ok = true;
+          opts.cols.forEach(c => {
+            const el = tr.querySelector(`[data-col="${c.key}"]`);
+            let v = c.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value;
+            if (c.required && (v === '' || v === null || v === undefined)) { ok = false; el.style.borderColor = 'var(--danger)'; }
+            data[c.key] = v === '' ? null : v;
+          });
+          if (!ok) { toast('Fill required fields for the new row.', true); return; }
+          const keys = Object.keys(data);
+          try {
+            run(`insert into ${opts.table} (${keys.join(',')}) values (${keys.map(() => '?').join(',')})`, keys.map(k => data[k]));
+            render();
+          } catch (err) { toast('Add failed: ' + err.message, true); }
+        };
+
+        // inline-edit on blur for existing rows
+        mount.querySelectorAll('tr:not([data-id="new"]) [data-col]').forEach(el => {
+          const evt = (el.tagName === 'SELECT') ? 'change' : 'blur';
+          el.addEventListener(evt, () => {
+            const tr = el.closest('tr');
+            const rowId = tr.dataset.id;
+            const col = el.dataset.col;
+            const colDef = opts.cols.find(c => c.key === col);
+            let v = colDef.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value;
+            v = v === '' ? null : v;
+            try { run(`update ${opts.table} set ${col}=? where id=?`, [v, rowId]); }
+            catch (err) { toast('Update failed: ' + err.message, true); }
+          });
+        });
+      }
+      function cellInput(c, value, rowId) {
+        if (c.type === 'select') {
+          return `<td><select data-col="${c.key}"></select></td>`;
+        }
+        if (c.type === 'checkbox') {
+          return `<td><input type="checkbox" data-col="${c.key}" ${value ? 'checked' : ''}></td>`;
+        }
+        if (c.type === 'textarea') {
+          return `<td><textarea data-col="${c.key}">${esc(val(value))}</textarea></td>`;
+        }
+        const type = c.type === 'number' ? 'number' : 'text';
+        return `<td><input type="${type}" data-col="${c.key}" value="${esc(val(value))}"></td>`;
+      }
+      render();
+    }
+
+    // =========================================================
+    // DISTRIBUTORS pages (distributors, sales_personnel, vet_doctors — each with area multi/single select)
+    // =========================================================
+    function distributorsListPage() {
+      const main = document.getElementById('main');
+      function render(filter) {
+        const rows = q(`select d.*, a.name_en as area_name, r.name_en as region_name
+      from distributors d left join areas a on a.id=d.area_id left join regions r on r.id=a.region_id
+      order by d.name_en`);
+        const filtered = filter ? rows.filter(r => JSON.stringify(r).toLowerCase().includes(filter.toLowerCase())) : rows;
+        let html = `<h2 class="pagetitle">Distributors</h2><p class="subtle">${rows.length} record(s)</p>`;
+        html += `<div class="toolbar"><input type="search" id="searchBox" placeholder="Search distributors…" value="${esc(filter || '')}"><button class="btn" id="addBtn">+ Add distributor</button></div>`;
+        html += `<div id="formSlot"></div>`;
+        html += `<table class="list"><thead><tr><th>Name</th><th>Designation</th><th>Area</th><th>Region</th><th>Mobile</th><th>Active</th><th></th></tr></thead><tbody>`;
+        if (filtered.length === 0) html += `<tr><td colspan="7"><div class="empty">No records.</div></td></tr>`;
+        filtered.forEach(r => {
+          html += `<tr><td>${esc(r.name_en)}</td><td>${esc(r.designation)}</td><td>${esc(r.area_name)}</td><td>${esc(r.region_name)}</td><td>${esc(r.mobile)}</td><td>${r.is_active ? 'Yes' : 'No'}</td>
+        <td class="row-actions"><button data-edit="${r.id}">Edit</button><button class="del" data-del="${r.id}">Delete</button></td></tr>`;
+        });
+        html += '</tbody></table>';
+        main.innerHTML = html;
+        document.getElementById('searchBox').oninput = e => render(e.target.value);
+        document.getElementById('addBtn').onclick = () => showForm(null);
+        main.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => showForm(+b.dataset.edit));
+        main.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+          if (!confirm('Delete this distributor?')) return;
+          try { run('delete from distributors where id=?', [+b.dataset.del]); render(filter); toast('Deleted.'); }
+          catch (err) { toast('Delete failed: ' + err.message, true); }
+        });
+
+        function showForm(id) {
+          const r = id ? q('select * from distributors where id=?', [id])[0] : { is_active: 1 };
+          const areaRows = q(`select a.id, a.name_en, r.name_en as region_name from areas a join regions r on r.id=a.region_id order by r.name_en, a.name_en`);
+          let f = `<div class="card"><h3>${id ? 'Edit' : 'Add'} distributor</h3><div class="grid2">
+        <div class="field"><label class="required">Name (EN)</label><input type="text" id="f_name_en" value="${esc(val(r.name_en))}"></div>
+        <div class="field"><label class="required">Name (BN)</label><input type="text" id="f_name_bn" value="${esc(val(r.name_bn))}"></div>
+        <div class="field"><label>Designation</label><input type="text" id="f_designation" value="${esc(val(r.designation))}"></div>
+        <div class="field"><label class="required">Area</label><select id="f_area_id">${areaRows.map(a => `<option value="${a.id}" ${r.area_id == a.id ? 'selected' : ''}>${esc(a.region_name)} — ${esc(a.name_en)}</option>`).join('')}</select></div>
+        <div class="field" style="grid-column:1/-1;"><label>Address (EN)</label><textarea id="f_address_en">${esc(val(r.address_en))}</textarea></div>
+        <div class="field" style="grid-column:1/-1;"><label>Address (BN)</label><textarea id="f_address_bn">${esc(val(r.address_bn))}</textarea></div>
+        <div class="field"><label class="required">Mobile</label><input type="text" id="f_mobile" value="${esc(val(r.mobile))}"></div>
+        <div class="field checkbox"><input type="checkbox" id="f_is_active" ${r.is_active ? 'checked' : ''}><label>Active</label></div>
+      </div><div class="btnbar"><button class="btn" id="saveField">Save</button><button class="btn secondary" id="cancelField">Cancel</button></div></div>`;
+          document.getElementById('formSlot').innerHTML = f;
+          attachCreatableSelect(document.getElementById('f_area_id'), 'areas');
+          document.getElementById('cancelField').onclick = () => { document.getElementById('formSlot').innerHTML = ''; };
+          document.getElementById('saveField').onclick = () => {
+            const name_en = document.getElementById('f_name_en').value.trim();
+            const name_bn = document.getElementById('f_name_bn').value.trim();
+            const mobile = document.getElementById('f_mobile').value.trim();
+            if (!name_en || !name_bn || !mobile) { toast('Name (EN/BN) and Mobile are required.', true); return; }
+            const data = {
+              name_en, name_bn,
+              designation: document.getElementById('f_designation').value || null,
+              address_en: document.getElementById('f_address_en').value || null,
+              address_bn: document.getElementById('f_address_bn').value || null,
+              area_id: +document.getElementById('f_area_id').value,
+              mobile,
+              is_active: document.getElementById('f_is_active').checked ? 1 : 0,
+            };
+            try {
+              if (id) {
+                run(`update distributors set name_en=?,name_bn=?,designation=?,address_en=?,address_bn=?,area_id=?,mobile=?,is_active=?,updated_at=? where id=?`,
+                  [data.name_en, data.name_bn, data.designation, data.address_en, data.address_bn, data.area_id, data.mobile, data.is_active, nowIso(), id]);
+              } else {
+                run(`insert into distributors (name_en,name_bn,designation,address_en,address_bn,area_id,mobile,is_active) values (?,?,?,?,?,?,?,?)`,
+                  [data.name_en, data.name_bn, data.designation, data.address_en, data.address_bn, data.area_id, data.mobile, data.is_active]);
+              }
+              toast('Saved.'); render(filter);
+            } catch (err) { toast('Save failed: ' + err.message, true); }
+          };
+        }
+      }
+      render('');
+    }
+
+    function personWithAreasPage(cfg) {
+      // cfg: {table, junctionTable, junctionKey, title, extraFields:[{key,label,type,required}]}
+      const main = document.getElementById('main');
+      function render(filter) {
+        const rows = q(`select * from ${cfg.table} order by name_en`);
+        const filtered = filter ? rows.filter(r => JSON.stringify(r).toLowerCase().includes(filter.toLowerCase())) : rows;
+        let html = `<h2 class="pagetitle">${cfg.title}</h2><p class="subtle">${rows.length} record(s)</p>`;
+        html += `<div class="toolbar"><input type="search" id="searchBox" placeholder="Search…" value="${esc(filter || '')}"><button class="btn" id="addBtn">+ Add</button></div>`;
+        html += `<div id="formSlot"></div>`;
+        html += `<table class="list"><thead><tr><th>Name</th><th>Designation</th><th>Mobile</th><th>Areas</th><th>Active</th><th></th></tr></thead><tbody>`;
+        if (filtered.length === 0) html += `<tr><td colspan="6"><div class="empty">No records.</div></td></tr>`;
+        filtered.forEach(r => {
+          const areas = q(`select a.name_en from ${cfg.junctionTable} j join areas a on a.id=j.area_id where j.${cfg.junctionKey}=?`, [r.id]);
+          html += `<tr><td>${esc(r.name_en)}</td><td>${esc(r.designation || '')}</td><td>${esc(r.mobile)}</td>
+        <td>${areas.map(a => `<span class="pill">${esc(a.name_en)}</span>`).join('') || '—'}</td>
+        <td>${r.is_active ? 'Yes' : 'No'}</td>
+        <td class="row-actions"><button data-edit="${r.id}">Edit</button><button class="del" data-del="${r.id}">Delete</button></td></tr>`;
+        });
+        html += '</tbody></table>';
+        main.innerHTML = html;
+        document.getElementById('searchBox').oninput = e => render(e.target.value);
+        document.getElementById('addBtn').onclick = () => showForm(null);
+        main.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => showForm(+b.dataset.edit));
+        main.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+          if (!confirm('Delete this record?')) return;
+          try { run(`delete from ${cfg.table} where id=?`, [+b.dataset.del]); render(filter); toast('Deleted.'); }
+          catch (err) { toast('Delete failed: ' + err.message, true); }
+        });
+
+        function showForm(id) {
+          const r = id ? q(`select * from ${cfg.table} where id=?`, [id])[0] : { is_active: 1 };
+          const selectedAreas = id ? q(`select area_id from ${cfg.junctionTable} where ${cfg.junctionKey}=?`, [id]).map(x => x.area_id) : [];
+          const areaRows = q(`select a.id, a.name_en, r.name_en as region_name from areas a join regions r on r.id=a.region_id order by r.name_en, a.name_en`);
+          let f = `<div class="card"><h3>${id ? 'Edit' : 'Add'} ${cfg.title.toLowerCase().replace(/s$/, '')}</h3><div class="grid2">
+        <div class="field"><label class="required">Name (EN)</label><input type="text" id="f_name_en" value="${esc(val(r.name_en))}"></div>
+        <div class="field"><label class="required">Name (BN)</label><input type="text" id="f_name_bn" value="${esc(val(r.name_bn))}"></div>`;
+          cfg.extraFields.forEach(c => { f += fieldHtml(c, r[c.key]); });
+          f += `<div class="field checkbox"><input type="checkbox" id="f_is_active" ${r.is_active ? 'checked' : ''}><label>Active</label></div>
+      </div>
+      <div class="field"><label>Coverage areas</label><div class="checkgrid" id="areaGrid">${areaRows.map(a => `<label><input type="checkbox" value="${a.id}" ${selectedAreas.includes(a.id) ? 'checked' : ''}> ${esc(a.region_name)} — ${esc(a.name_en)}</label>`).join('')}</div></div>
+      <div class="btnbar"><button class="btn" id="saveField">Save</button><button class="btn secondary" id="cancelField">Cancel</button></div></div>`;
+          document.getElementById('formSlot').innerHTML = f;
+          const areaGrid = document.getElementById('areaGrid');
+          let areaChecked = selectedAreas.slice();
+          function renderAreaGrid(justAddedId) {
+            if (justAddedId) {
+              areaChecked = Array.from(areaGrid.querySelectorAll('input:checked')).map(cb => +cb.value);
+              areaChecked.push(justAddedId);
+            }
+            const rows = q(`select a.id, a.name_en, r.name_en as region_name from areas a join regions r on r.id=a.region_id order by r.name_en, a.name_en`);
+            areaGrid.innerHTML = rows.map(a => `<label><input type="checkbox" value="${a.id}" ${areaChecked.includes(a.id) ? 'checked' : ''}> ${esc(a.region_name)} — ${esc(a.name_en)}</label>`).join('');
+          }
+          attachCreatableCheckgrid(areaGrid, 'areas', renderAreaGrid);
+          document.getElementById('cancelField').onclick = () => { document.getElementById('formSlot').innerHTML = ''; };
+          document.getElementById('saveField').onclick = () => {
+            const name_en = document.getElementById('f_name_en').value.trim();
+            const name_bn = document.getElementById('f_name_bn').value.trim();
+            if (!name_en || !name_bn) { toast('Name (EN/BN) required.', true); return; }
+            const data = { name_en, name_bn, is_active: document.getElementById('f_is_active').checked ? 1 : 0 };
+            let ok = true;
+            cfg.extraFields.forEach(c => { const v = readFieldValue(c); if (c.required && !v) ok = false; data[c.key] = v; });
+            if (!ok) { toast('Please fill required fields.', true); return; }
+            try {
+              let recId = id;
+              const extraKeys = cfg.extraFields.map(c => c.key);
+              if (id) {
+                const sets = ['name_en=?', 'name_bn=?', ...extraKeys.map(k => k + '=?'), 'is_active=?', 'updated_at=?'].join(',');
+                run(`update ${cfg.table} set ${sets} where id=?`, [data.name_en, data.name_bn, ...extraKeys.map(k => data[k]), data.is_active, nowIso(), id]);
+              } else {
+                const keys = ['name_en', 'name_bn', ...extraKeys, 'is_active'];
+                run(`insert into ${cfg.table} (${keys.join(',')}) values (${keys.map(() => '?').join(',')})`, keys.map(k => data[k]));
+                recId = q('select last_insert_rowid() as id').at(0).id;
+              }
+              const areaSelected = Array.from(document.getElementById('areaGrid').querySelectorAll('input:checked')).map(cb => +cb.value);
+              run(`delete from ${cfg.junctionTable} where ${cfg.junctionKey}=?`, [recId]);
+              areaSelected.forEach(aid => run(`insert into ${cfg.junctionTable} (${cfg.junctionKey},area_id) values (?,?)`, [recId, aid]));
+              toast('Saved.'); render(filter);
+            } catch (err) { toast('Save failed: ' + err.message, true); }
+          };
+        }
+      }
+      render('');
+    }
+
+    // =========================================================
+    // PAGES registry
+    // =========================================================
+    const PAGES = {
+      // products.db
+      products: productsListPage,
+      categories: () => simpleLookupPage(LOOKUP_DEFS.categories),
+      target_groups: () => simpleLookupPage(LOOKUP_DEFS.target_groups),
+      manufacturers: () => simpleLookupPage(LOOKUP_DEFS.manufacturers),
+      species: () => simpleLookupPage(LOOKUP_DEFS.species),
+      content_types: () => simpleLookupPage(LOOKUP_DEFS.content_types),
+      product_types: () => simpleLookupPage(LOOKUP_DEFS.product_types),
+      dosage_units: () => simpleLookupPage(LOOKUP_DEFS.dosage_units),
+      dosage_bases: () => simpleLookupPage(LOOKUP_DEFS.dosage_bases),
+      // distributors.db
+      distributors: distributorsListPage,
+      sales_personnel: () => personWithAreasPage({
+        table: 'sales_personnel', junctionTable: 'sales_personnel_areas', junctionKey: 'sales_personnel_id', title: 'Sales personnel',
+        extraFields: [{ key: 'designation', label: 'Designation' }, { key: 'photo_url', label: 'Photo URL', type: 'url' }, { key: 'mobile', label: 'Mobile', required: true }, { key: 'email', label: 'Email', type: 'email' }, { key: 'employee_id', label: 'Employee ID' }]
+      }),
+      vet_doctors: () => personWithAreasPage({
+        table: 'vet_doctors', junctionTable: 'vet_doctors_areas', junctionKey: 'vet_doctor_id', title: 'Vet doctors',
+        extraFields: [{ key: 'photo_url', label: 'Photo URL', type: 'url' }, { key: 'qualification', label: 'Qualification' }, { key: 'specialization', label: 'Specialization' },
+        { key: 'bvc_registration_no', label: 'BVC reg. no.' }, { key: 'clinic_or_hospital_name_en', label: 'Clinic/Hospital (EN)' }, { key: 'clinic_or_hospital_name_bn', label: 'Clinic/Hospital (BN)' },
+        { key: 'address_en', label: 'Address (EN)', type: 'textarea' }, { key: 'address_bn', label: 'Address (BN)', type: 'textarea' },
+        { key: 'mobile', label: 'Mobile', required: true }, { key: 'email', label: 'Email', type: 'email' }]
+      }),
+      regions: () => simpleLookupPage(LOOKUP_DEFS.regions),
+      areas: () => simpleLookupPage(LOOKUP_DEFS.areas),
+    };
+  </script>
+</body>
+
+</html>

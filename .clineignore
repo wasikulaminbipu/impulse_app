@@ -1,0 +1,26 @@
+# Build & tool cache
+.dart_tool/
+.idea/
+.git/
+build/
+
+# Platform configs
+android/
+ios/
+web/
+macos/
+linux/
+windows/
+
+# Assets & locks
+pubspec.lock
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.webp
+
+# Dart Generated Files
+*.g.dart
+*.freezed.dart
+*.mocks.dart

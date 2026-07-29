@@ -1,0 +1,15 @@
+export 'product/category.dart';
+export 'product/composition.dart';
+export 'product/content_type.dart';
+export 'product/direction.dart';
+export 'product/dosage_basis.dart';
+export 'product/dosage_unit.dart';
+export 'product/indication.dart';
+export 'product/precaution.dart';
+export 'product/presentation.dart';
+export 'product/product_label.dart';
+export 'product/product_model.dart';
+export 'product/product_type.dart';
+export 'product/species.dart';
+export 'product/target_group.dart';
+export 'product/manufacturer.dart';

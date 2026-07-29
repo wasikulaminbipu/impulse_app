@@ -1,0 +1,539 @@
+﻿import 'package:flutter/foundation.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:path_provider/path_provider.dart';
+import 'package:impulse_dex/data/db_extensions.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:path/path.dart' as p;
+
+part 'database_provider.g.dart';
+
+// ---------------------------------------------------------------------------
+// Minimal GeneratedDatabase wrappers
+//
+// Drift's NativeDatabase uses a SERIAL executor. Calling customStatement /
+// customSelect from *inside* beforeOpen re-enters the same executor while it
+// is still blocked in ensureOpen → deadlock / infinite splash-screen hang.
+//
+// Fix: keep beforeOpen a no-op for asset DBs and perform FTS creation + seeding
+// AFTER ensureOpen completes, by calling the raw executor directly via
+// NativeDatabase.opened (sqlite3 raw handle injected via the setup callback).
+// We use NativeDatabase(logStatements:false) with a setup callback that
+// captures the raw db handle so we can run DDL outside of beforeOpen.
+// ---------------------------------------------------------------------------
+
+/// Base wrapper used by [ProductsDb] and [DistributorsDb].
+class _AssetDatabase extends GeneratedDatabase {
+  _AssetDatabase(super.executor);
+
+  @override
+  Iterable<TableInfo<Table, dynamic>> get allTables => const [];
+
+  @override
+  int get schemaVersion => 1;
+}
+
+/// Thin Drift wrapper around products.db.
+class ProductsDb extends _AssetDatabase {
+  ProductsDb(super.executor);
+}
+
+/// Thin Drift wrapper around distributors.db.
+class DistributorsDb extends _AssetDatabase {
+  DistributorsDb(super.executor);
+}
+
+/// Thin Drift wrapper around app_maintenance.db.
+/// Tables are created outside of beforeOpen (via _runRaw) to avoid the
+/// serial-executor re-entrancy deadlock described at the top of this file.
+class AppMaintenanceDb extends _AssetDatabase {
+  AppMaintenanceDb(super.executor);
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+Future<String> _getDbPath(String dbName) async {
+  final dir = await getApplicationDocumentsDirectory();
+  return p.join(dir.path, dbName);
+}
+
+void _deleteDbFiles(String dbPath) {
+  for (final path in [dbPath, '$dbPath-journal', '$dbPath-wal', '$dbPath-shm']) {
+    final f = File(path);
+    if (f.existsSync()) {
+      try {
+        f.deleteSync();
+      } catch (e, st) { debugPrint('DB delete error: $e\n$st'); }
+    }
+  }
+}
+
+/// Opens [executor] via [_NoOpUser] (no migration / beforeOpen side-effects)
+/// and then executes [sql] statements directly on the raw executor to set up
+/// FTS tables. This avoids any re-entrancy into the serial NativeDatabase.
+Future<void> _runRaw(QueryExecutor executor, List<String> statements) async {
+  await executor.ensureOpen(NoOpUser());
+  for (final sql in statements) {
+    await executor.runCustom(sql, const []);
+  }
+}
+
+Future<List<Map<String, dynamic>>> _selectRaw(
+  QueryExecutor executor,
+  String sql,
+) async {
+  await executor.ensureOpen(NoOpUser());
+  return executor.runSelect(sql, const []);
+}
+
+/// Copies the bundled asset DB to the documents directory (if needed or if size differs), then
+/// opens it with [NativeDatabase] and sets up FTS tables outside of beforeOpen.
+Future<T> _copyAndOpen<T extends GeneratedDatabase>(
+  String assetName,
+  String dbName,
+  T Function(QueryExecutor) wrap,
+  Future<void> Function(QueryExecutor executor) ftsSetup,
+) async {
+  final dbPath = await _getDbPath(dbName);
+  final file = File(dbPath);
+
+  final versionFile = File('$dbPath.version');
+
+  final byteData = await rootBundle.load('assets/$assetName');
+  final assetBytes = byteData.buffer.asUint8List(
+    byteData.offsetInBytes,
+    byteData.lengthInBytes,
+  );
+  String assetSig = '${assetBytes.length}_${assetBytes.first}_${assetBytes.last}';
+  if (assetBytes.length >= 100) {
+    // Include the SQLite file change counter (bytes 24-27) which increments on every transaction
+    assetSig += '_${assetBytes[24]}_${assetBytes[25]}_${assetBytes[26]}_${assetBytes[27]}';
+  }
+
+  final needsCopy = !await file.exists() ||
+      !await versionFile.exists() ||
+      (await versionFile.readAsString()).trim() != assetSig;
+
+  if (needsCopy) {
+    _deleteDbFiles(dbPath);
+    await file.create(recursive: true);
+    await file.writeAsBytes(assetBytes, flush: true);
+    await versionFile.writeAsString(assetSig, flush: true);
+  }
+
+  final executor = NativeDatabase(
+    file,
+    setup: (rawDb) {
+      try {
+        rawDb.execute('PRAGMA journal_mode=OFF;');
+      } catch (e, st) { debugPrint('DB journal setup error: $e\n$st'); }
+    },
+  );
+
+  // Run FTS setup asynchronously in the background after returning the database connection.
+  // This allows instant app startup while FTS tables are built concurrently.
+  unawaited(
+    Future.microtask(() async {
+      try {
+        await ftsSetup(executor);
+      } catch (e) {
+        // ignore: avoid_print
+        print('FTS setup exception for $dbName (non-fatal): $e');
+      }
+    }),
+  );
+
+  return wrap(executor);
+}
+
+// ---------------------------------------------------------------------------
+// FTS setup helpers — executed on the raw executor, outside of beforeOpen.
+// ---------------------------------------------------------------------------
+
+Future<bool> _isFtsTableReady(QueryExecutor executor, String tableName) async {
+  try {
+    final rows = await _selectRaw(
+      executor,
+      "SELECT value FROM db_meta WHERE key = 'fts_ready_$tableName'",
+    );
+    return rows.isNotEmpty && rows.first['value'] == '1';
+  } catch (_) {
+    return false;
+  }
+}
+
+Future<void> _setFtsTableReady(
+  QueryExecutor executor,
+  String tableName,
+  bool ready,
+) async {
+  try {
+    if (ready) {
+      await _runRaw(executor, [
+        "INSERT OR REPLACE INTO db_meta (key, value) VALUES ('fts_ready_$tableName', '1')",
+      ]);
+    } else {
+      await _runRaw(executor, [
+        "DELETE FROM db_meta WHERE key = 'fts_ready_$tableName'",
+      ]);
+    }
+  } catch (e, st) { debugPrint('FTS mark ready error: $e\n$st'); }
+}
+
+Future<void> _buildSingleFtsTable({
+  required QueryExecutor executor,
+  required String tableName,
+  required String createSql,
+  required String populateSql,
+  List<String> extraSql = const [],
+}) async {
+  if (await _isFtsTableReady(executor, tableName)) {
+    return;
+  }
+
+  // Ensure status is marked unready first
+  await _setFtsTableReady(executor, tableName, false);
+
+  // Drop any existing table/dirty state from an incomplete prior run
+  await _runRaw(executor, ['DROP TABLE IF EXISTS $tableName;']);
+
+  // Create virtual table
+  await _runRaw(executor, [createSql]);
+
+  // Wrap population and triggers in a transaction for atomicity
+  await _runRaw(executor, [
+    'BEGIN TRANSACTION;',
+    populateSql,
+    ...extraSql,
+    'COMMIT;',
+  ]);
+
+  // Mark as ready only after full transaction successfully completes
+  await _setFtsTableReady(executor, tableName, true);
+}
+
+Future<void> setupProductsFts(QueryExecutor executor) async {
+  await _buildSingleFtsTable(
+    executor: executor,
+    tableName: 'products_fts',
+    createSql: '''
+    CREATE VIRTUAL TABLE IF NOT EXISTS products_fts
+    USING fts5(
+      title_en,
+      title_bn,
+      motto_en,
+      short_description_en,
+      content=products,
+      content_rowid=id,
+      tokenize='unicode61 remove_diacritics 2'
+    )
+    ''',
+    populateSql: '''
+    INSERT INTO products_fts(rowid, title_en, title_bn, motto_en, short_description_en)
+    SELECT id, title_en, title_bn, motto_en, short_description_en FROM products
+    ''',
+    extraSql: const [
+      '''
+      CREATE TRIGGER IF NOT EXISTS products_ai AFTER INSERT ON products BEGIN
+        INSERT INTO products_fts(rowid, title_en, title_bn, motto_en, short_description_en)
+        VALUES (new.id, new.title_en, new.title_bn, new.motto_en, new.short_description_en);
+      END;
+      ''',
+      '''
+      CREATE TRIGGER IF NOT EXISTS products_ad AFTER DELETE ON products BEGIN
+        INSERT INTO products_fts(products_fts, rowid, title_en, title_bn, motto_en, short_description_en)
+        VALUES('delete', old.id, old.title_en, old.title_bn, old.motto_en, old.short_description_en);
+      END;
+      ''',
+      '''
+      CREATE TRIGGER IF NOT EXISTS products_au AFTER UPDATE ON products BEGIN
+        INSERT INTO products_fts(products_fts, rowid, title_en, title_bn, motto_en, short_description_en)
+        VALUES('delete', old.id, old.title_en, old.title_bn, old.motto_en, old.short_description_en);
+        INSERT INTO products_fts(rowid, title_en, title_bn, motto_en, short_description_en)
+        VALUES (new.id, new.title_en, new.title_bn, new.motto_en, new.short_description_en);
+      END;
+      ''',
+    ],
+  );
+}
+
+Future<void> setupDistributorsFts(QueryExecutor executor) async {
+  // --- distributors_fts ---
+  await _buildSingleFtsTable(
+    executor: executor,
+    tableName: 'distributors_fts',
+    createSql: '''
+    CREATE VIRTUAL TABLE IF NOT EXISTS distributors_fts
+    USING fts5(
+      name_en,
+      name_bn,
+      designation,
+      address_en,
+      address_bn,
+      mobile,
+      content=distributors,
+      content_rowid=id,
+      tokenize='unicode61 remove_diacritics 2'
+    )
+    ''',
+    populateSql: '''
+    INSERT INTO distributors_fts(rowid, name_en, name_bn, designation, address_en, address_bn, mobile)
+    SELECT id, name_en, name_bn, designation, address_en, address_bn, mobile FROM distributors
+    ''',
+    extraSql: const [
+      '''
+      CREATE TRIGGER IF NOT EXISTS distributors_ai AFTER INSERT ON distributors BEGIN
+        INSERT INTO distributors_fts(rowid, name_en, name_bn, designation, address_en, address_bn, mobile)
+        VALUES (new.id, new.name_en, new.name_bn, new.designation, new.address_en, new.address_bn, new.mobile);
+      END;
+      ''',
+      '''
+      CREATE TRIGGER IF NOT EXISTS distributors_ad AFTER DELETE ON distributors BEGIN
+        INSERT INTO distributors_fts(distributors_fts, rowid, name_en, name_bn, designation, address_en, address_bn, mobile)
+        VALUES('delete', old.id, old.name_en, old.name_bn, old.designation, old.address_en, old.address_bn, old.mobile);
+      END;
+      ''',
+      '''
+      CREATE TRIGGER IF NOT EXISTS distributors_au AFTER UPDATE ON distributors BEGIN
+        INSERT INTO distributors_fts(distributors_fts, rowid, name_en, name_bn, designation, address_en, address_bn, mobile)
+        VALUES('delete', old.id, old.name_en, old.name_bn, old.designation, old.address_en, old.address_bn, old.mobile);
+        INSERT INTO distributors_fts(rowid, name_en, name_bn, designation, address_en, address_bn, mobile)
+        VALUES (new.id, new.name_en, new.name_bn, new.designation, new.address_en, new.address_bn, new.mobile);
+      END;
+      ''',
+    ],
+  );
+
+  // --- sales_personnel_fts ---
+  await _buildSingleFtsTable(
+    executor: executor,
+    tableName: 'sales_personnel_fts',
+    createSql: '''
+    CREATE VIRTUAL TABLE IF NOT EXISTS sales_personnel_fts
+    USING fts5(
+      name_en,
+      name_bn,
+      designation,
+      mobile,
+      email,
+      employee_id,
+      content=sales_personnel,
+      content_rowid=id,
+      tokenize='unicode61 remove_diacritics 2'
+    )
+    ''',
+    populateSql: '''
+    INSERT INTO sales_personnel_fts(rowid, name_en, name_bn, designation, mobile, email, employee_id)
+    SELECT id, name_en, name_bn, designation, mobile, email, employee_id FROM sales_personnel
+    ''',
+    extraSql: const [
+      '''
+      CREATE TRIGGER IF NOT EXISTS sales_personnel_ai AFTER INSERT ON sales_personnel BEGIN
+        INSERT INTO sales_personnel_fts(rowid, name_en, name_bn, designation, mobile, email, employee_id)
+        VALUES (new.id, new.name_en, new.name_bn, new.designation, new.mobile, new.email, new.employee_id);
+      END;
+      ''',
+      '''
+      CREATE TRIGGER IF NOT EXISTS sales_personnel_ad AFTER DELETE ON sales_personnel BEGIN
+        INSERT INTO sales_personnel_fts(sales_personnel_fts, rowid, name_en, name_bn, designation, mobile, email, employee_id)
+        VALUES('delete', old.id, old.name_en, old.name_bn, old.designation, old.mobile, old.email, old.employee_id);
+      END;
+      ''',
+      '''
+      CREATE TRIGGER IF NOT EXISTS sales_personnel_au AFTER UPDATE ON sales_personnel BEGIN
+        INSERT INTO sales_personnel_fts(sales_personnel_fts, rowid, name_en, name_bn, designation, mobile, email, employee_id)
+        VALUES('delete', old.id, old.name_en, old.name_bn, old.designation, old.mobile, old.email, old.employee_id);
+        INSERT INTO sales_personnel_fts(rowid, name_en, name_bn, designation, mobile, email, employee_id)
+        VALUES (new.id, new.name_en, new.name_bn, new.designation, new.mobile, new.email, new.employee_id);
+      END;
+      ''',
+    ],
+  );
+
+  // --- vet_doctors_fts ---
+  await _buildSingleFtsTable(
+    executor: executor,
+    tableName: 'vet_doctors_fts',
+    createSql: '''
+    CREATE VIRTUAL TABLE IF NOT EXISTS vet_doctors_fts
+    USING fts5(
+      name_en,
+      name_bn,
+      qualification,
+      specialization,
+      bvc_registration_no,
+      clinic_or_hospital_name_en,
+      clinic_or_hospital_name_bn,
+      address_en,
+      address_bn,
+      mobile,
+      email,
+      content=vet_doctors,
+      content_rowid=id,
+      tokenize='unicode61 remove_diacritics 2'
+    )
+    ''',
+    populateSql: '''
+    INSERT INTO vet_doctors_fts(
+      rowid, name_en, name_bn, qualification, specialization,
+      bvc_registration_no, clinic_or_hospital_name_en, clinic_or_hospital_name_bn,
+      address_en, address_bn, mobile, email
+    )
+    SELECT
+      id, name_en, name_bn, qualification, specialization,
+      bvc_registration_no, clinic_or_hospital_name_en, clinic_or_hospital_name_bn,
+      address_en, address_bn, mobile, email
+    FROM vet_doctors
+    ''',
+    extraSql: const [
+      '''
+      CREATE TRIGGER IF NOT EXISTS vet_doctors_ai AFTER INSERT ON vet_doctors BEGIN
+        INSERT INTO vet_doctors_fts(
+          rowid, name_en, name_bn, qualification, specialization,
+          bvc_registration_no, clinic_or_hospital_name_en, clinic_or_hospital_name_bn,
+          address_en, address_bn, mobile, email
+        )
+        VALUES (
+          new.id, new.name_en, new.name_bn, new.qualification, new.specialization,
+          new.bvc_registration_no, new.clinic_or_hospital_name_en, new.clinic_or_hospital_name_bn,
+          new.address_en, new.address_bn, new.mobile, new.email
+        );
+      END;
+      ''',
+      '''
+      CREATE TRIGGER IF NOT EXISTS vet_doctors_ad AFTER DELETE ON vet_doctors BEGIN
+        INSERT INTO vet_doctors_fts(
+          vet_doctors_fts, rowid, name_en, name_bn, qualification, specialization,
+          bvc_registration_no, clinic_or_hospital_name_en, clinic_or_hospital_name_bn,
+          address_en, address_bn, mobile, email
+        )
+        VALUES(
+          'delete', old.id, old.name_en, old.name_bn, old.qualification, old.specialization,
+          old.bvc_registration_no, old.clinic_or_hospital_name_en, old.clinic_or_hospital_name_bn,
+          old.address_en, old.address_bn, old.mobile, old.email
+        );
+      END;
+      ''',
+      '''
+      CREATE TRIGGER IF NOT EXISTS vet_doctors_au AFTER UPDATE ON vet_doctors BEGIN
+        INSERT INTO vet_doctors_fts(
+          vet_doctors_fts, rowid, name_en, name_bn, qualification, specialization,
+          bvc_registration_no, clinic_or_hospital_name_en, clinic_or_hospital_name_bn,
+          address_en, address_bn, mobile, email
+        )
+        VALUES(
+          'delete', old.id, old.name_en, old.name_bn, old.qualification, old.specialization,
+          old.bvc_registration_no, old.clinic_or_hospital_name_en, old.clinic_or_hospital_name_bn,
+          old.address_en, old.address_bn, old.mobile, old.email
+        );
+        INSERT INTO vet_doctors_fts(
+          rowid, name_en, name_bn, qualification, specialization,
+          bvc_registration_no, clinic_or_hospital_name_en, clinic_or_hospital_name_bn,
+          address_en, address_bn, mobile, email
+        )
+        VALUES (
+          new.id, new.name_en, new.name_bn, new.qualification, new.specialization,
+          new.bvc_registration_no, new.clinic_or_hospital_name_en, new.clinic_or_hospital_name_bn,
+          new.address_en, new.address_bn, new.mobile, new.email
+        );
+      END;
+      ''',
+    ],
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Riverpod providers — now return typed Drift database wrappers.
+// The DAO layer accepts QueryExecutor, so existing DAOs need no changes.
+// ---------------------------------------------------------------------------
+
+@Riverpod(keepAlive: true)
+Future<ProductsDb> productsDatabase(Ref ref) async {
+  final db = await _copyAndOpen(
+    'products.db',
+    'products.db',
+    (executor) => ProductsDb(executor),
+    setupProductsFts,
+  );
+  ref.onDispose(db.close);
+  return db;
+}
+
+@Riverpod(keepAlive: true)
+Future<DistributorsDb> distributorsDatabase(Ref ref) async {
+  final db = await _copyAndOpen(
+    'distributors.db',
+    'distributors.db',
+    (executor) => DistributorsDb(executor),
+    setupDistributorsFts,
+  );
+  ref.onDispose(db.close);
+  return db;
+}
+
+Future<void> setupAppMaintenanceTables(QueryExecutor executor) async {
+  await _runRaw(executor, [
+    '''
+    CREATE TABLE IF NOT EXISTS favorite_products (
+      product_id INTEGER PRIMARY KEY,
+      added_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+    ''',
+    '''
+    CREATE TABLE IF NOT EXISTS favorite_distributors (
+      distributor_id INTEGER PRIMARY KEY,
+      added_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+    ''',
+    '''
+    CREATE TABLE IF NOT EXISTS favorite_sales_personnel (
+      sales_personnel_id INTEGER PRIMARY KEY,
+      added_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+    ''',
+    '''
+    CREATE TABLE IF NOT EXISTS favorite_vet_doctors (
+      vet_doctor_id INTEGER PRIMARY KEY,
+      added_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+    ''',
+    '''
+    CREATE TABLE IF NOT EXISTS app_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    )
+    ''',
+    '''
+    CREATE TABLE IF NOT EXISTS db_meta (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    )
+    ''',
+  ]);
+}
+
+@Riverpod(keepAlive: true)
+Future<AppMaintenanceDb> appMaintenanceDatabase(Ref ref) async {
+  final dbPath = await _getDbPath('app_maintenance.db');
+  final file = File(dbPath);
+  final executor = NativeDatabase(
+    file,
+    setup: (rawDb) {
+      try {
+        rawDb.execute('PRAGMA journal_mode=WAL;');
+      } catch (e, st) { debugPrint('AppMaintenance DB journal setup error: $e\n$st'); }
+    },
+  );
+
+  await setupAppMaintenanceTables(executor);
+
+  final db = AppMaintenanceDb(executor);
+  ref.onDispose(db.close);
+  return db;
+}
+
