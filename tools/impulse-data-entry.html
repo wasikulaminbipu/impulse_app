@@ -1116,6 +1116,7 @@
 
       if (!isNew) {
         html += `<div id="childSections"></div>`;
+        html += `<div class="btnbar" style="margin-top:20px; margin-bottom: 20px;"><button class="btn" id="saveAndReturn">Save & Return</button></div>`;
       } else {
         html += `<p class="subtle">Save the basic info first — then you can add compositions, indications, dosage directions, precautions and pack presentations.</p>`;
       }
@@ -1143,7 +1144,7 @@
       renderTgGrid();
       attachCreatableCheckgrid(tgGrid, 'target_groups', renderTgGrid);
 
-      document.getElementById('saveBasic').onclick = () => {
+      const performSave = (returnAfter) => {
         const title_en = document.getElementById('f_title_en').value.trim();
         if (!title_en) { toast('Title (EN) is required.', true); return; }
         const category_id = +catSel.value;
@@ -1176,11 +1177,18 @@
           run('delete from product_target_groups where product_id=?', [productId]);
           tgSelected.forEach(tid => run('insert into product_target_groups (product_id,target_group_id) values (?,?)', [productId, tid]));
           toast('Saved.');
-          productDetailPage(productId, onDone);
+          if (returnAfter) {
+            onDone();
+          } else {
+            productDetailPage(productId, onDone);
+          }
         } catch (err) { toast('Save failed: ' + err.message, true); }
       };
 
+      document.getElementById('saveBasic').onclick = () => performSave(false);
+
       if (!isNew) {
+        document.getElementById('saveAndReturn').onclick = () => performSave(true);
         renderChildSections(id);
       }
 
