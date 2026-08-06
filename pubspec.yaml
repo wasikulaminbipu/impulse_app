@@ -74,14 +74,14 @@ dev_dependencies:
 
 # Splash Screen Configuration
 flutter_native_splash:
-  color: "#ffffff"
-  image: assets/impulse_logo.png
+  color: "#0D1117"
+  image: assets/images/app_logo.png
   fullscreen: true
   android_gravity: center
 
   android_12:
-    image: assets/images/impulse_logo.png
-    color: "#ffffff"
+    image: assets/images/app_logo.png
+    color: "#0D1117"
 
   web: false  # set true if you want it on web too
 
