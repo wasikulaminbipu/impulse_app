@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:impulse_dex/constants/app_assets.dart';
+import 'package:impulse_dex/models/product.dart';
 import 'package:impulse_dex/providers/app_maintenance_provider.dart';
 import 'package:impulse_dex/providers/products_provider.dart';
-import 'package:impulse_dex/models/product.dart';
 import 'package:impulse_dex/widgets/product_card.dart';
 import 'package:impulse_dex/widgets/skeleton_loader.dart';
 
@@ -54,14 +55,13 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.health_and_safety_outlined,
-              size: 28,
-              color: colorScheme.primary,
+            Image.asset(
+              AppAssets.appLogo,
+              height: 32,
+              fit: BoxFit.contain,
             ),
             const SizedBox(width: 10),
             Text(
-              // lang == 'bn' ? 'ইমপালস প্রডাক্টস' : 'Impulse Products',
               'Impulse Dex',
               style: const TextStyle(
                 fontWeight: FontWeight.w900,
