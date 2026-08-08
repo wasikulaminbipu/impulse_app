@@ -356,7 +356,17 @@ function simpleLookupPage(opts){
     html += '</tbody></table>';
     main.innerHTML = html;
 
-    document.getElementById('searchBox').oninput = e=>render(e.target.value);
+    document.getElementById('searchBox').oninput = e=>{
+      const val = e.target.value;
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+      render(val);
+      const box = document.getElementById('searchBox');
+      if(box){
+        box.focus();
+        box.setSelectionRange(start, end);
+      }
+    };
     document.getElementById('addBtn').onclick = ()=>showForm(null);
     main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>showForm(+b.dataset.edit));
     main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
@@ -611,7 +621,17 @@ function productsListPage(){
     });
     html += '</tbody></table>';
     main.innerHTML = html;
-    document.getElementById('searchBox').oninput = e=>render(e.target.value);
+    document.getElementById('searchBox').oninput = e=>{
+      const val = e.target.value;
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+      render(val);
+      const box = document.getElementById('searchBox');
+      if(box){
+        box.focus();
+        box.setSelectionRange(start, end);
+      }
+    };
     document.getElementById('addBtn').onclick = ()=>productDetailPage(null, ()=>render(filter));
     main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>productDetailPage(+b.dataset.edit, ()=>render(filter)));
     main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
@@ -912,7 +932,17 @@ function distributorsListPage(){
     });
     html += '</tbody></table>';
     main.innerHTML = html;
-    document.getElementById('searchBox').oninput = e=>render(e.target.value);
+    document.getElementById('searchBox').oninput = e=>{
+      const val = e.target.value;
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+      render(val);
+      const box = document.getElementById('searchBox');
+      if(box){
+        box.focus();
+        box.setSelectionRange(start, end);
+      }
+    };
     document.getElementById('addBtn').onclick = ()=>showForm(null);
     main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>showForm(+b.dataset.edit));
     main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
@@ -992,7 +1022,17 @@ function personWithAreasPage(cfg){
     });
     html += '</tbody></table>';
     main.innerHTML = html;
-    document.getElementById('searchBox').oninput = e=>render(e.target.value);
+    document.getElementById('searchBox').oninput = e=>{
+      const val = e.target.value;
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+      render(val);
+      const box = document.getElementById('searchBox');
+      if(box){
+        box.focus();
+        box.setSelectionRange(start, end);
+      }
+    };
     document.getElementById('addBtn').onclick = ()=>showForm(null);
     main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>showForm(+b.dataset.edit));
     main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
