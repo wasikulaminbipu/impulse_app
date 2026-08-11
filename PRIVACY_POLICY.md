@@ -72,5 +72,6 @@ We do not knowingly solicit information from or market to children under the age
 If you have questions or comments about this Privacy Policy, please contact us at:
 
 **Impulse Agri Science Ltd.**  
+Online Privacy Policy: [https://github.com/wasikulaminbipu/impulse_dex/blob/main/PRIVACY_POLICY.md](https://github.com/wasikulaminbipu/impulse_dex/blob/main/PRIVACY_POLICY.md)  
 Website: [https://www.impulseagrisciencelimited.com](https://www.impulseagrisciencelimited.com)  
 Email: [impulseagriscienceltd@gmail.com](mailto:impulseagriscienceltd@gmail.com)  

@@ -4,7 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 class PrivacyPolicyDialog extends StatelessWidget {
   const PrivacyPolicyDialog({super.key});
 
-  static const String privacyPolicyUrl = 'https://www.impulseagrisciencelimited.com/privacy';
+  static const String privacyPolicyUrl =
+      'https://github.com/wasikulaminbipu/impulse_dex/blob/main/PRIVACY_POLICY.md';
   static const String dataDeletionUrl = 'https://www.impulseagrisciencelimited.com/delete-account';
 
   Future<void> _launchUrl(String urlString) async {
