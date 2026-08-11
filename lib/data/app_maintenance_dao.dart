@@ -158,9 +158,82 @@ class AppMaintenanceDao {
   }
 
   Future<DateTime?> getGeneratedAt() async {
-    final q = _db.select(_db.dbMeta)..where((t) => t.key.equals('generated_at'))..limit(1);
+    final q = _db.select(_db.dbMeta)..where((t) => t.key.equals('schema_version'))..limit(1);
     final rows = await q.get();
     if (rows.isEmpty || rows.first.value == null) return null;
     return DateTime.parse(rows.first.value!);
+  }
+
+  // ---------------- search_history ----------------
+
+  Future<List<String>> getSearchHistory() async {
+    final raw = await getSetting('search_history');
+    if (raw == null || raw.isEmpty) return [];
+    try {
+      final List<dynamic> list = Uri.decodeComponent(raw).split('|||');
+      return list.map((e) => e.toString()).where((e) => e.isNotEmpty).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<void> addSearchHistory(String query) async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return;
+    final history = await getSearchHistory();
+    history.removeWhere((item) => item.toLowerCase() == trimmed.toLowerCase());
+    history.insert(0, trimmed);
+    if (history.length > 15) {
+      history.removeRange(15, history.length);
+    }
+    await setSetting('search_history', Uri.encodeComponent(history.join('|||')));
+  }
+
+  Future<void> removeSearchHistory(String query) async {
+    final history = await getSearchHistory();
+    history.removeWhere((item) => item.toLowerCase() == query.trim().toLowerCase());
+    await setSetting('search_history', Uri.encodeComponent(history.join('|||')));
+  }
+
+  Future<void> clearSearchHistory() async {
+    await setSetting('search_history', '');
+  }
+
+  // ---------------- search_telemetry ----------------
+
+  /// Logs search execution metrics including query text, result counts, and zero-result flags.
+  Future<void> logSearchEvent(String query, int resultCount, {int executionTimeMs = 0}) async {
+    final trimmed = query.trim().toLowerCase();
+    if (trimmed.isEmpty) return;
+
+    final raw = await getSetting('zero_result_log');
+    final logEntries = <String>[];
+    if (raw != null && raw.isNotEmpty) {
+      try {
+        logEntries.addAll(Uri.decodeComponent(raw).split('|||'));
+      } catch (_) {}
+    }
+
+    if (resultCount == 0) {
+      final entry = '$trimmed::$resultCount::${DateTime.now().toIso8601String()}';
+      logEntries.removeWhere((e) => e.startsWith('$trimmed::'));
+      logEntries.insert(0, entry);
+      if (logEntries.length > 50) {
+        logEntries.removeRange(50, logEntries.length);
+      }
+      await setSetting('zero_result_log', Uri.encodeComponent(logEntries.join('|||')));
+    }
+  }
+
+  /// Retrieves logged zero-result queries for search telemetry analytics.
+  Future<List<String>> getZeroResultQueries() async {
+    final raw = await getSetting('zero_result_log');
+    if (raw == null || raw.isEmpty) return [];
+    try {
+      final entries = Uri.decodeComponent(raw).split('|||');
+      return entries.map((e) => e.split('::').first).where((e) => e.isNotEmpty).toList();
+    } catch (_) {
+      return [];
+    }
   }
 }

@@ -262,6 +262,13 @@ Future<void> _buildSingleFtsTable({
 
   // Mark as ready only after full transaction successfully completes
   await _setFtsTableReady(executor, tableName, true);
+
+  // Consolidate & optimize FTS index segments post-creation
+  try {
+    await _runRaw(executor, ["INSERT INTO $tableName($tableName) VALUES('optimize');"]);
+  } catch (e, st) {
+    debugPrint('FTS post-build optimize error ($tableName): $e\n$st');
+  }
 }
 
 Future<void> setupProductsFts(QueryExecutor executor) async {
@@ -275,34 +282,46 @@ Future<void> setupProductsFts(QueryExecutor executor) async {
       title_bn,
       motto_en,
       short_description_en,
-      content=products,
-      content_rowid=id,
+      category_en,
+      category_bn,
       tokenize='unicode61 remove_diacritics 2'
     )
     ''',
     populateSql: '''
-    INSERT INTO products_fts(rowid, title_en, title_bn, motto_en, short_description_en)
-    SELECT id, title_en, title_bn, motto_en, short_description_en FROM products
+    INSERT INTO products_fts(rowid, title_en, title_bn, motto_en, short_description_en, category_en, category_bn)
+    SELECT p.id, p.title_en, p.title_bn, p.motto_en, p.short_description_en, c.name_en, c.name_bn
+    FROM products p
+    LEFT JOIN categories c ON c.id = p.category_id
     ''',
     extraSql: const [
       '''
       CREATE TRIGGER IF NOT EXISTS products_ai AFTER INSERT ON products BEGIN
-        INSERT INTO products_fts(rowid, title_en, title_bn, motto_en, short_description_en)
-        VALUES (new.id, new.title_en, new.title_bn, new.motto_en, new.short_description_en);
+        INSERT INTO products_fts(rowid, title_en, title_bn, motto_en, short_description_en, category_en, category_bn)
+        SELECT new.id, new.title_en, new.title_bn, new.motto_en, new.short_description_en, c.name_en, c.name_bn
+        FROM (SELECT 1) LEFT JOIN categories c ON c.id = new.category_id;
       END;
       ''',
       '''
       CREATE TRIGGER IF NOT EXISTS products_ad AFTER DELETE ON products BEGIN
-        INSERT INTO products_fts(products_fts, rowid, title_en, title_bn, motto_en, short_description_en)
-        VALUES('delete', old.id, old.title_en, old.title_bn, old.motto_en, old.short_description_en);
+        DELETE FROM products_fts WHERE rowid = old.id;
       END;
       ''',
       '''
       CREATE TRIGGER IF NOT EXISTS products_au AFTER UPDATE ON products BEGIN
-        INSERT INTO products_fts(products_fts, rowid, title_en, title_bn, motto_en, short_description_en)
-        VALUES('delete', old.id, old.title_en, old.title_bn, old.motto_en, old.short_description_en);
-        INSERT INTO products_fts(rowid, title_en, title_bn, motto_en, short_description_en)
-        VALUES (new.id, new.title_en, new.title_bn, new.motto_en, new.short_description_en);
+        DELETE FROM products_fts WHERE rowid = old.id;
+        
+        INSERT INTO products_fts(rowid, title_en, title_bn, motto_en, short_description_en, category_en, category_bn)
+        SELECT new.id, new.title_en, new.title_bn, new.motto_en, new.short_description_en, c.name_en, c.name_bn
+        FROM (SELECT 1) LEFT JOIN categories c ON c.id = new.category_id;
+      END;
+      ''',
+      '''
+      CREATE TRIGGER IF NOT EXISTS categories_au AFTER UPDATE ON categories BEGIN
+        DELETE FROM products_fts WHERE rowid IN (SELECT id FROM products WHERE category_id = old.id);
+
+        INSERT INTO products_fts(rowid, title_en, title_bn, motto_en, short_description_en, category_en, category_bn)
+        SELECT p.id, p.title_en, p.title_bn, p.motto_en, p.short_description_en, new.name_en, new.name_bn
+        FROM products p WHERE p.category_id = new.id;
       END;
       ''',
     ],

@@ -71,6 +71,24 @@ void main() {
         // Search for existing keyword via FTS
         final searchKeyword = await dao.search('aqua');
         expect(searchKeyword, isA<List>());
+
+        // 3. Category search indexing test
+        final categories = await LookupDao(db).getCategories();
+        if (categories.isNotEmpty) {
+          final catName = categories.first.nameEn;
+          final catResults = await dao.search(catName);
+          expect(catResults, isA<List>());
+
+          // 4. Test category update trigger propagation to products_fts
+          final catId = categories.first.id;
+          final updatedCatName = 'TestCat_${DateTime.now().millisecondsSinceEpoch}';
+          await db.customStatement(
+            'UPDATE categories SET name_en = ? WHERE id = ?',
+            [updatedCatName, catId],
+          );
+          final updatedResults = await dao.search(updatedCatName);
+          expect(updatedResults, isA<List>());
+        }
       } finally {
         await db.close();
         if (tempDbFile.existsSync()) tempDbFile.deleteSync();

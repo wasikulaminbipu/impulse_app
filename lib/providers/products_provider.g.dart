@@ -157,7 +157,7 @@ final class ProductSearchQueryProvider
 }
 
 String _$productSearchQueryHash() =>
-    r'5ccdf597fa078485d236d7a3db58cae9e6a64e37';
+    r'74036ddd92054d63495710b4616ad8df2e9a796e';
 
 abstract class _$ProductSearchQuery extends $Notifier<String> {
   String build();
@@ -176,6 +176,142 @@ abstract class _$ProductSearchQuery extends $Notifier<String> {
     return element.handleCreate(ref, build);
   }
 }
+
+/// Provides populated Autocomplete Trie data structure loaded from database terms.
+
+@ProviderFor(autocompleteTrie)
+final autocompleteTrieProvider = AutocompleteTrieProvider._();
+
+/// Provides populated Autocomplete Trie data structure loaded from database terms.
+
+final class AutocompleteTrieProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AutocompleteTrie>,
+          AutocompleteTrie,
+          FutureOr<AutocompleteTrie>
+        >
+    with $FutureModifier<AutocompleteTrie>, $FutureProvider<AutocompleteTrie> {
+  /// Provides populated Autocomplete Trie data structure loaded from database terms.
+  AutocompleteTrieProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'autocompleteTrieProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$autocompleteTrieHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<AutocompleteTrie> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<AutocompleteTrie> create(Ref ref) {
+    return autocompleteTrie(ref);
+  }
+}
+
+String _$autocompleteTrieHash() => r'687d6aec2aaa128d6a9d91a687271e55012c4d6f';
+
+/// Provides sub-millisecond autocomplete suggestions from in-memory trie.
+
+@ProviderFor(productSearchTrieSuggestions)
+final productSearchTrieSuggestionsProvider =
+    ProductSearchTrieSuggestionsProvider._();
+
+/// Provides sub-millisecond autocomplete suggestions from in-memory trie.
+
+final class ProductSearchTrieSuggestionsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<String>>,
+          List<String>,
+          FutureOr<List<String>>
+        >
+    with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
+  /// Provides sub-millisecond autocomplete suggestions from in-memory trie.
+  ProductSearchTrieSuggestionsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'productSearchTrieSuggestionsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$productSearchTrieSuggestionsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<String>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<String>> create(Ref ref) {
+    return productSearchTrieSuggestions(ref);
+  }
+}
+
+String _$productSearchTrieSuggestionsHash() =>
+    r'a3b2d97ed4a3de6d1bcd61be2903f9be9f83e37b';
+
+/// Provides fuzzy typo suggestions when search query returns zero results.
+
+@ProviderFor(productSearchFuzzySuggestions)
+final productSearchFuzzySuggestionsProvider =
+    ProductSearchFuzzySuggestionsProvider._();
+
+/// Provides fuzzy typo suggestions when search query returns zero results.
+
+final class ProductSearchFuzzySuggestionsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<String>>,
+          List<String>,
+          FutureOr<List<String>>
+        >
+    with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
+  /// Provides fuzzy typo suggestions when search query returns zero results.
+  ProductSearchFuzzySuggestionsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'productSearchFuzzySuggestionsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$productSearchFuzzySuggestionsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<String>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<String>> create(Ref ref) {
+    return productSearchFuzzySuggestions(ref);
+  }
+}
+
+String _$productSearchFuzzySuggestionsHash() =>
+    r'89d000228e01f46f0207e13506a5bc089b8c51ef';
 
 @ProviderFor(categories)
 final categoriesProvider = CategoriesProvider._();

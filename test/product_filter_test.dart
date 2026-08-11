@@ -7,6 +7,7 @@ import 'package:impulse_dex/models/product.dart';
 
 
 import 'package:impulse_dex/data/app_databases.dart';
+import 'package:impulse_dex/data/fts_utils.dart';
 
 void main() {
   group('ProductFilter Mechanism Tests', () {
@@ -114,6 +115,13 @@ void main() {
       // Condition 4: Multi-group verification
       // multiGroupProd should be present in Poultry, Vaccine, AND Feed Additives
       expect(isPoultry(multiGroupProd) && isVaccine(multiGroupProd) && isFeedAdditive(multiGroupProd), isTrue);
+    });
+
+    test('Levenshtein distance handles fuzzy string matching', () {
+      expect(levenshteinDistance('cipro', 'cipro'), equals(0));
+      expect(levenshteinDistance('cipro', 'ciprofloxacin'), equals(8));
+      expect(levenshteinDistance('ciprofloxasin', 'ciprofloxacin'), equals(1));
+      expect(levenshteinDistance('vacine', 'vaccine'), equals(1));
     });
   });
 }

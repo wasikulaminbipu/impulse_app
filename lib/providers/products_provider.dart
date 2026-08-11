@@ -5,6 +5,7 @@ import 'package:impulse_dex/models/app_maintenance.dart';
 import 'package:impulse_dex/data/product_dao.dart';
 import 'package:impulse_dex/data/lookup_dao.dart';
 import 'package:impulse_dex/data/manufacturer_dao.dart';
+import 'package:impulse_dex/data/fts_utils.dart';
 import 'package:impulse_dex/providers/database_provider.dart';
 
 import 'package:impulse_dex/providers/app_maintenance_provider.dart';
@@ -46,16 +47,51 @@ Future<LookupDao> lookupDao(Ref ref) async {
 // ------------------------------------------------------------
 
 @riverpod
-class ProductSearchQuery extends _$ProductSearchQuery with DebouncedQuery {
+class ProductSearchQuery extends _$ProductSearchQuery {
   @override
-  String build() {
-    ref.onDispose(cancelDebounce);
-    return '';
+  String build() => '';
+
+  void update(String newQuery) {
+    state = newQuery;
   }
 
-  void updateQuery(String query) {
-    debouncedUpdate(query, (val) => state = val);
+  void updateQuery(String newQuery) {
+    state = newQuery;
   }
+
+  void clear() {
+    state = '';
+  }
+}
+
+/// Provides populated Autocomplete Trie data structure loaded from database terms.
+@Riverpod(keepAlive: true)
+Future<AutocompleteTrie> autocompleteTrie(Ref ref) async {
+  final dao = await ref.watch(productDaoProvider.future);
+  final terms = await dao.getAllSearchTerms();
+  final trie = AutocompleteTrie();
+  trie.populate(terms);
+  return trie;
+}
+
+/// Provides sub-millisecond autocomplete suggestions from in-memory trie.
+@riverpod
+Future<List<String>> productSearchTrieSuggestions(Ref ref) async {
+  final query = ref.watch(productSearchQueryProvider);
+  if (query.trim().isEmpty) return const [];
+
+  final trie = await ref.watch(autocompleteTrieProvider.future);
+  return trie.getSuggestions(query, maxResults: 5);
+}
+
+/// Provides fuzzy typo suggestions when search query returns zero results.
+@riverpod
+Future<List<String>> productSearchFuzzySuggestions(Ref ref) async {
+  final query = ref.watch(productSearchQueryProvider);
+  if (query.trim().isEmpty) return const [];
+  
+  final dao = await ref.watch(productDaoProvider.future);
+  return dao.findFuzzyProductSuggestions(query);
 }
 
 // Removed ProductCategoryTab

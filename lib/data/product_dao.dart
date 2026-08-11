@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:impulse_dex/data/fts_utils.dart';
 // Data access layer for products.db (schema v2).
 // Built on sqflite. See products_schema.sql and products_db_changes.md.
@@ -223,51 +224,122 @@ class ProductDao {
     final trimmed = query.trim();
     
     if (trimmed.isNotEmpty) {
+      final candidates = <int, Map<String, dynamic>>{};
+
+      // 1. FTS query
       final sanitizedTokens = sanitizeFtsQuery(trimmed);
       if (sanitizedTokens.isNotEmpty) {
         final isReady = await isFtsReady(db.executor, 'products_fts');
         if (isReady) {
-          where.add('fts.products_fts MATCH ?');
-          args.add(sanitizedTokens);
-          orderBy = 'ORDER BY bm25(fts.products_fts, 10.0, 10.0, 5.0, 2.0), p.title_en';
-          
+          final ftsWhere = List<String>.from(where);
+          final ftsArgs = List<Object?>.from(args);
+          ftsWhere.add('fts.products_fts MATCH ?');
+          ftsArgs.add(sanitizedTokens);
+
           final ftsJoin = 'JOIN products_fts fts ON fts.rowid = p.id';
           final sqlQuery = '''
-            SELECT DISTINCT p.* FROM products p
+            SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn FROM products p
             $ftsJoin
+            LEFT JOIN categories c ON c.id = p.category_id
             $join
-            WHERE ${where.join(' AND ')}
-            $orderBy
-            LIMIT ? OFFSET ?
+            WHERE ${ftsWhere.join(' AND ')}
           ''';
-          
           try {
-            rows = await db.executor.customQuery(sqlQuery, [...args, limit, offset]);
-          } catch (_) {
-            rows = [];
-          }
+            final ftsRows = await db.executor.customQuery(sqlQuery, ftsArgs);
+            for (final r in ftsRows) {
+              candidates[r['id'] as int] = r;
+            }
+          } catch (_) {}
         }
       }
-      
-      if (rows.isEmpty) {
-        final pattern = '%$trimmed%';
-        if (where.isNotEmpty && where.last.contains('MATCH')) {
-          where.removeLast();
-          args.removeLast();
-        }
-        where.add('(p.title_en LIKE ? OR p.title_bn LIKE ? OR p.short_description_en LIKE ? OR p.short_description_bn LIKE ?)');
-        args.addAll([pattern, pattern, pattern, pattern]);
-        orderBy = 'ORDER BY p.title_en';
-        
-        final sqlQuery = '''
-          SELECT DISTINCT p.* FROM products p
-          $join
-          WHERE ${where.join(' AND ')}
-          $orderBy
-          LIMIT ? OFFSET ?
-        ''';
-        rows = await db.executor.customQuery(sqlQuery, [...args, limit, offset]);
+
+      // 2. Comprehensive LIKE query across title, short description, category, composition & indications
+      final pattern = '%$trimmed%';
+      final baseWhere = List<String>.from(where);
+      final baseArgs = List<Object?>.from(args);
+      if (baseWhere.isNotEmpty && baseWhere.last.contains('MATCH')) {
+        baseWhere.removeLast();
+        baseArgs.removeLast();
       }
+
+      final likeWhere = List<String>.from(baseWhere);
+      final likeArgs = List<Object?>.from(baseArgs);
+      likeWhere.add('''
+        (
+          p.title_en LIKE ? OR p.title_bn LIKE ? OR 
+          p.short_description_en LIKE ? OR p.short_description_bn LIKE ? OR 
+          c.name_en LIKE ? OR c.name_bn LIKE ? OR
+          EXISTS (SELECT 1 FROM compositions comp WHERE comp.product_id = p.id AND (comp.active_ingredient_en LIKE ? OR comp.active_ingredient_bn LIKE ?)) OR
+          EXISTS (SELECT 1 FROM indications ind WHERE ind.product_id = p.id AND (ind.indication_en LIKE ? OR ind.indication_bn LIKE ?))
+        )
+      ''');
+      likeArgs.addAll([pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern]);
+
+      final likeSqlQuery = '''
+        SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn FROM products p
+        LEFT JOIN categories c ON c.id = p.category_id
+        $join
+        WHERE ${likeWhere.join(' AND ')}
+      ''';
+      try {
+        final likeRows = await db.executor.customQuery(likeSqlQuery, likeArgs);
+        for (final r in likeRows) {
+          candidates.putIfAbsent(r['id'] as int, () => r);
+        }
+      } catch (_) {}
+
+      // 3. Fuzzy fallback query
+      try {
+        final fuzzyRows = await _fuzzyFallbackSearch(trimmed, baseWhere, baseArgs, join);
+        for (final r in fuzzyRows) {
+          candidates.putIfAbsent(r['id'] as int, () => r);
+        }
+      } catch (_) {}
+
+      // Score and sort all candidate results
+      final qLower = trimmed.toLowerCase();
+      int getScore(Map<String, dynamic> row) {
+        final titleEn = (row['title_en'] as String? ?? '').toLowerCase();
+        final titleBn = (row['title_bn'] as String? ?? '').toLowerCase();
+        final catEn = (row['cat_name_en'] as String? ?? row['category_en'] as String? ?? '').toLowerCase();
+        final catBn = (row['cat_name_bn'] as String? ?? row['category_bn'] as String? ?? '').toLowerCase();
+
+        // Priority Tier 1: Exact title match
+        if (titleEn == qLower || titleBn == qLower) return 1;
+
+        // Priority Tier 2: Title starts with query
+        if (titleEn.startsWith(qLower) || titleBn.startsWith(qLower)) return 2;
+
+        // Priority Tier 3: Any word in title starts with query
+        final wordsEn = titleEn.split(RegExp(r'\s+'));
+        for (final w in wordsEn) {
+          if (w.startsWith(qLower)) return 3;
+        }
+
+        // Priority Tier 4: Title contains query
+        if (titleEn.contains(qLower) || titleBn.contains(qLower)) return 4;
+
+        // Priority Tier 5: Category exact match
+        if (catEn == qLower || catBn == qLower) return 5;
+
+        // Priority Tier 6: Category contains query
+        if (catEn.contains(qLower) || catBn.contains(qLower)) return 6;
+
+        // Priority Tier 7: Other field matches (composition, indication, description, FTS, fuzzy)
+        return 7;
+      }
+
+      final sortedList = candidates.values.toList();
+      sortedList.sort((a, b) {
+        final scoreA = getScore(a);
+        final scoreB = getScore(b);
+        if (scoreA != scoreB) return scoreA.compareTo(scoreB);
+        final titleA = (a['title_en'] as String? ?? '').toLowerCase();
+        final titleB = (b['title_en'] as String? ?? '').toLowerCase();
+        return titleA.compareTo(titleB);
+      });
+
+      rows = sortedList.skip(offset).take(limit).toList();
     } else {
       final sqlQuery = '''
         SELECT DISTINCT p.* FROM products p
@@ -282,12 +354,6 @@ class ProductDao {
     final products = await _hydrateList(rows.map(Product.fromRow).toList());
     return products.map((p) => p.toLabel()).toList();
   }
-
-  // ------------------------------------------------------------
-  // Manufacturer Detail Page: products by manufacturer.
-  // Single WHERE manufacturer_id = ? query now that manufacturers are a
-  // standalone entity (no more fuzzy-matching manufacturer name).
-  // ------------------------------------------------------------
 
   Future<List<Product>> getByManufacturer(
     int manufacturerId, {
@@ -305,6 +371,68 @@ class ProductDao {
     return _hydrateList(rows.map(Product.fromRow).toList());
   }
 
+  /// Fuzzy fallback search using Levenshtein distance matching on product title and category.
+  Future<List<Map<String, dynamic>>> _fuzzyFallbackSearch(
+    String query,
+    List<String> baseWhere,
+    List<Object?> baseArgs,
+    String joinSql,
+  ) async {
+    final trimmed = query.trim().toLowerCase();
+    if (trimmed.length < 2) return [];
+
+    final sqlQuery = '''
+      SELECT DISTINCT p.*, c.name_en as cat_en, c.name_bn as cat_bn FROM products p
+      LEFT JOIN categories c ON c.id = p.category_id
+      $joinSql
+      ${baseWhere.isNotEmpty ? 'WHERE ${baseWhere.join(' AND ')}' : ''}
+    ''';
+    final candidates = await db.executor.customQuery(sqlQuery, baseArgs);
+
+    final scored = <Map<String, dynamic>>[];
+    for (final row in candidates) {
+      final titleEn = (row['title_en'] as String? ?? '').toLowerCase();
+      final titleBn = (row['title_bn'] as String? ?? '').toLowerCase();
+      final catEn = (row['cat_en'] as String? ?? '').toLowerCase();
+      final catBn = (row['cat_bn'] as String? ?? '').toLowerCase();
+
+      int minDistance = 999;
+      // Evaluate product title matches first (no score penalty)
+      for (final target in [titleEn, titleBn]) {
+        if (target.isEmpty) continue;
+        final words = target.split(RegExp(r'\s+'));
+        for (final word in words) {
+          if (word.isEmpty) continue;
+          final dist = levenshteinDistance(trimmed, word);
+          if (dist < minDistance) minDistance = dist;
+        }
+        final fullDist = levenshteinDistance(trimmed, target);
+        if (fullDist < minDistance) minDistance = fullDist;
+      }
+
+      // Evaluate category matches with a +2 score penalty so title matches take priority
+      for (final target in [catEn, catBn]) {
+        if (target.isEmpty) continue;
+        final words = target.split(RegExp(r'\s+'));
+        for (final word in words) {
+          if (word.isEmpty) continue;
+          final dist = levenshteinDistance(trimmed, word) + 2;
+          if (dist < minDistance) minDistance = dist;
+        }
+        final fullDist = levenshteinDistance(trimmed, target) + 2;
+        if (fullDist < minDistance) minDistance = fullDist;
+      }
+
+      final maxAllowed = trimmed.length <= 4 ? 1 : (trimmed.length <= 7 ? 2 : 3);
+      if (minDistance <= maxAllowed) {
+        scored.add({'row': row, 'score': minDistance});
+      }
+    }
+
+    scored.sort((a, b) => (a['score'] as int).compareTo(b['score'] as int));
+    return scored.map((e) => e['row'] as Map<String, dynamic>).toList();
+  }
+
   // ------------------------------------------------------------
   // Full-text search (replaces LIKE '%query%')
   // ------------------------------------------------------------
@@ -313,33 +441,18 @@ class ProductDao {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return [];
 
-    final sanitized = sanitizeFtsQuery(trimmed);
+    final labels = await getFilteredLabels(query: trimmed, limit: limit, offset: 0);
+    if (labels.isEmpty) return [];
 
-    try {
-      final rows = await db.executor.customQuery(
-        '''
-        SELECT p.* FROM products p
-        JOIN products_fts fts ON fts.rowid = p.id
-        WHERE products_fts MATCH ?
-        ORDER BY p.title_en
-        LIMIT ?
-        ''',
-        [sanitized, limit],
-      );
-      return _hydrateList(rows.map(Product.fromRow).toList());
-    } catch (e) {
-      final pattern = '%$trimmed%';
-      final rows = await db.executor.customQuery(
-        '''
-        SELECT * FROM products
-        WHERE title_en LIKE ? OR title_bn LIKE ? OR short_description_en LIKE ? OR short_description_bn LIKE ?
-        ORDER BY title_en
-        LIMIT ?
-        ''',
-        [pattern, pattern, pattern, pattern, limit],
-      );
-      return _hydrateList(rows.map(Product.fromRow).toList());
-    }
+    final ids = labels.map((l) => l.id).toList();
+    final where = <String>['p.id IN (${ids.map((_) => '?').join(',')})'];
+    final rows = await db.executor.customQuery(
+      'SELECT DISTINCT p.* FROM products p WHERE ${where.first}',
+      ids,
+    );
+    final rowMap = { for (var r in rows) r['id'] as int : r };
+    final orderedRows = ids.map((id) => rowMap[id]).whereType<Map<String, dynamic>>().toList();
+    return _hydrateList(orderedRows.map(Product.fromRow).toList());
   }
 
   // ------------------------------------------------------------
@@ -406,6 +519,76 @@ class ProductDao {
     return rows.map(Presentation.fromRow).toList();
   }
 
+  /// Finds close matching product title suggestions using Levenshtein distance
+  /// when direct search returns no results.
+  Future<List<String>> findFuzzyProductSuggestions(String query, {int maxSuggestions = 3}) async {
+    final trimmed = query.trim().toLowerCase();
+    if (trimmed.length < 3) return const [];
 
+    try {
+      final rows = await db.executor.customQuery(
+        'SELECT DISTINCT title_en FROM products WHERE title_en IS NOT NULL LIMIT 200'
+      );
+      
+      final candidates = <MapEntry<String, int>>[];
+      for (final row in rows) {
+        final title = row['title_en'] as String?;
+        if (title == null || title.isEmpty) continue;
+        final titleLower = title.toLowerCase();
+        
+        // Calculate distance on full title or first word
+        final firstWord = titleLower.split(' ').first;
+        final dist = levenshteinDistance(trimmed, firstWord);
+        
+        if (dist > 0 && dist <= 2) {
+          candidates.add(MapEntry(title, dist));
+        }
+      }
+
+      candidates.sort((a, b) => a.value.compareTo(b.value));
+      return candidates.map((e) => e.key).take(maxSuggestions).toList();
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Retrieves all product titles, category names, and target group names
+  /// for pre-populating the in-memory Autocomplete Trie.
+  Future<List<String>> getAllSearchTerms() async {
+    final terms = <String>{};
+    try {
+      final titleRows = await db.executor.customQuery(
+        'SELECT DISTINCT title_en, title_bn FROM products WHERE is_active = 1'
+      );
+      for (final r in titleRows) {
+        final en = r['title_en'] as String?;
+        final bn = r['title_bn'] as String?;
+        if (en != null && en.isNotEmpty) terms.add(en);
+        if (bn != null && bn.isNotEmpty) terms.add(bn);
+      }
+
+      final catRows = await db.executor.customQuery(
+        'SELECT DISTINCT name_en, name_bn FROM categories'
+      );
+      for (final r in catRows) {
+        final en = r['name_en'] as String?;
+        final bn = r['name_bn'] as String?;
+        if (en != null && en.isNotEmpty) terms.add(en);
+        if (bn != null && bn.isNotEmpty) terms.add(bn);
+      }
+
+      final tgRows = await db.executor.customQuery(
+        'SELECT DISTINCT name_en, name_bn FROM target_groups'
+      );
+      for (final r in tgRows) {
+        final en = r['name_en'] as String?;
+        final bn = r['name_bn'] as String?;
+        if (en != null && en.isNotEmpty) terms.add(en);
+        if (bn != null && bn.isNotEmpty) terms.add(bn);
+      }
+    } catch (e, st) {
+      debugPrint('Error fetching search terms for trie: $e\n$st');
+    }
+    return terms.toList();
+  }
 }
-

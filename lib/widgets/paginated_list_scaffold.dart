@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:impulse_dex/providers/paginated_state.dart';
@@ -46,11 +46,17 @@ class _PaginatedListScaffoldState<T>
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _searchController.addListener(_onSearchTextChange);
+  }
+
+  void _onSearchTextChange() {
+    setState(() {});
   }
 
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
+    _searchController.removeListener(_onSearchTextChange);
     _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -129,7 +135,7 @@ class _PaginatedListScaffoldState<T>
               left: 12,
               right: 12,
               top: 12,
-              bottom: 96,
+              bottom: 74,
             ),
             itemBuilder: (context, index) {
               if (index == items.length) {

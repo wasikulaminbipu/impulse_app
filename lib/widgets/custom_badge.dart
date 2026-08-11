@@ -6,6 +6,7 @@ class CustomBadge extends StatelessWidget {
   final TextStyle? textStyle;
   final TextOverflow? overflow;
   final int? maxLines;
+  final VoidCallback? onTap;
 
   const CustomBadge({
     super.key,
@@ -19,11 +20,12 @@ class CustomBadge extends StatelessWidget {
     ),
     this.overflow,
     this.maxLines,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final badge = Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color,
@@ -36,5 +38,15 @@ class CustomBadge extends StatelessWidget {
         maxLines: maxLines,
       ),
     );
+
+    if (onTap != null) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: badge,
+      );
+    }
+
+    return badge;
   }
 }

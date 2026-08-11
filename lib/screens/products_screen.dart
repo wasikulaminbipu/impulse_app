@@ -5,6 +5,7 @@ import 'package:impulse_dex/constants/app_assets.dart';
 import 'package:impulse_dex/models/product.dart';
 import 'package:impulse_dex/providers/app_maintenance_provider.dart';
 import 'package:impulse_dex/providers/products_provider.dart';
+import 'package:impulse_dex/providers/search_history_provider.dart';
 import 'package:impulse_dex/widgets/product_card.dart';
 import 'package:impulse_dex/widgets/skeleton_loader.dart';
 
@@ -19,6 +20,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
 
   final List<String> _categories = [
     'All',
@@ -33,22 +35,130 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: _categories.length, vsync: this);
+    _searchFocusNode.addListener(_onFocusChange);
+    _searchController.addListener(_onSearchTextChange);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FlutterNativeSplash.remove();
     });
   }
 
+  void _onFocusChange() {
+    setState(() {});
+  }
+
+  void _onSearchTextChange() {
+    setState(() {});
+  }
+
   @override
   void dispose() {
+    _searchFocusNode.removeListener(_onFocusChange);
+    _searchController.removeListener(_onSearchTextChange);
+    _searchFocusNode.dispose();
     _tabController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  Widget _buildSearchHistoryChips(
+      BuildContext context, WidgetRef ref, String lang) {
+    if (!_searchFocusNode.hasFocus) {
+      return const SizedBox.shrink();
+    }
+
+    final query = _searchController.text.trim();
+    if (query.isNotEmpty) {
+      final suggestionsAsync = ref.watch(productSearchTrieSuggestionsProvider);
+      return suggestionsAsync.when(
+        data: (items) {
+          if (items.isEmpty) return const SizedBox.shrink();
+          return SizedBox(
+            height: 32,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final term = items[index];
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: ActionChip(
+                    avatar: Icon(Icons.auto_awesome, size: 14, color: Theme.of(context).colorScheme.primary),
+                    label: Text(
+                      term,
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                    onPressed: () {
+                      _searchController.text = term;
+                      ref
+                          .read(productSearchQueryProvider.notifier)
+                          .updateQuery(term);
+                      ref.read(searchHistoryProvider.notifier).addQuery(term);
+                    },
+                  ),
+                );
+              },
+            ),
+          );
+        },
+        loading: () => const SizedBox.shrink(),
+        error: (e, s) => const SizedBox.shrink(),
+      );
+    }
+
+    final historyAsync = ref.watch(searchHistoryProvider);
+    return historyAsync.when(
+      data: (items) {
+        if (items.isEmpty) return const SizedBox.shrink();
+        return SizedBox(
+          height: 32,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final term = items[index];
+              return Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: ActionChip(
+                  avatar: const Icon(Icons.history, size: 14),
+                  label: Text(
+                    term,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  onPressed: () {
+                    _searchController.text = term;
+                    ref
+                        .read(productSearchQueryProvider.notifier)
+                        .updateQuery(term);
+                  },
+                ),
+              );
+            },
+          ),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (e, s) => const SizedBox.shrink(),
+    );
+  }
+
+  void _onCategoryTap(String categoryName) {
+    _searchController.text = categoryName;
+    ref.read(productSearchQueryProvider.notifier).updateQuery(categoryName);
+    if (categoryName.trim().isNotEmpty) {
+      ref.read(searchHistoryProvider.notifier).addQuery(categoryName);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final lang = ref.watch(languageSettingProvider);
+    final history = ref.watch(searchHistoryProvider).value ?? [];
+    final trieSuggestions = ref.watch(productSearchTrieSuggestionsProvider).value ?? [];
+    final bool showChips = _searchFocusNode.hasFocus &&
+        (_searchController.text.trim().isNotEmpty ? trieSuggestions.isNotEmpty : history.isNotEmpty);
 
     return Scaffold(
       appBar: AppBar(
@@ -85,27 +195,39 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(130),
+          preferredSize: Size.fromHeight(showChips ? 140 : 102),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 10,
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 2, 16, 6),
                 child: TextField(
                   controller: _searchController,
+                  focusNode: _searchFocusNode,
                   onChanged: (val) => ref
                       .read(productSearchQueryProvider.notifier)
                       .updateQuery(val),
+                  onSubmitted: (val) async {
+                    if (val.trim().isNotEmpty) {
+                      ref.read(searchHistoryProvider.notifier).addQuery(val);
+                      final dao = await ref.read(appMaintenanceDaoProvider.future);
+                      final currentItems = ref.read(paginatedCategoryProductsProvider('All')).value?.items.length ?? 0;
+                      await dao.logSearchEvent(val, currentItems);
+                    }
+                  },
                   decoration: InputDecoration(
                     hintText: lang == 'bn'
                         ? 'প্রোডাক্ট খুঁজুন...'
                         : 'Search products...',
-                    prefixIcon: Icon(Icons.search, color: colorScheme.onSurfaceVariant),
+                    isDense: true,
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: colorScheme.primary,
+                      size: 22,
+                    ),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear),
+                            icon: const Icon(Icons.clear_rounded, size: 20),
                             onPressed: () {
                               _searchController.clear();
                               ref
@@ -116,27 +238,30 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
                           )
                         : null,
                     filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                    fillColor: colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.4),
                     contentPadding: const EdgeInsets.symmetric(
-                      vertical: 14,
-                      horizontal: 20,
+                      vertical: 11,
+                      horizontal: 16,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(24),
                       borderSide: BorderSide(
-                        color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                        color:
+                            colorScheme.outlineVariant.withValues(alpha: 0.4),
                         width: 1,
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(24),
                       borderSide: BorderSide(
-                        color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                        color:
+                            colorScheme.outlineVariant.withValues(alpha: 0.4),
                         width: 1,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(24),
                       borderSide: BorderSide(
                         color: colorScheme.primary,
                         width: 1.5,
@@ -145,37 +270,39 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
                   ),
                 ),
               ),
-              TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabAlignment: TabAlignment.start,
-                labelColor: colorScheme.primary,
-                unselectedLabelColor: colorScheme.onSurfaceVariant.withValues(
-                  alpha: 0.7,
-                ),
-                indicatorColor: colorScheme.primary,
-                indicatorWeight: 3,
-                indicatorSize: TabBarIndicatorSize.label,
-                dividerColor: Colors.transparent, // Remove default border
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                  letterSpacing: 0.3,
-                ),
-                unselectedLabelStyle: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                ),
-                tabs: _categories
-                    .map(
-                      (c) => Tab(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Text(c),
+              _buildSearchHistoryChips(context, ref, lang),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: TabBar(
+                  controller: _tabController,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
+                  labelColor: colorScheme.primary,
+                  unselectedLabelColor:
+                      colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                  indicatorColor: colorScheme.primary,
+                  indicatorWeight: 3,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  dividerColor: Colors.transparent,
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 14),
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13.5,
+                    letterSpacing: 0.2,
+                  ),
+                  unselectedLabelStyle: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13.5,
+                  ),
+                  tabs: _categories
+                      .map(
+                        (c) => Tab(
+                          height: 36,
+                          text: c,
                         ),
-                      ),
-                    )
-                    .toList(),
+                      )
+                      .toList(),
+                ),
               ),
             ],
           ),
@@ -183,145 +310,154 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: _categories
-            .map((c) => _CategoryProductList(category: c))
-            .toList(),
+        children: _categories.map((category) {
+          return _ProductCategoryTab(
+            category: category,
+            onCategoryTap: _onCategoryTap,
+          );
+        }).toList(),
       ),
     );
   }
 }
 
-class _CategoryProductList extends ConsumerStatefulWidget {
+class _ProductCategoryTab extends ConsumerWidget {
   final String category;
-  const _CategoryProductList({required this.category});
+  final void Function(String categoryName)? onCategoryTap;
+
+  const _ProductCategoryTab({
+    required this.category,
+    this.onCategoryTap,
+  });
 
   @override
-  ConsumerState<_CategoryProductList> createState() =>
-      _CategoryProductListState();
-}
-
-class _CategoryProductListState extends ConsumerState<_CategoryProductList> {
-  final ScrollController _scrollController = ScrollController();
-  final Set<int> _animatedItems = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 300) {
-      ref
-          .read(paginatedCategoryProductsProvider(widget.category).notifier)
-          .fetchNextPage();
-    }
-    if (_animatedItems.length > 500) {
-      _animatedItems.clear(); // prevent memory leak over long scrolling
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final paginatedAsync = ref.watch(
-      paginatedCategoryProductsProvider(widget.category),
-    );
-    final colorScheme = Theme.of(context).colorScheme;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final searchQuery = ref.watch(productSearchQueryProvider);
     final lang = ref.watch(languageSettingProvider);
+    final productsAsync = ref.watch(paginatedCategoryProductsProvider(category));
 
-    return paginatedAsync.when(
+    return productsAsync.when(
       data: (state) {
         final products = state.items;
         if (products.isEmpty) {
+          final suggestionsAsync = ref.watch(productSearchFuzzySuggestionsProvider);
           return Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.inventory_2_outlined,
-                    size: 80,
-                    color: colorScheme.primary.withValues(alpha: 0.3),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.inventory_2_outlined,
+                  size: 64,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  lang == 'bn' ? 'কোনো প্রোডাক্ট পাওয়া যায়নি' : 'No products found',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
                   ),
+                ),
+                if (searchQuery.isNotEmpty) ...[
                   const SizedBox(height: 16),
-                  Text(
-                    lang == 'bn'
-                        ? 'কোনো প্রোডাক্ট পাওয়া যায়নি'
-                        : 'No products found',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    lang == 'bn'
-                        ? 'অনুগ্রহ করে কিওয়ার্ড পরিবর্তন করুন অথবা অন্য কোনো ক্যাটাগরি নির্বাচন করুন।'
-                        : 'Try modifying your search or select another category.',
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.8)),
-                    textAlign: TextAlign.center,
+                  suggestionsAsync.maybeWhen(
+                    data: (suggestions) {
+                      if (suggestions.isEmpty) return const SizedBox.shrink();
+                      return Column(
+                        children: [
+                          Text(
+                            lang == 'bn' ? 'আপনি কি বোঝাতে চেয়েছেন:' : 'Did you mean:',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.center,
+                            children: suggestions.map((suggestion) {
+                              return ActionChip(
+                                label: Text(suggestion),
+                                onPressed: () {
+                                  if (onCategoryTap != null) {
+                                    onCategoryTap!(suggestion);
+                                  } else {
+                                    ref.read(productSearchQueryProvider.notifier).updateQuery(suggestion);
+                                  }
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      );
+                    },
+                    orElse: () => const SizedBox.shrink(),
                   ),
                 ],
-              ),
+              ],
             ),
           );
         }
-        return ListView.builder(
-          controller: _scrollController,
-          itemCount: products.length + (state.hasMore ? 1 : 0),
-          padding: const EdgeInsets.only(
-            left: 12,
-            right: 12,
-            top: 12,
-            bottom: 84,
-          ),
-          itemBuilder: (context, index) {
-            if (index == products.length) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Center(
-                  child: SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2.5),
-                  ),
-                ),
-              );
+
+        final animatedItems = <int>{};
+        return NotificationListener<ScrollNotification>(
+          onNotification: (scrollInfo) {
+            if (scrollInfo.metrics.pixels >=
+                scrollInfo.metrics.maxScrollExtent - 300) {
+              ref
+                  .read(paginatedCategoryProductsProvider(category).notifier)
+                  .fetchNextPage();
             }
-            final product = products[index];
-            final bool hasAnimated = _animatedItems.contains(product.id);
-            if (!hasAnimated) {
-              _animatedItems.add(product.id);
-              return _AnimatedProductCard(
-                index: index,
-                product: product,
-                lang: lang,
-              );
-            } else {
-              return RepaintBoundary(
-                child: ProductCard(
-                  key: ValueKey(product.id),
+            return false;
+          },
+          child: ListView.builder(
+            itemCount: products.length + (state.hasMore ? 1 : 0),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 74),
+            itemBuilder: (context, index) {
+              if (index == products.length) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    ),
+                  ),
+                );
+              }
+              final product = products[index];
+              final bool hasAnimated = animatedItems.contains(product.id);
+              if (!hasAnimated) {
+                animatedItems.add(product.id);
+                return _AnimatedProductCard(
+                  index: index,
                   product: product,
                   lang: lang,
-                ),
-              );
-            }
-          },
+                  searchQuery: searchQuery,
+                  onCategoryTap: onCategoryTap,
+                );
+              } else {
+                return RepaintBoundary(
+                  child: ProductCard(
+                    key: ValueKey(product.id),
+                    product: product,
+                    lang: lang,
+                    searchQuery: searchQuery,
+                    onCategoryTap: onCategoryTap,
+                  ),
+                );
+              }
+            },
+          ),
         );
       },
       loading: () => ListView.builder(
         itemCount: 6,
-        padding: const EdgeInsets.only(top: 8, bottom: 84),
+        padding: const EdgeInsets.only(top: 8, bottom: 74),
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) => const ProductCardSkeleton(),
       ),
@@ -354,11 +490,15 @@ class _AnimatedProductCard extends StatefulWidget {
   final int index;
   final ProductLabel product;
   final String lang;
+  final String searchQuery;
+  final void Function(String categoryName)? onCategoryTap;
 
   const _AnimatedProductCard({
     required this.index,
     required this.product,
     required this.lang,
+    required this.searchQuery,
+    this.onCategoryTap,
   });
 
   @override
@@ -410,6 +550,8 @@ class _AnimatedProductCardState extends State<_AnimatedProductCard> with SingleT
             key: ValueKey(widget.product.id),
             product: widget.product,
             lang: widget.lang,
+            searchQuery: widget.searchQuery,
+            onCategoryTap: widget.onCategoryTap,
           ),
         ),
       ),

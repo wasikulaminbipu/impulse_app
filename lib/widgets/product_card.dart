@@ -6,6 +6,7 @@ import 'package:impulse_dex/widgets/custom_badge.dart';
 import 'package:impulse_dex/widgets/group_logo_viewer.dart';
 import 'package:impulse_dex/widgets/favorite_button.dart';
 import 'package:impulse_dex/widgets/asset_fallback_image.dart';
+import 'package:impulse_dex/widgets/highlight_text.dart';
 import 'package:impulse_dex/utils/bilingual_string.dart';
 import 'package:impulse_dex/utils/app_constants.dart';
 import 'package:impulse_dex/theme/app_theme.dart';
@@ -15,6 +16,8 @@ class ProductCard extends StatefulWidget {
   final bool disableNavigation;
   final String lang;
   final String heroTagPrefix;
+  final String searchQuery;
+  final void Function(String categoryName)? onCategoryTap;
 
   const ProductCard({
     super.key,
@@ -22,6 +25,8 @@ class ProductCard extends StatefulWidget {
     this.disableNavigation = false,
     this.lang = 'en',
     this.heroTagPrefix = '',
+    this.searchQuery = '',
+    this.onCategoryTap,
   });
 
   @override
@@ -121,6 +126,18 @@ class _ProductCardState extends State<ProductCard> {
                                       : '',
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
+                                  onTap: widget.onCategoryTap != null &&
+                                          widget.product.categoryId != 0
+                                      ? () {
+                                          final catName = widget
+                                              .product.category.nameEn
+                                              .resolve(
+                                            widget.product.category.nameBn,
+                                            widget.lang,
+                                          );
+                                          widget.onCategoryTap!(catName);
+                                        }
+                                      : null,
                                 ),
                               ),
                               const SizedBox(width: 6),
@@ -136,14 +153,14 @@ class _ProductCardState extends State<ProductCard> {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            widget.product.titleEn.resolve(
+                          HighlightText(
+                            text: widget.product.titleEn.resolve(
                               widget.product.titleBn,
                               widget.lang,
                             ),
+                            query: widget.searchQuery,
                             style: const TextStyle(
-                              fontWeight: FontWeight
-                                  .w800, // Extra bold for premium feel
+                              fontWeight: FontWeight.w800,
                               fontSize: 16,
                               letterSpacing: -0.3,
                             ),
@@ -153,11 +170,12 @@ class _ProductCardState extends State<ProductCard> {
                           const SizedBox(height: 4),
                           if (widget.product.shortDescriptionEn != null &&
                               widget.product.shortDescriptionEn!.isNotEmpty)
-                            Text(
-                              widget.product.shortDescriptionEn!.resolve(
+                            HighlightText(
+                              text: widget.product.shortDescriptionEn!.resolve(
                                 widget.product.shortDescriptionBn,
                                 widget.lang,
                               ),
+                              query: widget.searchQuery,
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
