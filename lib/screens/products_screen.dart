@@ -7,6 +7,7 @@ import 'package:impulse_dex/providers/app_maintenance_provider.dart';
 import 'package:impulse_dex/providers/products_provider.dart';
 import 'package:impulse_dex/providers/search_history_provider.dart';
 import 'package:impulse_dex/widgets/product_card.dart';
+import 'package:impulse_dex/widgets/privacy_policy_dialog.dart';
 import 'package:impulse_dex/widgets/skeleton_loader.dart';
 
 class ProductsScreen extends ConsumerStatefulWidget {
@@ -185,6 +186,16 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline_rounded, size: 20),
+            tooltip: 'Privacy Policy & Info',
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => const PrivacyPolicyDialog(),
+              );
+            },
+          ),
           IconButton(
             icon: Text(
               lang == 'bn' ? 'EN' : 'বাংলা',

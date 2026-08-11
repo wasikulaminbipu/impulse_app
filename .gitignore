@@ -50,3 +50,8 @@ app.*.map.json
 *.clinerules
 APP_Plan.md
 
+# Keystore secrets
+key.properties
+*.jks
+*.keystore
+
