@@ -247,15 +247,19 @@ class ProductDetailsScreen extends ConsumerWidget {
       );
     }
 
-    return Image.asset(
-      imagePath,
-      fit: BoxFit.cover,
-      errorBuilder: (ctx, err, stackTrace) => Container(
-        color: colorScheme.primaryContainer,
-        child: Icon(
-          Icons.medication,
-          size: 80,
-          color: colorScheme.onPrimaryContainer,
+    return Container(
+      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+      padding: const EdgeInsets.all(12),
+      child: Image.asset(
+        imagePath,
+        fit: BoxFit.contain,
+        errorBuilder: (ctx, err, stackTrace) => Container(
+          color: colorScheme.primaryContainer,
+          child: Icon(
+            Icons.medication,
+            size: 80,
+            color: colorScheme.onPrimaryContainer,
+          ),
         ),
       ),
     );

@@ -44,7 +44,11 @@ class _ProductCardState extends State<ProductCard> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.2 : 0.05),
+              color: Colors.black.withValues(
+                alpha: Theme.of(context).brightness == Brightness.dark
+                    ? 0.2
+                    : 0.05,
+              ),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -62,15 +66,19 @@ class _ProductCardState extends State<ProductCard> {
                       Navigator.of(context).push(
                         PageRouteBuilder(
                           transitionDuration: const Duration(milliseconds: 400),
-                          reverseTransitionDuration: const Duration(milliseconds: 400),
-                          pageBuilder: (context, animation, secondaryAnimation) =>
-                              ProductDetailsScreen(product: widget.product),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            );
-                          },
+                          reverseTransitionDuration: const Duration(
+                            milliseconds: 400,
+                          ),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  ProductDetailsScreen(product: widget.product),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
                         ),
                       );
                     },
@@ -81,7 +89,8 @@ class _ProductCardState extends State<ProductCard> {
                     width: 110,
                     height: 125,
                     child: Hero(
-                      tag: '${widget.heroTagPrefix}product-image-${widget.product.id}',
+                      tag:
+                          '${widget.heroTagPrefix}product-image-${widget.product.id}',
                       child: Material(
                         type: MaterialType.transparency,
                         child: _buildProductImage(colorScheme),
@@ -98,15 +107,23 @@ class _ProductCardState extends State<ProductCard> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomBadge(
-                                color: _getCategoryColor(context, widget.product),
-                                text: widget.product.categoryId != 0
-                                    ? widget.product.category.nameEn.resolve(
-                                        widget.product.category.nameBn,
-                                        widget.lang,
-                                      )
-                                    : '',
+                              Flexible(
+                                child: CustomBadge(
+                                  color: _getCategoryColor(
+                                    context,
+                                    widget.product,
+                                  ),
+                                  text: widget.product.categoryId != 0
+                                      ? widget.product.category.nameEn.resolve(
+                                          widget.product.category.nameBn,
+                                          widget.lang,
+                                        )
+                                      : '',
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
                               ),
+                              const SizedBox(width: 6),
                               GroupLogoViewer(
                                 groupLogos: widget.product.targetGroups
                                     .map((e) => e.iconName ?? "")
@@ -120,9 +137,13 @@ class _ProductCardState extends State<ProductCard> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            widget.product.titleEn.resolve(widget.product.titleBn, widget.lang),
+                            widget.product.titleEn.resolve(
+                              widget.product.titleBn,
+                              widget.lang,
+                            ),
                             style: const TextStyle(
-                              fontWeight: FontWeight.w800, // Extra bold for premium feel
+                              fontWeight: FontWeight
+                                  .w800, // Extra bold for premium feel
                               fontSize: 16,
                               letterSpacing: -0.3,
                             ),
@@ -140,7 +161,10 @@ class _ProductCardState extends State<ProductCard> {
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant
+                                    .withValues(alpha: 0.8),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -149,7 +173,9 @@ class _ProductCardState extends State<ProductCard> {
                           Wrap(
                             spacing: 6,
                             runSpacing: 4,
-                            children: widget.product.presentations.map((presentation) {
+                            children: widget.product.presentations.map((
+                              presentation,
+                            ) {
                               return CustomBadge(
                                 text:
                                     '${presentation.size ?? ''} : ৳ ${presentation.mrp?.toStringAsFixed(2) ?? ''}',
@@ -157,7 +183,9 @@ class _ProductCardState extends State<ProductCard> {
                                 textStyle: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                 ),
                               );
                             }).toList(),
@@ -176,11 +204,16 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _buildProductImage(ColorScheme colorScheme) {
-    return AssetFallbackImage(
-      imagePath: widget.product.fullImageUrl,
-      width: double.infinity,
-      height: double.infinity,
-      fallbackIcon: Icons.medication,
+    return Container(
+      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+      padding: const EdgeInsets.all(4),
+      child: AssetFallbackImage(
+        imagePath: widget.product.fullImageUrl,
+        width: double.infinity,
+        height: double.infinity,
+        fallbackIcon: Icons.medication,
+        fit: BoxFit.contain,
+      ),
     );
   }
 
@@ -193,22 +226,29 @@ class _ProductCardState extends State<ProductCard> {
     final categoryColors = Theme.of(context).extension<CategoryColors>();
     final defaultColor = categoryColors?.defaultCategoryColor ?? Colors.grey;
     final categoryName = _getCategoryName(product);
-    
-    if (categoryName.toLowerCase().contains(AppConstants.categoryFeedAdditive.toLowerCase())) {
+
+    if (categoryName.toLowerCase().contains(
+      AppConstants.categoryFeedAdditive.toLowerCase(),
+    )) {
       return categoryColors?.feedAdditiveColor ?? defaultColor;
     }
-    if (categoryName.toLowerCase().contains(AppConstants.categoryVaccine.toLowerCase())) {
+    if (categoryName.toLowerCase().contains(
+      AppConstants.categoryVaccine.toLowerCase(),
+    )) {
       return categoryColors?.vaccineColor ?? defaultColor;
     }
 
     final hasPoultry = product.targetGroups.any(
-      (tg) => tg.nameEn.toLowerCase() == AppConstants.categoryPoultry.toLowerCase(),
+      (tg) =>
+          tg.nameEn.toLowerCase() == AppConstants.categoryPoultry.toLowerCase(),
     );
     final hasCattle = product.targetGroups.any(
-      (tg) => tg.nameEn.toLowerCase() == AppConstants.categoryCattle.toLowerCase(),
+      (tg) =>
+          tg.nameEn.toLowerCase() == AppConstants.categoryCattle.toLowerCase(),
     );
     final hasAqua = product.targetGroups.any(
-      (tg) => tg.nameEn.toLowerCase() == AppConstants.categoryAqua.toLowerCase(),
+      (tg) =>
+          tg.nameEn.toLowerCase() == AppConstants.categoryAqua.toLowerCase(),
     );
 
     if (hasPoultry) {

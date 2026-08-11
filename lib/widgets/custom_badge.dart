@@ -4,6 +4,9 @@ class CustomBadge extends StatelessWidget {
   final String text;
   final Color color;
   final TextStyle? textStyle;
+  final TextOverflow? overflow;
+  final int? maxLines;
+
   const CustomBadge({
     super.key,
     required this.color,
@@ -14,6 +17,8 @@ class CustomBadge extends StatelessWidget {
       fontWeight: FontWeight.bold,
       letterSpacing: 0.5,
     ),
+    this.overflow,
+    this.maxLines,
   });
 
   @override
@@ -27,7 +32,9 @@ class CustomBadge extends StatelessWidget {
       child: Text(
         text,
         style: textStyle,
+        overflow: overflow,
+        maxLines: maxLines,
       ),
-      );
+    );
   }
 }
