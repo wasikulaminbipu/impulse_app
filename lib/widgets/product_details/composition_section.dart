@@ -1,7 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:impulse_dex/models/product.dart';
 import 'package:impulse_dex/utils/bilingual_string.dart';
-import 'package:impulse_dex/screens/product_details/components/section_card.dart';
+import 'package:impulse_dex/widgets/product_details/section_card.dart';
 
 class CompositionSection extends StatelessWidget {
   final List<Composition> compositions;

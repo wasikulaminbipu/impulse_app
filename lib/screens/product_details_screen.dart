@@ -12,12 +12,12 @@ import 'package:impulse_dex/widgets/favorite_button.dart';
 import 'package:impulse_dex/screens/sales_personnels_screen.dart';
 import 'package:impulse_dex/utils/bilingual_string.dart';
 
-import 'package:impulse_dex/screens/product_details/components/composition_section.dart';
-import 'package:impulse_dex/screens/product_details/components/indications_section.dart';
-import 'package:impulse_dex/screens/product_details/components/directions_section.dart';
-import 'package:impulse_dex/screens/product_details/components/precautions_section.dart';
-import 'package:impulse_dex/screens/product_details/components/presentations_section.dart';
-import 'package:impulse_dex/screens/product_details/components/manufacturer_section.dart';
+import 'package:impulse_dex/widgets/product_details/composition_section.dart';
+import 'package:impulse_dex/widgets/product_details/indications_section.dart';
+import 'package:impulse_dex/widgets/product_details/directions_section.dart';
+import 'package:impulse_dex/widgets/product_details/precautions_section.dart';
+import 'package:impulse_dex/widgets/product_details/presentations_section.dart';
+import 'package:impulse_dex/widgets/product_details/manufacturer_section.dart';
 
 class ProductDetailsScreen extends ConsumerWidget {
   final ProductLabel product;
