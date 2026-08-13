@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_dex/models/distributor.dart';
 import 'package:impulse_dex/models/app_maintenance.dart';
@@ -157,10 +157,40 @@ class _SalesPersonnelCard extends StatelessWidget {
                 Expanded(
                   child: TextButton.icon(
                     onPressed: () async {
-                      if (personnel.mobile != null && personnel.mobile!.isNotEmpty) {
-                        final Uri uri = Uri.parse('tel:${personnel.mobile}');
-                        if (await canLaunchUrl(uri)) {
-                          await launchUrl(uri);
+                      final rawMobile = personnel.mobile;
+                      if (rawMobile != null && rawMobile.trim().isNotEmpty) {
+                        final cleanMobile = rawMobile.replaceAll(RegExp(r'[^\d+]'), '');
+                        final Uri uri = Uri.parse('tel:$cleanMobile');
+                        try {
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri);
+                          } else {
+                            await launchUrl(uri);
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  lang == 'bn'
+                                      ? 'কল করা সম্ভব হচ্ছে না: $cleanMobile'
+                                      : 'Could not make call to $cleanMobile',
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                      } else {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                lang == 'bn'
+                                    ? 'ফোন নম্বর পাওয়া যায়নি'
+                                    : 'Phone number not available',
+                              ),
+                            ),
+                          );
                         }
                       }
                     },
