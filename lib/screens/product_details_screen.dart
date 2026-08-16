@@ -207,7 +207,7 @@ class ProductDetailsScreen extends ConsumerWidget {
                       },
                       icon: const Icon(Icons.people),
                       label: Text(
-                        lang == 'bn' ? 'প্রতিনিধিদের সাথে যোগাযোগ করুন' : 'Contact Representatives',
+                        lang == 'bn' ? 'ফিল্ড টিম খুঁজুন' : 'Find Field Team',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

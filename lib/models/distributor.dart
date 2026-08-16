@@ -56,6 +56,108 @@ abstract class Area with _$Area {
   };
 }
 
+@freezed
+abstract class Division with _$Division {
+  const factory Division({
+    required int id,
+    required String nameEn,
+    String? nameBn,
+  }) = _Division;
+
+  const Division._();
+
+  factory Division.fromRow(Map<String, dynamic> row) => Division(
+    id: row['id'] as int,
+    nameEn: row['name_en'] as String,
+    nameBn: row['name_bn'] as String?,
+  );
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'name_en': nameEn,
+    'name_bn': nameBn,
+  };
+}
+
+@freezed
+abstract class District with _$District {
+  const factory District({
+    required int id,
+    required int divisionId,
+    required String nameEn,
+    String? nameBn,
+  }) = _District;
+
+  const District._();
+
+  factory District.fromRow(Map<String, dynamic> row) => District(
+    id: row['id'] as int,
+    divisionId: row['division_id'] as int,
+    nameEn: row['name_en'] as String,
+    nameBn: row['name_bn'] as String?,
+  );
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'division_id': divisionId,
+    'name_en': nameEn,
+    'name_bn': nameBn,
+  };
+}
+
+@freezed
+abstract class Upazila with _$Upazila {
+  const factory Upazila({
+    required int id,
+    required int districtId,
+    required String nameEn,
+    String? nameBn,
+  }) = _Upazila;
+
+  const Upazila._();
+
+  factory Upazila.fromRow(Map<String, dynamic> row) => Upazila(
+    id: row['id'] as int,
+    districtId: row['district_id'] as int,
+    nameEn: row['name_en'] as String,
+    nameBn: row['name_bn'] as String?,
+  );
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'district_id': districtId,
+    'name_en': nameEn,
+    'name_bn': nameBn,
+  };
+}
+
+@freezed
+abstract class Base with _$Base {
+  const factory Base({
+    required int id,
+    required int areaId,
+    required String nameEn,
+    String? nameBn,
+    @Default([]) List<int> upazilaIds,
+  }) = _Base;
+
+  const Base._();
+
+  factory Base.fromRow(Map<String, dynamic> row) => Base(
+    id: row['id'] as int,
+    areaId: row['area_id'] as int,
+    nameEn: row['name_en'] as String,
+    nameBn: row['name_bn'] as String?,
+  );
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'area_id': areaId,
+    'name_en': nameEn,
+    'name_bn': nameBn,
+  };
+}
+
 // ============================================================================
 // DISTRIBUTOR MODEL (updated)
 // ============================================================================
@@ -69,7 +171,9 @@ abstract class Distributor with _$Distributor {
     String? designation,
     String? addressEn,
     String? addressBn,
-    required int areaId, // FK to areas.id (replaces area_en/area_bn/region_en/region_bn)
+    int? upazilaId, // Complete address hierarchy link
+    int? baseId, // Operational base link
+    int? areaId, // Fallback area link
     String? mobile,
     @Default(true) bool isActive,
     required DateTime createdAt,
@@ -85,7 +189,9 @@ abstract class Distributor with _$Distributor {
     designation: row['designation'] as String?,
     addressEn: row['address_en'] as String?,
     addressBn: row['address_bn'] as String?,
-    areaId: row['area_id'] as int,
+    upazilaId: row['upazila_id'] as int?,
+    baseId: row['base_id'] as int?,
+    areaId: row['area_id'] as int?,
     mobile: row['mobile'] as String?,
     isActive: (row['is_active'] as int?) == 1,
     createdAt: DateTime.tryParse(row['created_at'] as String? ?? '') ?? DateTime.now(),
@@ -99,6 +205,8 @@ abstract class Distributor with _$Distributor {
     'designation': designation,
     'address_en': addressEn,
     'address_bn': addressBn,
+    'upazila_id': upazilaId,
+    'base_id': baseId,
     'area_id': areaId,
     'mobile': mobile,
     'is_active': isActive ? 1 : 0,
@@ -108,7 +216,7 @@ abstract class Distributor with _$Distributor {
 }
 
 // ============================================================================
-// SALES PERSONNEL MODEL (new)
+// SALES PERSONNEL MODEL (updated)
 // ============================================================================
 
 @freezed
@@ -125,7 +233,10 @@ abstract class SalesPersonnel with _$SalesPersonnel {
     @Default(true) bool isActive,
     required DateTime createdAt,
     required DateTime updatedAt,
-    @Default([]) List<int> areaIds, // populated via sales_personnel_areas junction table
+    @Default([]) List<int> regionIds, // sales_personnel_regions
+    @Default([]) List<int> areaIds,   // sales_personnel_areas
+    @Default([]) List<int> baseIds,   // sales_personnel_bases
+    @Default([]) List<int> upazilaIds,// sales_personnel_upazilas
   }) = _SalesPersonnel;
 
   const SalesPersonnel._();
@@ -182,7 +293,10 @@ abstract class VetDoctor with _$VetDoctor {
     @Default(true) bool isActive,
     required DateTime createdAt,
     required DateTime updatedAt,
-    @Default([]) List<int> areaIds, // populated via vet_doctors_areas junction table
+    @Default([]) List<int> regionIds, // vet_doctors_regions
+    @Default([]) List<int> areaIds,   // vet_doctors_areas
+    @Default([]) List<int> baseIds,   // vet_doctors_bases
+    @Default([]) List<int> upazilaIds,// vet_doctors_upazilas
   }) = _VetDoctor;
 
   const VetDoctor._();
@@ -248,20 +362,38 @@ abstract class DistributorWithLocation with _$DistributorWithLocation {
   String? get regionNameBn => region.nameBn;
 }
 
-/// SalesPersonnel with area/region details
+/// SalesPersonnel with full scope details (regions, areas, bases, upazilas)
 @freezed
 abstract class SalesPersonnelWithAreas with _$SalesPersonnelWithAreas {
   const factory SalesPersonnelWithAreas({
     required SalesPersonnel personnel,
     required List<Area> areas,
+    @Default([]) List<Region> regions,
+    @Default([]) List<Base> bases,
+    @Default([]) List<Upazila> upazilas,
   }) = _SalesPersonnelWithAreas;
 }
 
-/// VetDoctor with area/region details
+/// VetDoctor with full scope details (regions, areas, bases, upazilas)
 @freezed
 abstract class VetDoctorWithAreas with _$VetDoctorWithAreas {
   const factory VetDoctorWithAreas({
     required VetDoctor doctor,
     required List<Area> areas,
+    @Default([]) List<Region> regions,
+    @Default([]) List<Base> bases,
+    @Default([]) List<Upazila> upazilas,
   }) = _VetDoctorWithAreas;
 }
+
+/// Base with area, region, and covered upazilas details
+@freezed
+abstract class BaseWithUpazilas with _$BaseWithUpazilas {
+  const factory BaseWithUpazilas({
+    required Base base,
+    required Area area,
+    required Region region,
+    required List<Upazila> upazilas,
+  }) = _BaseWithUpazilas;
+}
+

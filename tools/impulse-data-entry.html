@@ -256,11 +256,84 @@ async function saveDb(forceDialog){
   }
 }
 
+function ensureDistributorsSchema(){
+  const ddl = [
+    `CREATE TABLE IF NOT EXISTS divisions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name_en TEXT NOT NULL UNIQUE,
+      name_bn TEXT NOT NULL
+    );`,
+    `CREATE TABLE IF NOT EXISTS districts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      division_id INTEGER NOT NULL REFERENCES divisions(id) ON DELETE CASCADE,
+      name_en TEXT NOT NULL,
+      name_bn TEXT NOT NULL
+    );`,
+    `CREATE TABLE IF NOT EXISTS upazilas (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      district_id INTEGER NOT NULL REFERENCES districts(id) ON DELETE CASCADE,
+      name_en TEXT NOT NULL,
+      name_bn TEXT NOT NULL
+    );`,
+    `CREATE TABLE IF NOT EXISTS bases (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      area_id INTEGER NOT NULL REFERENCES areas(id) ON DELETE CASCADE,
+      name_en TEXT NOT NULL,
+      name_bn TEXT NOT NULL
+    );`,
+    `CREATE TABLE IF NOT EXISTS base_upazilas (
+      base_id INTEGER NOT NULL REFERENCES bases(id) ON DELETE CASCADE,
+      upazila_id INTEGER NOT NULL REFERENCES upazilas(id) ON DELETE CASCADE,
+      PRIMARY KEY (base_id, upazila_id)
+    );`,
+    `CREATE TABLE IF NOT EXISTS sales_personnel_regions (
+      sales_personnel_id INTEGER NOT NULL REFERENCES sales_personnel(id) ON DELETE CASCADE,
+      region_id INTEGER NOT NULL REFERENCES regions(id) ON DELETE CASCADE,
+      PRIMARY KEY (sales_personnel_id, region_id)
+    );`,
+    `CREATE TABLE IF NOT EXISTS sales_personnel_bases (
+      sales_personnel_id INTEGER NOT NULL REFERENCES sales_personnel(id) ON DELETE CASCADE,
+      base_id INTEGER NOT NULL REFERENCES bases(id) ON DELETE CASCADE,
+      PRIMARY KEY (sales_personnel_id, base_id)
+    );`,
+    `CREATE TABLE IF NOT EXISTS sales_personnel_upazilas (
+      sales_personnel_id INTEGER NOT NULL REFERENCES sales_personnel(id) ON DELETE CASCADE,
+      upazila_id INTEGER NOT NULL REFERENCES upazilas(id) ON DELETE CASCADE,
+      PRIMARY KEY (sales_personnel_id, upazila_id)
+    );`,
+    `CREATE TABLE IF NOT EXISTS vet_doctors_regions (
+      vet_doctor_id INTEGER NOT NULL REFERENCES vet_doctors(id) ON DELETE CASCADE,
+      region_id INTEGER NOT NULL REFERENCES regions(id) ON DELETE CASCADE,
+      PRIMARY KEY (vet_doctor_id, region_id)
+    );`,
+    `CREATE TABLE IF NOT EXISTS vet_doctors_bases (
+      vet_doctor_id INTEGER NOT NULL REFERENCES vet_doctors(id) ON DELETE CASCADE,
+      base_id INTEGER NOT NULL REFERENCES bases(id) ON DELETE CASCADE,
+      PRIMARY KEY (vet_doctor_id, base_id)
+    );`,
+    `CREATE TABLE IF NOT EXISTS vet_doctors_upazilas (
+      vet_doctor_id INTEGER NOT NULL REFERENCES vet_doctors(id) ON DELETE CASCADE,
+      upazila_id INTEGER NOT NULL REFERENCES upazilas(id) ON DELETE CASCADE,
+      PRIMARY KEY (vet_doctor_id, upazila_id)
+    );`
+  ];
+  try {
+    ddl.forEach(sql => db.run(sql));
+  } catch(e) {
+    console.error('Schema auto-creation error:', e);
+  }
+}
+
 function detectType(){
   const tables = q("select name from sqlite_master where type='table'").map(r=>r.name);
-  if(tables.includes('products')) dbType = 'products';
-  else if(tables.includes('distributors')) dbType = 'distributors';
-  else dbType = 'unknown';
+  if(tables.includes('products')) {
+    dbType = 'products';
+  } else if(tables.includes('distributors')) {
+    dbType = 'distributors';
+    ensureDistributorsSchema();
+  } else {
+    dbType = 'unknown';
+  }
 }
 
 window.addEventListener('beforeunload', e=>{
@@ -295,9 +368,15 @@ const NAV = {
       {key:'sales_personnel', label:'Sales personnel'},
       {key:'vet_doctors', label:'Vet doctors'},
     ]},
-    {group:'Lookup lists', items:[
+    {group:'Operational Hierarchy', items:[
       {key:'regions', label:'Regions'},
       {key:'areas', label:'Areas'},
+      {key:'bases', label:'Bases'},
+    ]},
+    {group:'Geographic Address', items:[
+      {key:'divisions', label:'Divisions'},
+      {key:'districts', label:'Districts'},
+      {key:'upazilas', label:'Upazilas'},
     ]},
   ]
 };
@@ -336,7 +415,14 @@ function simpleLookupPage(opts){
   // opts: {table, title, columns:[{key,label,type,required,ref:{table,label}}], orderBy}
   const main = document.getElementById('main');
   function render(filter){
-    const rows = q(`select * from ${opts.table} order by ${opts.orderBy||'id'}`);
+    let rows = [];
+    try {
+      rows = q(`select * from ${opts.table} order by ${opts.orderBy||'id'}`);
+    } catch(err) {
+      console.warn(`Table ${opts.table} query failed:`, err);
+      main.innerHTML = `<h2 class="pagetitle">${opts.title}</h2><div class="empty">Table <code class="mono">${opts.table}</code> does not exist in this database file yet.</div>`;
+      return;
+    }
     const filtered = filter ? rows.filter(r=>JSON.stringify(r).toLowerCase().includes(filter.toLowerCase())) : rows;
     let html = `<h2 class="pagetitle">${opts.title}</h2><p class="subtle">${rows.length} record(s)</p>`;
     html += `<div class="toolbar"><input type="search" id="searchBox" placeholder="Search ${opts.title.toLowerCase()}…" value="${esc(filter||'')}"><button class="btn" id="addBtn">+ Add ${opts.title.slice(0,-1)||opts.title}</button></div>`;
@@ -347,8 +433,12 @@ function simpleLookupPage(opts){
       html += '<tr>' + opts.columns.map(c=>{
         let display = r[c.key];
         if(c.ref){
-          const refRow = q(`select * from ${c.ref.table} where id=?`, [display])[0];
-          display = refRow ? refRow[c.ref.label] : '—';
+          try {
+            const refRow = q(`select * from ${c.ref.table} where id=?`, [display])[0];
+            display = refRow ? refRow[c.ref.label] : '—';
+          } catch(_) {
+            display = '—';
+          }
         }
         return `<td>${esc(display)}</td>`;
       }).join('') + `<td class="row-actions"><button data-edit="${r.id}">Edit</button><button class="del" data-del="${r.id}">Delete</button></td></tr>`;
@@ -438,7 +528,10 @@ function renderRefSelects(columns, record, prefix = 'f_', creatable = true){
     if(!c.ref) return;
     const sel = document.getElementById(prefix + c.key);
     if (!sel) return;
-    const opts = q(`select * from ${c.ref.table} order by ${c.ref.label}`);
+    let opts = [];
+    try {
+      opts = q(`select * from ${c.ref.table} order by ${c.ref.label}`);
+    } catch(_) {}
     let html = c.required ? '' : `<option value="">—</option>`;
     opts.forEach(o=>{
       html += `<option value="${o.id}" ${record[c.key]==o.id?'selected':''}>${esc(o[c.ref.label])}</option>`;
@@ -497,6 +590,20 @@ const LOOKUP_DEFS = {
     table: 'dosage_bases', title: 'Dosage bases', orderBy: 'name_en',
     columns: [{ key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
   },
+  divisions: {
+    table: 'divisions', title: 'Divisions', orderBy: 'name_en',
+    columns: [{ key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
+  },
+  districts: {
+    table: 'districts', title: 'Districts', orderBy: 'name_en',
+    columns: [{ key: 'division_id', label: 'Division', ref: { table: 'divisions', label: 'name_en' }, required: true },
+    { key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
+  },
+  upazilas: {
+    table: 'upazilas', title: 'Upazilas', orderBy: 'name_en',
+    columns: [{ key: 'district_id', label: 'District', ref: { table: 'districts', label: 'name_en' }, required: true },
+    { key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
+  },
   regions: {
     table: 'regions', title: 'Regions', orderBy: 'name_en',
     columns: [{ key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
@@ -504,6 +611,11 @@ const LOOKUP_DEFS = {
   areas: {
     table: 'areas', title: 'Areas', orderBy: 'name_en',
     columns: [{ key: 'region_id', label: 'Region', ref: { table: 'regions', label: 'name_en' }, required: true },
+    { key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
+  },
+  bases: {
+    table: 'bases', title: 'Bases', orderBy: 'name_en',
+    columns: [{ key: 'area_id', label: 'Area', ref: { table: 'areas', label: 'name_en' }, required: true },
     { key: 'name_en', label: 'Name (EN)', required: true }, { key: 'name_bn', label: 'Name (BN)', required: true }]
   },
 };
@@ -550,6 +662,12 @@ function openQuickAdd(tableName, onCreated, onCancel) {
       } else if (tableName === 'areas') {
         const rg = q('select name_en from regions where id=?', [newRow.region_id])[0];
         label = (rg ? rg.name_en : '?') + ' — ' + newRow.name_en;
+      } else if (tableName === 'upazilas') {
+        const dis = q('select name_en from districts where id=?', [newRow.district_id])[0];
+        label = (dis ? dis.name_en : '?') + ' — ' + newRow.name_en;
+      } else if (tableName === 'bases') {
+        const ar = q('select name_en from areas where id=?', [newRow.area_id])[0];
+        label = (ar ? ar.name_en : '?') + ' — ' + newRow.name_en;
       }
       close();
       toast('Added.');
@@ -1004,6 +1122,7 @@ function distributorsListPage(){
 
 function personWithAreasPage(cfg){
   // cfg: {table, junctionTable, junctionKey, title, extraFields:[{key,label,type,required}]}
+  const prefix = cfg.table; // e.g. 'sales_personnel' or 'vet_doctors'
   const main = document.getElementById('main');
   function render(filter){
     const rows = q(`select * from ${cfg.table} order by name_en`);
@@ -1011,12 +1130,16 @@ function personWithAreasPage(cfg){
     let html = `<h2 class="pagetitle">${cfg.title}</h2><p class="subtle">${rows.length} record(s)</p>`;
     html += `<div class="toolbar"><input type="search" id="searchBox" placeholder="Search…" value="${esc(filter||'')}"><button class="btn" id="addBtn">+ Add</button></div>`;
     html += `<div id="formSlot"></div>`;
-    html += `<table class="list"><thead><tr><th>Name</th><th>Designation</th><th>Mobile</th><th>Areas</th><th>Active</th><th></th></tr></thead><tbody>`;
-    if(filtered.length===0) html += `<tr><td colspan="6"><div class="empty">No records.</div></td></tr>`;
+    html += `<table class="list"><thead><tr><th>Name</th><th>Designation</th><th>Mobile</th><th>Regions</th><th>Areas</th><th>Bases</th><th>Active</th><th></th></tr></thead><tbody>`;
+    if(filtered.length===0) html += `<tr><td colspan="8"><div class="empty">No records.</div></td></tr>`;
     filtered.forEach(r=>{
+      const regs = q(`select r.name_en from ${prefix}_regions j join regions r on r.id=j.region_id where j.${cfg.junctionKey}=?`,[r.id]);
       const areas = q(`select a.name_en from ${cfg.junctionTable} j join areas a on a.id=j.area_id where j.${cfg.junctionKey}=?`,[r.id]);
+      const bases = q(`select b.name_en from ${prefix}_bases j join bases b on b.id=j.base_id where j.${cfg.junctionKey}=?`,[r.id]);
       html += `<tr><td>${esc(r.name_en)}</td><td>${esc(r.designation||'')}</td><td>${esc(r.mobile)}</td>
+        <td>${regs.map(x=>`<span class="pill">${esc(x.name_en)}</span>`).join('')||'—'}</td>
         <td>${areas.map(a=>`<span class="pill">${esc(a.name_en)}</span>`).join('')||'—'}</td>
+        <td>${bases.map(b=>`<span class="pill">${esc(b.name_en)}</span>`).join('')||'—'}</td>
         <td>${r.is_active?'Yes':'No'}</td>
         <td class="row-actions"><button data-edit="${r.id}">Edit</button><button class="del" data-del="${r.id}">Delete</button></td></tr>`;
     });
@@ -1043,28 +1166,96 @@ function personWithAreasPage(cfg){
 
     function showForm(id){
       const r = id ? q(`select * from ${cfg.table} where id=?`,[id])[0] : {is_active:1};
+      const selectedRegions = id ? q(`select region_id from ${prefix}_regions where ${cfg.junctionKey}=?`,[id]).map(x=>x.region_id) : [];
       const selectedAreas = id ? q(`select area_id from ${cfg.junctionTable} where ${cfg.junctionKey}=?`,[id]).map(x=>x.area_id) : [];
+      const selectedBases = id ? q(`select base_id from ${prefix}_bases where ${cfg.junctionKey}=?`,[id]).map(x=>x.base_id) : [];
+
+      const regionRows = q(`select id, name_en from regions order by name_en`);
       const areaRows = q(`select a.id, a.name_en, r.name_en as region_name from areas a join regions r on r.id=a.region_id order by r.name_en, a.name_en`);
+      const baseRows = q(`select b.id, b.name_en, a.name_en as area_name from bases b join areas a on a.id=b.area_id order by a.name_en, b.name_en`);
+
       let f = `<div class="card"><h3>${id?'Edit':'Add'} ${cfg.title.toLowerCase().replace(/s$/,'')}</h3><div class="grid2">
         <div class="field"><label class="required">Name (EN)</label><input type="text" id="f_name_en" value="${esc(val(r.name_en))}"></div>
         <div class="field"><label class="required">Name (BN)</label><input type="text" id="f_name_bn" value="${esc(val(r.name_bn))}"></div>`;
       cfg.extraFields.forEach(c=>{ f += fieldHtml(c, r[c.key]); });
       f += `<div class="field checkbox"><input type="checkbox" id="f_is_active" ${r.is_active?'checked':''}><label>Active</label></div>
       </div>
-      <div class="field"><label>Coverage areas</label><div class="checkgrid" id="areaGrid">${areaRows.map(a=>`<label><input type="checkbox" value="${a.id}" ${selectedAreas.includes(a.id)?'checked':''}> ${esc(a.region_name)} — ${esc(a.name_en)}</label>`).join('')}</div></div>
+      <div class="field"><label>Covered Regions</label><div class="checkgrid" id="regionGrid"></div></div>
+      <div class="field"><label>Covered Areas</label><div class="checkgrid" id="areaGrid"></div></div>
+      <div class="field"><label>Covered Bases</label><div class="checkgrid" id="baseGrid"></div></div>
       <div class="btnbar"><button class="btn" id="saveField">Save</button><button class="btn secondary" id="saveAndAddAnotherField">Save and add another</button><button class="btn secondary" id="cancelField">Cancel</button></div></div>`;
       document.getElementById('formSlot').innerHTML = f;
-      const areaGrid = document.getElementById('areaGrid');
-      let areaChecked = selectedAreas.slice();
-      function renderAreaGrid(justAddedId) {
+
+      let regionChecked = selectedRegions.slice();
+      function renderRegionGrid(justAddedId, filterText = '') {
         if (justAddedId) {
-          areaChecked = Array.from(areaGrid.querySelectorAll('input:checked')).map(cb => +cb.value);
+          regionChecked = Array.from(document.getElementById('regionGrid').querySelectorAll('input:checked')).map(cb => +cb.value);
+          regionChecked.push(justAddedId);
+        } else if (document.getElementById('regionGrid').querySelectorAll('input').length > 0) {
+          const currentChecked = Array.from(document.getElementById('regionGrid').querySelectorAll('input:checked')).map(cb => +cb.value);
+          regionChecked = Array.from(new Set([...regionChecked, ...currentChecked]));
+        }
+        const qTerm = (filterText || '').toLowerCase().trim();
+        const filtered = qTerm ? regionRows.filter(rg => `${rg.name_en}`.toLowerCase().includes(qTerm)) : regionRows;
+        document.getElementById('regionGrid').innerHTML = filtered.map(rg=>`<label><input type="checkbox" value="${rg.id}" ${regionChecked.includes(rg.id)?'checked':''}> ${esc(rg.name_en)}</label>`).join('');
+      }
+
+      let areaChecked = selectedAreas.slice();
+      function renderAreaGrid(justAddedId, filterText = '') {
+        if (justAddedId) {
+          areaChecked = Array.from(document.getElementById('areaGrid').querySelectorAll('input:checked')).map(cb => +cb.value);
           areaChecked.push(justAddedId);
+        } else if (document.getElementById('areaGrid').querySelectorAll('input').length > 0) {
+          const currentChecked = Array.from(document.getElementById('areaGrid').querySelectorAll('input:checked')).map(cb => +cb.value);
+          areaChecked = Array.from(new Set([...areaChecked, ...currentChecked]));
         }
         const rows = q(`select a.id, a.name_en, r.name_en as region_name from areas a join regions r on r.id=a.region_id order by r.name_en, a.name_en`);
-        areaGrid.innerHTML = rows.map(a => `<label><input type="checkbox" value="${a.id}" ${areaChecked.includes(a.id) ? 'checked' : ''}> ${esc(a.region_name)} — ${esc(a.name_en)}</label>`).join('');
+        const qTerm = (filterText || '').toLowerCase().trim();
+        const filtered = qTerm ? rows.filter(a => `${a.region_name} ${a.name_en}`.toLowerCase().includes(qTerm)) : rows;
+        document.getElementById('areaGrid').innerHTML = filtered.map(a => `<label><input type="checkbox" value="${a.id}" ${areaChecked.includes(a.id) ? 'checked' : ''}> ${esc(a.region_name)} — ${esc(a.name_en)}</label>`).join('');
       }
-      attachCreatableCheckgrid(areaGrid, 'areas', renderAreaGrid);
+
+      let baseChecked = selectedBases.slice();
+      function renderBaseGrid(justAddedId, filterText = '') {
+        if (justAddedId) {
+          baseChecked = Array.from(document.getElementById('baseGrid').querySelectorAll('input:checked')).map(cb => +cb.value);
+          baseChecked.push(justAddedId);
+        } else if (document.getElementById('baseGrid').querySelectorAll('input').length > 0) {
+          const currentChecked = Array.from(document.getElementById('baseGrid').querySelectorAll('input:checked')).map(cb => +cb.value);
+          baseChecked = Array.from(new Set([...baseChecked, ...currentChecked]));
+        }
+        const qTerm = (filterText || '').toLowerCase().trim();
+        const filtered = qTerm ? baseRows.filter(b => `${b.area_name} ${b.name_en}`.toLowerCase().includes(qTerm)) : baseRows;
+        document.getElementById('baseGrid').innerHTML = filtered.map(b=>`<label><input type="checkbox" value="${b.id}" ${baseChecked.includes(b.id)?'checked':''}> ${esc(b.area_name)} — ${esc(b.name_en)}</label>`).join('');
+      }
+
+      const createGridSearchInput = (placeholder, onInputFn) => {
+        const inp = document.createElement('input');
+        inp.type = 'search';
+        inp.placeholder = placeholder;
+        inp.style.cssText = 'width:100%;margin-bottom:6px;padding:6px 9px;border:1px solid var(--border);border-radius:6px;font-size:12.5px;';
+        inp.oninput = (e) => onInputFn(e.target.value);
+        return inp;
+      };
+
+      renderRegionGrid();
+      renderAreaGrid();
+      renderBaseGrid();
+
+      const regGrid = document.getElementById('regionGrid');
+      const regSearch = createGridSearchInput('Search regions...', (val) => renderRegionGrid(null, val));
+      regGrid.parentNode.insertBefore(regSearch, regGrid);
+
+      const areaGrid = document.getElementById('areaGrid');
+      const areaSearch = createGridSearchInput('Search areas...', (val) => renderAreaGrid(null, val));
+      areaGrid.parentNode.insertBefore(areaSearch, areaGrid);
+      attachCreatableCheckgrid(areaGrid, 'areas', (newId) => renderAreaGrid(newId, areaSearch.value));
+
+      const baseGrid = document.getElementById('baseGrid');
+      const baseSearch = createGridSearchInput('Search bases...', (val) => renderBaseGrid(null, val));
+      baseGrid.parentNode.insertBefore(baseSearch, baseGrid);
+      attachCreatableCheckgrid(baseGrid, 'bases', (newId) => renderBaseGrid(newId, baseSearch.value));
+
       document.getElementById('cancelField').onclick = ()=>{ document.getElementById('formSlot').innerHTML=''; };
       const performSavePerson = (keepOpenForNew = false) => {
         const name_en = document.getElementById('f_name_en').value.trim();
@@ -1085,9 +1276,19 @@ function personWithAreasPage(cfg){
             run(`insert into ${cfg.table} (${keys.join(',')}) values (${keys.map(()=>'?').join(',')})`, keys.map(k=>data[k]));
             recId = q('select last_insert_rowid() as id').at(0).id;
           }
+
+          const regSelected = Array.from(document.getElementById('regionGrid').querySelectorAll('input:checked')).map(cb=>+cb.value);
+          run(`delete from ${prefix}_regions where ${cfg.junctionKey}=?`,[recId]);
+          regSelected.forEach(rid=>run(`insert into ${prefix}_regions (${cfg.junctionKey},region_id) values (?,?)`,[recId,rid]));
+
           const areaSelected = Array.from(document.getElementById('areaGrid').querySelectorAll('input:checked')).map(cb=>+cb.value);
           run(`delete from ${cfg.junctionTable} where ${cfg.junctionKey}=?`,[recId]);
           areaSelected.forEach(aid=>run(`insert into ${cfg.junctionTable} (${cfg.junctionKey},area_id) values (?,?)`,[recId,aid]));
+
+          const baseSelected = Array.from(document.getElementById('baseGrid').querySelectorAll('input:checked')).map(cb=>+cb.value);
+          run(`delete from ${prefix}_bases where ${cfg.junctionKey}=?`,[recId]);
+          baseSelected.forEach(bid=>run(`insert into ${prefix}_bases (${cfg.junctionKey},base_id) values (?,?)`,[recId,bid]));
+
           toast('Saved.'); render(filter);
           if (keepOpenForNew) {
             showForm(null);
@@ -1096,6 +1297,113 @@ function personWithAreasPage(cfg){
       };
       document.getElementById('saveField').onclick = () => performSavePerson(false);
       document.getElementById('saveAndAddAnotherField').onclick = () => performSavePerson(true);
+    }
+  }
+  render('');
+}
+
+function baseWithUpazilasPage(){
+  const main = document.getElementById('main');
+  function render(filter){
+    const rows = q(`select b.*, a.name_en as area_name, r.name_en as region_name
+      from bases b
+      join areas a on a.id=b.area_id
+      join regions r on r.id=a.region_id
+      order by r.name_en, a.name_en, b.name_en`);
+    const filtered = filter ? rows.filter(r=>JSON.stringify(r).toLowerCase().includes(filter.toLowerCase())) : rows;
+    let html = `<h2 class="pagetitle">Bases</h2><p class="subtle">${rows.length} record(s)</p>`;
+    html += `<div class="toolbar"><input type="search" id="searchBox" placeholder="Search bases…" value="${esc(filter||'')}"><button class="btn" id="addBtn">+ Add Base</button></div>`;
+    html += `<div id="formSlot"></div>`;
+    html += `<table class="list"><thead><tr><th>Base Name (EN)</th><th>Base Name (BN)</th><th>Area</th><th>Region</th><th>Covered Upazilas</th><th></th></tr></thead><tbody>`;
+    if(filtered.length===0) html += `<tr><td colspan="6"><div class="empty">No records.</div></td></tr>`;
+    filtered.forEach(r=>{
+      const upas = q(`select u.name_en, d.name_en as district_name from base_upazilas bu join upazilas u on u.id=bu.upazila_id join districts d on d.id=u.district_id where bu.base_id=? order by u.name_en`, [r.id]);
+      html += `<tr><td>${esc(r.name_en)}</td><td>${esc(r.name_bn||'')}</td><td>${esc(r.area_name)}</td><td>${esc(r.region_name)}</td>
+        <td>${upas.map(u=>`<span class="pill">${esc(u.name_en)} (${esc(u.district_name)})</span>`).join('')||'—'}</td>
+        <td class="row-actions"><button data-edit="${r.id}">Edit</button><button class="del" data-del="${r.id}">Delete</button></td></tr>`;
+    });
+    html += '</tbody></table>';
+    main.innerHTML = html;
+    document.getElementById('searchBox').oninput = e=>{
+      const val = e.target.value;
+      const start = e.target.selectionStart;
+      const end = e.target.selectionEnd;
+      render(val);
+      const box = document.getElementById('searchBox');
+      if(box){
+        box.focus();
+        box.setSelectionRange(start, end);
+      }
+    };
+    document.getElementById('addBtn').onclick = ()=>showForm(null);
+    main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>showForm(+b.dataset.edit));
+    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+      if(!confirm('Delete this base?')) return;
+      try{ run('delete from bases where id=?',[+b.dataset.del]); render(filter); toast('Deleted.'); }
+      catch(err){ toast('Delete failed: '+err.message, true); }
+    });
+
+    function showForm(id){
+      const r = id ? q('select * from bases where id=?',[id])[0] : {};
+      const selectedUpazilas = id ? q('select upazila_id from base_upazilas where base_id=?',[id]).map(x=>x.upazila_id) : [];
+      const areaRows = q('select a.id, a.name_en, r.name_en as region_name from areas a join regions r on r.id=a.region_id order by r.name_en, a.name_en');
+      let f = `<div class="card"><h3>${id?'Edit':'Add'} base</h3><div class="grid2">
+        <div class="field"><label class="required">Name (EN)</label><input type="text" id="f_name_en" value="${esc(val(r.name_en))}"></div>
+        <div class="field"><label class="required">Name (BN)</label><input type="text" id="f_name_bn" value="${esc(val(r.name_bn))}"></div>
+        <div class="field"><label class="required">Area</label><select id="f_area_id">${areaRows.map(a=>`<option value="${a.id}" ${r.area_id==a.id?'selected':''}>${esc(a.region_name)} — ${esc(a.name_en)}</option>`).join('')}</select></div>
+      </div>
+      <div class="field"><label>Covered Upazilas</label><div class="checkgrid" id="upazilaGrid"></div></div>
+      <div class="btnbar"><button class="btn" id="saveField">Save</button><button class="btn add-another" id="saveAndAddAnotherField">Save and add another</button><button class="btn secondary" id="cancelField">Cancel</button></div></div>`;
+      document.getElementById('formSlot').innerHTML = f;
+      attachCreatableSelect(document.getElementById('f_area_id'), 'areas');
+      const upazilaGrid = document.getElementById('upazilaGrid');
+      let upazilaChecked = selectedUpazilas.slice();
+      function renderUpazilaGrid(justAddedId, searchFilter = '') {
+        if (justAddedId) {
+          upazilaChecked = Array.from(upazilaGrid.querySelectorAll('input:checked')).map(cb => +cb.value);
+          upazilaChecked.push(justAddedId);
+        } else if (upazilaGrid.querySelectorAll('input').length > 0) {
+          const currentChecked = Array.from(upazilaGrid.querySelectorAll('input:checked')).map(cb => +cb.value);
+          upazilaChecked = Array.from(new Set([...upazilaChecked, ...currentChecked]));
+        }
+        const upaRows = q('select u.id, u.name_en, u.name_bn, d.name_en as district_name from upazilas u join districts d on d.id=u.district_id order by d.name_en, u.name_en');
+        const qTerm = (searchFilter || '').toLowerCase().trim();
+        const filteredRows = qTerm ? upaRows.filter(u => `${u.district_name} ${u.name_en} ${u.name_bn||''}`.toLowerCase().includes(qTerm)) : upaRows;
+        upazilaGrid.innerHTML = filteredRows.map(u => `<label><input type="checkbox" value="${u.id}" ${upazilaChecked.includes(u.id)?'checked':''}> ${esc(u.district_name)} — ${esc(u.name_en)}${u.name_bn ? ` (${esc(u.name_bn)})` : ''}</label>`).join('');
+      }
+      renderUpazilaGrid();
+      const upaSearch = document.createElement('input');
+      upaSearch.type = 'search';
+      upaSearch.placeholder = 'Search upazilas...';
+      upaSearch.style.cssText = 'width:100%;margin-bottom:6px;padding:6px 9px;border:1px solid var(--border);border-radius:6px;font-size:12.5px;';
+      upaSearch.oninput = (e) => renderUpazilaGrid(null, e.target.value);
+      upazilaGrid.parentNode.insertBefore(upaSearch, upazilaGrid);
+      attachCreatableCheckgrid(upazilaGrid, 'upazilas', (newId) => renderUpazilaGrid(newId, upaSearch.value));
+      document.getElementById('cancelField').onclick = ()=>{ document.getElementById('formSlot').innerHTML=''; };
+      const performSaveBase = (keepOpenForNew = false) => {
+        const name_en = document.getElementById('f_name_en').value.trim();
+        const name_bn = document.getElementById('f_name_bn').value.trim();
+        const area_id = +document.getElementById('f_area_id').value;
+        if(!name_en||!name_bn||!area_id){ toast('Name (EN/BN) and Area are required.', true); return; }
+        try{
+          let recId = id;
+          if(id){
+            run('update bases set name_en=?, name_bn=?, area_id=? where id=?', [name_en, name_bn, area_id, id]);
+          } else {
+            run('insert into bases (name_en, name_bn, area_id) values (?,?,?)', [name_en, name_bn, area_id]);
+            recId = q('select last_insert_rowid() as id').at(0).id;
+          }
+          const upazilaSelected = Array.from(upazilaGrid.querySelectorAll('input:checked')).map(cb=>+cb.value);
+          run('delete from base_upazilas where base_id=?', [recId]);
+          upazilaSelected.forEach(uid=>run('insert into base_upazilas (base_id, upazila_id) values (?,?)', [recId, uid]));
+          toast('Saved.'); render(filter);
+          if (keepOpenForNew) {
+            showForm(null);
+          }
+        }catch(err){ toast('Save failed: '+err.message, true); }
+      };
+      document.getElementById('saveField').onclick = () => performSaveBase(false);
+      document.getElementById('saveAndAddAnotherField').onclick = () => performSaveBase(true);
     }
   }
   render('');
@@ -1128,8 +1436,12 @@ const PAGES = {
     { key: 'address_en', label: 'Address (EN)', type: 'textarea' }, { key: 'address_bn', label: 'Address (BN)', type: 'textarea' },
     { key: 'mobile', label: 'Mobile', required: true }, { key: 'email', label: 'Email', type: 'email' }]
   }),
+  divisions: () => simpleLookupPage(LOOKUP_DEFS.divisions),
+  districts: () => simpleLookupPage(LOOKUP_DEFS.districts),
+  upazilas: () => simpleLookupPage(LOOKUP_DEFS.upazilas),
   regions: () => simpleLookupPage(LOOKUP_DEFS.regions),
   areas: () => simpleLookupPage(LOOKUP_DEFS.areas),
+  bases: baseWithUpazilasPage,
 };
 </script>
 </body>

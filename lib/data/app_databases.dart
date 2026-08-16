@@ -58,13 +58,24 @@ class ProductsDb extends _$ProductsDb {
 
 /// Thin Drift wrapper around distributors.db.
 @DriftDatabase(tables: [
+  Divisions,
+  Districts,
+  Upazilas,
   Regions,
   Areas,
+  Bases,
+  BaseUpazilas,
   Distributors,
   SalesPersonnel,
+  SalesPersonnelRegions,
   SalesPersonnelAreas,
+  SalesPersonnelBases,
+  SalesPersonnelUpazilas,
   VetDoctors,
+  VetDoctorsRegions,
   VetDoctorsAreas,
+  VetDoctorsBases,
+  VetDoctorsUpazilas,
 ])
 class DistributorsDb extends _$DistributorsDb {
   DistributorsDb(super.executor);

@@ -565,9 +565,1127 @@ as String?,
 }
 
 /// @nodoc
+mixin _$Division implements DiagnosticableTreeMixin {
+
+ int get id; String get nameEn; String? get nameBn;
+/// Create a copy of Division
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DivisionCopyWith<Division> get copyWith => _$DivisionCopyWithImpl<Division>(this as Division, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'Division'))
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Division&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'Division(id: $id, nameEn: $nameEn, nameBn: $nameBn)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $DivisionCopyWith<$Res>  {
+  factory $DivisionCopyWith(Division value, $Res Function(Division) _then) = _$DivisionCopyWithImpl;
+@useResult
+$Res call({
+ int id, String nameEn, String? nameBn
+});
+
+
+
+
+}
+/// @nodoc
+class _$DivisionCopyWithImpl<$Res>
+    implements $DivisionCopyWith<$Res> {
+  _$DivisionCopyWithImpl(this._self, this._then);
+
+  final Division _self;
+  final $Res Function(Division) _then;
+
+/// Create a copy of Division
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
+as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [Division].
+extension DivisionPatterns on Division {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Division value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Division() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Division value)  $default,){
+final _that = this;
+switch (_that) {
+case _Division():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Division value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Division() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Division() when $default != null:
+return $default(_that.id,_that.nameEn,_that.nameBn);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn)  $default,) {final _that = this;
+switch (_that) {
+case _Division():
+return $default(_that.id,_that.nameEn,_that.nameBn);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String nameEn,  String? nameBn)?  $default,) {final _that = this;
+switch (_that) {
+case _Division() when $default != null:
+return $default(_that.id,_that.nameEn,_that.nameBn);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _Division extends Division with DiagnosticableTreeMixin {
+  const _Division({required this.id, required this.nameEn, this.nameBn}): super._();
+  
+
+@override final  int id;
+@override final  String nameEn;
+@override final  String? nameBn;
+
+/// Create a copy of Division
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DivisionCopyWith<_Division> get copyWith => __$DivisionCopyWithImpl<_Division>(this, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'Division'))
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Division&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'Division(id: $id, nameEn: $nameEn, nameBn: $nameBn)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DivisionCopyWith<$Res> implements $DivisionCopyWith<$Res> {
+  factory _$DivisionCopyWith(_Division value, $Res Function(_Division) _then) = __$DivisionCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, String nameEn, String? nameBn
+});
+
+
+
+
+}
+/// @nodoc
+class __$DivisionCopyWithImpl<$Res>
+    implements _$DivisionCopyWith<$Res> {
+  __$DivisionCopyWithImpl(this._self, this._then);
+
+  final _Division _self;
+  final $Res Function(_Division) _then;
+
+/// Create a copy of Division
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,}) {
+  return _then(_Division(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
+as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$District implements DiagnosticableTreeMixin {
+
+ int get id; int get divisionId; String get nameEn; String? get nameBn;
+/// Create a copy of District
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DistrictCopyWith<District> get copyWith => _$DistrictCopyWithImpl<District>(this as District, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'District'))
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('divisionId', divisionId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is District&&(identical(other.id, id) || other.id == id)&&(identical(other.divisionId, divisionId) || other.divisionId == divisionId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,divisionId,nameEn,nameBn);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'District(id: $id, divisionId: $divisionId, nameEn: $nameEn, nameBn: $nameBn)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $DistrictCopyWith<$Res>  {
+  factory $DistrictCopyWith(District value, $Res Function(District) _then) = _$DistrictCopyWithImpl;
+@useResult
+$Res call({
+ int id, int divisionId, String nameEn, String? nameBn
+});
+
+
+
+
+}
+/// @nodoc
+class _$DistrictCopyWithImpl<$Res>
+    implements $DistrictCopyWith<$Res> {
+  _$DistrictCopyWithImpl(this._self, this._then);
+
+  final District _self;
+  final $Res Function(District) _then;
+
+/// Create a copy of District
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? divisionId = null,Object? nameEn = null,Object? nameBn = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,divisionId: null == divisionId ? _self.divisionId : divisionId // ignore: cast_nullable_to_non_nullable
+as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
+as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [District].
+extension DistrictPatterns on District {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _District value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _District() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _District value)  $default,){
+final _that = this;
+switch (_that) {
+case _District():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _District value)?  $default,){
+final _that = this;
+switch (_that) {
+case _District() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int divisionId,  String nameEn,  String? nameBn)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _District() when $default != null:
+return $default(_that.id,_that.divisionId,_that.nameEn,_that.nameBn);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int divisionId,  String nameEn,  String? nameBn)  $default,) {final _that = this;
+switch (_that) {
+case _District():
+return $default(_that.id,_that.divisionId,_that.nameEn,_that.nameBn);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int divisionId,  String nameEn,  String? nameBn)?  $default,) {final _that = this;
+switch (_that) {
+case _District() when $default != null:
+return $default(_that.id,_that.divisionId,_that.nameEn,_that.nameBn);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _District extends District with DiagnosticableTreeMixin {
+  const _District({required this.id, required this.divisionId, required this.nameEn, this.nameBn}): super._();
+  
+
+@override final  int id;
+@override final  int divisionId;
+@override final  String nameEn;
+@override final  String? nameBn;
+
+/// Create a copy of District
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DistrictCopyWith<_District> get copyWith => __$DistrictCopyWithImpl<_District>(this, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'District'))
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('divisionId', divisionId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _District&&(identical(other.id, id) || other.id == id)&&(identical(other.divisionId, divisionId) || other.divisionId == divisionId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,divisionId,nameEn,nameBn);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'District(id: $id, divisionId: $divisionId, nameEn: $nameEn, nameBn: $nameBn)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DistrictCopyWith<$Res> implements $DistrictCopyWith<$Res> {
+  factory _$DistrictCopyWith(_District value, $Res Function(_District) _then) = __$DistrictCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, int divisionId, String nameEn, String? nameBn
+});
+
+
+
+
+}
+/// @nodoc
+class __$DistrictCopyWithImpl<$Res>
+    implements _$DistrictCopyWith<$Res> {
+  __$DistrictCopyWithImpl(this._self, this._then);
+
+  final _District _self;
+  final $Res Function(_District) _then;
+
+/// Create a copy of District
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? divisionId = null,Object? nameEn = null,Object? nameBn = freezed,}) {
+  return _then(_District(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,divisionId: null == divisionId ? _self.divisionId : divisionId // ignore: cast_nullable_to_non_nullable
+as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
+as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$Upazila implements DiagnosticableTreeMixin {
+
+ int get id; int get districtId; String get nameEn; String? get nameBn;
+/// Create a copy of Upazila
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UpazilaCopyWith<Upazila> get copyWith => _$UpazilaCopyWithImpl<Upazila>(this as Upazila, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'Upazila'))
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('districtId', districtId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Upazila&&(identical(other.id, id) || other.id == id)&&(identical(other.districtId, districtId) || other.districtId == districtId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,districtId,nameEn,nameBn);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'Upazila(id: $id, districtId: $districtId, nameEn: $nameEn, nameBn: $nameBn)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UpazilaCopyWith<$Res>  {
+  factory $UpazilaCopyWith(Upazila value, $Res Function(Upazila) _then) = _$UpazilaCopyWithImpl;
+@useResult
+$Res call({
+ int id, int districtId, String nameEn, String? nameBn
+});
+
+
+
+
+}
+/// @nodoc
+class _$UpazilaCopyWithImpl<$Res>
+    implements $UpazilaCopyWith<$Res> {
+  _$UpazilaCopyWithImpl(this._self, this._then);
+
+  final Upazila _self;
+  final $Res Function(Upazila) _then;
+
+/// Create a copy of Upazila
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? districtId = null,Object? nameEn = null,Object? nameBn = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,districtId: null == districtId ? _self.districtId : districtId // ignore: cast_nullable_to_non_nullable
+as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
+as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [Upazila].
+extension UpazilaPatterns on Upazila {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Upazila value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Upazila() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Upazila value)  $default,){
+final _that = this;
+switch (_that) {
+case _Upazila():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Upazila value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Upazila() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int districtId,  String nameEn,  String? nameBn)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Upazila() when $default != null:
+return $default(_that.id,_that.districtId,_that.nameEn,_that.nameBn);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int districtId,  String nameEn,  String? nameBn)  $default,) {final _that = this;
+switch (_that) {
+case _Upazila():
+return $default(_that.id,_that.districtId,_that.nameEn,_that.nameBn);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int districtId,  String nameEn,  String? nameBn)?  $default,) {final _that = this;
+switch (_that) {
+case _Upazila() when $default != null:
+return $default(_that.id,_that.districtId,_that.nameEn,_that.nameBn);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _Upazila extends Upazila with DiagnosticableTreeMixin {
+  const _Upazila({required this.id, required this.districtId, required this.nameEn, this.nameBn}): super._();
+  
+
+@override final  int id;
+@override final  int districtId;
+@override final  String nameEn;
+@override final  String? nameBn;
+
+/// Create a copy of Upazila
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpazilaCopyWith<_Upazila> get copyWith => __$UpazilaCopyWithImpl<_Upazila>(this, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'Upazila'))
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('districtId', districtId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Upazila&&(identical(other.id, id) || other.id == id)&&(identical(other.districtId, districtId) || other.districtId == districtId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,districtId,nameEn,nameBn);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'Upazila(id: $id, districtId: $districtId, nameEn: $nameEn, nameBn: $nameBn)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpazilaCopyWith<$Res> implements $UpazilaCopyWith<$Res> {
+  factory _$UpazilaCopyWith(_Upazila value, $Res Function(_Upazila) _then) = __$UpazilaCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, int districtId, String nameEn, String? nameBn
+});
+
+
+
+
+}
+/// @nodoc
+class __$UpazilaCopyWithImpl<$Res>
+    implements _$UpazilaCopyWith<$Res> {
+  __$UpazilaCopyWithImpl(this._self, this._then);
+
+  final _Upazila _self;
+  final $Res Function(_Upazila) _then;
+
+/// Create a copy of Upazila
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? districtId = null,Object? nameEn = null,Object? nameBn = freezed,}) {
+  return _then(_Upazila(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,districtId: null == districtId ? _self.districtId : districtId // ignore: cast_nullable_to_non_nullable
+as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
+as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$Base implements DiagnosticableTreeMixin {
+
+ int get id; int get areaId; String get nameEn; String? get nameBn; List<int> get upazilaIds;
+/// Create a copy of Base
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BaseCopyWith<Base> get copyWith => _$BaseCopyWithImpl<Base>(this as Base, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'Base'))
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('areaId', areaId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Base&&(identical(other.id, id) || other.id == id)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&const DeepCollectionEquality().equals(other.upazilaIds, upazilaIds));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,areaId,nameEn,nameBn,const DeepCollectionEquality().hash(upazilaIds));
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'Base(id: $id, areaId: $areaId, nameEn: $nameEn, nameBn: $nameBn, upazilaIds: $upazilaIds)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $BaseCopyWith<$Res>  {
+  factory $BaseCopyWith(Base value, $Res Function(Base) _then) = _$BaseCopyWithImpl;
+@useResult
+$Res call({
+ int id, int areaId, String nameEn, String? nameBn, List<int> upazilaIds
+});
+
+
+
+
+}
+/// @nodoc
+class _$BaseCopyWithImpl<$Res>
+    implements $BaseCopyWith<$Res> {
+  _$BaseCopyWithImpl(this._self, this._then);
+
+  final Base _self;
+  final $Res Function(Base) _then;
+
+/// Create a copy of Base
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? areaId = null,Object? nameEn = null,Object? nameBn = freezed,Object? upazilaIds = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,areaId: null == areaId ? _self.areaId : areaId // ignore: cast_nullable_to_non_nullable
+as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
+as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
+as String?,upazilaIds: null == upazilaIds ? _self.upazilaIds : upazilaIds // ignore: cast_nullable_to_non_nullable
+as List<int>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [Base].
+extension BasePatterns on Base {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Base value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Base() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Base value)  $default,){
+final _that = this;
+switch (_that) {
+case _Base():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Base value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Base() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int areaId,  String nameEn,  String? nameBn,  List<int> upazilaIds)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Base() when $default != null:
+return $default(_that.id,_that.areaId,_that.nameEn,_that.nameBn,_that.upazilaIds);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int areaId,  String nameEn,  String? nameBn,  List<int> upazilaIds)  $default,) {final _that = this;
+switch (_that) {
+case _Base():
+return $default(_that.id,_that.areaId,_that.nameEn,_that.nameBn,_that.upazilaIds);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int areaId,  String nameEn,  String? nameBn,  List<int> upazilaIds)?  $default,) {final _that = this;
+switch (_that) {
+case _Base() when $default != null:
+return $default(_that.id,_that.areaId,_that.nameEn,_that.nameBn,_that.upazilaIds);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _Base extends Base with DiagnosticableTreeMixin {
+  const _Base({required this.id, required this.areaId, required this.nameEn, this.nameBn, final  List<int> upazilaIds = const []}): _upazilaIds = upazilaIds,super._();
+  
+
+@override final  int id;
+@override final  int areaId;
+@override final  String nameEn;
+@override final  String? nameBn;
+ final  List<int> _upazilaIds;
+@override@JsonKey() List<int> get upazilaIds {
+  if (_upazilaIds is EqualUnmodifiableListView) return _upazilaIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_upazilaIds);
+}
+
+
+/// Create a copy of Base
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$BaseCopyWith<_Base> get copyWith => __$BaseCopyWithImpl<_Base>(this, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'Base'))
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('areaId', areaId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Base&&(identical(other.id, id) || other.id == id)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&const DeepCollectionEquality().equals(other._upazilaIds, _upazilaIds));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,areaId,nameEn,nameBn,const DeepCollectionEquality().hash(_upazilaIds));
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'Base(id: $id, areaId: $areaId, nameEn: $nameEn, nameBn: $nameBn, upazilaIds: $upazilaIds)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$BaseCopyWith<$Res> implements $BaseCopyWith<$Res> {
+  factory _$BaseCopyWith(_Base value, $Res Function(_Base) _then) = __$BaseCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, int areaId, String nameEn, String? nameBn, List<int> upazilaIds
+});
+
+
+
+
+}
+/// @nodoc
+class __$BaseCopyWithImpl<$Res>
+    implements _$BaseCopyWith<$Res> {
+  __$BaseCopyWithImpl(this._self, this._then);
+
+  final _Base _self;
+  final $Res Function(_Base) _then;
+
+/// Create a copy of Base
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? areaId = null,Object? nameEn = null,Object? nameBn = freezed,Object? upazilaIds = null,}) {
+  return _then(_Base(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,areaId: null == areaId ? _self.areaId : areaId // ignore: cast_nullable_to_non_nullable
+as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
+as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
+as String?,upazilaIds: null == upazilaIds ? _self._upazilaIds : upazilaIds // ignore: cast_nullable_to_non_nullable
+as List<int>,
+  ));
+}
+
+
+}
+
+/// @nodoc
 mixin _$Distributor implements DiagnosticableTreeMixin {
 
- int get id; String get nameEn; String? get nameBn; String? get designation; String? get addressEn; String? get addressBn; int get areaId; String? get mobile; bool get isActive; DateTime get createdAt; DateTime get updatedAt;
+ int get id; String get nameEn; String? get nameBn; String? get designation; String? get addressEn; String? get addressBn; int? get upazilaId; int? get baseId; int? get areaId; String? get mobile; bool get isActive; DateTime get createdAt; DateTime get updatedAt;
 /// Create a copy of Distributor
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -579,21 +1697,21 @@ $DistributorCopyWith<Distributor> get copyWith => _$DistributorCopyWithImpl<Dist
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'Distributor'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('areaId', areaId))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('upazilaId', upazilaId))..add(DiagnosticsProperty('baseId', baseId))..add(DiagnosticsProperty('areaId', areaId))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Distributor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Distributor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.upazilaId, upazilaId) || other.upazilaId == upazilaId)&&(identical(other.baseId, baseId) || other.baseId == baseId)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,addressEn,addressBn,areaId,mobile,isActive,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,addressEn,addressBn,upazilaId,baseId,areaId,mobile,isActive,createdAt,updatedAt);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Distributor(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, addressEn: $addressEn, addressBn: $addressBn, areaId: $areaId, mobile: $mobile, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Distributor(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, addressEn: $addressEn, addressBn: $addressBn, upazilaId: $upazilaId, baseId: $baseId, areaId: $areaId, mobile: $mobile, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -604,7 +1722,7 @@ abstract mixin class $DistributorCopyWith<$Res>  {
   factory $DistributorCopyWith(Distributor value, $Res Function(Distributor) _then) = _$DistributorCopyWithImpl;
 @useResult
 $Res call({
- int id, String nameEn, String? nameBn, String? designation, String? addressEn, String? addressBn, int areaId, String? mobile, bool isActive, DateTime createdAt, DateTime updatedAt
+ int id, String nameEn, String? nameBn, String? designation, String? addressEn, String? addressBn, int? upazilaId, int? baseId, int? areaId, String? mobile, bool isActive, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -621,7 +1739,7 @@ class _$DistributorCopyWithImpl<$Res>
 
 /// Create a copy of Distributor
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? designation = freezed,Object? addressEn = freezed,Object? addressBn = freezed,Object? areaId = null,Object? mobile = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? designation = freezed,Object? addressEn = freezed,Object? addressBn = freezed,Object? upazilaId = freezed,Object? baseId = freezed,Object? areaId = freezed,Object? mobile = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -629,8 +1747,10 @@ as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_null
 as String?,designation: freezed == designation ? _self.designation : designation // ignore: cast_nullable_to_non_nullable
 as String?,addressEn: freezed == addressEn ? _self.addressEn : addressEn // ignore: cast_nullable_to_non_nullable
 as String?,addressBn: freezed == addressBn ? _self.addressBn : addressBn // ignore: cast_nullable_to_non_nullable
-as String?,areaId: null == areaId ? _self.areaId : areaId // ignore: cast_nullable_to_non_nullable
-as int,mobile: freezed == mobile ? _self.mobile : mobile // ignore: cast_nullable_to_non_nullable
+as String?,upazilaId: freezed == upazilaId ? _self.upazilaId : upazilaId // ignore: cast_nullable_to_non_nullable
+as int?,baseId: freezed == baseId ? _self.baseId : baseId // ignore: cast_nullable_to_non_nullable
+as int?,areaId: freezed == areaId ? _self.areaId : areaId // ignore: cast_nullable_to_non_nullable
+as int?,mobile: freezed == mobile ? _self.mobile : mobile // ignore: cast_nullable_to_non_nullable
 as String?,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -719,10 +1839,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? addressEn,  String? addressBn,  int areaId,  String? mobile,  bool isActive,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? addressEn,  String? addressBn,  int? upazilaId,  int? baseId,  int? areaId,  String? mobile,  bool isActive,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Distributor() when $default != null:
-return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.addressEn,_that.addressBn,_that.areaId,_that.mobile,_that.isActive,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.addressEn,_that.addressBn,_that.upazilaId,_that.baseId,_that.areaId,_that.mobile,_that.isActive,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -740,10 +1860,10 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.addre
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? addressEn,  String? addressBn,  int areaId,  String? mobile,  bool isActive,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? addressEn,  String? addressBn,  int? upazilaId,  int? baseId,  int? areaId,  String? mobile,  bool isActive,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Distributor():
-return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.addressEn,_that.addressBn,_that.areaId,_that.mobile,_that.isActive,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.addressEn,_that.addressBn,_that.upazilaId,_that.baseId,_that.areaId,_that.mobile,_that.isActive,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -760,10 +1880,10 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.addre
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? addressEn,  String? addressBn,  int areaId,  String? mobile,  bool isActive,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? addressEn,  String? addressBn,  int? upazilaId,  int? baseId,  int? areaId,  String? mobile,  bool isActive,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Distributor() when $default != null:
-return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.addressEn,_that.addressBn,_that.areaId,_that.mobile,_that.isActive,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.addressEn,_that.addressBn,_that.upazilaId,_that.baseId,_that.areaId,_that.mobile,_that.isActive,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -775,7 +1895,7 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.addre
 
 
 class _Distributor extends Distributor with DiagnosticableTreeMixin {
-  const _Distributor({required this.id, required this.nameEn, this.nameBn, this.designation, this.addressEn, this.addressBn, required this.areaId, this.mobile, this.isActive = true, required this.createdAt, required this.updatedAt}): super._();
+  const _Distributor({required this.id, required this.nameEn, this.nameBn, this.designation, this.addressEn, this.addressBn, this.upazilaId, this.baseId, this.areaId, this.mobile, this.isActive = true, required this.createdAt, required this.updatedAt}): super._();
   
 
 @override final  int id;
@@ -784,7 +1904,9 @@ class _Distributor extends Distributor with DiagnosticableTreeMixin {
 @override final  String? designation;
 @override final  String? addressEn;
 @override final  String? addressBn;
-@override final  int areaId;
+@override final  int? upazilaId;
+@override final  int? baseId;
+@override final  int? areaId;
 @override final  String? mobile;
 @override@JsonKey() final  bool isActive;
 @override final  DateTime createdAt;
@@ -801,21 +1923,21 @@ _$DistributorCopyWith<_Distributor> get copyWith => __$DistributorCopyWithImpl<_
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'Distributor'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('areaId', areaId))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('upazilaId', upazilaId))..add(DiagnosticsProperty('baseId', baseId))..add(DiagnosticsProperty('areaId', areaId))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Distributor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Distributor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.upazilaId, upazilaId) || other.upazilaId == upazilaId)&&(identical(other.baseId, baseId) || other.baseId == baseId)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,addressEn,addressBn,areaId,mobile,isActive,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,addressEn,addressBn,upazilaId,baseId,areaId,mobile,isActive,createdAt,updatedAt);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Distributor(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, addressEn: $addressEn, addressBn: $addressBn, areaId: $areaId, mobile: $mobile, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Distributor(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, addressEn: $addressEn, addressBn: $addressBn, upazilaId: $upazilaId, baseId: $baseId, areaId: $areaId, mobile: $mobile, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -826,7 +1948,7 @@ abstract mixin class _$DistributorCopyWith<$Res> implements $DistributorCopyWith
   factory _$DistributorCopyWith(_Distributor value, $Res Function(_Distributor) _then) = __$DistributorCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String nameEn, String? nameBn, String? designation, String? addressEn, String? addressBn, int areaId, String? mobile, bool isActive, DateTime createdAt, DateTime updatedAt
+ int id, String nameEn, String? nameBn, String? designation, String? addressEn, String? addressBn, int? upazilaId, int? baseId, int? areaId, String? mobile, bool isActive, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -843,7 +1965,7 @@ class __$DistributorCopyWithImpl<$Res>
 
 /// Create a copy of Distributor
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? designation = freezed,Object? addressEn = freezed,Object? addressBn = freezed,Object? areaId = null,Object? mobile = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? designation = freezed,Object? addressEn = freezed,Object? addressBn = freezed,Object? upazilaId = freezed,Object? baseId = freezed,Object? areaId = freezed,Object? mobile = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_Distributor(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -851,8 +1973,10 @@ as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_null
 as String?,designation: freezed == designation ? _self.designation : designation // ignore: cast_nullable_to_non_nullable
 as String?,addressEn: freezed == addressEn ? _self.addressEn : addressEn // ignore: cast_nullable_to_non_nullable
 as String?,addressBn: freezed == addressBn ? _self.addressBn : addressBn // ignore: cast_nullable_to_non_nullable
-as String?,areaId: null == areaId ? _self.areaId : areaId // ignore: cast_nullable_to_non_nullable
-as int,mobile: freezed == mobile ? _self.mobile : mobile // ignore: cast_nullable_to_non_nullable
+as String?,upazilaId: freezed == upazilaId ? _self.upazilaId : upazilaId // ignore: cast_nullable_to_non_nullable
+as int?,baseId: freezed == baseId ? _self.baseId : baseId // ignore: cast_nullable_to_non_nullable
+as int?,areaId: freezed == areaId ? _self.areaId : areaId // ignore: cast_nullable_to_non_nullable
+as int?,mobile: freezed == mobile ? _self.mobile : mobile // ignore: cast_nullable_to_non_nullable
 as String?,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -866,7 +1990,7 @@ as DateTime,
 /// @nodoc
 mixin _$SalesPersonnel implements DiagnosticableTreeMixin {
 
- int get id; String get nameEn; String? get nameBn; String? get designation; String? get photoUrl; String? get mobile; String? get email; String? get employeeId; bool get isActive; DateTime get createdAt; DateTime get updatedAt; List<int> get areaIds;
+ int get id; String get nameEn; String? get nameBn; String? get designation; String? get photoUrl; String? get mobile; String? get email; String? get employeeId; bool get isActive; DateTime get createdAt; DateTime get updatedAt; List<int> get regionIds; List<int> get areaIds; List<int> get baseIds; List<int> get upazilaIds;
 /// Create a copy of SalesPersonnel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -878,21 +2002,21 @@ $SalesPersonnelCopyWith<SalesPersonnel> get copyWith => _$SalesPersonnelCopyWith
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'SalesPersonnel'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('employeeId', employeeId))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('areaIds', areaIds));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('employeeId', employeeId))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('regionIds', regionIds))..add(DiagnosticsProperty('areaIds', areaIds))..add(DiagnosticsProperty('baseIds', baseIds))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SalesPersonnel&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.employeeId, employeeId) || other.employeeId == employeeId)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.areaIds, areaIds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SalesPersonnel&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.employeeId, employeeId) || other.employeeId == employeeId)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.regionIds, regionIds)&&const DeepCollectionEquality().equals(other.areaIds, areaIds)&&const DeepCollectionEquality().equals(other.baseIds, baseIds)&&const DeepCollectionEquality().equals(other.upazilaIds, upazilaIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,photoUrl,mobile,email,employeeId,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(areaIds));
+int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,photoUrl,mobile,email,employeeId,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(regionIds),const DeepCollectionEquality().hash(areaIds),const DeepCollectionEquality().hash(baseIds),const DeepCollectionEquality().hash(upazilaIds));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SalesPersonnel(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, photoUrl: $photoUrl, mobile: $mobile, email: $email, employeeId: $employeeId, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, areaIds: $areaIds)';
+  return 'SalesPersonnel(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, photoUrl: $photoUrl, mobile: $mobile, email: $email, employeeId: $employeeId, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, regionIds: $regionIds, areaIds: $areaIds, baseIds: $baseIds, upazilaIds: $upazilaIds)';
 }
 
 
@@ -903,7 +2027,7 @@ abstract mixin class $SalesPersonnelCopyWith<$Res>  {
   factory $SalesPersonnelCopyWith(SalesPersonnel value, $Res Function(SalesPersonnel) _then) = _$SalesPersonnelCopyWithImpl;
 @useResult
 $Res call({
- int id, String nameEn, String? nameBn, String? designation, String? photoUrl, String? mobile, String? email, String? employeeId, bool isActive, DateTime createdAt, DateTime updatedAt, List<int> areaIds
+ int id, String nameEn, String? nameBn, String? designation, String? photoUrl, String? mobile, String? email, String? employeeId, bool isActive, DateTime createdAt, DateTime updatedAt, List<int> regionIds, List<int> areaIds, List<int> baseIds, List<int> upazilaIds
 });
 
 
@@ -920,7 +2044,7 @@ class _$SalesPersonnelCopyWithImpl<$Res>
 
 /// Create a copy of SalesPersonnel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? designation = freezed,Object? photoUrl = freezed,Object? mobile = freezed,Object? email = freezed,Object? employeeId = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? areaIds = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? designation = freezed,Object? photoUrl = freezed,Object? mobile = freezed,Object? email = freezed,Object? employeeId = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? regionIds = null,Object? areaIds = null,Object? baseIds = null,Object? upazilaIds = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -933,7 +2057,10 @@ as String?,employeeId: freezed == employeeId ? _self.employeeId : employeeId // 
 as String?,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,areaIds: null == areaIds ? _self.areaIds : areaIds // ignore: cast_nullable_to_non_nullable
+as DateTime,regionIds: null == regionIds ? _self.regionIds : regionIds // ignore: cast_nullable_to_non_nullable
+as List<int>,areaIds: null == areaIds ? _self.areaIds : areaIds // ignore: cast_nullable_to_non_nullable
+as List<int>,baseIds: null == baseIds ? _self.baseIds : baseIds // ignore: cast_nullable_to_non_nullable
+as List<int>,upazilaIds: null == upazilaIds ? _self.upazilaIds : upazilaIds // ignore: cast_nullable_to_non_nullable
 as List<int>,
   ));
 }
@@ -1019,10 +2146,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? photoUrl,  String? mobile,  String? email,  String? employeeId,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> areaIds)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? photoUrl,  String? mobile,  String? email,  String? employeeId,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> regionIds,  List<int> areaIds,  List<int> baseIds,  List<int> upazilaIds)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SalesPersonnel() when $default != null:
-return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.photoUrl,_that.mobile,_that.email,_that.employeeId,_that.isActive,_that.createdAt,_that.updatedAt,_that.areaIds);case _:
+return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.photoUrl,_that.mobile,_that.email,_that.employeeId,_that.isActive,_that.createdAt,_that.updatedAt,_that.regionIds,_that.areaIds,_that.baseIds,_that.upazilaIds);case _:
   return orElse();
 
 }
@@ -1040,10 +2167,10 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.photo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? photoUrl,  String? mobile,  String? email,  String? employeeId,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> areaIds)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? photoUrl,  String? mobile,  String? email,  String? employeeId,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> regionIds,  List<int> areaIds,  List<int> baseIds,  List<int> upazilaIds)  $default,) {final _that = this;
 switch (_that) {
 case _SalesPersonnel():
-return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.photoUrl,_that.mobile,_that.email,_that.employeeId,_that.isActive,_that.createdAt,_that.updatedAt,_that.areaIds);case _:
+return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.photoUrl,_that.mobile,_that.email,_that.employeeId,_that.isActive,_that.createdAt,_that.updatedAt,_that.regionIds,_that.areaIds,_that.baseIds,_that.upazilaIds);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1060,10 +2187,10 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.photo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? photoUrl,  String? mobile,  String? email,  String? employeeId,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> areaIds)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String nameEn,  String? nameBn,  String? designation,  String? photoUrl,  String? mobile,  String? email,  String? employeeId,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> regionIds,  List<int> areaIds,  List<int> baseIds,  List<int> upazilaIds)?  $default,) {final _that = this;
 switch (_that) {
 case _SalesPersonnel() when $default != null:
-return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.photoUrl,_that.mobile,_that.email,_that.employeeId,_that.isActive,_that.createdAt,_that.updatedAt,_that.areaIds);case _:
+return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.photoUrl,_that.mobile,_that.email,_that.employeeId,_that.isActive,_that.createdAt,_that.updatedAt,_that.regionIds,_that.areaIds,_that.baseIds,_that.upazilaIds);case _:
   return null;
 
 }
@@ -1075,7 +2202,7 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.photo
 
 
 class _SalesPersonnel extends SalesPersonnel with DiagnosticableTreeMixin {
-  const _SalesPersonnel({required this.id, required this.nameEn, this.nameBn, this.designation, this.photoUrl, this.mobile, this.email, this.employeeId, this.isActive = true, required this.createdAt, required this.updatedAt, final  List<int> areaIds = const []}): _areaIds = areaIds,super._();
+  const _SalesPersonnel({required this.id, required this.nameEn, this.nameBn, this.designation, this.photoUrl, this.mobile, this.email, this.employeeId, this.isActive = true, required this.createdAt, required this.updatedAt, final  List<int> regionIds = const [], final  List<int> areaIds = const [], final  List<int> baseIds = const [], final  List<int> upazilaIds = const []}): _regionIds = regionIds,_areaIds = areaIds,_baseIds = baseIds,_upazilaIds = upazilaIds,super._();
   
 
 @override final  int id;
@@ -1089,11 +2216,32 @@ class _SalesPersonnel extends SalesPersonnel with DiagnosticableTreeMixin {
 @override@JsonKey() final  bool isActive;
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
+ final  List<int> _regionIds;
+@override@JsonKey() List<int> get regionIds {
+  if (_regionIds is EqualUnmodifiableListView) return _regionIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_regionIds);
+}
+
  final  List<int> _areaIds;
 @override@JsonKey() List<int> get areaIds {
   if (_areaIds is EqualUnmodifiableListView) return _areaIds;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_areaIds);
+}
+
+ final  List<int> _baseIds;
+@override@JsonKey() List<int> get baseIds {
+  if (_baseIds is EqualUnmodifiableListView) return _baseIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_baseIds);
+}
+
+ final  List<int> _upazilaIds;
+@override@JsonKey() List<int> get upazilaIds {
+  if (_upazilaIds is EqualUnmodifiableListView) return _upazilaIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_upazilaIds);
 }
 
 
@@ -1108,21 +2256,21 @@ _$SalesPersonnelCopyWith<_SalesPersonnel> get copyWith => __$SalesPersonnelCopyW
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'SalesPersonnel'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('employeeId', employeeId))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('areaIds', areaIds));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('employeeId', employeeId))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('regionIds', regionIds))..add(DiagnosticsProperty('areaIds', areaIds))..add(DiagnosticsProperty('baseIds', baseIds))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SalesPersonnel&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.employeeId, employeeId) || other.employeeId == employeeId)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._areaIds, _areaIds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SalesPersonnel&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.employeeId, employeeId) || other.employeeId == employeeId)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._regionIds, _regionIds)&&const DeepCollectionEquality().equals(other._areaIds, _areaIds)&&const DeepCollectionEquality().equals(other._baseIds, _baseIds)&&const DeepCollectionEquality().equals(other._upazilaIds, _upazilaIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,photoUrl,mobile,email,employeeId,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(_areaIds));
+int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,photoUrl,mobile,email,employeeId,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(_regionIds),const DeepCollectionEquality().hash(_areaIds),const DeepCollectionEquality().hash(_baseIds),const DeepCollectionEquality().hash(_upazilaIds));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SalesPersonnel(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, photoUrl: $photoUrl, mobile: $mobile, email: $email, employeeId: $employeeId, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, areaIds: $areaIds)';
+  return 'SalesPersonnel(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, photoUrl: $photoUrl, mobile: $mobile, email: $email, employeeId: $employeeId, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, regionIds: $regionIds, areaIds: $areaIds, baseIds: $baseIds, upazilaIds: $upazilaIds)';
 }
 
 
@@ -1133,7 +2281,7 @@ abstract mixin class _$SalesPersonnelCopyWith<$Res> implements $SalesPersonnelCo
   factory _$SalesPersonnelCopyWith(_SalesPersonnel value, $Res Function(_SalesPersonnel) _then) = __$SalesPersonnelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String nameEn, String? nameBn, String? designation, String? photoUrl, String? mobile, String? email, String? employeeId, bool isActive, DateTime createdAt, DateTime updatedAt, List<int> areaIds
+ int id, String nameEn, String? nameBn, String? designation, String? photoUrl, String? mobile, String? email, String? employeeId, bool isActive, DateTime createdAt, DateTime updatedAt, List<int> regionIds, List<int> areaIds, List<int> baseIds, List<int> upazilaIds
 });
 
 
@@ -1150,7 +2298,7 @@ class __$SalesPersonnelCopyWithImpl<$Res>
 
 /// Create a copy of SalesPersonnel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? designation = freezed,Object? photoUrl = freezed,Object? mobile = freezed,Object? email = freezed,Object? employeeId = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? areaIds = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? designation = freezed,Object? photoUrl = freezed,Object? mobile = freezed,Object? email = freezed,Object? employeeId = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? regionIds = null,Object? areaIds = null,Object? baseIds = null,Object? upazilaIds = null,}) {
   return _then(_SalesPersonnel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -1163,7 +2311,10 @@ as String?,employeeId: freezed == employeeId ? _self.employeeId : employeeId // 
 as String?,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,areaIds: null == areaIds ? _self._areaIds : areaIds // ignore: cast_nullable_to_non_nullable
+as DateTime,regionIds: null == regionIds ? _self._regionIds : regionIds // ignore: cast_nullable_to_non_nullable
+as List<int>,areaIds: null == areaIds ? _self._areaIds : areaIds // ignore: cast_nullable_to_non_nullable
+as List<int>,baseIds: null == baseIds ? _self._baseIds : baseIds // ignore: cast_nullable_to_non_nullable
+as List<int>,upazilaIds: null == upazilaIds ? _self._upazilaIds : upazilaIds // ignore: cast_nullable_to_non_nullable
 as List<int>,
   ));
 }
@@ -1174,7 +2325,7 @@ as List<int>,
 /// @nodoc
 mixin _$VetDoctor implements DiagnosticableTreeMixin {
 
- int get id; String get nameEn; String? get nameBn; String? get photoUrl; String? get qualification; String? get specialization; String? get bvcRegistrationNo; String? get clinicOrHospitalNameEn; String? get clinicOrHospitalNameBn; String? get addressEn; String? get addressBn; String? get mobile; String? get email; bool get isActive; DateTime get createdAt; DateTime get updatedAt; List<int> get areaIds;
+ int get id; String get nameEn; String? get nameBn; String? get photoUrl; String? get qualification; String? get specialization; String? get bvcRegistrationNo; String? get clinicOrHospitalNameEn; String? get clinicOrHospitalNameBn; String? get addressEn; String? get addressBn; String? get mobile; String? get email; bool get isActive; DateTime get createdAt; DateTime get updatedAt; List<int> get regionIds; List<int> get areaIds; List<int> get baseIds; List<int> get upazilaIds;
 /// Create a copy of VetDoctor
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1186,21 +2337,21 @@ $VetDoctorCopyWith<VetDoctor> get copyWith => _$VetDoctorCopyWithImpl<VetDoctor>
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'VetDoctor'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('qualification', qualification))..add(DiagnosticsProperty('specialization', specialization))..add(DiagnosticsProperty('bvcRegistrationNo', bvcRegistrationNo))..add(DiagnosticsProperty('clinicOrHospitalNameEn', clinicOrHospitalNameEn))..add(DiagnosticsProperty('clinicOrHospitalNameBn', clinicOrHospitalNameBn))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('areaIds', areaIds));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('qualification', qualification))..add(DiagnosticsProperty('specialization', specialization))..add(DiagnosticsProperty('bvcRegistrationNo', bvcRegistrationNo))..add(DiagnosticsProperty('clinicOrHospitalNameEn', clinicOrHospitalNameEn))..add(DiagnosticsProperty('clinicOrHospitalNameBn', clinicOrHospitalNameBn))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('regionIds', regionIds))..add(DiagnosticsProperty('areaIds', areaIds))..add(DiagnosticsProperty('baseIds', baseIds))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VetDoctor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.qualification, qualification) || other.qualification == qualification)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.bvcRegistrationNo, bvcRegistrationNo) || other.bvcRegistrationNo == bvcRegistrationNo)&&(identical(other.clinicOrHospitalNameEn, clinicOrHospitalNameEn) || other.clinicOrHospitalNameEn == clinicOrHospitalNameEn)&&(identical(other.clinicOrHospitalNameBn, clinicOrHospitalNameBn) || other.clinicOrHospitalNameBn == clinicOrHospitalNameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.areaIds, areaIds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VetDoctor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.qualification, qualification) || other.qualification == qualification)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.bvcRegistrationNo, bvcRegistrationNo) || other.bvcRegistrationNo == bvcRegistrationNo)&&(identical(other.clinicOrHospitalNameEn, clinicOrHospitalNameEn) || other.clinicOrHospitalNameEn == clinicOrHospitalNameEn)&&(identical(other.clinicOrHospitalNameBn, clinicOrHospitalNameBn) || other.clinicOrHospitalNameBn == clinicOrHospitalNameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.regionIds, regionIds)&&const DeepCollectionEquality().equals(other.areaIds, areaIds)&&const DeepCollectionEquality().equals(other.baseIds, baseIds)&&const DeepCollectionEquality().equals(other.upazilaIds, upazilaIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,photoUrl,qualification,specialization,bvcRegistrationNo,clinicOrHospitalNameEn,clinicOrHospitalNameBn,addressEn,addressBn,mobile,email,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(areaIds));
+int get hashCode => Object.hashAll([runtimeType,id,nameEn,nameBn,photoUrl,qualification,specialization,bvcRegistrationNo,clinicOrHospitalNameEn,clinicOrHospitalNameBn,addressEn,addressBn,mobile,email,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(regionIds),const DeepCollectionEquality().hash(areaIds),const DeepCollectionEquality().hash(baseIds),const DeepCollectionEquality().hash(upazilaIds)]);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'VetDoctor(id: $id, nameEn: $nameEn, nameBn: $nameBn, photoUrl: $photoUrl, qualification: $qualification, specialization: $specialization, bvcRegistrationNo: $bvcRegistrationNo, clinicOrHospitalNameEn: $clinicOrHospitalNameEn, clinicOrHospitalNameBn: $clinicOrHospitalNameBn, addressEn: $addressEn, addressBn: $addressBn, mobile: $mobile, email: $email, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, areaIds: $areaIds)';
+  return 'VetDoctor(id: $id, nameEn: $nameEn, nameBn: $nameBn, photoUrl: $photoUrl, qualification: $qualification, specialization: $specialization, bvcRegistrationNo: $bvcRegistrationNo, clinicOrHospitalNameEn: $clinicOrHospitalNameEn, clinicOrHospitalNameBn: $clinicOrHospitalNameBn, addressEn: $addressEn, addressBn: $addressBn, mobile: $mobile, email: $email, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, regionIds: $regionIds, areaIds: $areaIds, baseIds: $baseIds, upazilaIds: $upazilaIds)';
 }
 
 
@@ -1211,7 +2362,7 @@ abstract mixin class $VetDoctorCopyWith<$Res>  {
   factory $VetDoctorCopyWith(VetDoctor value, $Res Function(VetDoctor) _then) = _$VetDoctorCopyWithImpl;
 @useResult
 $Res call({
- int id, String nameEn, String? nameBn, String? photoUrl, String? qualification, String? specialization, String? bvcRegistrationNo, String? clinicOrHospitalNameEn, String? clinicOrHospitalNameBn, String? addressEn, String? addressBn, String? mobile, String? email, bool isActive, DateTime createdAt, DateTime updatedAt, List<int> areaIds
+ int id, String nameEn, String? nameBn, String? photoUrl, String? qualification, String? specialization, String? bvcRegistrationNo, String? clinicOrHospitalNameEn, String? clinicOrHospitalNameBn, String? addressEn, String? addressBn, String? mobile, String? email, bool isActive, DateTime createdAt, DateTime updatedAt, List<int> regionIds, List<int> areaIds, List<int> baseIds, List<int> upazilaIds
 });
 
 
@@ -1228,7 +2379,7 @@ class _$VetDoctorCopyWithImpl<$Res>
 
 /// Create a copy of VetDoctor
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? photoUrl = freezed,Object? qualification = freezed,Object? specialization = freezed,Object? bvcRegistrationNo = freezed,Object? clinicOrHospitalNameEn = freezed,Object? clinicOrHospitalNameBn = freezed,Object? addressEn = freezed,Object? addressBn = freezed,Object? mobile = freezed,Object? email = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? areaIds = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? photoUrl = freezed,Object? qualification = freezed,Object? specialization = freezed,Object? bvcRegistrationNo = freezed,Object? clinicOrHospitalNameEn = freezed,Object? clinicOrHospitalNameBn = freezed,Object? addressEn = freezed,Object? addressBn = freezed,Object? mobile = freezed,Object? email = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? regionIds = null,Object? areaIds = null,Object? baseIds = null,Object? upazilaIds = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -1246,7 +2397,10 @@ as String?,email: freezed == email ? _self.email : email // ignore: cast_nullabl
 as String?,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,areaIds: null == areaIds ? _self.areaIds : areaIds // ignore: cast_nullable_to_non_nullable
+as DateTime,regionIds: null == regionIds ? _self.regionIds : regionIds // ignore: cast_nullable_to_non_nullable
+as List<int>,areaIds: null == areaIds ? _self.areaIds : areaIds // ignore: cast_nullable_to_non_nullable
+as List<int>,baseIds: null == baseIds ? _self.baseIds : baseIds // ignore: cast_nullable_to_non_nullable
+as List<int>,upazilaIds: null == upazilaIds ? _self.upazilaIds : upazilaIds // ignore: cast_nullable_to_non_nullable
 as List<int>,
   ));
 }
@@ -1332,10 +2486,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? photoUrl,  String? qualification,  String? specialization,  String? bvcRegistrationNo,  String? clinicOrHospitalNameEn,  String? clinicOrHospitalNameBn,  String? addressEn,  String? addressBn,  String? mobile,  String? email,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> areaIds)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? photoUrl,  String? qualification,  String? specialization,  String? bvcRegistrationNo,  String? clinicOrHospitalNameEn,  String? clinicOrHospitalNameBn,  String? addressEn,  String? addressBn,  String? mobile,  String? email,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> regionIds,  List<int> areaIds,  List<int> baseIds,  List<int> upazilaIds)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VetDoctor() when $default != null:
-return $default(_that.id,_that.nameEn,_that.nameBn,_that.photoUrl,_that.qualification,_that.specialization,_that.bvcRegistrationNo,_that.clinicOrHospitalNameEn,_that.clinicOrHospitalNameBn,_that.addressEn,_that.addressBn,_that.mobile,_that.email,_that.isActive,_that.createdAt,_that.updatedAt,_that.areaIds);case _:
+return $default(_that.id,_that.nameEn,_that.nameBn,_that.photoUrl,_that.qualification,_that.specialization,_that.bvcRegistrationNo,_that.clinicOrHospitalNameEn,_that.clinicOrHospitalNameBn,_that.addressEn,_that.addressBn,_that.mobile,_that.email,_that.isActive,_that.createdAt,_that.updatedAt,_that.regionIds,_that.areaIds,_that.baseIds,_that.upazilaIds);case _:
   return orElse();
 
 }
@@ -1353,10 +2507,10 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.photoUrl,_that.qualific
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? photoUrl,  String? qualification,  String? specialization,  String? bvcRegistrationNo,  String? clinicOrHospitalNameEn,  String? clinicOrHospitalNameBn,  String? addressEn,  String? addressBn,  String? mobile,  String? email,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> areaIds)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String nameEn,  String? nameBn,  String? photoUrl,  String? qualification,  String? specialization,  String? bvcRegistrationNo,  String? clinicOrHospitalNameEn,  String? clinicOrHospitalNameBn,  String? addressEn,  String? addressBn,  String? mobile,  String? email,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> regionIds,  List<int> areaIds,  List<int> baseIds,  List<int> upazilaIds)  $default,) {final _that = this;
 switch (_that) {
 case _VetDoctor():
-return $default(_that.id,_that.nameEn,_that.nameBn,_that.photoUrl,_that.qualification,_that.specialization,_that.bvcRegistrationNo,_that.clinicOrHospitalNameEn,_that.clinicOrHospitalNameBn,_that.addressEn,_that.addressBn,_that.mobile,_that.email,_that.isActive,_that.createdAt,_that.updatedAt,_that.areaIds);case _:
+return $default(_that.id,_that.nameEn,_that.nameBn,_that.photoUrl,_that.qualification,_that.specialization,_that.bvcRegistrationNo,_that.clinicOrHospitalNameEn,_that.clinicOrHospitalNameBn,_that.addressEn,_that.addressBn,_that.mobile,_that.email,_that.isActive,_that.createdAt,_that.updatedAt,_that.regionIds,_that.areaIds,_that.baseIds,_that.upazilaIds);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1373,10 +2527,10 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.photoUrl,_that.qualific
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String nameEn,  String? nameBn,  String? photoUrl,  String? qualification,  String? specialization,  String? bvcRegistrationNo,  String? clinicOrHospitalNameEn,  String? clinicOrHospitalNameBn,  String? addressEn,  String? addressBn,  String? mobile,  String? email,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> areaIds)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String nameEn,  String? nameBn,  String? photoUrl,  String? qualification,  String? specialization,  String? bvcRegistrationNo,  String? clinicOrHospitalNameEn,  String? clinicOrHospitalNameBn,  String? addressEn,  String? addressBn,  String? mobile,  String? email,  bool isActive,  DateTime createdAt,  DateTime updatedAt,  List<int> regionIds,  List<int> areaIds,  List<int> baseIds,  List<int> upazilaIds)?  $default,) {final _that = this;
 switch (_that) {
 case _VetDoctor() when $default != null:
-return $default(_that.id,_that.nameEn,_that.nameBn,_that.photoUrl,_that.qualification,_that.specialization,_that.bvcRegistrationNo,_that.clinicOrHospitalNameEn,_that.clinicOrHospitalNameBn,_that.addressEn,_that.addressBn,_that.mobile,_that.email,_that.isActive,_that.createdAt,_that.updatedAt,_that.areaIds);case _:
+return $default(_that.id,_that.nameEn,_that.nameBn,_that.photoUrl,_that.qualification,_that.specialization,_that.bvcRegistrationNo,_that.clinicOrHospitalNameEn,_that.clinicOrHospitalNameBn,_that.addressEn,_that.addressBn,_that.mobile,_that.email,_that.isActive,_that.createdAt,_that.updatedAt,_that.regionIds,_that.areaIds,_that.baseIds,_that.upazilaIds);case _:
   return null;
 
 }
@@ -1388,7 +2542,7 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.photoUrl,_that.qualific
 
 
 class _VetDoctor extends VetDoctor with DiagnosticableTreeMixin {
-  const _VetDoctor({required this.id, required this.nameEn, this.nameBn, this.photoUrl, this.qualification, this.specialization, this.bvcRegistrationNo, this.clinicOrHospitalNameEn, this.clinicOrHospitalNameBn, this.addressEn, this.addressBn, this.mobile, this.email, this.isActive = true, required this.createdAt, required this.updatedAt, final  List<int> areaIds = const []}): _areaIds = areaIds,super._();
+  const _VetDoctor({required this.id, required this.nameEn, this.nameBn, this.photoUrl, this.qualification, this.specialization, this.bvcRegistrationNo, this.clinicOrHospitalNameEn, this.clinicOrHospitalNameBn, this.addressEn, this.addressBn, this.mobile, this.email, this.isActive = true, required this.createdAt, required this.updatedAt, final  List<int> regionIds = const [], final  List<int> areaIds = const [], final  List<int> baseIds = const [], final  List<int> upazilaIds = const []}): _regionIds = regionIds,_areaIds = areaIds,_baseIds = baseIds,_upazilaIds = upazilaIds,super._();
   
 
 @override final  int id;
@@ -1407,11 +2561,32 @@ class _VetDoctor extends VetDoctor with DiagnosticableTreeMixin {
 @override@JsonKey() final  bool isActive;
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
+ final  List<int> _regionIds;
+@override@JsonKey() List<int> get regionIds {
+  if (_regionIds is EqualUnmodifiableListView) return _regionIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_regionIds);
+}
+
  final  List<int> _areaIds;
 @override@JsonKey() List<int> get areaIds {
   if (_areaIds is EqualUnmodifiableListView) return _areaIds;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_areaIds);
+}
+
+ final  List<int> _baseIds;
+@override@JsonKey() List<int> get baseIds {
+  if (_baseIds is EqualUnmodifiableListView) return _baseIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_baseIds);
+}
+
+ final  List<int> _upazilaIds;
+@override@JsonKey() List<int> get upazilaIds {
+  if (_upazilaIds is EqualUnmodifiableListView) return _upazilaIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_upazilaIds);
 }
 
 
@@ -1426,21 +2601,21 @@ _$VetDoctorCopyWith<_VetDoctor> get copyWith => __$VetDoctorCopyWithImpl<_VetDoc
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'VetDoctor'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('qualification', qualification))..add(DiagnosticsProperty('specialization', specialization))..add(DiagnosticsProperty('bvcRegistrationNo', bvcRegistrationNo))..add(DiagnosticsProperty('clinicOrHospitalNameEn', clinicOrHospitalNameEn))..add(DiagnosticsProperty('clinicOrHospitalNameBn', clinicOrHospitalNameBn))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('areaIds', areaIds));
+    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('qualification', qualification))..add(DiagnosticsProperty('specialization', specialization))..add(DiagnosticsProperty('bvcRegistrationNo', bvcRegistrationNo))..add(DiagnosticsProperty('clinicOrHospitalNameEn', clinicOrHospitalNameEn))..add(DiagnosticsProperty('clinicOrHospitalNameBn', clinicOrHospitalNameBn))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('regionIds', regionIds))..add(DiagnosticsProperty('areaIds', areaIds))..add(DiagnosticsProperty('baseIds', baseIds))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VetDoctor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.qualification, qualification) || other.qualification == qualification)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.bvcRegistrationNo, bvcRegistrationNo) || other.bvcRegistrationNo == bvcRegistrationNo)&&(identical(other.clinicOrHospitalNameEn, clinicOrHospitalNameEn) || other.clinicOrHospitalNameEn == clinicOrHospitalNameEn)&&(identical(other.clinicOrHospitalNameBn, clinicOrHospitalNameBn) || other.clinicOrHospitalNameBn == clinicOrHospitalNameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._areaIds, _areaIds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VetDoctor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.qualification, qualification) || other.qualification == qualification)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.bvcRegistrationNo, bvcRegistrationNo) || other.bvcRegistrationNo == bvcRegistrationNo)&&(identical(other.clinicOrHospitalNameEn, clinicOrHospitalNameEn) || other.clinicOrHospitalNameEn == clinicOrHospitalNameEn)&&(identical(other.clinicOrHospitalNameBn, clinicOrHospitalNameBn) || other.clinicOrHospitalNameBn == clinicOrHospitalNameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._regionIds, _regionIds)&&const DeepCollectionEquality().equals(other._areaIds, _areaIds)&&const DeepCollectionEquality().equals(other._baseIds, _baseIds)&&const DeepCollectionEquality().equals(other._upazilaIds, _upazilaIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,photoUrl,qualification,specialization,bvcRegistrationNo,clinicOrHospitalNameEn,clinicOrHospitalNameBn,addressEn,addressBn,mobile,email,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(_areaIds));
+int get hashCode => Object.hashAll([runtimeType,id,nameEn,nameBn,photoUrl,qualification,specialization,bvcRegistrationNo,clinicOrHospitalNameEn,clinicOrHospitalNameBn,addressEn,addressBn,mobile,email,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(_regionIds),const DeepCollectionEquality().hash(_areaIds),const DeepCollectionEquality().hash(_baseIds),const DeepCollectionEquality().hash(_upazilaIds)]);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'VetDoctor(id: $id, nameEn: $nameEn, nameBn: $nameBn, photoUrl: $photoUrl, qualification: $qualification, specialization: $specialization, bvcRegistrationNo: $bvcRegistrationNo, clinicOrHospitalNameEn: $clinicOrHospitalNameEn, clinicOrHospitalNameBn: $clinicOrHospitalNameBn, addressEn: $addressEn, addressBn: $addressBn, mobile: $mobile, email: $email, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, areaIds: $areaIds)';
+  return 'VetDoctor(id: $id, nameEn: $nameEn, nameBn: $nameBn, photoUrl: $photoUrl, qualification: $qualification, specialization: $specialization, bvcRegistrationNo: $bvcRegistrationNo, clinicOrHospitalNameEn: $clinicOrHospitalNameEn, clinicOrHospitalNameBn: $clinicOrHospitalNameBn, addressEn: $addressEn, addressBn: $addressBn, mobile: $mobile, email: $email, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, regionIds: $regionIds, areaIds: $areaIds, baseIds: $baseIds, upazilaIds: $upazilaIds)';
 }
 
 
@@ -1451,7 +2626,7 @@ abstract mixin class _$VetDoctorCopyWith<$Res> implements $VetDoctorCopyWith<$Re
   factory _$VetDoctorCopyWith(_VetDoctor value, $Res Function(_VetDoctor) _then) = __$VetDoctorCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String nameEn, String? nameBn, String? photoUrl, String? qualification, String? specialization, String? bvcRegistrationNo, String? clinicOrHospitalNameEn, String? clinicOrHospitalNameBn, String? addressEn, String? addressBn, String? mobile, String? email, bool isActive, DateTime createdAt, DateTime updatedAt, List<int> areaIds
+ int id, String nameEn, String? nameBn, String? photoUrl, String? qualification, String? specialization, String? bvcRegistrationNo, String? clinicOrHospitalNameEn, String? clinicOrHospitalNameBn, String? addressEn, String? addressBn, String? mobile, String? email, bool isActive, DateTime createdAt, DateTime updatedAt, List<int> regionIds, List<int> areaIds, List<int> baseIds, List<int> upazilaIds
 });
 
 
@@ -1468,7 +2643,7 @@ class __$VetDoctorCopyWithImpl<$Res>
 
 /// Create a copy of VetDoctor
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? photoUrl = freezed,Object? qualification = freezed,Object? specialization = freezed,Object? bvcRegistrationNo = freezed,Object? clinicOrHospitalNameEn = freezed,Object? clinicOrHospitalNameBn = freezed,Object? addressEn = freezed,Object? addressBn = freezed,Object? mobile = freezed,Object? email = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? areaIds = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? photoUrl = freezed,Object? qualification = freezed,Object? specialization = freezed,Object? bvcRegistrationNo = freezed,Object? clinicOrHospitalNameEn = freezed,Object? clinicOrHospitalNameBn = freezed,Object? addressEn = freezed,Object? addressBn = freezed,Object? mobile = freezed,Object? email = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? regionIds = null,Object? areaIds = null,Object? baseIds = null,Object? upazilaIds = null,}) {
   return _then(_VetDoctor(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -1486,7 +2661,10 @@ as String?,email: freezed == email ? _self.email : email // ignore: cast_nullabl
 as String?,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,areaIds: null == areaIds ? _self._areaIds : areaIds // ignore: cast_nullable_to_non_nullable
+as DateTime,regionIds: null == regionIds ? _self._regionIds : regionIds // ignore: cast_nullable_to_non_nullable
+as List<int>,areaIds: null == areaIds ? _self._areaIds : areaIds // ignore: cast_nullable_to_non_nullable
+as List<int>,baseIds: null == baseIds ? _self._baseIds : baseIds // ignore: cast_nullable_to_non_nullable
+as List<int>,upazilaIds: null == upazilaIds ? _self._upazilaIds : upazilaIds // ignore: cast_nullable_to_non_nullable
 as List<int>,
   ));
 }
@@ -1826,7 +3004,7 @@ $RegionCopyWith<$Res> get region {
 /// @nodoc
 mixin _$SalesPersonnelWithAreas implements DiagnosticableTreeMixin {
 
- SalesPersonnel get personnel; List<Area> get areas;
+ SalesPersonnel get personnel; List<Area> get areas; List<Region> get regions; List<Base> get bases; List<Upazila> get upazilas;
 /// Create a copy of SalesPersonnelWithAreas
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1838,21 +3016,21 @@ $SalesPersonnelWithAreasCopyWith<SalesPersonnelWithAreas> get copyWith => _$Sale
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'SalesPersonnelWithAreas'))
-    ..add(DiagnosticsProperty('personnel', personnel))..add(DiagnosticsProperty('areas', areas));
+    ..add(DiagnosticsProperty('personnel', personnel))..add(DiagnosticsProperty('areas', areas))..add(DiagnosticsProperty('regions', regions))..add(DiagnosticsProperty('bases', bases))..add(DiagnosticsProperty('upazilas', upazilas));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SalesPersonnelWithAreas&&(identical(other.personnel, personnel) || other.personnel == personnel)&&const DeepCollectionEquality().equals(other.areas, areas));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SalesPersonnelWithAreas&&(identical(other.personnel, personnel) || other.personnel == personnel)&&const DeepCollectionEquality().equals(other.areas, areas)&&const DeepCollectionEquality().equals(other.regions, regions)&&const DeepCollectionEquality().equals(other.bases, bases)&&const DeepCollectionEquality().equals(other.upazilas, upazilas));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,personnel,const DeepCollectionEquality().hash(areas));
+int get hashCode => Object.hash(runtimeType,personnel,const DeepCollectionEquality().hash(areas),const DeepCollectionEquality().hash(regions),const DeepCollectionEquality().hash(bases),const DeepCollectionEquality().hash(upazilas));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SalesPersonnelWithAreas(personnel: $personnel, areas: $areas)';
+  return 'SalesPersonnelWithAreas(personnel: $personnel, areas: $areas, regions: $regions, bases: $bases, upazilas: $upazilas)';
 }
 
 
@@ -1863,7 +3041,7 @@ abstract mixin class $SalesPersonnelWithAreasCopyWith<$Res>  {
   factory $SalesPersonnelWithAreasCopyWith(SalesPersonnelWithAreas value, $Res Function(SalesPersonnelWithAreas) _then) = _$SalesPersonnelWithAreasCopyWithImpl;
 @useResult
 $Res call({
- SalesPersonnel personnel, List<Area> areas
+ SalesPersonnel personnel, List<Area> areas, List<Region> regions, List<Base> bases, List<Upazila> upazilas
 });
 
 
@@ -1880,11 +3058,14 @@ class _$SalesPersonnelWithAreasCopyWithImpl<$Res>
 
 /// Create a copy of SalesPersonnelWithAreas
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? personnel = null,Object? areas = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? personnel = null,Object? areas = null,Object? regions = null,Object? bases = null,Object? upazilas = null,}) {
   return _then(_self.copyWith(
 personnel: null == personnel ? _self.personnel : personnel // ignore: cast_nullable_to_non_nullable
 as SalesPersonnel,areas: null == areas ? _self.areas : areas // ignore: cast_nullable_to_non_nullable
-as List<Area>,
+as List<Area>,regions: null == regions ? _self.regions : regions // ignore: cast_nullable_to_non_nullable
+as List<Region>,bases: null == bases ? _self.bases : bases // ignore: cast_nullable_to_non_nullable
+as List<Base>,upazilas: null == upazilas ? _self.upazilas : upazilas // ignore: cast_nullable_to_non_nullable
+as List<Upazila>,
   ));
 }
 /// Create a copy of SalesPersonnelWithAreas
@@ -1978,10 +3159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SalesPersonnel personnel,  List<Area> areas)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SalesPersonnel personnel,  List<Area> areas,  List<Region> regions,  List<Base> bases,  List<Upazila> upazilas)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SalesPersonnelWithAreas() when $default != null:
-return $default(_that.personnel,_that.areas);case _:
+return $default(_that.personnel,_that.areas,_that.regions,_that.bases,_that.upazilas);case _:
   return orElse();
 
 }
@@ -1999,10 +3180,10 @@ return $default(_that.personnel,_that.areas);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SalesPersonnel personnel,  List<Area> areas)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SalesPersonnel personnel,  List<Area> areas,  List<Region> regions,  List<Base> bases,  List<Upazila> upazilas)  $default,) {final _that = this;
 switch (_that) {
 case _SalesPersonnelWithAreas():
-return $default(_that.personnel,_that.areas);case _:
+return $default(_that.personnel,_that.areas,_that.regions,_that.bases,_that.upazilas);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2019,10 +3200,10 @@ return $default(_that.personnel,_that.areas);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SalesPersonnel personnel,  List<Area> areas)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SalesPersonnel personnel,  List<Area> areas,  List<Region> regions,  List<Base> bases,  List<Upazila> upazilas)?  $default,) {final _that = this;
 switch (_that) {
 case _SalesPersonnelWithAreas() when $default != null:
-return $default(_that.personnel,_that.areas);case _:
+return $default(_that.personnel,_that.areas,_that.regions,_that.bases,_that.upazilas);case _:
   return null;
 
 }
@@ -2034,7 +3215,7 @@ return $default(_that.personnel,_that.areas);case _:
 
 
 class _SalesPersonnelWithAreas with DiagnosticableTreeMixin implements SalesPersonnelWithAreas {
-  const _SalesPersonnelWithAreas({required this.personnel, required final  List<Area> areas}): _areas = areas;
+  const _SalesPersonnelWithAreas({required this.personnel, required final  List<Area> areas, final  List<Region> regions = const [], final  List<Base> bases = const [], final  List<Upazila> upazilas = const []}): _areas = areas,_regions = regions,_bases = bases,_upazilas = upazilas;
   
 
 @override final  SalesPersonnel personnel;
@@ -2043,6 +3224,27 @@ class _SalesPersonnelWithAreas with DiagnosticableTreeMixin implements SalesPers
   if (_areas is EqualUnmodifiableListView) return _areas;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_areas);
+}
+
+ final  List<Region> _regions;
+@override@JsonKey() List<Region> get regions {
+  if (_regions is EqualUnmodifiableListView) return _regions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_regions);
+}
+
+ final  List<Base> _bases;
+@override@JsonKey() List<Base> get bases {
+  if (_bases is EqualUnmodifiableListView) return _bases;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_bases);
+}
+
+ final  List<Upazila> _upazilas;
+@override@JsonKey() List<Upazila> get upazilas {
+  if (_upazilas is EqualUnmodifiableListView) return _upazilas;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_upazilas);
 }
 
 
@@ -2057,21 +3259,21 @@ _$SalesPersonnelWithAreasCopyWith<_SalesPersonnelWithAreas> get copyWith => __$S
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'SalesPersonnelWithAreas'))
-    ..add(DiagnosticsProperty('personnel', personnel))..add(DiagnosticsProperty('areas', areas));
+    ..add(DiagnosticsProperty('personnel', personnel))..add(DiagnosticsProperty('areas', areas))..add(DiagnosticsProperty('regions', regions))..add(DiagnosticsProperty('bases', bases))..add(DiagnosticsProperty('upazilas', upazilas));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SalesPersonnelWithAreas&&(identical(other.personnel, personnel) || other.personnel == personnel)&&const DeepCollectionEquality().equals(other._areas, _areas));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SalesPersonnelWithAreas&&(identical(other.personnel, personnel) || other.personnel == personnel)&&const DeepCollectionEquality().equals(other._areas, _areas)&&const DeepCollectionEquality().equals(other._regions, _regions)&&const DeepCollectionEquality().equals(other._bases, _bases)&&const DeepCollectionEquality().equals(other._upazilas, _upazilas));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,personnel,const DeepCollectionEquality().hash(_areas));
+int get hashCode => Object.hash(runtimeType,personnel,const DeepCollectionEquality().hash(_areas),const DeepCollectionEquality().hash(_regions),const DeepCollectionEquality().hash(_bases),const DeepCollectionEquality().hash(_upazilas));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SalesPersonnelWithAreas(personnel: $personnel, areas: $areas)';
+  return 'SalesPersonnelWithAreas(personnel: $personnel, areas: $areas, regions: $regions, bases: $bases, upazilas: $upazilas)';
 }
 
 
@@ -2082,7 +3284,7 @@ abstract mixin class _$SalesPersonnelWithAreasCopyWith<$Res> implements $SalesPe
   factory _$SalesPersonnelWithAreasCopyWith(_SalesPersonnelWithAreas value, $Res Function(_SalesPersonnelWithAreas) _then) = __$SalesPersonnelWithAreasCopyWithImpl;
 @override @useResult
 $Res call({
- SalesPersonnel personnel, List<Area> areas
+ SalesPersonnel personnel, List<Area> areas, List<Region> regions, List<Base> bases, List<Upazila> upazilas
 });
 
 
@@ -2099,11 +3301,14 @@ class __$SalesPersonnelWithAreasCopyWithImpl<$Res>
 
 /// Create a copy of SalesPersonnelWithAreas
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? personnel = null,Object? areas = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? personnel = null,Object? areas = null,Object? regions = null,Object? bases = null,Object? upazilas = null,}) {
   return _then(_SalesPersonnelWithAreas(
 personnel: null == personnel ? _self.personnel : personnel // ignore: cast_nullable_to_non_nullable
 as SalesPersonnel,areas: null == areas ? _self._areas : areas // ignore: cast_nullable_to_non_nullable
-as List<Area>,
+as List<Area>,regions: null == regions ? _self._regions : regions // ignore: cast_nullable_to_non_nullable
+as List<Region>,bases: null == bases ? _self._bases : bases // ignore: cast_nullable_to_non_nullable
+as List<Base>,upazilas: null == upazilas ? _self._upazilas : upazilas // ignore: cast_nullable_to_non_nullable
+as List<Upazila>,
   ));
 }
 
@@ -2122,7 +3327,7 @@ $SalesPersonnelCopyWith<$Res> get personnel {
 /// @nodoc
 mixin _$VetDoctorWithAreas implements DiagnosticableTreeMixin {
 
- VetDoctor get doctor; List<Area> get areas;
+ VetDoctor get doctor; List<Area> get areas; List<Region> get regions; List<Base> get bases; List<Upazila> get upazilas;
 /// Create a copy of VetDoctorWithAreas
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2134,21 +3339,21 @@ $VetDoctorWithAreasCopyWith<VetDoctorWithAreas> get copyWith => _$VetDoctorWithA
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'VetDoctorWithAreas'))
-    ..add(DiagnosticsProperty('doctor', doctor))..add(DiagnosticsProperty('areas', areas));
+    ..add(DiagnosticsProperty('doctor', doctor))..add(DiagnosticsProperty('areas', areas))..add(DiagnosticsProperty('regions', regions))..add(DiagnosticsProperty('bases', bases))..add(DiagnosticsProperty('upazilas', upazilas));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VetDoctorWithAreas&&(identical(other.doctor, doctor) || other.doctor == doctor)&&const DeepCollectionEquality().equals(other.areas, areas));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VetDoctorWithAreas&&(identical(other.doctor, doctor) || other.doctor == doctor)&&const DeepCollectionEquality().equals(other.areas, areas)&&const DeepCollectionEquality().equals(other.regions, regions)&&const DeepCollectionEquality().equals(other.bases, bases)&&const DeepCollectionEquality().equals(other.upazilas, upazilas));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,doctor,const DeepCollectionEquality().hash(areas));
+int get hashCode => Object.hash(runtimeType,doctor,const DeepCollectionEquality().hash(areas),const DeepCollectionEquality().hash(regions),const DeepCollectionEquality().hash(bases),const DeepCollectionEquality().hash(upazilas));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'VetDoctorWithAreas(doctor: $doctor, areas: $areas)';
+  return 'VetDoctorWithAreas(doctor: $doctor, areas: $areas, regions: $regions, bases: $bases, upazilas: $upazilas)';
 }
 
 
@@ -2159,7 +3364,7 @@ abstract mixin class $VetDoctorWithAreasCopyWith<$Res>  {
   factory $VetDoctorWithAreasCopyWith(VetDoctorWithAreas value, $Res Function(VetDoctorWithAreas) _then) = _$VetDoctorWithAreasCopyWithImpl;
 @useResult
 $Res call({
- VetDoctor doctor, List<Area> areas
+ VetDoctor doctor, List<Area> areas, List<Region> regions, List<Base> bases, List<Upazila> upazilas
 });
 
 
@@ -2176,11 +3381,14 @@ class _$VetDoctorWithAreasCopyWithImpl<$Res>
 
 /// Create a copy of VetDoctorWithAreas
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? doctor = null,Object? areas = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? doctor = null,Object? areas = null,Object? regions = null,Object? bases = null,Object? upazilas = null,}) {
   return _then(_self.copyWith(
 doctor: null == doctor ? _self.doctor : doctor // ignore: cast_nullable_to_non_nullable
 as VetDoctor,areas: null == areas ? _self.areas : areas // ignore: cast_nullable_to_non_nullable
-as List<Area>,
+as List<Area>,regions: null == regions ? _self.regions : regions // ignore: cast_nullable_to_non_nullable
+as List<Region>,bases: null == bases ? _self.bases : bases // ignore: cast_nullable_to_non_nullable
+as List<Base>,upazilas: null == upazilas ? _self.upazilas : upazilas // ignore: cast_nullable_to_non_nullable
+as List<Upazila>,
   ));
 }
 /// Create a copy of VetDoctorWithAreas
@@ -2274,10 +3482,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( VetDoctor doctor,  List<Area> areas)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( VetDoctor doctor,  List<Area> areas,  List<Region> regions,  List<Base> bases,  List<Upazila> upazilas)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VetDoctorWithAreas() when $default != null:
-return $default(_that.doctor,_that.areas);case _:
+return $default(_that.doctor,_that.areas,_that.regions,_that.bases,_that.upazilas);case _:
   return orElse();
 
 }
@@ -2295,10 +3503,10 @@ return $default(_that.doctor,_that.areas);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( VetDoctor doctor,  List<Area> areas)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( VetDoctor doctor,  List<Area> areas,  List<Region> regions,  List<Base> bases,  List<Upazila> upazilas)  $default,) {final _that = this;
 switch (_that) {
 case _VetDoctorWithAreas():
-return $default(_that.doctor,_that.areas);case _:
+return $default(_that.doctor,_that.areas,_that.regions,_that.bases,_that.upazilas);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2315,10 +3523,10 @@ return $default(_that.doctor,_that.areas);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( VetDoctor doctor,  List<Area> areas)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( VetDoctor doctor,  List<Area> areas,  List<Region> regions,  List<Base> bases,  List<Upazila> upazilas)?  $default,) {final _that = this;
 switch (_that) {
 case _VetDoctorWithAreas() when $default != null:
-return $default(_that.doctor,_that.areas);case _:
+return $default(_that.doctor,_that.areas,_that.regions,_that.bases,_that.upazilas);case _:
   return null;
 
 }
@@ -2330,7 +3538,7 @@ return $default(_that.doctor,_that.areas);case _:
 
 
 class _VetDoctorWithAreas with DiagnosticableTreeMixin implements VetDoctorWithAreas {
-  const _VetDoctorWithAreas({required this.doctor, required final  List<Area> areas}): _areas = areas;
+  const _VetDoctorWithAreas({required this.doctor, required final  List<Area> areas, final  List<Region> regions = const [], final  List<Base> bases = const [], final  List<Upazila> upazilas = const []}): _areas = areas,_regions = regions,_bases = bases,_upazilas = upazilas;
   
 
 @override final  VetDoctor doctor;
@@ -2339,6 +3547,27 @@ class _VetDoctorWithAreas with DiagnosticableTreeMixin implements VetDoctorWithA
   if (_areas is EqualUnmodifiableListView) return _areas;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_areas);
+}
+
+ final  List<Region> _regions;
+@override@JsonKey() List<Region> get regions {
+  if (_regions is EqualUnmodifiableListView) return _regions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_regions);
+}
+
+ final  List<Base> _bases;
+@override@JsonKey() List<Base> get bases {
+  if (_bases is EqualUnmodifiableListView) return _bases;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_bases);
+}
+
+ final  List<Upazila> _upazilas;
+@override@JsonKey() List<Upazila> get upazilas {
+  if (_upazilas is EqualUnmodifiableListView) return _upazilas;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_upazilas);
 }
 
 
@@ -2353,21 +3582,21 @@ _$VetDoctorWithAreasCopyWith<_VetDoctorWithAreas> get copyWith => __$VetDoctorWi
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'VetDoctorWithAreas'))
-    ..add(DiagnosticsProperty('doctor', doctor))..add(DiagnosticsProperty('areas', areas));
+    ..add(DiagnosticsProperty('doctor', doctor))..add(DiagnosticsProperty('areas', areas))..add(DiagnosticsProperty('regions', regions))..add(DiagnosticsProperty('bases', bases))..add(DiagnosticsProperty('upazilas', upazilas));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VetDoctorWithAreas&&(identical(other.doctor, doctor) || other.doctor == doctor)&&const DeepCollectionEquality().equals(other._areas, _areas));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VetDoctorWithAreas&&(identical(other.doctor, doctor) || other.doctor == doctor)&&const DeepCollectionEquality().equals(other._areas, _areas)&&const DeepCollectionEquality().equals(other._regions, _regions)&&const DeepCollectionEquality().equals(other._bases, _bases)&&const DeepCollectionEquality().equals(other._upazilas, _upazilas));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,doctor,const DeepCollectionEquality().hash(_areas));
+int get hashCode => Object.hash(runtimeType,doctor,const DeepCollectionEquality().hash(_areas),const DeepCollectionEquality().hash(_regions),const DeepCollectionEquality().hash(_bases),const DeepCollectionEquality().hash(_upazilas));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'VetDoctorWithAreas(doctor: $doctor, areas: $areas)';
+  return 'VetDoctorWithAreas(doctor: $doctor, areas: $areas, regions: $regions, bases: $bases, upazilas: $upazilas)';
 }
 
 
@@ -2378,7 +3607,7 @@ abstract mixin class _$VetDoctorWithAreasCopyWith<$Res> implements $VetDoctorWit
   factory _$VetDoctorWithAreasCopyWith(_VetDoctorWithAreas value, $Res Function(_VetDoctorWithAreas) _then) = __$VetDoctorWithAreasCopyWithImpl;
 @override @useResult
 $Res call({
- VetDoctor doctor, List<Area> areas
+ VetDoctor doctor, List<Area> areas, List<Region> regions, List<Base> bases, List<Upazila> upazilas
 });
 
 
@@ -2395,11 +3624,14 @@ class __$VetDoctorWithAreasCopyWithImpl<$Res>
 
 /// Create a copy of VetDoctorWithAreas
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? doctor = null,Object? areas = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? doctor = null,Object? areas = null,Object? regions = null,Object? bases = null,Object? upazilas = null,}) {
   return _then(_VetDoctorWithAreas(
 doctor: null == doctor ? _self.doctor : doctor // ignore: cast_nullable_to_non_nullable
 as VetDoctor,areas: null == areas ? _self._areas : areas // ignore: cast_nullable_to_non_nullable
-as List<Area>,
+as List<Area>,regions: null == regions ? _self._regions : regions // ignore: cast_nullable_to_non_nullable
+as List<Region>,bases: null == bases ? _self._bases : bases // ignore: cast_nullable_to_non_nullable
+as List<Base>,upazilas: null == upazilas ? _self._upazilas : upazilas // ignore: cast_nullable_to_non_nullable
+as List<Upazila>,
   ));
 }
 
@@ -2411,6 +3643,344 @@ $VetDoctorCopyWith<$Res> get doctor {
   
   return $VetDoctorCopyWith<$Res>(_self.doctor, (value) {
     return _then(_self.copyWith(doctor: value));
+  });
+}
+}
+
+/// @nodoc
+mixin _$BaseWithUpazilas implements DiagnosticableTreeMixin {
+
+ Base get base; Area get area; Region get region; List<Upazila> get upazilas;
+/// Create a copy of BaseWithUpazilas
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BaseWithUpazilasCopyWith<BaseWithUpazilas> get copyWith => _$BaseWithUpazilasCopyWithImpl<BaseWithUpazilas>(this as BaseWithUpazilas, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'BaseWithUpazilas'))
+    ..add(DiagnosticsProperty('base', base))..add(DiagnosticsProperty('area', area))..add(DiagnosticsProperty('region', region))..add(DiagnosticsProperty('upazilas', upazilas));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BaseWithUpazilas&&(identical(other.base, base) || other.base == base)&&(identical(other.area, area) || other.area == area)&&(identical(other.region, region) || other.region == region)&&const DeepCollectionEquality().equals(other.upazilas, upazilas));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,base,area,region,const DeepCollectionEquality().hash(upazilas));
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'BaseWithUpazilas(base: $base, area: $area, region: $region, upazilas: $upazilas)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $BaseWithUpazilasCopyWith<$Res>  {
+  factory $BaseWithUpazilasCopyWith(BaseWithUpazilas value, $Res Function(BaseWithUpazilas) _then) = _$BaseWithUpazilasCopyWithImpl;
+@useResult
+$Res call({
+ Base base, Area area, Region region, List<Upazila> upazilas
+});
+
+
+$BaseCopyWith<$Res> get base;$AreaCopyWith<$Res> get area;$RegionCopyWith<$Res> get region;
+
+}
+/// @nodoc
+class _$BaseWithUpazilasCopyWithImpl<$Res>
+    implements $BaseWithUpazilasCopyWith<$Res> {
+  _$BaseWithUpazilasCopyWithImpl(this._self, this._then);
+
+  final BaseWithUpazilas _self;
+  final $Res Function(BaseWithUpazilas) _then;
+
+/// Create a copy of BaseWithUpazilas
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? base = null,Object? area = null,Object? region = null,Object? upazilas = null,}) {
+  return _then(_self.copyWith(
+base: null == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
+as Base,area: null == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
+as Area,region: null == region ? _self.region : region // ignore: cast_nullable_to_non_nullable
+as Region,upazilas: null == upazilas ? _self.upazilas : upazilas // ignore: cast_nullable_to_non_nullable
+as List<Upazila>,
+  ));
+}
+/// Create a copy of BaseWithUpazilas
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BaseCopyWith<$Res> get base {
+  
+  return $BaseCopyWith<$Res>(_self.base, (value) {
+    return _then(_self.copyWith(base: value));
+  });
+}/// Create a copy of BaseWithUpazilas
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AreaCopyWith<$Res> get area {
+  
+  return $AreaCopyWith<$Res>(_self.area, (value) {
+    return _then(_self.copyWith(area: value));
+  });
+}/// Create a copy of BaseWithUpazilas
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RegionCopyWith<$Res> get region {
+  
+  return $RegionCopyWith<$Res>(_self.region, (value) {
+    return _then(_self.copyWith(region: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [BaseWithUpazilas].
+extension BaseWithUpazilasPatterns on BaseWithUpazilas {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _BaseWithUpazilas value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _BaseWithUpazilas() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _BaseWithUpazilas value)  $default,){
+final _that = this;
+switch (_that) {
+case _BaseWithUpazilas():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _BaseWithUpazilas value)?  $default,){
+final _that = this;
+switch (_that) {
+case _BaseWithUpazilas() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Base base,  Area area,  Region region,  List<Upazila> upazilas)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _BaseWithUpazilas() when $default != null:
+return $default(_that.base,_that.area,_that.region,_that.upazilas);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Base base,  Area area,  Region region,  List<Upazila> upazilas)  $default,) {final _that = this;
+switch (_that) {
+case _BaseWithUpazilas():
+return $default(_that.base,_that.area,_that.region,_that.upazilas);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Base base,  Area area,  Region region,  List<Upazila> upazilas)?  $default,) {final _that = this;
+switch (_that) {
+case _BaseWithUpazilas() when $default != null:
+return $default(_that.base,_that.area,_that.region,_that.upazilas);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _BaseWithUpazilas with DiagnosticableTreeMixin implements BaseWithUpazilas {
+  const _BaseWithUpazilas({required this.base, required this.area, required this.region, required final  List<Upazila> upazilas}): _upazilas = upazilas;
+  
+
+@override final  Base base;
+@override final  Area area;
+@override final  Region region;
+ final  List<Upazila> _upazilas;
+@override List<Upazila> get upazilas {
+  if (_upazilas is EqualUnmodifiableListView) return _upazilas;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_upazilas);
+}
+
+
+/// Create a copy of BaseWithUpazilas
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$BaseWithUpazilasCopyWith<_BaseWithUpazilas> get copyWith => __$BaseWithUpazilasCopyWithImpl<_BaseWithUpazilas>(this, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'BaseWithUpazilas'))
+    ..add(DiagnosticsProperty('base', base))..add(DiagnosticsProperty('area', area))..add(DiagnosticsProperty('region', region))..add(DiagnosticsProperty('upazilas', upazilas));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BaseWithUpazilas&&(identical(other.base, base) || other.base == base)&&(identical(other.area, area) || other.area == area)&&(identical(other.region, region) || other.region == region)&&const DeepCollectionEquality().equals(other._upazilas, _upazilas));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,base,area,region,const DeepCollectionEquality().hash(_upazilas));
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'BaseWithUpazilas(base: $base, area: $area, region: $region, upazilas: $upazilas)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$BaseWithUpazilasCopyWith<$Res> implements $BaseWithUpazilasCopyWith<$Res> {
+  factory _$BaseWithUpazilasCopyWith(_BaseWithUpazilas value, $Res Function(_BaseWithUpazilas) _then) = __$BaseWithUpazilasCopyWithImpl;
+@override @useResult
+$Res call({
+ Base base, Area area, Region region, List<Upazila> upazilas
+});
+
+
+@override $BaseCopyWith<$Res> get base;@override $AreaCopyWith<$Res> get area;@override $RegionCopyWith<$Res> get region;
+
+}
+/// @nodoc
+class __$BaseWithUpazilasCopyWithImpl<$Res>
+    implements _$BaseWithUpazilasCopyWith<$Res> {
+  __$BaseWithUpazilasCopyWithImpl(this._self, this._then);
+
+  final _BaseWithUpazilas _self;
+  final $Res Function(_BaseWithUpazilas) _then;
+
+/// Create a copy of BaseWithUpazilas
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? base = null,Object? area = null,Object? region = null,Object? upazilas = null,}) {
+  return _then(_BaseWithUpazilas(
+base: null == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
+as Base,area: null == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
+as Area,region: null == region ? _self.region : region // ignore: cast_nullable_to_non_nullable
+as Region,upazilas: null == upazilas ? _self._upazilas : upazilas // ignore: cast_nullable_to_non_nullable
+as List<Upazila>,
+  ));
+}
+
+/// Create a copy of BaseWithUpazilas
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BaseCopyWith<$Res> get base {
+  
+  return $BaseCopyWith<$Res>(_self.base, (value) {
+    return _then(_self.copyWith(base: value));
+  });
+}/// Create a copy of BaseWithUpazilas
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AreaCopyWith<$Res> get area {
+  
+  return $AreaCopyWith<$Res>(_self.area, (value) {
+    return _then(_self.copyWith(area: value));
+  });
+}/// Create a copy of BaseWithUpazilas
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RegionCopyWith<$Res> get region {
+  
+  return $RegionCopyWith<$Res>(_self.region, (value) {
+    return _then(_self.copyWith(region: value));
   });
 }
 }

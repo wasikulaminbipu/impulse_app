@@ -109,6 +109,90 @@ int levenshteinDistance(String s1, String s2) {
   return v1[b.length];
 }
 
+/// Calculates similarity score between 0.0 (completely different) and 1.0 (exact match).
+double calculateSimilarity(String s1, String s2) {
+  final a = s1.trim().toLowerCase();
+  final b = s2.trim().toLowerCase();
+  if (a == b) return 1.0;
+  if (a.isEmpty || b.isEmpty) return 0.0;
+  final maxLen = a.length > b.length ? a.length : b.length;
+  if (maxLen == 0) return 1.0;
+  final dist = levenshteinDistance(a, b);
+  return 1.0 - (dist / maxLen);
+}
+
+/// Checks whether any word in target matches queryToken within similarity threshold or substring.
+bool matchesFuzzyToken(String target, String queryToken, {double threshold = 0.65}) {
+  final cleanTarget = target.trim().toLowerCase();
+  final cleanQuery = queryToken.trim().toLowerCase();
+  if (cleanTarget.isEmpty || cleanQuery.isEmpty) return false;
+  if (cleanTarget.contains(cleanQuery)) return true;
+
+  final words = cleanTarget.split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
+  for (final word in words) {
+    if (word.contains(cleanQuery) || cleanQuery.contains(word)) return true;
+    if (calculateSimilarity(word, cleanQuery) >= threshold) return true;
+  }
+  return calculateSimilarity(cleanTarget, cleanQuery) >= threshold;
+}
+
+/// Computes a simplified phonetic key for English and Bengali text to match transliterated names.
+String getPhoneticKey(String text) {
+  final cleaned = text.trim().toLowerCase();
+  if (cleaned.isEmpty) return '';
+
+  // 1. Remove non-alphanumeric and non-Bengali characters
+  var s = cleaned.replaceAll(RegExp(r'[^\w\u0980-\u09FF]'), '');
+
+  // 2. English consonant simplification & homophone mapping
+  s = s
+      .replaceAll(RegExp(r'ph'), 'f')
+      .replaceAll(RegExp(r'gh'), 'g')
+      .replaceAll(RegExp(r'ck'), 'k')
+      .replaceAll(RegExp(r'c([eiy])'), 's\$1')
+      .replaceAll(RegExp(r'c'), 'k')
+      .replaceAll(RegExp(r'z'), 's')
+      .replaceAll(RegExp(r'v'), 'b')
+      .replaceAll(RegExp(r'w'), 'b')
+      .replaceAll(RegExp(r'ee'), 'i')
+      .replaceAll(RegExp(r'oo'), 'u')
+      .replaceAll(RegExp(r'ae'), 'e');
+
+  // 3. Bengali vowel & consonant normalization
+  s = s
+      .replaceAll(RegExp(r'[আঅঅা]'), 'a')
+      .replaceAll(RegExp(r'[ইঈিী]'), 'i')
+      .replaceAll(RegExp(r'[উঊুূ]'), 'u')
+      .replaceAll(RegExp(r'[এে]'), 'e')
+      .replaceAll(RegExp(r'[ওো]'), 'o')
+      .replaceAll(RegExp(r'[কখ]'), 'k')
+      .replaceAll(RegExp(r'[গঘ]'), 'g')
+      .replaceAll(RegExp(r'[চছ]'), 's')
+      .replaceAll(RegExp(r'[জঝযয্‌]'), 'j')
+      .replaceAll(RegExp(r'[টঠতথদ্বধ]'), 't')
+      .replaceAll(RegExp(r'[ডঢদধ]'), 'd')
+      .replaceAll(RegExp(r'[পফ]'), 'f')
+      .replaceAll(RegExp(r'[বভ]'), 'b')
+      .replaceAll(RegExp(r'[ম]'), 'm')
+      .replaceAll(RegExp(r'[রড়ঢ়]'), 'r')
+      .replaceAll(RegExp(r'[ল]'), 'l')
+      .replaceAll(RegExp(r'[শষস]'), 's')
+      .replaceAll(RegExp(r'[হ]'), 'h');
+
+  // 4. Collapse adjacent identical characters
+  final buffer = StringBuffer();
+  String? prev;
+  for (int i = 0; i < s.length; i++) {
+    final char = s[i];
+    if (char != prev) {
+      buffer.write(char);
+      prev = char;
+    }
+  }
+
+  return buffer.toString();
+}
+
 /// Trie Node representation for fast client-side autocomplete.
 class TrieNode {
   final Map<String, TrieNode> children = {};

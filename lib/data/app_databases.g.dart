@@ -13172,6 +13172,852 @@ class $ProductsDbManager {
       $$PresentationsTableTableManager(_db, _db.presentations);
 }
 
+class $DivisionsTable extends Divisions
+    with TableInfo<$DivisionsTable, DivisionEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DivisionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameEnMeta = const VerificationMeta('nameEn');
+  @override
+  late final GeneratedColumn<String> nameEn = GeneratedColumn<String>(
+    'name_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _nameBnMeta = const VerificationMeta('nameBn');
+  @override
+  late final GeneratedColumn<String> nameBn = GeneratedColumn<String>(
+    'name_bn',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, nameEn, nameBn];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'divisions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DivisionEntity> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name_en')) {
+      context.handle(
+        _nameEnMeta,
+        nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameEnMeta);
+    }
+    if (data.containsKey('name_bn')) {
+      context.handle(
+        _nameBnMeta,
+        nameBn.isAcceptableOrUnknown(data['name_bn']!, _nameBnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameBnMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DivisionEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DivisionEntity(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      nameEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_en'],
+      )!,
+      nameBn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_bn'],
+      )!,
+    );
+  }
+
+  @override
+  $DivisionsTable createAlias(String alias) {
+    return $DivisionsTable(attachedDatabase, alias);
+  }
+}
+
+class DivisionEntity extends DataClass implements Insertable<DivisionEntity> {
+  final int id;
+  final String nameEn;
+  final String nameBn;
+  const DivisionEntity({
+    required this.id,
+    required this.nameEn,
+    required this.nameBn,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name_en'] = Variable<String>(nameEn);
+    map['name_bn'] = Variable<String>(nameBn);
+    return map;
+  }
+
+  DivisionsCompanion toCompanion(bool nullToAbsent) {
+    return DivisionsCompanion(
+      id: Value(id),
+      nameEn: Value(nameEn),
+      nameBn: Value(nameBn),
+    );
+  }
+
+  factory DivisionEntity.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DivisionEntity(
+      id: serializer.fromJson<int>(json['id']),
+      nameEn: serializer.fromJson<String>(json['nameEn']),
+      nameBn: serializer.fromJson<String>(json['nameBn']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'nameEn': serializer.toJson<String>(nameEn),
+      'nameBn': serializer.toJson<String>(nameBn),
+    };
+  }
+
+  DivisionEntity copyWith({int? id, String? nameEn, String? nameBn}) =>
+      DivisionEntity(
+        id: id ?? this.id,
+        nameEn: nameEn ?? this.nameEn,
+        nameBn: nameBn ?? this.nameBn,
+      );
+  DivisionEntity copyWithCompanion(DivisionsCompanion data) {
+    return DivisionEntity(
+      id: data.id.present ? data.id.value : this.id,
+      nameEn: data.nameEn.present ? data.nameEn.value : this.nameEn,
+      nameBn: data.nameBn.present ? data.nameBn.value : this.nameBn,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DivisionEntity(')
+          ..write('id: $id, ')
+          ..write('nameEn: $nameEn, ')
+          ..write('nameBn: $nameBn')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, nameEn, nameBn);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DivisionEntity &&
+          other.id == this.id &&
+          other.nameEn == this.nameEn &&
+          other.nameBn == this.nameBn);
+}
+
+class DivisionsCompanion extends UpdateCompanion<DivisionEntity> {
+  final Value<int> id;
+  final Value<String> nameEn;
+  final Value<String> nameBn;
+  const DivisionsCompanion({
+    this.id = const Value.absent(),
+    this.nameEn = const Value.absent(),
+    this.nameBn = const Value.absent(),
+  });
+  DivisionsCompanion.insert({
+    this.id = const Value.absent(),
+    required String nameEn,
+    required String nameBn,
+  }) : nameEn = Value(nameEn),
+       nameBn = Value(nameBn);
+  static Insertable<DivisionEntity> custom({
+    Expression<int>? id,
+    Expression<String>? nameEn,
+    Expression<String>? nameBn,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (nameEn != null) 'name_en': nameEn,
+      if (nameBn != null) 'name_bn': nameBn,
+    });
+  }
+
+  DivisionsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? nameEn,
+    Value<String>? nameBn,
+  }) {
+    return DivisionsCompanion(
+      id: id ?? this.id,
+      nameEn: nameEn ?? this.nameEn,
+      nameBn: nameBn ?? this.nameBn,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (nameEn.present) {
+      map['name_en'] = Variable<String>(nameEn.value);
+    }
+    if (nameBn.present) {
+      map['name_bn'] = Variable<String>(nameBn.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DivisionsCompanion(')
+          ..write('id: $id, ')
+          ..write('nameEn: $nameEn, ')
+          ..write('nameBn: $nameBn')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DistrictsTable extends Districts
+    with TableInfo<$DistrictsTable, DistrictEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DistrictsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _divisionIdMeta = const VerificationMeta(
+    'divisionId',
+  );
+  @override
+  late final GeneratedColumn<int> divisionId = GeneratedColumn<int>(
+    'division_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES divisions(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _nameEnMeta = const VerificationMeta('nameEn');
+  @override
+  late final GeneratedColumn<String> nameEn = GeneratedColumn<String>(
+    'name_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameBnMeta = const VerificationMeta('nameBn');
+  @override
+  late final GeneratedColumn<String> nameBn = GeneratedColumn<String>(
+    'name_bn',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, divisionId, nameEn, nameBn];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'districts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DistrictEntity> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('division_id')) {
+      context.handle(
+        _divisionIdMeta,
+        divisionId.isAcceptableOrUnknown(data['division_id']!, _divisionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_divisionIdMeta);
+    }
+    if (data.containsKey('name_en')) {
+      context.handle(
+        _nameEnMeta,
+        nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameEnMeta);
+    }
+    if (data.containsKey('name_bn')) {
+      context.handle(
+        _nameBnMeta,
+        nameBn.isAcceptableOrUnknown(data['name_bn']!, _nameBnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameBnMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DistrictEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DistrictEntity(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      divisionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}division_id'],
+      )!,
+      nameEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_en'],
+      )!,
+      nameBn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_bn'],
+      )!,
+    );
+  }
+
+  @override
+  $DistrictsTable createAlias(String alias) {
+    return $DistrictsTable(attachedDatabase, alias);
+  }
+}
+
+class DistrictEntity extends DataClass implements Insertable<DistrictEntity> {
+  final int id;
+  final int divisionId;
+  final String nameEn;
+  final String nameBn;
+  const DistrictEntity({
+    required this.id,
+    required this.divisionId,
+    required this.nameEn,
+    required this.nameBn,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['division_id'] = Variable<int>(divisionId);
+    map['name_en'] = Variable<String>(nameEn);
+    map['name_bn'] = Variable<String>(nameBn);
+    return map;
+  }
+
+  DistrictsCompanion toCompanion(bool nullToAbsent) {
+    return DistrictsCompanion(
+      id: Value(id),
+      divisionId: Value(divisionId),
+      nameEn: Value(nameEn),
+      nameBn: Value(nameBn),
+    );
+  }
+
+  factory DistrictEntity.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DistrictEntity(
+      id: serializer.fromJson<int>(json['id']),
+      divisionId: serializer.fromJson<int>(json['divisionId']),
+      nameEn: serializer.fromJson<String>(json['nameEn']),
+      nameBn: serializer.fromJson<String>(json['nameBn']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'divisionId': serializer.toJson<int>(divisionId),
+      'nameEn': serializer.toJson<String>(nameEn),
+      'nameBn': serializer.toJson<String>(nameBn),
+    };
+  }
+
+  DistrictEntity copyWith({
+    int? id,
+    int? divisionId,
+    String? nameEn,
+    String? nameBn,
+  }) => DistrictEntity(
+    id: id ?? this.id,
+    divisionId: divisionId ?? this.divisionId,
+    nameEn: nameEn ?? this.nameEn,
+    nameBn: nameBn ?? this.nameBn,
+  );
+  DistrictEntity copyWithCompanion(DistrictsCompanion data) {
+    return DistrictEntity(
+      id: data.id.present ? data.id.value : this.id,
+      divisionId: data.divisionId.present
+          ? data.divisionId.value
+          : this.divisionId,
+      nameEn: data.nameEn.present ? data.nameEn.value : this.nameEn,
+      nameBn: data.nameBn.present ? data.nameBn.value : this.nameBn,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DistrictEntity(')
+          ..write('id: $id, ')
+          ..write('divisionId: $divisionId, ')
+          ..write('nameEn: $nameEn, ')
+          ..write('nameBn: $nameBn')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, divisionId, nameEn, nameBn);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DistrictEntity &&
+          other.id == this.id &&
+          other.divisionId == this.divisionId &&
+          other.nameEn == this.nameEn &&
+          other.nameBn == this.nameBn);
+}
+
+class DistrictsCompanion extends UpdateCompanion<DistrictEntity> {
+  final Value<int> id;
+  final Value<int> divisionId;
+  final Value<String> nameEn;
+  final Value<String> nameBn;
+  const DistrictsCompanion({
+    this.id = const Value.absent(),
+    this.divisionId = const Value.absent(),
+    this.nameEn = const Value.absent(),
+    this.nameBn = const Value.absent(),
+  });
+  DistrictsCompanion.insert({
+    this.id = const Value.absent(),
+    required int divisionId,
+    required String nameEn,
+    required String nameBn,
+  }) : divisionId = Value(divisionId),
+       nameEn = Value(nameEn),
+       nameBn = Value(nameBn);
+  static Insertable<DistrictEntity> custom({
+    Expression<int>? id,
+    Expression<int>? divisionId,
+    Expression<String>? nameEn,
+    Expression<String>? nameBn,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (divisionId != null) 'division_id': divisionId,
+      if (nameEn != null) 'name_en': nameEn,
+      if (nameBn != null) 'name_bn': nameBn,
+    });
+  }
+
+  DistrictsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? divisionId,
+    Value<String>? nameEn,
+    Value<String>? nameBn,
+  }) {
+    return DistrictsCompanion(
+      id: id ?? this.id,
+      divisionId: divisionId ?? this.divisionId,
+      nameEn: nameEn ?? this.nameEn,
+      nameBn: nameBn ?? this.nameBn,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (divisionId.present) {
+      map['division_id'] = Variable<int>(divisionId.value);
+    }
+    if (nameEn.present) {
+      map['name_en'] = Variable<String>(nameEn.value);
+    }
+    if (nameBn.present) {
+      map['name_bn'] = Variable<String>(nameBn.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DistrictsCompanion(')
+          ..write('id: $id, ')
+          ..write('divisionId: $divisionId, ')
+          ..write('nameEn: $nameEn, ')
+          ..write('nameBn: $nameBn')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UpazilasTable extends Upazilas
+    with TableInfo<$UpazilasTable, UpazilaEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UpazilasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _districtIdMeta = const VerificationMeta(
+    'districtId',
+  );
+  @override
+  late final GeneratedColumn<int> districtId = GeneratedColumn<int>(
+    'district_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES districts(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _nameEnMeta = const VerificationMeta('nameEn');
+  @override
+  late final GeneratedColumn<String> nameEn = GeneratedColumn<String>(
+    'name_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameBnMeta = const VerificationMeta('nameBn');
+  @override
+  late final GeneratedColumn<String> nameBn = GeneratedColumn<String>(
+    'name_bn',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, districtId, nameEn, nameBn];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'upazilas';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UpazilaEntity> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('district_id')) {
+      context.handle(
+        _districtIdMeta,
+        districtId.isAcceptableOrUnknown(data['district_id']!, _districtIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_districtIdMeta);
+    }
+    if (data.containsKey('name_en')) {
+      context.handle(
+        _nameEnMeta,
+        nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameEnMeta);
+    }
+    if (data.containsKey('name_bn')) {
+      context.handle(
+        _nameBnMeta,
+        nameBn.isAcceptableOrUnknown(data['name_bn']!, _nameBnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameBnMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UpazilaEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UpazilaEntity(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      districtId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}district_id'],
+      )!,
+      nameEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_en'],
+      )!,
+      nameBn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_bn'],
+      )!,
+    );
+  }
+
+  @override
+  $UpazilasTable createAlias(String alias) {
+    return $UpazilasTable(attachedDatabase, alias);
+  }
+}
+
+class UpazilaEntity extends DataClass implements Insertable<UpazilaEntity> {
+  final int id;
+  final int districtId;
+  final String nameEn;
+  final String nameBn;
+  const UpazilaEntity({
+    required this.id,
+    required this.districtId,
+    required this.nameEn,
+    required this.nameBn,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['district_id'] = Variable<int>(districtId);
+    map['name_en'] = Variable<String>(nameEn);
+    map['name_bn'] = Variable<String>(nameBn);
+    return map;
+  }
+
+  UpazilasCompanion toCompanion(bool nullToAbsent) {
+    return UpazilasCompanion(
+      id: Value(id),
+      districtId: Value(districtId),
+      nameEn: Value(nameEn),
+      nameBn: Value(nameBn),
+    );
+  }
+
+  factory UpazilaEntity.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UpazilaEntity(
+      id: serializer.fromJson<int>(json['id']),
+      districtId: serializer.fromJson<int>(json['districtId']),
+      nameEn: serializer.fromJson<String>(json['nameEn']),
+      nameBn: serializer.fromJson<String>(json['nameBn']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'districtId': serializer.toJson<int>(districtId),
+      'nameEn': serializer.toJson<String>(nameEn),
+      'nameBn': serializer.toJson<String>(nameBn),
+    };
+  }
+
+  UpazilaEntity copyWith({
+    int? id,
+    int? districtId,
+    String? nameEn,
+    String? nameBn,
+  }) => UpazilaEntity(
+    id: id ?? this.id,
+    districtId: districtId ?? this.districtId,
+    nameEn: nameEn ?? this.nameEn,
+    nameBn: nameBn ?? this.nameBn,
+  );
+  UpazilaEntity copyWithCompanion(UpazilasCompanion data) {
+    return UpazilaEntity(
+      id: data.id.present ? data.id.value : this.id,
+      districtId: data.districtId.present
+          ? data.districtId.value
+          : this.districtId,
+      nameEn: data.nameEn.present ? data.nameEn.value : this.nameEn,
+      nameBn: data.nameBn.present ? data.nameBn.value : this.nameBn,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UpazilaEntity(')
+          ..write('id: $id, ')
+          ..write('districtId: $districtId, ')
+          ..write('nameEn: $nameEn, ')
+          ..write('nameBn: $nameBn')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, districtId, nameEn, nameBn);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UpazilaEntity &&
+          other.id == this.id &&
+          other.districtId == this.districtId &&
+          other.nameEn == this.nameEn &&
+          other.nameBn == this.nameBn);
+}
+
+class UpazilasCompanion extends UpdateCompanion<UpazilaEntity> {
+  final Value<int> id;
+  final Value<int> districtId;
+  final Value<String> nameEn;
+  final Value<String> nameBn;
+  const UpazilasCompanion({
+    this.id = const Value.absent(),
+    this.districtId = const Value.absent(),
+    this.nameEn = const Value.absent(),
+    this.nameBn = const Value.absent(),
+  });
+  UpazilasCompanion.insert({
+    this.id = const Value.absent(),
+    required int districtId,
+    required String nameEn,
+    required String nameBn,
+  }) : districtId = Value(districtId),
+       nameEn = Value(nameEn),
+       nameBn = Value(nameBn);
+  static Insertable<UpazilaEntity> custom({
+    Expression<int>? id,
+    Expression<int>? districtId,
+    Expression<String>? nameEn,
+    Expression<String>? nameBn,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (districtId != null) 'district_id': districtId,
+      if (nameEn != null) 'name_en': nameEn,
+      if (nameBn != null) 'name_bn': nameBn,
+    });
+  }
+
+  UpazilasCompanion copyWith({
+    Value<int>? id,
+    Value<int>? districtId,
+    Value<String>? nameEn,
+    Value<String>? nameBn,
+  }) {
+    return UpazilasCompanion(
+      id: id ?? this.id,
+      districtId: districtId ?? this.districtId,
+      nameEn: nameEn ?? this.nameEn,
+      nameBn: nameBn ?? this.nameBn,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (districtId.present) {
+      map['district_id'] = Variable<int>(districtId.value);
+    }
+    if (nameEn.present) {
+      map['name_en'] = Variable<String>(nameEn.value);
+    }
+    if (nameBn.present) {
+      map['name_bn'] = Variable<String>(nameBn.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UpazilasCompanion(')
+          ..write('id: $id, ')
+          ..write('districtId: $districtId, ')
+          ..write('nameEn: $nameEn, ')
+          ..write('nameBn: $nameBn')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $RegionsTable extends Regions
     with TableInfo<$RegionsTable, RegionEntity> {
   @override
@@ -13448,7 +14294,7 @@ class $AreasTable extends Areas with TableInfo<$AreasTable, AreaEntity> {
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    $customConstraints: 'NOT NULL REFERENCES regions(id)',
+    $customConstraints: 'NOT NULL REFERENCES regions(id) ON DELETE CASCADE',
   );
   static const VerificationMeta _nameEnMeta = const VerificationMeta('nameEn');
   @override
@@ -13716,6 +14562,515 @@ class AreasCompanion extends UpdateCompanion<AreaEntity> {
   }
 }
 
+class $BasesTable extends Bases with TableInfo<$BasesTable, BaseEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BasesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _areaIdMeta = const VerificationMeta('areaId');
+  @override
+  late final GeneratedColumn<int> areaId = GeneratedColumn<int>(
+    'area_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES areas(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _nameEnMeta = const VerificationMeta('nameEn');
+  @override
+  late final GeneratedColumn<String> nameEn = GeneratedColumn<String>(
+    'name_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameBnMeta = const VerificationMeta('nameBn');
+  @override
+  late final GeneratedColumn<String> nameBn = GeneratedColumn<String>(
+    'name_bn',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, areaId, nameEn, nameBn];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bases';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BaseEntity> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('area_id')) {
+      context.handle(
+        _areaIdMeta,
+        areaId.isAcceptableOrUnknown(data['area_id']!, _areaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_areaIdMeta);
+    }
+    if (data.containsKey('name_en')) {
+      context.handle(
+        _nameEnMeta,
+        nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameEnMeta);
+    }
+    if (data.containsKey('name_bn')) {
+      context.handle(
+        _nameBnMeta,
+        nameBn.isAcceptableOrUnknown(data['name_bn']!, _nameBnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameBnMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BaseEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BaseEntity(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      areaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}area_id'],
+      )!,
+      nameEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_en'],
+      )!,
+      nameBn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_bn'],
+      )!,
+    );
+  }
+
+  @override
+  $BasesTable createAlias(String alias) {
+    return $BasesTable(attachedDatabase, alias);
+  }
+}
+
+class BaseEntity extends DataClass implements Insertable<BaseEntity> {
+  final int id;
+  final int areaId;
+  final String nameEn;
+  final String nameBn;
+  const BaseEntity({
+    required this.id,
+    required this.areaId,
+    required this.nameEn,
+    required this.nameBn,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['area_id'] = Variable<int>(areaId);
+    map['name_en'] = Variable<String>(nameEn);
+    map['name_bn'] = Variable<String>(nameBn);
+    return map;
+  }
+
+  BasesCompanion toCompanion(bool nullToAbsent) {
+    return BasesCompanion(
+      id: Value(id),
+      areaId: Value(areaId),
+      nameEn: Value(nameEn),
+      nameBn: Value(nameBn),
+    );
+  }
+
+  factory BaseEntity.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BaseEntity(
+      id: serializer.fromJson<int>(json['id']),
+      areaId: serializer.fromJson<int>(json['areaId']),
+      nameEn: serializer.fromJson<String>(json['nameEn']),
+      nameBn: serializer.fromJson<String>(json['nameBn']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'areaId': serializer.toJson<int>(areaId),
+      'nameEn': serializer.toJson<String>(nameEn),
+      'nameBn': serializer.toJson<String>(nameBn),
+    };
+  }
+
+  BaseEntity copyWith({int? id, int? areaId, String? nameEn, String? nameBn}) =>
+      BaseEntity(
+        id: id ?? this.id,
+        areaId: areaId ?? this.areaId,
+        nameEn: nameEn ?? this.nameEn,
+        nameBn: nameBn ?? this.nameBn,
+      );
+  BaseEntity copyWithCompanion(BasesCompanion data) {
+    return BaseEntity(
+      id: data.id.present ? data.id.value : this.id,
+      areaId: data.areaId.present ? data.areaId.value : this.areaId,
+      nameEn: data.nameEn.present ? data.nameEn.value : this.nameEn,
+      nameBn: data.nameBn.present ? data.nameBn.value : this.nameBn,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BaseEntity(')
+          ..write('id: $id, ')
+          ..write('areaId: $areaId, ')
+          ..write('nameEn: $nameEn, ')
+          ..write('nameBn: $nameBn')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, areaId, nameEn, nameBn);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BaseEntity &&
+          other.id == this.id &&
+          other.areaId == this.areaId &&
+          other.nameEn == this.nameEn &&
+          other.nameBn == this.nameBn);
+}
+
+class BasesCompanion extends UpdateCompanion<BaseEntity> {
+  final Value<int> id;
+  final Value<int> areaId;
+  final Value<String> nameEn;
+  final Value<String> nameBn;
+  const BasesCompanion({
+    this.id = const Value.absent(),
+    this.areaId = const Value.absent(),
+    this.nameEn = const Value.absent(),
+    this.nameBn = const Value.absent(),
+  });
+  BasesCompanion.insert({
+    this.id = const Value.absent(),
+    required int areaId,
+    required String nameEn,
+    required String nameBn,
+  }) : areaId = Value(areaId),
+       nameEn = Value(nameEn),
+       nameBn = Value(nameBn);
+  static Insertable<BaseEntity> custom({
+    Expression<int>? id,
+    Expression<int>? areaId,
+    Expression<String>? nameEn,
+    Expression<String>? nameBn,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (areaId != null) 'area_id': areaId,
+      if (nameEn != null) 'name_en': nameEn,
+      if (nameBn != null) 'name_bn': nameBn,
+    });
+  }
+
+  BasesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? areaId,
+    Value<String>? nameEn,
+    Value<String>? nameBn,
+  }) {
+    return BasesCompanion(
+      id: id ?? this.id,
+      areaId: areaId ?? this.areaId,
+      nameEn: nameEn ?? this.nameEn,
+      nameBn: nameBn ?? this.nameBn,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (areaId.present) {
+      map['area_id'] = Variable<int>(areaId.value);
+    }
+    if (nameEn.present) {
+      map['name_en'] = Variable<String>(nameEn.value);
+    }
+    if (nameBn.present) {
+      map['name_bn'] = Variable<String>(nameBn.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BasesCompanion(')
+          ..write('id: $id, ')
+          ..write('areaId: $areaId, ')
+          ..write('nameEn: $nameEn, ')
+          ..write('nameBn: $nameBn')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BaseUpazilasTable extends BaseUpazilas
+    with TableInfo<$BaseUpazilasTable, BaseUpazilaEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BaseUpazilasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _baseIdMeta = const VerificationMeta('baseId');
+  @override
+  late final GeneratedColumn<int> baseId = GeneratedColumn<int>(
+    'base_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES bases(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _upazilaIdMeta = const VerificationMeta(
+    'upazilaId',
+  );
+  @override
+  late final GeneratedColumn<int> upazilaId = GeneratedColumn<int>(
+    'upazila_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES upazilas(id) ON DELETE CASCADE',
+  );
+  @override
+  List<GeneratedColumn> get $columns => [baseId, upazilaId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'base_upazilas';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BaseUpazilaEntity> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('base_id')) {
+      context.handle(
+        _baseIdMeta,
+        baseId.isAcceptableOrUnknown(data['base_id']!, _baseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_baseIdMeta);
+    }
+    if (data.containsKey('upazila_id')) {
+      context.handle(
+        _upazilaIdMeta,
+        upazilaId.isAcceptableOrUnknown(data['upazila_id']!, _upazilaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_upazilaIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {baseId, upazilaId};
+  @override
+  BaseUpazilaEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BaseUpazilaEntity(
+      baseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_id'],
+      )!,
+      upazilaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}upazila_id'],
+      )!,
+    );
+  }
+
+  @override
+  $BaseUpazilasTable createAlias(String alias) {
+    return $BaseUpazilasTable(attachedDatabase, alias);
+  }
+}
+
+class BaseUpazilaEntity extends DataClass
+    implements Insertable<BaseUpazilaEntity> {
+  final int baseId;
+  final int upazilaId;
+  const BaseUpazilaEntity({required this.baseId, required this.upazilaId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['base_id'] = Variable<int>(baseId);
+    map['upazila_id'] = Variable<int>(upazilaId);
+    return map;
+  }
+
+  BaseUpazilasCompanion toCompanion(bool nullToAbsent) {
+    return BaseUpazilasCompanion(
+      baseId: Value(baseId),
+      upazilaId: Value(upazilaId),
+    );
+  }
+
+  factory BaseUpazilaEntity.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BaseUpazilaEntity(
+      baseId: serializer.fromJson<int>(json['baseId']),
+      upazilaId: serializer.fromJson<int>(json['upazilaId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'baseId': serializer.toJson<int>(baseId),
+      'upazilaId': serializer.toJson<int>(upazilaId),
+    };
+  }
+
+  BaseUpazilaEntity copyWith({int? baseId, int? upazilaId}) =>
+      BaseUpazilaEntity(
+        baseId: baseId ?? this.baseId,
+        upazilaId: upazilaId ?? this.upazilaId,
+      );
+  BaseUpazilaEntity copyWithCompanion(BaseUpazilasCompanion data) {
+    return BaseUpazilaEntity(
+      baseId: data.baseId.present ? data.baseId.value : this.baseId,
+      upazilaId: data.upazilaId.present ? data.upazilaId.value : this.upazilaId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BaseUpazilaEntity(')
+          ..write('baseId: $baseId, ')
+          ..write('upazilaId: $upazilaId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(baseId, upazilaId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BaseUpazilaEntity &&
+          other.baseId == this.baseId &&
+          other.upazilaId == this.upazilaId);
+}
+
+class BaseUpazilasCompanion extends UpdateCompanion<BaseUpazilaEntity> {
+  final Value<int> baseId;
+  final Value<int> upazilaId;
+  final Value<int> rowid;
+  const BaseUpazilasCompanion({
+    this.baseId = const Value.absent(),
+    this.upazilaId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BaseUpazilasCompanion.insert({
+    required int baseId,
+    required int upazilaId,
+    this.rowid = const Value.absent(),
+  }) : baseId = Value(baseId),
+       upazilaId = Value(upazilaId);
+  static Insertable<BaseUpazilaEntity> custom({
+    Expression<int>? baseId,
+    Expression<int>? upazilaId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (baseId != null) 'base_id': baseId,
+      if (upazilaId != null) 'upazila_id': upazilaId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BaseUpazilasCompanion copyWith({
+    Value<int>? baseId,
+    Value<int>? upazilaId,
+    Value<int>? rowid,
+  }) {
+    return BaseUpazilasCompanion(
+      baseId: baseId ?? this.baseId,
+      upazilaId: upazilaId ?? this.upazilaId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (baseId.present) {
+      map['base_id'] = Variable<int>(baseId.value);
+    }
+    if (upazilaId.present) {
+      map['upazila_id'] = Variable<int>(upazilaId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BaseUpazilasCompanion(')
+          ..write('baseId: $baseId, ')
+          ..write('upazilaId: $upazilaId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $DistributorsTable extends Distributors
     with TableInfo<$DistributorsTable, DistributorEntity> {
   @override
@@ -13786,15 +15141,37 @@ class $DistributorsTable extends Distributors
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _upazilaIdMeta = const VerificationMeta(
+    'upazilaId',
+  );
+  @override
+  late final GeneratedColumn<int> upazilaId = GeneratedColumn<int>(
+    'upazila_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    $customConstraints: 'REFERENCES upazilas(id)',
+  );
+  static const VerificationMeta _baseIdMeta = const VerificationMeta('baseId');
+  @override
+  late final GeneratedColumn<int> baseId = GeneratedColumn<int>(
+    'base_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    $customConstraints: 'REFERENCES bases(id)',
+  );
   static const VerificationMeta _areaIdMeta = const VerificationMeta('areaId');
   @override
   late final GeneratedColumn<int> areaId = GeneratedColumn<int>(
     'area_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
-    $customConstraints: 'NOT NULL REFERENCES areas(id)',
+    requiredDuringInsert: false,
+    $customConstraints: 'REFERENCES areas(id)',
   );
   static const VerificationMeta _mobileMeta = const VerificationMeta('mobile');
   @override
@@ -13849,6 +15226,8 @@ class $DistributorsTable extends Distributors
     designation,
     addressEn,
     addressBn,
+    upazilaId,
+    baseId,
     areaId,
     mobile,
     isActive,
@@ -13907,13 +15286,23 @@ class $DistributorsTable extends Distributors
         addressBn.isAcceptableOrUnknown(data['address_bn']!, _addressBnMeta),
       );
     }
+    if (data.containsKey('upazila_id')) {
+      context.handle(
+        _upazilaIdMeta,
+        upazilaId.isAcceptableOrUnknown(data['upazila_id']!, _upazilaIdMeta),
+      );
+    }
+    if (data.containsKey('base_id')) {
+      context.handle(
+        _baseIdMeta,
+        baseId.isAcceptableOrUnknown(data['base_id']!, _baseIdMeta),
+      );
+    }
     if (data.containsKey('area_id')) {
       context.handle(
         _areaIdMeta,
         areaId.isAcceptableOrUnknown(data['area_id']!, _areaIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_areaIdMeta);
     }
     if (data.containsKey('mobile')) {
       context.handle(
@@ -13974,10 +15363,18 @@ class $DistributorsTable extends Distributors
         DriftSqlType.string,
         data['${effectivePrefix}address_bn'],
       ),
+      upazilaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}upazila_id'],
+      ),
+      baseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_id'],
+      ),
       areaId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}area_id'],
-      )!,
+      ),
       mobile: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}mobile'],
@@ -14011,7 +15408,9 @@ class DistributorEntity extends DataClass
   final String? designation;
   final String? addressEn;
   final String? addressBn;
-  final int areaId;
+  final int? upazilaId;
+  final int? baseId;
+  final int? areaId;
   final String mobile;
   final int isActive;
   final String createdAt;
@@ -14023,7 +15422,9 @@ class DistributorEntity extends DataClass
     this.designation,
     this.addressEn,
     this.addressBn,
-    required this.areaId,
+    this.upazilaId,
+    this.baseId,
+    this.areaId,
     required this.mobile,
     required this.isActive,
     required this.createdAt,
@@ -14044,7 +15445,15 @@ class DistributorEntity extends DataClass
     if (!nullToAbsent || addressBn != null) {
       map['address_bn'] = Variable<String>(addressBn);
     }
-    map['area_id'] = Variable<int>(areaId);
+    if (!nullToAbsent || upazilaId != null) {
+      map['upazila_id'] = Variable<int>(upazilaId);
+    }
+    if (!nullToAbsent || baseId != null) {
+      map['base_id'] = Variable<int>(baseId);
+    }
+    if (!nullToAbsent || areaId != null) {
+      map['area_id'] = Variable<int>(areaId);
+    }
     map['mobile'] = Variable<String>(mobile);
     map['is_active'] = Variable<int>(isActive);
     map['created_at'] = Variable<String>(createdAt);
@@ -14066,7 +15475,15 @@ class DistributorEntity extends DataClass
       addressBn: addressBn == null && nullToAbsent
           ? const Value.absent()
           : Value(addressBn),
-      areaId: Value(areaId),
+      upazilaId: upazilaId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(upazilaId),
+      baseId: baseId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(baseId),
+      areaId: areaId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(areaId),
       mobile: Value(mobile),
       isActive: Value(isActive),
       createdAt: Value(createdAt),
@@ -14086,7 +15503,9 @@ class DistributorEntity extends DataClass
       designation: serializer.fromJson<String?>(json['designation']),
       addressEn: serializer.fromJson<String?>(json['addressEn']),
       addressBn: serializer.fromJson<String?>(json['addressBn']),
-      areaId: serializer.fromJson<int>(json['areaId']),
+      upazilaId: serializer.fromJson<int?>(json['upazilaId']),
+      baseId: serializer.fromJson<int?>(json['baseId']),
+      areaId: serializer.fromJson<int?>(json['areaId']),
       mobile: serializer.fromJson<String>(json['mobile']),
       isActive: serializer.fromJson<int>(json['isActive']),
       createdAt: serializer.fromJson<String>(json['createdAt']),
@@ -14103,7 +15522,9 @@ class DistributorEntity extends DataClass
       'designation': serializer.toJson<String?>(designation),
       'addressEn': serializer.toJson<String?>(addressEn),
       'addressBn': serializer.toJson<String?>(addressBn),
-      'areaId': serializer.toJson<int>(areaId),
+      'upazilaId': serializer.toJson<int?>(upazilaId),
+      'baseId': serializer.toJson<int?>(baseId),
+      'areaId': serializer.toJson<int?>(areaId),
       'mobile': serializer.toJson<String>(mobile),
       'isActive': serializer.toJson<int>(isActive),
       'createdAt': serializer.toJson<String>(createdAt),
@@ -14118,7 +15539,9 @@ class DistributorEntity extends DataClass
     Value<String?> designation = const Value.absent(),
     Value<String?> addressEn = const Value.absent(),
     Value<String?> addressBn = const Value.absent(),
-    int? areaId,
+    Value<int?> upazilaId = const Value.absent(),
+    Value<int?> baseId = const Value.absent(),
+    Value<int?> areaId = const Value.absent(),
     String? mobile,
     int? isActive,
     String? createdAt,
@@ -14130,7 +15553,9 @@ class DistributorEntity extends DataClass
     designation: designation.present ? designation.value : this.designation,
     addressEn: addressEn.present ? addressEn.value : this.addressEn,
     addressBn: addressBn.present ? addressBn.value : this.addressBn,
-    areaId: areaId ?? this.areaId,
+    upazilaId: upazilaId.present ? upazilaId.value : this.upazilaId,
+    baseId: baseId.present ? baseId.value : this.baseId,
+    areaId: areaId.present ? areaId.value : this.areaId,
     mobile: mobile ?? this.mobile,
     isActive: isActive ?? this.isActive,
     createdAt: createdAt ?? this.createdAt,
@@ -14146,6 +15571,8 @@ class DistributorEntity extends DataClass
           : this.designation,
       addressEn: data.addressEn.present ? data.addressEn.value : this.addressEn,
       addressBn: data.addressBn.present ? data.addressBn.value : this.addressBn,
+      upazilaId: data.upazilaId.present ? data.upazilaId.value : this.upazilaId,
+      baseId: data.baseId.present ? data.baseId.value : this.baseId,
       areaId: data.areaId.present ? data.areaId.value : this.areaId,
       mobile: data.mobile.present ? data.mobile.value : this.mobile,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
@@ -14163,6 +15590,8 @@ class DistributorEntity extends DataClass
           ..write('designation: $designation, ')
           ..write('addressEn: $addressEn, ')
           ..write('addressBn: $addressBn, ')
+          ..write('upazilaId: $upazilaId, ')
+          ..write('baseId: $baseId, ')
           ..write('areaId: $areaId, ')
           ..write('mobile: $mobile, ')
           ..write('isActive: $isActive, ')
@@ -14180,6 +15609,8 @@ class DistributorEntity extends DataClass
     designation,
     addressEn,
     addressBn,
+    upazilaId,
+    baseId,
     areaId,
     mobile,
     isActive,
@@ -14196,6 +15627,8 @@ class DistributorEntity extends DataClass
           other.designation == this.designation &&
           other.addressEn == this.addressEn &&
           other.addressBn == this.addressBn &&
+          other.upazilaId == this.upazilaId &&
+          other.baseId == this.baseId &&
           other.areaId == this.areaId &&
           other.mobile == this.mobile &&
           other.isActive == this.isActive &&
@@ -14210,7 +15643,9 @@ class DistributorsCompanion extends UpdateCompanion<DistributorEntity> {
   final Value<String?> designation;
   final Value<String?> addressEn;
   final Value<String?> addressBn;
-  final Value<int> areaId;
+  final Value<int?> upazilaId;
+  final Value<int?> baseId;
+  final Value<int?> areaId;
   final Value<String> mobile;
   final Value<int> isActive;
   final Value<String> createdAt;
@@ -14222,6 +15657,8 @@ class DistributorsCompanion extends UpdateCompanion<DistributorEntity> {
     this.designation = const Value.absent(),
     this.addressEn = const Value.absent(),
     this.addressBn = const Value.absent(),
+    this.upazilaId = const Value.absent(),
+    this.baseId = const Value.absent(),
     this.areaId = const Value.absent(),
     this.mobile = const Value.absent(),
     this.isActive = const Value.absent(),
@@ -14235,14 +15672,15 @@ class DistributorsCompanion extends UpdateCompanion<DistributorEntity> {
     this.designation = const Value.absent(),
     this.addressEn = const Value.absent(),
     this.addressBn = const Value.absent(),
-    required int areaId,
+    this.upazilaId = const Value.absent(),
+    this.baseId = const Value.absent(),
+    this.areaId = const Value.absent(),
     required String mobile,
     this.isActive = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : nameEn = Value(nameEn),
        nameBn = Value(nameBn),
-       areaId = Value(areaId),
        mobile = Value(mobile);
   static Insertable<DistributorEntity> custom({
     Expression<int>? id,
@@ -14251,6 +15689,8 @@ class DistributorsCompanion extends UpdateCompanion<DistributorEntity> {
     Expression<String>? designation,
     Expression<String>? addressEn,
     Expression<String>? addressBn,
+    Expression<int>? upazilaId,
+    Expression<int>? baseId,
     Expression<int>? areaId,
     Expression<String>? mobile,
     Expression<int>? isActive,
@@ -14264,6 +15704,8 @@ class DistributorsCompanion extends UpdateCompanion<DistributorEntity> {
       if (designation != null) 'designation': designation,
       if (addressEn != null) 'address_en': addressEn,
       if (addressBn != null) 'address_bn': addressBn,
+      if (upazilaId != null) 'upazila_id': upazilaId,
+      if (baseId != null) 'base_id': baseId,
       if (areaId != null) 'area_id': areaId,
       if (mobile != null) 'mobile': mobile,
       if (isActive != null) 'is_active': isActive,
@@ -14279,7 +15721,9 @@ class DistributorsCompanion extends UpdateCompanion<DistributorEntity> {
     Value<String?>? designation,
     Value<String?>? addressEn,
     Value<String?>? addressBn,
-    Value<int>? areaId,
+    Value<int?>? upazilaId,
+    Value<int?>? baseId,
+    Value<int?>? areaId,
     Value<String>? mobile,
     Value<int>? isActive,
     Value<String>? createdAt,
@@ -14292,6 +15736,8 @@ class DistributorsCompanion extends UpdateCompanion<DistributorEntity> {
       designation: designation ?? this.designation,
       addressEn: addressEn ?? this.addressEn,
       addressBn: addressBn ?? this.addressBn,
+      upazilaId: upazilaId ?? this.upazilaId,
+      baseId: baseId ?? this.baseId,
       areaId: areaId ?? this.areaId,
       mobile: mobile ?? this.mobile,
       isActive: isActive ?? this.isActive,
@@ -14321,6 +15767,12 @@ class DistributorsCompanion extends UpdateCompanion<DistributorEntity> {
     if (addressBn.present) {
       map['address_bn'] = Variable<String>(addressBn.value);
     }
+    if (upazilaId.present) {
+      map['upazila_id'] = Variable<int>(upazilaId.value);
+    }
+    if (baseId.present) {
+      map['base_id'] = Variable<int>(baseId.value);
+    }
     if (areaId.present) {
       map['area_id'] = Variable<int>(areaId.value);
     }
@@ -14348,6 +15800,8 @@ class DistributorsCompanion extends UpdateCompanion<DistributorEntity> {
           ..write('designation: $designation, ')
           ..write('addressEn: $addressEn, ')
           ..write('addressBn: $addressBn, ')
+          ..write('upazilaId: $upazilaId, ')
+          ..write('baseId: $baseId, ')
           ..write('areaId: $areaId, ')
           ..write('mobile: $mobile, ')
           ..write('isActive: $isActive, ')
@@ -15002,6 +16456,237 @@ class SalesPersonnelCompanion extends UpdateCompanion<SalesPersonnelEntity> {
   }
 }
 
+class $SalesPersonnelRegionsTable extends SalesPersonnelRegions
+    with TableInfo<$SalesPersonnelRegionsTable, SalesPersonnelRegion> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SalesPersonnelRegionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _salesPersonnelIdMeta = const VerificationMeta(
+    'salesPersonnelId',
+  );
+  @override
+  late final GeneratedColumn<int> salesPersonnelId = GeneratedColumn<int>(
+    'sales_personnel_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints:
+        'NOT NULL REFERENCES sales_personnel(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _regionIdMeta = const VerificationMeta(
+    'regionId',
+  );
+  @override
+  late final GeneratedColumn<int> regionId = GeneratedColumn<int>(
+    'region_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES regions(id) ON DELETE CASCADE',
+  );
+  @override
+  List<GeneratedColumn> get $columns => [salesPersonnelId, regionId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sales_personnel_regions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SalesPersonnelRegion> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('sales_personnel_id')) {
+      context.handle(
+        _salesPersonnelIdMeta,
+        salesPersonnelId.isAcceptableOrUnknown(
+          data['sales_personnel_id']!,
+          _salesPersonnelIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_salesPersonnelIdMeta);
+    }
+    if (data.containsKey('region_id')) {
+      context.handle(
+        _regionIdMeta,
+        regionId.isAcceptableOrUnknown(data['region_id']!, _regionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_regionIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {salesPersonnelId, regionId};
+  @override
+  SalesPersonnelRegion map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SalesPersonnelRegion(
+      salesPersonnelId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sales_personnel_id'],
+      )!,
+      regionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}region_id'],
+      )!,
+    );
+  }
+
+  @override
+  $SalesPersonnelRegionsTable createAlias(String alias) {
+    return $SalesPersonnelRegionsTable(attachedDatabase, alias);
+  }
+}
+
+class SalesPersonnelRegion extends DataClass
+    implements Insertable<SalesPersonnelRegion> {
+  final int salesPersonnelId;
+  final int regionId;
+  const SalesPersonnelRegion({
+    required this.salesPersonnelId,
+    required this.regionId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['sales_personnel_id'] = Variable<int>(salesPersonnelId);
+    map['region_id'] = Variable<int>(regionId);
+    return map;
+  }
+
+  SalesPersonnelRegionsCompanion toCompanion(bool nullToAbsent) {
+    return SalesPersonnelRegionsCompanion(
+      salesPersonnelId: Value(salesPersonnelId),
+      regionId: Value(regionId),
+    );
+  }
+
+  factory SalesPersonnelRegion.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SalesPersonnelRegion(
+      salesPersonnelId: serializer.fromJson<int>(json['salesPersonnelId']),
+      regionId: serializer.fromJson<int>(json['regionId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'salesPersonnelId': serializer.toJson<int>(salesPersonnelId),
+      'regionId': serializer.toJson<int>(regionId),
+    };
+  }
+
+  SalesPersonnelRegion copyWith({int? salesPersonnelId, int? regionId}) =>
+      SalesPersonnelRegion(
+        salesPersonnelId: salesPersonnelId ?? this.salesPersonnelId,
+        regionId: regionId ?? this.regionId,
+      );
+  SalesPersonnelRegion copyWithCompanion(SalesPersonnelRegionsCompanion data) {
+    return SalesPersonnelRegion(
+      salesPersonnelId: data.salesPersonnelId.present
+          ? data.salesPersonnelId.value
+          : this.salesPersonnelId,
+      regionId: data.regionId.present ? data.regionId.value : this.regionId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalesPersonnelRegion(')
+          ..write('salesPersonnelId: $salesPersonnelId, ')
+          ..write('regionId: $regionId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(salesPersonnelId, regionId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SalesPersonnelRegion &&
+          other.salesPersonnelId == this.salesPersonnelId &&
+          other.regionId == this.regionId);
+}
+
+class SalesPersonnelRegionsCompanion
+    extends UpdateCompanion<SalesPersonnelRegion> {
+  final Value<int> salesPersonnelId;
+  final Value<int> regionId;
+  final Value<int> rowid;
+  const SalesPersonnelRegionsCompanion({
+    this.salesPersonnelId = const Value.absent(),
+    this.regionId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SalesPersonnelRegionsCompanion.insert({
+    required int salesPersonnelId,
+    required int regionId,
+    this.rowid = const Value.absent(),
+  }) : salesPersonnelId = Value(salesPersonnelId),
+       regionId = Value(regionId);
+  static Insertable<SalesPersonnelRegion> custom({
+    Expression<int>? salesPersonnelId,
+    Expression<int>? regionId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (salesPersonnelId != null) 'sales_personnel_id': salesPersonnelId,
+      if (regionId != null) 'region_id': regionId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SalesPersonnelRegionsCompanion copyWith({
+    Value<int>? salesPersonnelId,
+    Value<int>? regionId,
+    Value<int>? rowid,
+  }) {
+    return SalesPersonnelRegionsCompanion(
+      salesPersonnelId: salesPersonnelId ?? this.salesPersonnelId,
+      regionId: regionId ?? this.regionId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (salesPersonnelId.present) {
+      map['sales_personnel_id'] = Variable<int>(salesPersonnelId.value);
+    }
+    if (regionId.present) {
+      map['region_id'] = Variable<int>(regionId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalesPersonnelRegionsCompanion(')
+          ..write('salesPersonnelId: $salesPersonnelId, ')
+          ..write('regionId: $regionId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SalesPersonnelAreasTable extends SalesPersonnelAreas
     with TableInfo<$SalesPersonnelAreasTable, SalesPersonnelArea> {
   @override
@@ -15029,7 +16714,7 @@ class $SalesPersonnelAreasTable extends SalesPersonnelAreas
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    $customConstraints: 'NOT NULL REFERENCES areas(id)',
+    $customConstraints: 'NOT NULL REFERENCES areas(id) ON DELETE CASCADE',
   );
   @override
   List<GeneratedColumn> get $columns => [salesPersonnelId, areaId];
@@ -15224,6 +16909,467 @@ class SalesPersonnelAreasCompanion extends UpdateCompanion<SalesPersonnelArea> {
     return (StringBuffer('SalesPersonnelAreasCompanion(')
           ..write('salesPersonnelId: $salesPersonnelId, ')
           ..write('areaId: $areaId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SalesPersonnelBasesTable extends SalesPersonnelBases
+    with TableInfo<$SalesPersonnelBasesTable, SalesPersonnelBase> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SalesPersonnelBasesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _salesPersonnelIdMeta = const VerificationMeta(
+    'salesPersonnelId',
+  );
+  @override
+  late final GeneratedColumn<int> salesPersonnelId = GeneratedColumn<int>(
+    'sales_personnel_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints:
+        'NOT NULL REFERENCES sales_personnel(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _baseIdMeta = const VerificationMeta('baseId');
+  @override
+  late final GeneratedColumn<int> baseId = GeneratedColumn<int>(
+    'base_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES bases(id) ON DELETE CASCADE',
+  );
+  @override
+  List<GeneratedColumn> get $columns => [salesPersonnelId, baseId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sales_personnel_bases';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SalesPersonnelBase> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('sales_personnel_id')) {
+      context.handle(
+        _salesPersonnelIdMeta,
+        salesPersonnelId.isAcceptableOrUnknown(
+          data['sales_personnel_id']!,
+          _salesPersonnelIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_salesPersonnelIdMeta);
+    }
+    if (data.containsKey('base_id')) {
+      context.handle(
+        _baseIdMeta,
+        baseId.isAcceptableOrUnknown(data['base_id']!, _baseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_baseIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {salesPersonnelId, baseId};
+  @override
+  SalesPersonnelBase map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SalesPersonnelBase(
+      salesPersonnelId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sales_personnel_id'],
+      )!,
+      baseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_id'],
+      )!,
+    );
+  }
+
+  @override
+  $SalesPersonnelBasesTable createAlias(String alias) {
+    return $SalesPersonnelBasesTable(attachedDatabase, alias);
+  }
+}
+
+class SalesPersonnelBase extends DataClass
+    implements Insertable<SalesPersonnelBase> {
+  final int salesPersonnelId;
+  final int baseId;
+  const SalesPersonnelBase({
+    required this.salesPersonnelId,
+    required this.baseId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['sales_personnel_id'] = Variable<int>(salesPersonnelId);
+    map['base_id'] = Variable<int>(baseId);
+    return map;
+  }
+
+  SalesPersonnelBasesCompanion toCompanion(bool nullToAbsent) {
+    return SalesPersonnelBasesCompanion(
+      salesPersonnelId: Value(salesPersonnelId),
+      baseId: Value(baseId),
+    );
+  }
+
+  factory SalesPersonnelBase.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SalesPersonnelBase(
+      salesPersonnelId: serializer.fromJson<int>(json['salesPersonnelId']),
+      baseId: serializer.fromJson<int>(json['baseId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'salesPersonnelId': serializer.toJson<int>(salesPersonnelId),
+      'baseId': serializer.toJson<int>(baseId),
+    };
+  }
+
+  SalesPersonnelBase copyWith({int? salesPersonnelId, int? baseId}) =>
+      SalesPersonnelBase(
+        salesPersonnelId: salesPersonnelId ?? this.salesPersonnelId,
+        baseId: baseId ?? this.baseId,
+      );
+  SalesPersonnelBase copyWithCompanion(SalesPersonnelBasesCompanion data) {
+    return SalesPersonnelBase(
+      salesPersonnelId: data.salesPersonnelId.present
+          ? data.salesPersonnelId.value
+          : this.salesPersonnelId,
+      baseId: data.baseId.present ? data.baseId.value : this.baseId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalesPersonnelBase(')
+          ..write('salesPersonnelId: $salesPersonnelId, ')
+          ..write('baseId: $baseId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(salesPersonnelId, baseId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SalesPersonnelBase &&
+          other.salesPersonnelId == this.salesPersonnelId &&
+          other.baseId == this.baseId);
+}
+
+class SalesPersonnelBasesCompanion extends UpdateCompanion<SalesPersonnelBase> {
+  final Value<int> salesPersonnelId;
+  final Value<int> baseId;
+  final Value<int> rowid;
+  const SalesPersonnelBasesCompanion({
+    this.salesPersonnelId = const Value.absent(),
+    this.baseId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SalesPersonnelBasesCompanion.insert({
+    required int salesPersonnelId,
+    required int baseId,
+    this.rowid = const Value.absent(),
+  }) : salesPersonnelId = Value(salesPersonnelId),
+       baseId = Value(baseId);
+  static Insertable<SalesPersonnelBase> custom({
+    Expression<int>? salesPersonnelId,
+    Expression<int>? baseId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (salesPersonnelId != null) 'sales_personnel_id': salesPersonnelId,
+      if (baseId != null) 'base_id': baseId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SalesPersonnelBasesCompanion copyWith({
+    Value<int>? salesPersonnelId,
+    Value<int>? baseId,
+    Value<int>? rowid,
+  }) {
+    return SalesPersonnelBasesCompanion(
+      salesPersonnelId: salesPersonnelId ?? this.salesPersonnelId,
+      baseId: baseId ?? this.baseId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (salesPersonnelId.present) {
+      map['sales_personnel_id'] = Variable<int>(salesPersonnelId.value);
+    }
+    if (baseId.present) {
+      map['base_id'] = Variable<int>(baseId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalesPersonnelBasesCompanion(')
+          ..write('salesPersonnelId: $salesPersonnelId, ')
+          ..write('baseId: $baseId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SalesPersonnelUpazilasTable extends SalesPersonnelUpazilas
+    with TableInfo<$SalesPersonnelUpazilasTable, SalesPersonnelUpazila> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SalesPersonnelUpazilasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _salesPersonnelIdMeta = const VerificationMeta(
+    'salesPersonnelId',
+  );
+  @override
+  late final GeneratedColumn<int> salesPersonnelId = GeneratedColumn<int>(
+    'sales_personnel_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints:
+        'NOT NULL REFERENCES sales_personnel(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _upazilaIdMeta = const VerificationMeta(
+    'upazilaId',
+  );
+  @override
+  late final GeneratedColumn<int> upazilaId = GeneratedColumn<int>(
+    'upazila_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES upazilas(id) ON DELETE CASCADE',
+  );
+  @override
+  List<GeneratedColumn> get $columns => [salesPersonnelId, upazilaId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sales_personnel_upazilas';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SalesPersonnelUpazila> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('sales_personnel_id')) {
+      context.handle(
+        _salesPersonnelIdMeta,
+        salesPersonnelId.isAcceptableOrUnknown(
+          data['sales_personnel_id']!,
+          _salesPersonnelIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_salesPersonnelIdMeta);
+    }
+    if (data.containsKey('upazila_id')) {
+      context.handle(
+        _upazilaIdMeta,
+        upazilaId.isAcceptableOrUnknown(data['upazila_id']!, _upazilaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_upazilaIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {salesPersonnelId, upazilaId};
+  @override
+  SalesPersonnelUpazila map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SalesPersonnelUpazila(
+      salesPersonnelId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sales_personnel_id'],
+      )!,
+      upazilaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}upazila_id'],
+      )!,
+    );
+  }
+
+  @override
+  $SalesPersonnelUpazilasTable createAlias(String alias) {
+    return $SalesPersonnelUpazilasTable(attachedDatabase, alias);
+  }
+}
+
+class SalesPersonnelUpazila extends DataClass
+    implements Insertable<SalesPersonnelUpazila> {
+  final int salesPersonnelId;
+  final int upazilaId;
+  const SalesPersonnelUpazila({
+    required this.salesPersonnelId,
+    required this.upazilaId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['sales_personnel_id'] = Variable<int>(salesPersonnelId);
+    map['upazila_id'] = Variable<int>(upazilaId);
+    return map;
+  }
+
+  SalesPersonnelUpazilasCompanion toCompanion(bool nullToAbsent) {
+    return SalesPersonnelUpazilasCompanion(
+      salesPersonnelId: Value(salesPersonnelId),
+      upazilaId: Value(upazilaId),
+    );
+  }
+
+  factory SalesPersonnelUpazila.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SalesPersonnelUpazila(
+      salesPersonnelId: serializer.fromJson<int>(json['salesPersonnelId']),
+      upazilaId: serializer.fromJson<int>(json['upazilaId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'salesPersonnelId': serializer.toJson<int>(salesPersonnelId),
+      'upazilaId': serializer.toJson<int>(upazilaId),
+    };
+  }
+
+  SalesPersonnelUpazila copyWith({int? salesPersonnelId, int? upazilaId}) =>
+      SalesPersonnelUpazila(
+        salesPersonnelId: salesPersonnelId ?? this.salesPersonnelId,
+        upazilaId: upazilaId ?? this.upazilaId,
+      );
+  SalesPersonnelUpazila copyWithCompanion(
+    SalesPersonnelUpazilasCompanion data,
+  ) {
+    return SalesPersonnelUpazila(
+      salesPersonnelId: data.salesPersonnelId.present
+          ? data.salesPersonnelId.value
+          : this.salesPersonnelId,
+      upazilaId: data.upazilaId.present ? data.upazilaId.value : this.upazilaId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalesPersonnelUpazila(')
+          ..write('salesPersonnelId: $salesPersonnelId, ')
+          ..write('upazilaId: $upazilaId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(salesPersonnelId, upazilaId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SalesPersonnelUpazila &&
+          other.salesPersonnelId == this.salesPersonnelId &&
+          other.upazilaId == this.upazilaId);
+}
+
+class SalesPersonnelUpazilasCompanion
+    extends UpdateCompanion<SalesPersonnelUpazila> {
+  final Value<int> salesPersonnelId;
+  final Value<int> upazilaId;
+  final Value<int> rowid;
+  const SalesPersonnelUpazilasCompanion({
+    this.salesPersonnelId = const Value.absent(),
+    this.upazilaId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SalesPersonnelUpazilasCompanion.insert({
+    required int salesPersonnelId,
+    required int upazilaId,
+    this.rowid = const Value.absent(),
+  }) : salesPersonnelId = Value(salesPersonnelId),
+       upazilaId = Value(upazilaId);
+  static Insertable<SalesPersonnelUpazila> custom({
+    Expression<int>? salesPersonnelId,
+    Expression<int>? upazilaId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (salesPersonnelId != null) 'sales_personnel_id': salesPersonnelId,
+      if (upazilaId != null) 'upazila_id': upazilaId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SalesPersonnelUpazilasCompanion copyWith({
+    Value<int>? salesPersonnelId,
+    Value<int>? upazilaId,
+    Value<int>? rowid,
+  }) {
+    return SalesPersonnelUpazilasCompanion(
+      salesPersonnelId: salesPersonnelId ?? this.salesPersonnelId,
+      upazilaId: upazilaId ?? this.upazilaId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (salesPersonnelId.present) {
+      map['sales_personnel_id'] = Variable<int>(salesPersonnelId.value);
+    }
+    if (upazilaId.present) {
+      map['upazila_id'] = Variable<int>(upazilaId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalesPersonnelUpazilasCompanion(')
+          ..write('salesPersonnelId: $salesPersonnelId, ')
+          ..write('upazilaId: $upazilaId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -16169,6 +18315,232 @@ class VetDoctorsCompanion extends UpdateCompanion<VetDoctorEntity> {
   }
 }
 
+class $VetDoctorsRegionsTable extends VetDoctorsRegions
+    with TableInfo<$VetDoctorsRegionsTable, VetDoctorsRegion> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VetDoctorsRegionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _vetDoctorIdMeta = const VerificationMeta(
+    'vetDoctorId',
+  );
+  @override
+  late final GeneratedColumn<int> vetDoctorId = GeneratedColumn<int>(
+    'vet_doctor_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES vet_doctors(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _regionIdMeta = const VerificationMeta(
+    'regionId',
+  );
+  @override
+  late final GeneratedColumn<int> regionId = GeneratedColumn<int>(
+    'region_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES regions(id) ON DELETE CASCADE',
+  );
+  @override
+  List<GeneratedColumn> get $columns => [vetDoctorId, regionId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vet_doctors_regions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VetDoctorsRegion> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('vet_doctor_id')) {
+      context.handle(
+        _vetDoctorIdMeta,
+        vetDoctorId.isAcceptableOrUnknown(
+          data['vet_doctor_id']!,
+          _vetDoctorIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_vetDoctorIdMeta);
+    }
+    if (data.containsKey('region_id')) {
+      context.handle(
+        _regionIdMeta,
+        regionId.isAcceptableOrUnknown(data['region_id']!, _regionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_regionIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {vetDoctorId, regionId};
+  @override
+  VetDoctorsRegion map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VetDoctorsRegion(
+      vetDoctorId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}vet_doctor_id'],
+      )!,
+      regionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}region_id'],
+      )!,
+    );
+  }
+
+  @override
+  $VetDoctorsRegionsTable createAlias(String alias) {
+    return $VetDoctorsRegionsTable(attachedDatabase, alias);
+  }
+}
+
+class VetDoctorsRegion extends DataClass
+    implements Insertable<VetDoctorsRegion> {
+  final int vetDoctorId;
+  final int regionId;
+  const VetDoctorsRegion({required this.vetDoctorId, required this.regionId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['vet_doctor_id'] = Variable<int>(vetDoctorId);
+    map['region_id'] = Variable<int>(regionId);
+    return map;
+  }
+
+  VetDoctorsRegionsCompanion toCompanion(bool nullToAbsent) {
+    return VetDoctorsRegionsCompanion(
+      vetDoctorId: Value(vetDoctorId),
+      regionId: Value(regionId),
+    );
+  }
+
+  factory VetDoctorsRegion.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VetDoctorsRegion(
+      vetDoctorId: serializer.fromJson<int>(json['vetDoctorId']),
+      regionId: serializer.fromJson<int>(json['regionId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'vetDoctorId': serializer.toJson<int>(vetDoctorId),
+      'regionId': serializer.toJson<int>(regionId),
+    };
+  }
+
+  VetDoctorsRegion copyWith({int? vetDoctorId, int? regionId}) =>
+      VetDoctorsRegion(
+        vetDoctorId: vetDoctorId ?? this.vetDoctorId,
+        regionId: regionId ?? this.regionId,
+      );
+  VetDoctorsRegion copyWithCompanion(VetDoctorsRegionsCompanion data) {
+    return VetDoctorsRegion(
+      vetDoctorId: data.vetDoctorId.present
+          ? data.vetDoctorId.value
+          : this.vetDoctorId,
+      regionId: data.regionId.present ? data.regionId.value : this.regionId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VetDoctorsRegion(')
+          ..write('vetDoctorId: $vetDoctorId, ')
+          ..write('regionId: $regionId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(vetDoctorId, regionId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VetDoctorsRegion &&
+          other.vetDoctorId == this.vetDoctorId &&
+          other.regionId == this.regionId);
+}
+
+class VetDoctorsRegionsCompanion extends UpdateCompanion<VetDoctorsRegion> {
+  final Value<int> vetDoctorId;
+  final Value<int> regionId;
+  final Value<int> rowid;
+  const VetDoctorsRegionsCompanion({
+    this.vetDoctorId = const Value.absent(),
+    this.regionId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VetDoctorsRegionsCompanion.insert({
+    required int vetDoctorId,
+    required int regionId,
+    this.rowid = const Value.absent(),
+  }) : vetDoctorId = Value(vetDoctorId),
+       regionId = Value(regionId);
+  static Insertable<VetDoctorsRegion> custom({
+    Expression<int>? vetDoctorId,
+    Expression<int>? regionId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (vetDoctorId != null) 'vet_doctor_id': vetDoctorId,
+      if (regionId != null) 'region_id': regionId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VetDoctorsRegionsCompanion copyWith({
+    Value<int>? vetDoctorId,
+    Value<int>? regionId,
+    Value<int>? rowid,
+  }) {
+    return VetDoctorsRegionsCompanion(
+      vetDoctorId: vetDoctorId ?? this.vetDoctorId,
+      regionId: regionId ?? this.regionId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (vetDoctorId.present) {
+      map['vet_doctor_id'] = Variable<int>(vetDoctorId.value);
+    }
+    if (regionId.present) {
+      map['region_id'] = Variable<int>(regionId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VetDoctorsRegionsCompanion(')
+          ..write('vetDoctorId: $vetDoctorId, ')
+          ..write('regionId: $regionId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $VetDoctorsAreasTable extends VetDoctorsAreas
     with TableInfo<$VetDoctorsAreasTable, VetDoctorsArea> {
   @override
@@ -16195,7 +18567,7 @@ class $VetDoctorsAreasTable extends VetDoctorsAreas
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    $customConstraints: 'NOT NULL REFERENCES areas(id)',
+    $customConstraints: 'NOT NULL REFERENCES areas(id) ON DELETE CASCADE',
   );
   @override
   List<GeneratedColumn> get $columns => [vetDoctorId, areaId];
@@ -16391,34 +18763,567 @@ class VetDoctorsAreasCompanion extends UpdateCompanion<VetDoctorsArea> {
   }
 }
 
+class $VetDoctorsBasesTable extends VetDoctorsBases
+    with TableInfo<$VetDoctorsBasesTable, VetDoctorsBase> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VetDoctorsBasesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _vetDoctorIdMeta = const VerificationMeta(
+    'vetDoctorId',
+  );
+  @override
+  late final GeneratedColumn<int> vetDoctorId = GeneratedColumn<int>(
+    'vet_doctor_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES vet_doctors(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _baseIdMeta = const VerificationMeta('baseId');
+  @override
+  late final GeneratedColumn<int> baseId = GeneratedColumn<int>(
+    'base_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES bases(id) ON DELETE CASCADE',
+  );
+  @override
+  List<GeneratedColumn> get $columns => [vetDoctorId, baseId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vet_doctors_bases';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VetDoctorsBase> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('vet_doctor_id')) {
+      context.handle(
+        _vetDoctorIdMeta,
+        vetDoctorId.isAcceptableOrUnknown(
+          data['vet_doctor_id']!,
+          _vetDoctorIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_vetDoctorIdMeta);
+    }
+    if (data.containsKey('base_id')) {
+      context.handle(
+        _baseIdMeta,
+        baseId.isAcceptableOrUnknown(data['base_id']!, _baseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_baseIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {vetDoctorId, baseId};
+  @override
+  VetDoctorsBase map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VetDoctorsBase(
+      vetDoctorId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}vet_doctor_id'],
+      )!,
+      baseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_id'],
+      )!,
+    );
+  }
+
+  @override
+  $VetDoctorsBasesTable createAlias(String alias) {
+    return $VetDoctorsBasesTable(attachedDatabase, alias);
+  }
+}
+
+class VetDoctorsBase extends DataClass implements Insertable<VetDoctorsBase> {
+  final int vetDoctorId;
+  final int baseId;
+  const VetDoctorsBase({required this.vetDoctorId, required this.baseId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['vet_doctor_id'] = Variable<int>(vetDoctorId);
+    map['base_id'] = Variable<int>(baseId);
+    return map;
+  }
+
+  VetDoctorsBasesCompanion toCompanion(bool nullToAbsent) {
+    return VetDoctorsBasesCompanion(
+      vetDoctorId: Value(vetDoctorId),
+      baseId: Value(baseId),
+    );
+  }
+
+  factory VetDoctorsBase.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VetDoctorsBase(
+      vetDoctorId: serializer.fromJson<int>(json['vetDoctorId']),
+      baseId: serializer.fromJson<int>(json['baseId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'vetDoctorId': serializer.toJson<int>(vetDoctorId),
+      'baseId': serializer.toJson<int>(baseId),
+    };
+  }
+
+  VetDoctorsBase copyWith({int? vetDoctorId, int? baseId}) => VetDoctorsBase(
+    vetDoctorId: vetDoctorId ?? this.vetDoctorId,
+    baseId: baseId ?? this.baseId,
+  );
+  VetDoctorsBase copyWithCompanion(VetDoctorsBasesCompanion data) {
+    return VetDoctorsBase(
+      vetDoctorId: data.vetDoctorId.present
+          ? data.vetDoctorId.value
+          : this.vetDoctorId,
+      baseId: data.baseId.present ? data.baseId.value : this.baseId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VetDoctorsBase(')
+          ..write('vetDoctorId: $vetDoctorId, ')
+          ..write('baseId: $baseId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(vetDoctorId, baseId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VetDoctorsBase &&
+          other.vetDoctorId == this.vetDoctorId &&
+          other.baseId == this.baseId);
+}
+
+class VetDoctorsBasesCompanion extends UpdateCompanion<VetDoctorsBase> {
+  final Value<int> vetDoctorId;
+  final Value<int> baseId;
+  final Value<int> rowid;
+  const VetDoctorsBasesCompanion({
+    this.vetDoctorId = const Value.absent(),
+    this.baseId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VetDoctorsBasesCompanion.insert({
+    required int vetDoctorId,
+    required int baseId,
+    this.rowid = const Value.absent(),
+  }) : vetDoctorId = Value(vetDoctorId),
+       baseId = Value(baseId);
+  static Insertable<VetDoctorsBase> custom({
+    Expression<int>? vetDoctorId,
+    Expression<int>? baseId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (vetDoctorId != null) 'vet_doctor_id': vetDoctorId,
+      if (baseId != null) 'base_id': baseId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VetDoctorsBasesCompanion copyWith({
+    Value<int>? vetDoctorId,
+    Value<int>? baseId,
+    Value<int>? rowid,
+  }) {
+    return VetDoctorsBasesCompanion(
+      vetDoctorId: vetDoctorId ?? this.vetDoctorId,
+      baseId: baseId ?? this.baseId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (vetDoctorId.present) {
+      map['vet_doctor_id'] = Variable<int>(vetDoctorId.value);
+    }
+    if (baseId.present) {
+      map['base_id'] = Variable<int>(baseId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VetDoctorsBasesCompanion(')
+          ..write('vetDoctorId: $vetDoctorId, ')
+          ..write('baseId: $baseId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VetDoctorsUpazilasTable extends VetDoctorsUpazilas
+    with TableInfo<$VetDoctorsUpazilasTable, VetDoctorsUpazila> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VetDoctorsUpazilasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _vetDoctorIdMeta = const VerificationMeta(
+    'vetDoctorId',
+  );
+  @override
+  late final GeneratedColumn<int> vetDoctorId = GeneratedColumn<int>(
+    'vet_doctor_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES vet_doctors(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _upazilaIdMeta = const VerificationMeta(
+    'upazilaId',
+  );
+  @override
+  late final GeneratedColumn<int> upazilaId = GeneratedColumn<int>(
+    'upazila_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES upazilas(id) ON DELETE CASCADE',
+  );
+  @override
+  List<GeneratedColumn> get $columns => [vetDoctorId, upazilaId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vet_doctors_upazilas';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VetDoctorsUpazila> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('vet_doctor_id')) {
+      context.handle(
+        _vetDoctorIdMeta,
+        vetDoctorId.isAcceptableOrUnknown(
+          data['vet_doctor_id']!,
+          _vetDoctorIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_vetDoctorIdMeta);
+    }
+    if (data.containsKey('upazila_id')) {
+      context.handle(
+        _upazilaIdMeta,
+        upazilaId.isAcceptableOrUnknown(data['upazila_id']!, _upazilaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_upazilaIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {vetDoctorId, upazilaId};
+  @override
+  VetDoctorsUpazila map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VetDoctorsUpazila(
+      vetDoctorId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}vet_doctor_id'],
+      )!,
+      upazilaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}upazila_id'],
+      )!,
+    );
+  }
+
+  @override
+  $VetDoctorsUpazilasTable createAlias(String alias) {
+    return $VetDoctorsUpazilasTable(attachedDatabase, alias);
+  }
+}
+
+class VetDoctorsUpazila extends DataClass
+    implements Insertable<VetDoctorsUpazila> {
+  final int vetDoctorId;
+  final int upazilaId;
+  const VetDoctorsUpazila({required this.vetDoctorId, required this.upazilaId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['vet_doctor_id'] = Variable<int>(vetDoctorId);
+    map['upazila_id'] = Variable<int>(upazilaId);
+    return map;
+  }
+
+  VetDoctorsUpazilasCompanion toCompanion(bool nullToAbsent) {
+    return VetDoctorsUpazilasCompanion(
+      vetDoctorId: Value(vetDoctorId),
+      upazilaId: Value(upazilaId),
+    );
+  }
+
+  factory VetDoctorsUpazila.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VetDoctorsUpazila(
+      vetDoctorId: serializer.fromJson<int>(json['vetDoctorId']),
+      upazilaId: serializer.fromJson<int>(json['upazilaId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'vetDoctorId': serializer.toJson<int>(vetDoctorId),
+      'upazilaId': serializer.toJson<int>(upazilaId),
+    };
+  }
+
+  VetDoctorsUpazila copyWith({int? vetDoctorId, int? upazilaId}) =>
+      VetDoctorsUpazila(
+        vetDoctorId: vetDoctorId ?? this.vetDoctorId,
+        upazilaId: upazilaId ?? this.upazilaId,
+      );
+  VetDoctorsUpazila copyWithCompanion(VetDoctorsUpazilasCompanion data) {
+    return VetDoctorsUpazila(
+      vetDoctorId: data.vetDoctorId.present
+          ? data.vetDoctorId.value
+          : this.vetDoctorId,
+      upazilaId: data.upazilaId.present ? data.upazilaId.value : this.upazilaId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VetDoctorsUpazila(')
+          ..write('vetDoctorId: $vetDoctorId, ')
+          ..write('upazilaId: $upazilaId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(vetDoctorId, upazilaId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VetDoctorsUpazila &&
+          other.vetDoctorId == this.vetDoctorId &&
+          other.upazilaId == this.upazilaId);
+}
+
+class VetDoctorsUpazilasCompanion extends UpdateCompanion<VetDoctorsUpazila> {
+  final Value<int> vetDoctorId;
+  final Value<int> upazilaId;
+  final Value<int> rowid;
+  const VetDoctorsUpazilasCompanion({
+    this.vetDoctorId = const Value.absent(),
+    this.upazilaId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VetDoctorsUpazilasCompanion.insert({
+    required int vetDoctorId,
+    required int upazilaId,
+    this.rowid = const Value.absent(),
+  }) : vetDoctorId = Value(vetDoctorId),
+       upazilaId = Value(upazilaId);
+  static Insertable<VetDoctorsUpazila> custom({
+    Expression<int>? vetDoctorId,
+    Expression<int>? upazilaId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (vetDoctorId != null) 'vet_doctor_id': vetDoctorId,
+      if (upazilaId != null) 'upazila_id': upazilaId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VetDoctorsUpazilasCompanion copyWith({
+    Value<int>? vetDoctorId,
+    Value<int>? upazilaId,
+    Value<int>? rowid,
+  }) {
+    return VetDoctorsUpazilasCompanion(
+      vetDoctorId: vetDoctorId ?? this.vetDoctorId,
+      upazilaId: upazilaId ?? this.upazilaId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (vetDoctorId.present) {
+      map['vet_doctor_id'] = Variable<int>(vetDoctorId.value);
+    }
+    if (upazilaId.present) {
+      map['upazila_id'] = Variable<int>(upazilaId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VetDoctorsUpazilasCompanion(')
+          ..write('vetDoctorId: $vetDoctorId, ')
+          ..write('upazilaId: $upazilaId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$DistributorsDb extends GeneratedDatabase {
   _$DistributorsDb(QueryExecutor e) : super(e);
   $DistributorsDbManager get managers => $DistributorsDbManager(this);
+  late final $DivisionsTable divisions = $DivisionsTable(this);
+  late final $DistrictsTable districts = $DistrictsTable(this);
+  late final $UpazilasTable upazilas = $UpazilasTable(this);
   late final $RegionsTable regions = $RegionsTable(this);
   late final $AreasTable areas = $AreasTable(this);
+  late final $BasesTable bases = $BasesTable(this);
+  late final $BaseUpazilasTable baseUpazilas = $BaseUpazilasTable(this);
   late final $DistributorsTable distributors = $DistributorsTable(this);
   late final $SalesPersonnelTable salesPersonnel = $SalesPersonnelTable(this);
+  late final $SalesPersonnelRegionsTable salesPersonnelRegions =
+      $SalesPersonnelRegionsTable(this);
   late final $SalesPersonnelAreasTable salesPersonnelAreas =
       $SalesPersonnelAreasTable(this);
+  late final $SalesPersonnelBasesTable salesPersonnelBases =
+      $SalesPersonnelBasesTable(this);
+  late final $SalesPersonnelUpazilasTable salesPersonnelUpazilas =
+      $SalesPersonnelUpazilasTable(this);
   late final $VetDoctorsTable vetDoctors = $VetDoctorsTable(this);
+  late final $VetDoctorsRegionsTable vetDoctorsRegions =
+      $VetDoctorsRegionsTable(this);
   late final $VetDoctorsAreasTable vetDoctorsAreas = $VetDoctorsAreasTable(
     this,
   );
+  late final $VetDoctorsBasesTable vetDoctorsBases = $VetDoctorsBasesTable(
+    this,
+  );
+  late final $VetDoctorsUpazilasTable vetDoctorsUpazilas =
+      $VetDoctorsUpazilasTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+    divisions,
+    districts,
+    upazilas,
     regions,
     areas,
+    bases,
+    baseUpazilas,
     distributors,
     salesPersonnel,
+    salesPersonnelRegions,
     salesPersonnelAreas,
+    salesPersonnelBases,
+    salesPersonnelUpazilas,
     vetDoctors,
+    vetDoctorsRegions,
     vetDoctorsAreas,
+    vetDoctorsBases,
+    vetDoctorsUpazilas,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'divisions',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('districts', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'districts',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('upazilas', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'regions',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('areas', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'areas',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('bases', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'bases',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('base_upazilas', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'upazilas',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('base_upazilas', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'sales_personnel',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('sales_personnel_regions', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'regions',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('sales_personnel_regions', kind: UpdateKind.delete)],
+    ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
         'sales_personnel',
@@ -16428,14 +19333,1421 @@ abstract class _$DistributorsDb extends GeneratedDatabase {
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
+        'areas',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('sales_personnel_areas', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'sales_personnel',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('sales_personnel_bases', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'bases',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('sales_personnel_bases', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'sales_personnel',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [
+        TableUpdate('sales_personnel_upazilas', kind: UpdateKind.delete),
+      ],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'upazilas',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [
+        TableUpdate('sales_personnel_upazilas', kind: UpdateKind.delete),
+      ],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'vet_doctors',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('vet_doctors_regions', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'regions',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('vet_doctors_regions', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
         'vet_doctors',
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('vet_doctors_areas', kind: UpdateKind.delete)],
     ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'areas',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('vet_doctors_areas', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'vet_doctors',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('vet_doctors_bases', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'bases',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('vet_doctors_bases', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'vet_doctors',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('vet_doctors_upazilas', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'upazilas',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('vet_doctors_upazilas', kind: UpdateKind.delete)],
+    ),
   ]);
 }
 
+typedef $$DivisionsTableCreateCompanionBuilder =
+    DivisionsCompanion Function({
+      Value<int> id,
+      required String nameEn,
+      required String nameBn,
+    });
+typedef $$DivisionsTableUpdateCompanionBuilder =
+    DivisionsCompanion Function({
+      Value<int> id,
+      Value<String> nameEn,
+      Value<String> nameBn,
+    });
+
+final class $$DivisionsTableReferences
+    extends BaseReferences<_$DistributorsDb, $DivisionsTable, DivisionEntity> {
+  $$DivisionsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$DistrictsTable, List<DistrictEntity>>
+  _districtsRefsTable(_$DistributorsDb db) => MultiTypedResultKey.fromTable(
+    db.districts,
+    aliasName: 'divisions__id__districts__division_id',
+  );
+
+  $$DistrictsTableProcessedTableManager get districtsRefs {
+    final manager = $$DistrictsTableTableManager(
+      $_db,
+      $_db.districts,
+    ).filter((f) => f.divisionId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_districtsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$DivisionsTableFilterComposer
+    extends Composer<_$DistributorsDb, $DivisionsTable> {
+  $$DivisionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nameEn => $composableBuilder(
+    column: $table.nameEn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nameBn => $composableBuilder(
+    column: $table.nameBn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> districtsRefs(
+    Expression<bool> Function($$DistrictsTableFilterComposer f) f,
+  ) {
+    final $$DistrictsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.districts,
+      getReferencedColumn: (t) => t.divisionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DistrictsTableFilterComposer(
+            $db: $db,
+            $table: $db.districts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$DivisionsTableOrderingComposer
+    extends Composer<_$DistributorsDb, $DivisionsTable> {
+  $$DivisionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nameEn => $composableBuilder(
+    column: $table.nameEn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nameBn => $composableBuilder(
+    column: $table.nameBn,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DivisionsTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $DivisionsTable> {
+  $$DivisionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get nameEn =>
+      $composableBuilder(column: $table.nameEn, builder: (column) => column);
+
+  GeneratedColumn<String> get nameBn =>
+      $composableBuilder(column: $table.nameBn, builder: (column) => column);
+
+  Expression<T> districtsRefs<T extends Object>(
+    Expression<T> Function($$DistrictsTableAnnotationComposer a) f,
+  ) {
+    final $$DistrictsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.districts,
+      getReferencedColumn: (t) => t.divisionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DistrictsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.districts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$DivisionsTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $DivisionsTable,
+          DivisionEntity,
+          $$DivisionsTableFilterComposer,
+          $$DivisionsTableOrderingComposer,
+          $$DivisionsTableAnnotationComposer,
+          $$DivisionsTableCreateCompanionBuilder,
+          $$DivisionsTableUpdateCompanionBuilder,
+          (DivisionEntity, $$DivisionsTableReferences),
+          DivisionEntity,
+          PrefetchHooks Function({bool districtsRefs})
+        > {
+  $$DivisionsTableTableManager(_$DistributorsDb db, $DivisionsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DivisionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DivisionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DivisionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> nameEn = const Value.absent(),
+                Value<String> nameBn = const Value.absent(),
+              }) => DivisionsCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String nameEn,
+                required String nameBn,
+              }) => DivisionsCompanion.insert(
+                id: id,
+                nameEn: nameEn,
+                nameBn: nameBn,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$DivisionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({districtsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (districtsRefs) db.districts],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (districtsRefs)
+                    await $_getPrefetchedData<
+                      DivisionEntity,
+                      $DivisionsTable,
+                      DistrictEntity
+                    >(
+                      currentTable: table,
+                      referencedTable: $$DivisionsTableReferences
+                          ._districtsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$DivisionsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).districtsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.divisionId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$DivisionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $DivisionsTable,
+      DivisionEntity,
+      $$DivisionsTableFilterComposer,
+      $$DivisionsTableOrderingComposer,
+      $$DivisionsTableAnnotationComposer,
+      $$DivisionsTableCreateCompanionBuilder,
+      $$DivisionsTableUpdateCompanionBuilder,
+      (DivisionEntity, $$DivisionsTableReferences),
+      DivisionEntity,
+      PrefetchHooks Function({bool districtsRefs})
+    >;
+typedef $$DistrictsTableCreateCompanionBuilder =
+    DistrictsCompanion Function({
+      Value<int> id,
+      required int divisionId,
+      required String nameEn,
+      required String nameBn,
+    });
+typedef $$DistrictsTableUpdateCompanionBuilder =
+    DistrictsCompanion Function({
+      Value<int> id,
+      Value<int> divisionId,
+      Value<String> nameEn,
+      Value<String> nameBn,
+    });
+
+final class $$DistrictsTableReferences
+    extends BaseReferences<_$DistributorsDb, $DistrictsTable, DistrictEntity> {
+  $$DistrictsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $DivisionsTable _divisionIdTable(_$DistributorsDb db) =>
+      db.divisions.createAlias('districts__division_id__divisions__id');
+
+  $$DivisionsTableProcessedTableManager get divisionId {
+    final $_column = $_itemColumn<int>('division_id')!;
+
+    final manager = $$DivisionsTableTableManager(
+      $_db,
+      $_db.divisions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_divisionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$UpazilasTable, List<UpazilaEntity>>
+  _upazilasRefsTable(_$DistributorsDb db) => MultiTypedResultKey.fromTable(
+    db.upazilas,
+    aliasName: 'districts__id__upazilas__district_id',
+  );
+
+  $$UpazilasTableProcessedTableManager get upazilasRefs {
+    final manager = $$UpazilasTableTableManager(
+      $_db,
+      $_db.upazilas,
+    ).filter((f) => f.districtId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_upazilasRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$DistrictsTableFilterComposer
+    extends Composer<_$DistributorsDb, $DistrictsTable> {
+  $$DistrictsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nameEn => $composableBuilder(
+    column: $table.nameEn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nameBn => $composableBuilder(
+    column: $table.nameBn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$DivisionsTableFilterComposer get divisionId {
+    final $$DivisionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.divisionId,
+      referencedTable: $db.divisions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DivisionsTableFilterComposer(
+            $db: $db,
+            $table: $db.divisions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> upazilasRefs(
+    Expression<bool> Function($$UpazilasTableFilterComposer f) f,
+  ) {
+    final $$UpazilasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.districtId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableFilterComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$DistrictsTableOrderingComposer
+    extends Composer<_$DistributorsDb, $DistrictsTable> {
+  $$DistrictsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nameEn => $composableBuilder(
+    column: $table.nameEn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nameBn => $composableBuilder(
+    column: $table.nameBn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$DivisionsTableOrderingComposer get divisionId {
+    final $$DivisionsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.divisionId,
+      referencedTable: $db.divisions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DivisionsTableOrderingComposer(
+            $db: $db,
+            $table: $db.divisions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DistrictsTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $DistrictsTable> {
+  $$DistrictsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get nameEn =>
+      $composableBuilder(column: $table.nameEn, builder: (column) => column);
+
+  GeneratedColumn<String> get nameBn =>
+      $composableBuilder(column: $table.nameBn, builder: (column) => column);
+
+  $$DivisionsTableAnnotationComposer get divisionId {
+    final $$DivisionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.divisionId,
+      referencedTable: $db.divisions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DivisionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.divisions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> upazilasRefs<T extends Object>(
+    Expression<T> Function($$UpazilasTableAnnotationComposer a) f,
+  ) {
+    final $$UpazilasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.districtId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$DistrictsTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $DistrictsTable,
+          DistrictEntity,
+          $$DistrictsTableFilterComposer,
+          $$DistrictsTableOrderingComposer,
+          $$DistrictsTableAnnotationComposer,
+          $$DistrictsTableCreateCompanionBuilder,
+          $$DistrictsTableUpdateCompanionBuilder,
+          (DistrictEntity, $$DistrictsTableReferences),
+          DistrictEntity,
+          PrefetchHooks Function({bool divisionId, bool upazilasRefs})
+        > {
+  $$DistrictsTableTableManager(_$DistributorsDb db, $DistrictsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DistrictsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DistrictsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DistrictsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> divisionId = const Value.absent(),
+                Value<String> nameEn = const Value.absent(),
+                Value<String> nameBn = const Value.absent(),
+              }) => DistrictsCompanion(
+                id: id,
+                divisionId: divisionId,
+                nameEn: nameEn,
+                nameBn: nameBn,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int divisionId,
+                required String nameEn,
+                required String nameBn,
+              }) => DistrictsCompanion.insert(
+                id: id,
+                divisionId: divisionId,
+                nameEn: nameEn,
+                nameBn: nameBn,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$DistrictsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({divisionId = false, upazilasRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (upazilasRefs) db.upazilas],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (divisionId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.divisionId,
+                                referencedTable: $$DistrictsTableReferences
+                                    ._divisionIdTable(db),
+                                referencedColumn: $$DistrictsTableReferences
+                                    ._divisionIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (upazilasRefs)
+                    await $_getPrefetchedData<
+                      DistrictEntity,
+                      $DistrictsTable,
+                      UpazilaEntity
+                    >(
+                      currentTable: table,
+                      referencedTable: $$DistrictsTableReferences
+                          ._upazilasRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$DistrictsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).upazilasRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.districtId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$DistrictsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $DistrictsTable,
+      DistrictEntity,
+      $$DistrictsTableFilterComposer,
+      $$DistrictsTableOrderingComposer,
+      $$DistrictsTableAnnotationComposer,
+      $$DistrictsTableCreateCompanionBuilder,
+      $$DistrictsTableUpdateCompanionBuilder,
+      (DistrictEntity, $$DistrictsTableReferences),
+      DistrictEntity,
+      PrefetchHooks Function({bool divisionId, bool upazilasRefs})
+    >;
+typedef $$UpazilasTableCreateCompanionBuilder =
+    UpazilasCompanion Function({
+      Value<int> id,
+      required int districtId,
+      required String nameEn,
+      required String nameBn,
+    });
+typedef $$UpazilasTableUpdateCompanionBuilder =
+    UpazilasCompanion Function({
+      Value<int> id,
+      Value<int> districtId,
+      Value<String> nameEn,
+      Value<String> nameBn,
+    });
+
+final class $$UpazilasTableReferences
+    extends BaseReferences<_$DistributorsDb, $UpazilasTable, UpazilaEntity> {
+  $$UpazilasTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $DistrictsTable _districtIdTable(_$DistributorsDb db) =>
+      db.districts.createAlias('upazilas__district_id__districts__id');
+
+  $$DistrictsTableProcessedTableManager get districtId {
+    final $_column = $_itemColumn<int>('district_id')!;
+
+    final manager = $$DistrictsTableTableManager(
+      $_db,
+      $_db.districts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_districtIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$BaseUpazilasTable, List<BaseUpazilaEntity>>
+  _baseUpazilasRefsTable(_$DistributorsDb db) => MultiTypedResultKey.fromTable(
+    db.baseUpazilas,
+    aliasName: 'upazilas__id__base_upazilas__upazila_id',
+  );
+
+  $$BaseUpazilasTableProcessedTableManager get baseUpazilasRefs {
+    final manager = $$BaseUpazilasTableTableManager(
+      $_db,
+      $_db.baseUpazilas,
+    ).filter((f) => f.upazilaId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_baseUpazilasRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$DistributorsTable, List<DistributorEntity>>
+  _distributorsRefsTable(_$DistributorsDb db) => MultiTypedResultKey.fromTable(
+    db.distributors,
+    aliasName: 'upazilas__id__distributors__upazila_id',
+  );
+
+  $$DistributorsTableProcessedTableManager get distributorsRefs {
+    final manager = $$DistributorsTableTableManager(
+      $_db,
+      $_db.distributors,
+    ).filter((f) => f.upazilaId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_distributorsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $SalesPersonnelUpazilasTable,
+    List<SalesPersonnelUpazila>
+  >
+  _salesPersonnelUpazilasRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.salesPersonnelUpazilas,
+        aliasName: 'upazilas__id__sales_personnel_upazilas__upazila_id',
+      );
+
+  $$SalesPersonnelUpazilasTableProcessedTableManager
+  get salesPersonnelUpazilasRefs {
+    final manager = $$SalesPersonnelUpazilasTableTableManager(
+      $_db,
+      $_db.salesPersonnelUpazilas,
+    ).filter((f) => f.upazilaId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _salesPersonnelUpazilasRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$VetDoctorsUpazilasTable, List<VetDoctorsUpazila>>
+  _vetDoctorsUpazilasRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.vetDoctorsUpazilas,
+        aliasName: 'upazilas__id__vet_doctors_upazilas__upazila_id',
+      );
+
+  $$VetDoctorsUpazilasTableProcessedTableManager get vetDoctorsUpazilasRefs {
+    final manager = $$VetDoctorsUpazilasTableTableManager(
+      $_db,
+      $_db.vetDoctorsUpazilas,
+    ).filter((f) => f.upazilaId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _vetDoctorsUpazilasRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$UpazilasTableFilterComposer
+    extends Composer<_$DistributorsDb, $UpazilasTable> {
+  $$UpazilasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nameEn => $composableBuilder(
+    column: $table.nameEn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nameBn => $composableBuilder(
+    column: $table.nameBn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$DistrictsTableFilterComposer get districtId {
+    final $$DistrictsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.districtId,
+      referencedTable: $db.districts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DistrictsTableFilterComposer(
+            $db: $db,
+            $table: $db.districts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> baseUpazilasRefs(
+    Expression<bool> Function($$BaseUpazilasTableFilterComposer f) f,
+  ) {
+    final $$BaseUpazilasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.baseUpazilas,
+      getReferencedColumn: (t) => t.upazilaId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BaseUpazilasTableFilterComposer(
+            $db: $db,
+            $table: $db.baseUpazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> distributorsRefs(
+    Expression<bool> Function($$DistributorsTableFilterComposer f) f,
+  ) {
+    final $$DistributorsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.distributors,
+      getReferencedColumn: (t) => t.upazilaId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DistributorsTableFilterComposer(
+            $db: $db,
+            $table: $db.distributors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> salesPersonnelUpazilasRefs(
+    Expression<bool> Function($$SalesPersonnelUpazilasTableFilterComposer f) f,
+  ) {
+    final $$SalesPersonnelUpazilasTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salesPersonnelUpazilas,
+          getReferencedColumn: (t) => t.upazilaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalesPersonnelUpazilasTableFilterComposer(
+                $db: $db,
+                $table: $db.salesPersonnelUpazilas,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> vetDoctorsUpazilasRefs(
+    Expression<bool> Function($$VetDoctorsUpazilasTableFilterComposer f) f,
+  ) {
+    final $$VetDoctorsUpazilasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.vetDoctorsUpazilas,
+      getReferencedColumn: (t) => t.upazilaId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsUpazilasTableFilterComposer(
+            $db: $db,
+            $table: $db.vetDoctorsUpazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$UpazilasTableOrderingComposer
+    extends Composer<_$DistributorsDb, $UpazilasTable> {
+  $$UpazilasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nameEn => $composableBuilder(
+    column: $table.nameEn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nameBn => $composableBuilder(
+    column: $table.nameBn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$DistrictsTableOrderingComposer get districtId {
+    final $$DistrictsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.districtId,
+      referencedTable: $db.districts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DistrictsTableOrderingComposer(
+            $db: $db,
+            $table: $db.districts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$UpazilasTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $UpazilasTable> {
+  $$UpazilasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get nameEn =>
+      $composableBuilder(column: $table.nameEn, builder: (column) => column);
+
+  GeneratedColumn<String> get nameBn =>
+      $composableBuilder(column: $table.nameBn, builder: (column) => column);
+
+  $$DistrictsTableAnnotationComposer get districtId {
+    final $$DistrictsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.districtId,
+      referencedTable: $db.districts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DistrictsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.districts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> baseUpazilasRefs<T extends Object>(
+    Expression<T> Function($$BaseUpazilasTableAnnotationComposer a) f,
+  ) {
+    final $$BaseUpazilasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.baseUpazilas,
+      getReferencedColumn: (t) => t.upazilaId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BaseUpazilasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.baseUpazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> distributorsRefs<T extends Object>(
+    Expression<T> Function($$DistributorsTableAnnotationComposer a) f,
+  ) {
+    final $$DistributorsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.distributors,
+      getReferencedColumn: (t) => t.upazilaId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DistributorsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.distributors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> salesPersonnelUpazilasRefs<T extends Object>(
+    Expression<T> Function($$SalesPersonnelUpazilasTableAnnotationComposer a) f,
+  ) {
+    final $$SalesPersonnelUpazilasTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salesPersonnelUpazilas,
+          getReferencedColumn: (t) => t.upazilaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalesPersonnelUpazilasTableAnnotationComposer(
+                $db: $db,
+                $table: $db.salesPersonnelUpazilas,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> vetDoctorsUpazilasRefs<T extends Object>(
+    Expression<T> Function($$VetDoctorsUpazilasTableAnnotationComposer a) f,
+  ) {
+    final $$VetDoctorsUpazilasTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.vetDoctorsUpazilas,
+          getReferencedColumn: (t) => t.upazilaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$VetDoctorsUpazilasTableAnnotationComposer(
+                $db: $db,
+                $table: $db.vetDoctorsUpazilas,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$UpazilasTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $UpazilasTable,
+          UpazilaEntity,
+          $$UpazilasTableFilterComposer,
+          $$UpazilasTableOrderingComposer,
+          $$UpazilasTableAnnotationComposer,
+          $$UpazilasTableCreateCompanionBuilder,
+          $$UpazilasTableUpdateCompanionBuilder,
+          (UpazilaEntity, $$UpazilasTableReferences),
+          UpazilaEntity,
+          PrefetchHooks Function({
+            bool districtId,
+            bool baseUpazilasRefs,
+            bool distributorsRefs,
+            bool salesPersonnelUpazilasRefs,
+            bool vetDoctorsUpazilasRefs,
+          })
+        > {
+  $$UpazilasTableTableManager(_$DistributorsDb db, $UpazilasTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UpazilasTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UpazilasTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UpazilasTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> districtId = const Value.absent(),
+                Value<String> nameEn = const Value.absent(),
+                Value<String> nameBn = const Value.absent(),
+              }) => UpazilasCompanion(
+                id: id,
+                districtId: districtId,
+                nameEn: nameEn,
+                nameBn: nameBn,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int districtId,
+                required String nameEn,
+                required String nameBn,
+              }) => UpazilasCompanion.insert(
+                id: id,
+                districtId: districtId,
+                nameEn: nameEn,
+                nameBn: nameBn,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$UpazilasTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                districtId = false,
+                baseUpazilasRefs = false,
+                distributorsRefs = false,
+                salesPersonnelUpazilasRefs = false,
+                vetDoctorsUpazilasRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (baseUpazilasRefs) db.baseUpazilas,
+                    if (distributorsRefs) db.distributors,
+                    if (salesPersonnelUpazilasRefs) db.salesPersonnelUpazilas,
+                    if (vetDoctorsUpazilasRefs) db.vetDoctorsUpazilas,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (districtId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.districtId,
+                                    referencedTable: $$UpazilasTableReferences
+                                        ._districtIdTable(db),
+                                    referencedColumn: $$UpazilasTableReferences
+                                        ._districtIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (baseUpazilasRefs)
+                        await $_getPrefetchedData<
+                          UpazilaEntity,
+                          $UpazilasTable,
+                          BaseUpazilaEntity
+                        >(
+                          currentTable: table,
+                          referencedTable: $$UpazilasTableReferences
+                              ._baseUpazilasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$UpazilasTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).baseUpazilasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.upazilaId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (distributorsRefs)
+                        await $_getPrefetchedData<
+                          UpazilaEntity,
+                          $UpazilasTable,
+                          DistributorEntity
+                        >(
+                          currentTable: table,
+                          referencedTable: $$UpazilasTableReferences
+                              ._distributorsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$UpazilasTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).distributorsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.upazilaId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (salesPersonnelUpazilasRefs)
+                        await $_getPrefetchedData<
+                          UpazilaEntity,
+                          $UpazilasTable,
+                          SalesPersonnelUpazila
+                        >(
+                          currentTable: table,
+                          referencedTable: $$UpazilasTableReferences
+                              ._salesPersonnelUpazilasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$UpazilasTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salesPersonnelUpazilasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.upazilaId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (vetDoctorsUpazilasRefs)
+                        await $_getPrefetchedData<
+                          UpazilaEntity,
+                          $UpazilasTable,
+                          VetDoctorsUpazila
+                        >(
+                          currentTable: table,
+                          referencedTable: $$UpazilasTableReferences
+                              ._vetDoctorsUpazilasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$UpazilasTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).vetDoctorsUpazilasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.upazilaId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$UpazilasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $UpazilasTable,
+      UpazilaEntity,
+      $$UpazilasTableFilterComposer,
+      $$UpazilasTableOrderingComposer,
+      $$UpazilasTableAnnotationComposer,
+      $$UpazilasTableCreateCompanionBuilder,
+      $$UpazilasTableUpdateCompanionBuilder,
+      (UpazilaEntity, $$UpazilasTableReferences),
+      UpazilaEntity,
+      PrefetchHooks Function({
+        bool districtId,
+        bool baseUpazilasRefs,
+        bool distributorsRefs,
+        bool salesPersonnelUpazilasRefs,
+        bool vetDoctorsUpazilasRefs,
+      })
+    >;
 typedef $$RegionsTableCreateCompanionBuilder =
     RegionsCompanion Function({
       Value<int> id,
@@ -16467,6 +20779,52 @@ final class $$RegionsTableReferences
     ).filter((f) => f.regionId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_areasRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $SalesPersonnelRegionsTable,
+    List<SalesPersonnelRegion>
+  >
+  _salesPersonnelRegionsRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.salesPersonnelRegions,
+        aliasName: 'regions__id__sales_personnel_regions__region_id',
+      );
+
+  $$SalesPersonnelRegionsTableProcessedTableManager
+  get salesPersonnelRegionsRefs {
+    final manager = $$SalesPersonnelRegionsTableTableManager(
+      $_db,
+      $_db.salesPersonnelRegions,
+    ).filter((f) => f.regionId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _salesPersonnelRegionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$VetDoctorsRegionsTable, List<VetDoctorsRegion>>
+  _vetDoctorsRegionsRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.vetDoctorsRegions,
+        aliasName: 'regions__id__vet_doctors_regions__region_id',
+      );
+
+  $$VetDoctorsRegionsTableProcessedTableManager get vetDoctorsRegionsRefs {
+    final manager = $$VetDoctorsRegionsTableTableManager(
+      $_db,
+      $_db.vetDoctorsRegions,
+    ).filter((f) => f.regionId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _vetDoctorsRegionsRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -16513,6 +20871,57 @@ class $$RegionsTableFilterComposer
           }) => $$AreasTableFilterComposer(
             $db: $db,
             $table: $db.areas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> salesPersonnelRegionsRefs(
+    Expression<bool> Function($$SalesPersonnelRegionsTableFilterComposer f) f,
+  ) {
+    final $$SalesPersonnelRegionsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salesPersonnelRegions,
+          getReferencedColumn: (t) => t.regionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalesPersonnelRegionsTableFilterComposer(
+                $db: $db,
+                $table: $db.salesPersonnelRegions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> vetDoctorsRegionsRefs(
+    Expression<bool> Function($$VetDoctorsRegionsTableFilterComposer f) f,
+  ) {
+    final $$VetDoctorsRegionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.vetDoctorsRegions,
+      getReferencedColumn: (t) => t.regionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsRegionsTableFilterComposer(
+            $db: $db,
+            $table: $db.vetDoctorsRegions,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -16590,6 +20999,58 @@ class $$RegionsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> salesPersonnelRegionsRefs<T extends Object>(
+    Expression<T> Function($$SalesPersonnelRegionsTableAnnotationComposer a) f,
+  ) {
+    final $$SalesPersonnelRegionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salesPersonnelRegions,
+          getReferencedColumn: (t) => t.regionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalesPersonnelRegionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.salesPersonnelRegions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> vetDoctorsRegionsRefs<T extends Object>(
+    Expression<T> Function($$VetDoctorsRegionsTableAnnotationComposer a) f,
+  ) {
+    final $$VetDoctorsRegionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.vetDoctorsRegions,
+          getReferencedColumn: (t) => t.regionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$VetDoctorsRegionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.vetDoctorsRegions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$RegionsTableTableManager
@@ -16605,7 +21066,11 @@ class $$RegionsTableTableManager
           $$RegionsTableUpdateCompanionBuilder,
           (RegionEntity, $$RegionsTableReferences),
           RegionEntity,
-          PrefetchHooks Function({bool areasRefs})
+          PrefetchHooks Function({
+            bool areasRefs,
+            bool salesPersonnelRegionsRefs,
+            bool vetDoctorsRegionsRefs,
+          })
         > {
   $$RegionsTableTableManager(_$DistributorsDb db, $RegionsTable table)
     : super(
@@ -16642,33 +21107,85 @@ class $$RegionsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({areasRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (areasRefs) db.areas],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (areasRefs)
-                    await $_getPrefetchedData<
-                      RegionEntity,
-                      $RegionsTable,
-                      AreaEntity
-                    >(
-                      currentTable: table,
-                      referencedTable: $$RegionsTableReferences._areasRefsTable(
-                        db,
-                      ),
-                      managerFromTypedResult: (p0) =>
-                          $$RegionsTableReferences(db, table, p0).areasRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.regionId == item.id),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({
+                areasRefs = false,
+                salesPersonnelRegionsRefs = false,
+                vetDoctorsRegionsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (areasRefs) db.areas,
+                    if (salesPersonnelRegionsRefs) db.salesPersonnelRegions,
+                    if (vetDoctorsRegionsRefs) db.vetDoctorsRegions,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (areasRefs)
+                        await $_getPrefetchedData<
+                          RegionEntity,
+                          $RegionsTable,
+                          AreaEntity
+                        >(
+                          currentTable: table,
+                          referencedTable: $$RegionsTableReferences
+                              ._areasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$RegionsTableReferences(db, table, p0).areasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.regionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (salesPersonnelRegionsRefs)
+                        await $_getPrefetchedData<
+                          RegionEntity,
+                          $RegionsTable,
+                          SalesPersonnelRegion
+                        >(
+                          currentTable: table,
+                          referencedTable: $$RegionsTableReferences
+                              ._salesPersonnelRegionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$RegionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salesPersonnelRegionsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.regionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (vetDoctorsRegionsRefs)
+                        await $_getPrefetchedData<
+                          RegionEntity,
+                          $RegionsTable,
+                          VetDoctorsRegion
+                        >(
+                          currentTable: table,
+                          referencedTable: $$RegionsTableReferences
+                              ._vetDoctorsRegionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$RegionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).vetDoctorsRegionsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.regionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -16685,7 +21202,11 @@ typedef $$RegionsTableProcessedTableManager =
       $$RegionsTableUpdateCompanionBuilder,
       (RegionEntity, $$RegionsTableReferences),
       RegionEntity,
-      PrefetchHooks Function({bool areasRefs})
+      PrefetchHooks Function({
+        bool areasRefs,
+        bool salesPersonnelRegionsRefs,
+        bool vetDoctorsRegionsRefs,
+      })
     >;
 typedef $$AreasTableCreateCompanionBuilder =
     AreasCompanion Function({
@@ -16720,6 +21241,25 @@ final class $$AreasTableReferences
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$BasesTable, List<BaseEntity>> _basesRefsTable(
+    _$DistributorsDb db,
+  ) => MultiTypedResultKey.fromTable(
+    db.bases,
+    aliasName: 'areas__id__bases__area_id',
+  );
+
+  $$BasesTableProcessedTableManager get basesRefs {
+    final manager = $$BasesTableTableManager(
+      $_db,
+      $_db.bases,
+    ).filter((f) => f.areaId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_basesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
     );
   }
 
@@ -16832,6 +21372,31 @@ class $$AreasTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> basesRefs(
+    Expression<bool> Function($$BasesTableFilterComposer f) f,
+  ) {
+    final $$BasesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.areaId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableFilterComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 
   Expression<bool> distributorsRefs(
@@ -16999,6 +21564,31 @@ class $$AreasTableAnnotationComposer
     return composer;
   }
 
+  Expression<T> basesRefs<T extends Object>(
+    Expression<T> Function($$BasesTableAnnotationComposer a) f,
+  ) {
+    final $$BasesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.areaId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> distributorsRefs<T extends Object>(
     Expression<T> Function($$DistributorsTableAnnotationComposer a) f,
   ) {
@@ -17091,6 +21681,7 @@ class $$AreasTableTableManager
           AreaEntity,
           PrefetchHooks Function({
             bool regionId,
+            bool basesRefs,
             bool distributorsRefs,
             bool salesPersonnelAreasRefs,
             bool vetDoctorsAreasRefs,
@@ -17140,6 +21731,7 @@ class $$AreasTableTableManager
           prefetchHooksCallback:
               ({
                 regionId = false,
+                basesRefs = false,
                 distributorsRefs = false,
                 salesPersonnelAreasRefs = false,
                 vetDoctorsAreasRefs = false,
@@ -17147,6 +21739,7 @@ class $$AreasTableTableManager
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
+                    if (basesRefs) db.bases,
                     if (distributorsRefs) db.distributors,
                     if (salesPersonnelAreasRefs) db.salesPersonnelAreas,
                     if (vetDoctorsAreasRefs) db.vetDoctorsAreas,
@@ -17185,6 +21778,23 @@ class $$AreasTableTableManager
                       },
                   getPrefetchedDataCallback: (items) async {
                     return [
+                      if (basesRefs)
+                        await $_getPrefetchedData<
+                          AreaEntity,
+                          $AreasTable,
+                          BaseEntity
+                        >(
+                          currentTable: table,
+                          referencedTable: $$AreasTableReferences
+                              ._basesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$AreasTableReferences(db, table, p0).basesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.areaId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                       if (distributorsRefs)
                         await $_getPrefetchedData<
                           AreaEntity,
@@ -17270,10 +21880,1043 @@ typedef $$AreasTableProcessedTableManager =
       AreaEntity,
       PrefetchHooks Function({
         bool regionId,
+        bool basesRefs,
         bool distributorsRefs,
         bool salesPersonnelAreasRefs,
         bool vetDoctorsAreasRefs,
       })
+    >;
+typedef $$BasesTableCreateCompanionBuilder =
+    BasesCompanion Function({
+      Value<int> id,
+      required int areaId,
+      required String nameEn,
+      required String nameBn,
+    });
+typedef $$BasesTableUpdateCompanionBuilder =
+    BasesCompanion Function({
+      Value<int> id,
+      Value<int> areaId,
+      Value<String> nameEn,
+      Value<String> nameBn,
+    });
+
+final class $$BasesTableReferences
+    extends BaseReferences<_$DistributorsDb, $BasesTable, BaseEntity> {
+  $$BasesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $AreasTable _areaIdTable(_$DistributorsDb db) =>
+      db.areas.createAlias('bases__area_id__areas__id');
+
+  $$AreasTableProcessedTableManager get areaId {
+    final $_column = $_itemColumn<int>('area_id')!;
+
+    final manager = $$AreasTableTableManager(
+      $_db,
+      $_db.areas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_areaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$BaseUpazilasTable, List<BaseUpazilaEntity>>
+  _baseUpazilasRefsTable(_$DistributorsDb db) => MultiTypedResultKey.fromTable(
+    db.baseUpazilas,
+    aliasName: 'bases__id__base_upazilas__base_id',
+  );
+
+  $$BaseUpazilasTableProcessedTableManager get baseUpazilasRefs {
+    final manager = $$BaseUpazilasTableTableManager(
+      $_db,
+      $_db.baseUpazilas,
+    ).filter((f) => f.baseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_baseUpazilasRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$DistributorsTable, List<DistributorEntity>>
+  _distributorsRefsTable(_$DistributorsDb db) => MultiTypedResultKey.fromTable(
+    db.distributors,
+    aliasName: 'bases__id__distributors__base_id',
+  );
+
+  $$DistributorsTableProcessedTableManager get distributorsRefs {
+    final manager = $$DistributorsTableTableManager(
+      $_db,
+      $_db.distributors,
+    ).filter((f) => f.baseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_distributorsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $SalesPersonnelBasesTable,
+    List<SalesPersonnelBase>
+  >
+  _salesPersonnelBasesRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.salesPersonnelBases,
+        aliasName: 'bases__id__sales_personnel_bases__base_id',
+      );
+
+  $$SalesPersonnelBasesTableProcessedTableManager get salesPersonnelBasesRefs {
+    final manager = $$SalesPersonnelBasesTableTableManager(
+      $_db,
+      $_db.salesPersonnelBases,
+    ).filter((f) => f.baseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _salesPersonnelBasesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$VetDoctorsBasesTable, List<VetDoctorsBase>>
+  _vetDoctorsBasesRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.vetDoctorsBases,
+        aliasName: 'bases__id__vet_doctors_bases__base_id',
+      );
+
+  $$VetDoctorsBasesTableProcessedTableManager get vetDoctorsBasesRefs {
+    final manager = $$VetDoctorsBasesTableTableManager(
+      $_db,
+      $_db.vetDoctorsBases,
+    ).filter((f) => f.baseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _vetDoctorsBasesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$BasesTableFilterComposer
+    extends Composer<_$DistributorsDb, $BasesTable> {
+  $$BasesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nameEn => $composableBuilder(
+    column: $table.nameEn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nameBn => $composableBuilder(
+    column: $table.nameBn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$AreasTableFilterComposer get areaId {
+    final $$AreasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.areaId,
+      referencedTable: $db.areas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AreasTableFilterComposer(
+            $db: $db,
+            $table: $db.areas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> baseUpazilasRefs(
+    Expression<bool> Function($$BaseUpazilasTableFilterComposer f) f,
+  ) {
+    final $$BaseUpazilasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.baseUpazilas,
+      getReferencedColumn: (t) => t.baseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BaseUpazilasTableFilterComposer(
+            $db: $db,
+            $table: $db.baseUpazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> distributorsRefs(
+    Expression<bool> Function($$DistributorsTableFilterComposer f) f,
+  ) {
+    final $$DistributorsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.distributors,
+      getReferencedColumn: (t) => t.baseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DistributorsTableFilterComposer(
+            $db: $db,
+            $table: $db.distributors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> salesPersonnelBasesRefs(
+    Expression<bool> Function($$SalesPersonnelBasesTableFilterComposer f) f,
+  ) {
+    final $$SalesPersonnelBasesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.salesPersonnelBases,
+      getReferencedColumn: (t) => t.baseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelBasesTableFilterComposer(
+            $db: $db,
+            $table: $db.salesPersonnelBases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> vetDoctorsBasesRefs(
+    Expression<bool> Function($$VetDoctorsBasesTableFilterComposer f) f,
+  ) {
+    final $$VetDoctorsBasesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.vetDoctorsBases,
+      getReferencedColumn: (t) => t.baseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsBasesTableFilterComposer(
+            $db: $db,
+            $table: $db.vetDoctorsBases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$BasesTableOrderingComposer
+    extends Composer<_$DistributorsDb, $BasesTable> {
+  $$BasesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nameEn => $composableBuilder(
+    column: $table.nameEn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nameBn => $composableBuilder(
+    column: $table.nameBn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$AreasTableOrderingComposer get areaId {
+    final $$AreasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.areaId,
+      referencedTable: $db.areas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AreasTableOrderingComposer(
+            $db: $db,
+            $table: $db.areas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BasesTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $BasesTable> {
+  $$BasesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get nameEn =>
+      $composableBuilder(column: $table.nameEn, builder: (column) => column);
+
+  GeneratedColumn<String> get nameBn =>
+      $composableBuilder(column: $table.nameBn, builder: (column) => column);
+
+  $$AreasTableAnnotationComposer get areaId {
+    final $$AreasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.areaId,
+      referencedTable: $db.areas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AreasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.areas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> baseUpazilasRefs<T extends Object>(
+    Expression<T> Function($$BaseUpazilasTableAnnotationComposer a) f,
+  ) {
+    final $$BaseUpazilasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.baseUpazilas,
+      getReferencedColumn: (t) => t.baseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BaseUpazilasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.baseUpazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> distributorsRefs<T extends Object>(
+    Expression<T> Function($$DistributorsTableAnnotationComposer a) f,
+  ) {
+    final $$DistributorsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.distributors,
+      getReferencedColumn: (t) => t.baseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DistributorsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.distributors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> salesPersonnelBasesRefs<T extends Object>(
+    Expression<T> Function($$SalesPersonnelBasesTableAnnotationComposer a) f,
+  ) {
+    final $$SalesPersonnelBasesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salesPersonnelBases,
+          getReferencedColumn: (t) => t.baseId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalesPersonnelBasesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.salesPersonnelBases,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> vetDoctorsBasesRefs<T extends Object>(
+    Expression<T> Function($$VetDoctorsBasesTableAnnotationComposer a) f,
+  ) {
+    final $$VetDoctorsBasesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.vetDoctorsBases,
+      getReferencedColumn: (t) => t.baseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsBasesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.vetDoctorsBases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$BasesTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $BasesTable,
+          BaseEntity,
+          $$BasesTableFilterComposer,
+          $$BasesTableOrderingComposer,
+          $$BasesTableAnnotationComposer,
+          $$BasesTableCreateCompanionBuilder,
+          $$BasesTableUpdateCompanionBuilder,
+          (BaseEntity, $$BasesTableReferences),
+          BaseEntity,
+          PrefetchHooks Function({
+            bool areaId,
+            bool baseUpazilasRefs,
+            bool distributorsRefs,
+            bool salesPersonnelBasesRefs,
+            bool vetDoctorsBasesRefs,
+          })
+        > {
+  $$BasesTableTableManager(_$DistributorsDb db, $BasesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BasesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BasesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BasesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> areaId = const Value.absent(),
+                Value<String> nameEn = const Value.absent(),
+                Value<String> nameBn = const Value.absent(),
+              }) => BasesCompanion(
+                id: id,
+                areaId: areaId,
+                nameEn: nameEn,
+                nameBn: nameBn,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int areaId,
+                required String nameEn,
+                required String nameBn,
+              }) => BasesCompanion.insert(
+                id: id,
+                areaId: areaId,
+                nameEn: nameEn,
+                nameBn: nameBn,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) =>
+                    (e.readTable(table), $$BasesTableReferences(db, table, e)),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                areaId = false,
+                baseUpazilasRefs = false,
+                distributorsRefs = false,
+                salesPersonnelBasesRefs = false,
+                vetDoctorsBasesRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (baseUpazilasRefs) db.baseUpazilas,
+                    if (distributorsRefs) db.distributors,
+                    if (salesPersonnelBasesRefs) db.salesPersonnelBases,
+                    if (vetDoctorsBasesRefs) db.vetDoctorsBases,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (areaId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.areaId,
+                                    referencedTable: $$BasesTableReferences
+                                        ._areaIdTable(db),
+                                    referencedColumn: $$BasesTableReferences
+                                        ._areaIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (baseUpazilasRefs)
+                        await $_getPrefetchedData<
+                          BaseEntity,
+                          $BasesTable,
+                          BaseUpazilaEntity
+                        >(
+                          currentTable: table,
+                          referencedTable: $$BasesTableReferences
+                              ._baseUpazilasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$BasesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).baseUpazilasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.baseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (distributorsRefs)
+                        await $_getPrefetchedData<
+                          BaseEntity,
+                          $BasesTable,
+                          DistributorEntity
+                        >(
+                          currentTable: table,
+                          referencedTable: $$BasesTableReferences
+                              ._distributorsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$BasesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).distributorsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.baseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (salesPersonnelBasesRefs)
+                        await $_getPrefetchedData<
+                          BaseEntity,
+                          $BasesTable,
+                          SalesPersonnelBase
+                        >(
+                          currentTable: table,
+                          referencedTable: $$BasesTableReferences
+                              ._salesPersonnelBasesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$BasesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salesPersonnelBasesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.baseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (vetDoctorsBasesRefs)
+                        await $_getPrefetchedData<
+                          BaseEntity,
+                          $BasesTable,
+                          VetDoctorsBase
+                        >(
+                          currentTable: table,
+                          referencedTable: $$BasesTableReferences
+                              ._vetDoctorsBasesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$BasesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).vetDoctorsBasesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.baseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$BasesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $BasesTable,
+      BaseEntity,
+      $$BasesTableFilterComposer,
+      $$BasesTableOrderingComposer,
+      $$BasesTableAnnotationComposer,
+      $$BasesTableCreateCompanionBuilder,
+      $$BasesTableUpdateCompanionBuilder,
+      (BaseEntity, $$BasesTableReferences),
+      BaseEntity,
+      PrefetchHooks Function({
+        bool areaId,
+        bool baseUpazilasRefs,
+        bool distributorsRefs,
+        bool salesPersonnelBasesRefs,
+        bool vetDoctorsBasesRefs,
+      })
+    >;
+typedef $$BaseUpazilasTableCreateCompanionBuilder =
+    BaseUpazilasCompanion Function({
+      required int baseId,
+      required int upazilaId,
+      Value<int> rowid,
+    });
+typedef $$BaseUpazilasTableUpdateCompanionBuilder =
+    BaseUpazilasCompanion Function({
+      Value<int> baseId,
+      Value<int> upazilaId,
+      Value<int> rowid,
+    });
+
+final class $$BaseUpazilasTableReferences
+    extends
+        BaseReferences<
+          _$DistributorsDb,
+          $BaseUpazilasTable,
+          BaseUpazilaEntity
+        > {
+  $$BaseUpazilasTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $BasesTable _baseIdTable(_$DistributorsDb db) =>
+      db.bases.createAlias('base_upazilas__base_id__bases__id');
+
+  $$BasesTableProcessedTableManager get baseId {
+    final $_column = $_itemColumn<int>('base_id')!;
+
+    final manager = $$BasesTableTableManager(
+      $_db,
+      $_db.bases,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_baseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $UpazilasTable _upazilaIdTable(_$DistributorsDb db) =>
+      db.upazilas.createAlias('base_upazilas__upazila_id__upazilas__id');
+
+  $$UpazilasTableProcessedTableManager get upazilaId {
+    final $_column = $_itemColumn<int>('upazila_id')!;
+
+    final manager = $$UpazilasTableTableManager(
+      $_db,
+      $_db.upazilas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_upazilaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$BaseUpazilasTableFilterComposer
+    extends Composer<_$DistributorsDb, $BaseUpazilasTable> {
+  $$BaseUpazilasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$BasesTableFilterComposer get baseId {
+    final $$BasesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableFilterComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UpazilasTableFilterComposer get upazilaId {
+    final $$UpazilasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableFilterComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BaseUpazilasTableOrderingComposer
+    extends Composer<_$DistributorsDb, $BaseUpazilasTable> {
+  $$BaseUpazilasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$BasesTableOrderingComposer get baseId {
+    final $$BasesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableOrderingComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UpazilasTableOrderingComposer get upazilaId {
+    final $$UpazilasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableOrderingComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BaseUpazilasTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $BaseUpazilasTable> {
+  $$BaseUpazilasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$BasesTableAnnotationComposer get baseId {
+    final $$BasesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UpazilasTableAnnotationComposer get upazilaId {
+    final $$UpazilasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BaseUpazilasTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $BaseUpazilasTable,
+          BaseUpazilaEntity,
+          $$BaseUpazilasTableFilterComposer,
+          $$BaseUpazilasTableOrderingComposer,
+          $$BaseUpazilasTableAnnotationComposer,
+          $$BaseUpazilasTableCreateCompanionBuilder,
+          $$BaseUpazilasTableUpdateCompanionBuilder,
+          (BaseUpazilaEntity, $$BaseUpazilasTableReferences),
+          BaseUpazilaEntity,
+          PrefetchHooks Function({bool baseId, bool upazilaId})
+        > {
+  $$BaseUpazilasTableTableManager(_$DistributorsDb db, $BaseUpazilasTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BaseUpazilasTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BaseUpazilasTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BaseUpazilasTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> baseId = const Value.absent(),
+                Value<int> upazilaId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BaseUpazilasCompanion(
+                baseId: baseId,
+                upazilaId: upazilaId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int baseId,
+                required int upazilaId,
+                Value<int> rowid = const Value.absent(),
+              }) => BaseUpazilasCompanion.insert(
+                baseId: baseId,
+                upazilaId: upazilaId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$BaseUpazilasTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({baseId = false, upazilaId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (baseId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.baseId,
+                                referencedTable: $$BaseUpazilasTableReferences
+                                    ._baseIdTable(db),
+                                referencedColumn: $$BaseUpazilasTableReferences
+                                    ._baseIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+                    if (upazilaId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.upazilaId,
+                                referencedTable: $$BaseUpazilasTableReferences
+                                    ._upazilaIdTable(db),
+                                referencedColumn: $$BaseUpazilasTableReferences
+                                    ._upazilaIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$BaseUpazilasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $BaseUpazilasTable,
+      BaseUpazilaEntity,
+      $$BaseUpazilasTableFilterComposer,
+      $$BaseUpazilasTableOrderingComposer,
+      $$BaseUpazilasTableAnnotationComposer,
+      $$BaseUpazilasTableCreateCompanionBuilder,
+      $$BaseUpazilasTableUpdateCompanionBuilder,
+      (BaseUpazilaEntity, $$BaseUpazilasTableReferences),
+      BaseUpazilaEntity,
+      PrefetchHooks Function({bool baseId, bool upazilaId})
     >;
 typedef $$DistributorsTableCreateCompanionBuilder =
     DistributorsCompanion Function({
@@ -17283,7 +22926,9 @@ typedef $$DistributorsTableCreateCompanionBuilder =
       Value<String?> designation,
       Value<String?> addressEn,
       Value<String?> addressBn,
-      required int areaId,
+      Value<int?> upazilaId,
+      Value<int?> baseId,
+      Value<int?> areaId,
       required String mobile,
       Value<int> isActive,
       Value<String> createdAt,
@@ -17297,7 +22942,9 @@ typedef $$DistributorsTableUpdateCompanionBuilder =
       Value<String?> designation,
       Value<String?> addressEn,
       Value<String?> addressBn,
-      Value<int> areaId,
+      Value<int?> upazilaId,
+      Value<int?> baseId,
+      Value<int?> areaId,
       Value<String> mobile,
       Value<int> isActive,
       Value<String> createdAt,
@@ -17313,12 +22960,46 @@ final class $$DistributorsTableReferences
         > {
   $$DistributorsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
+  static $UpazilasTable _upazilaIdTable(_$DistributorsDb db) =>
+      db.upazilas.createAlias('distributors__upazila_id__upazilas__id');
+
+  $$UpazilasTableProcessedTableManager? get upazilaId {
+    final $_column = $_itemColumn<int>('upazila_id');
+    if ($_column == null) return null;
+    final manager = $$UpazilasTableTableManager(
+      $_db,
+      $_db.upazilas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_upazilaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $BasesTable _baseIdTable(_$DistributorsDb db) =>
+      db.bases.createAlias('distributors__base_id__bases__id');
+
+  $$BasesTableProcessedTableManager? get baseId {
+    final $_column = $_itemColumn<int>('base_id');
+    if ($_column == null) return null;
+    final manager = $$BasesTableTableManager(
+      $_db,
+      $_db.bases,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_baseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
   static $AreasTable _areaIdTable(_$DistributorsDb db) =>
       db.areas.createAlias('distributors__area_id__areas__id');
 
-  $$AreasTableProcessedTableManager get areaId {
-    final $_column = $_itemColumn<int>('area_id')!;
-
+  $$AreasTableProcessedTableManager? get areaId {
+    final $_column = $_itemColumn<int>('area_id');
+    if ($_column == null) return null;
     final manager = $$AreasTableTableManager(
       $_db,
       $_db.areas,
@@ -17389,6 +23070,52 @@ class $$DistributorsTableFilterComposer
     column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$UpazilasTableFilterComposer get upazilaId {
+    final $$UpazilasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableFilterComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BasesTableFilterComposer get baseId {
+    final $$BasesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableFilterComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
   $$AreasTableFilterComposer get areaId {
     final $$AreasTableFilterComposer composer = $composerBuilder(
@@ -17473,6 +23200,52 @@ class $$DistributorsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  $$UpazilasTableOrderingComposer get upazilaId {
+    final $$UpazilasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableOrderingComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BasesTableOrderingComposer get baseId {
+    final $$BasesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableOrderingComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   $$AreasTableOrderingComposer get areaId {
     final $$AreasTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -17538,6 +23311,52 @@ class $$DistributorsTableAnnotationComposer
   GeneratedColumn<String> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
+  $$UpazilasTableAnnotationComposer get upazilaId {
+    final $$UpazilasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BasesTableAnnotationComposer get baseId {
+    final $$BasesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   $$AreasTableAnnotationComposer get areaId {
     final $$AreasTableAnnotationComposer composer = $composerBuilder(
       composer: this,
@@ -17575,7 +23394,7 @@ class $$DistributorsTableTableManager
           $$DistributorsTableUpdateCompanionBuilder,
           (DistributorEntity, $$DistributorsTableReferences),
           DistributorEntity,
-          PrefetchHooks Function({bool areaId})
+          PrefetchHooks Function({bool upazilaId, bool baseId, bool areaId})
         > {
   $$DistributorsTableTableManager(_$DistributorsDb db, $DistributorsTable table)
     : super(
@@ -17596,7 +23415,9 @@ class $$DistributorsTableTableManager
                 Value<String?> designation = const Value.absent(),
                 Value<String?> addressEn = const Value.absent(),
                 Value<String?> addressBn = const Value.absent(),
-                Value<int> areaId = const Value.absent(),
+                Value<int?> upazilaId = const Value.absent(),
+                Value<int?> baseId = const Value.absent(),
+                Value<int?> areaId = const Value.absent(),
                 Value<String> mobile = const Value.absent(),
                 Value<int> isActive = const Value.absent(),
                 Value<String> createdAt = const Value.absent(),
@@ -17608,6 +23429,8 @@ class $$DistributorsTableTableManager
                 designation: designation,
                 addressEn: addressEn,
                 addressBn: addressBn,
+                upazilaId: upazilaId,
+                baseId: baseId,
                 areaId: areaId,
                 mobile: mobile,
                 isActive: isActive,
@@ -17622,7 +23445,9 @@ class $$DistributorsTableTableManager
                 Value<String?> designation = const Value.absent(),
                 Value<String?> addressEn = const Value.absent(),
                 Value<String?> addressBn = const Value.absent(),
-                required int areaId,
+                Value<int?> upazilaId = const Value.absent(),
+                Value<int?> baseId = const Value.absent(),
+                Value<int?> areaId = const Value.absent(),
                 required String mobile,
                 Value<int> isActive = const Value.absent(),
                 Value<String> createdAt = const Value.absent(),
@@ -17634,6 +23459,8 @@ class $$DistributorsTableTableManager
                 designation: designation,
                 addressEn: addressEn,
                 addressBn: addressBn,
+                upazilaId: upazilaId,
+                baseId: baseId,
                 areaId: areaId,
                 mobile: mobile,
                 isActive: isActive,
@@ -17648,47 +23475,80 @@ class $$DistributorsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({areaId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (areaId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.areaId,
-                                referencedTable: $$DistributorsTableReferences
-                                    ._areaIdTable(db),
-                                referencedColumn: $$DistributorsTableReferences
-                                    ._areaIdTable(db)
-                                    .id,
-                              )
-                              as T;
-                    }
+          prefetchHooksCallback:
+              ({upazilaId = false, baseId = false, areaId = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (upazilaId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.upazilaId,
+                                    referencedTable:
+                                        $$DistributorsTableReferences
+                                            ._upazilaIdTable(db),
+                                    referencedColumn:
+                                        $$DistributorsTableReferences
+                                            ._upazilaIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (baseId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.baseId,
+                                    referencedTable:
+                                        $$DistributorsTableReferences
+                                            ._baseIdTable(db),
+                                    referencedColumn:
+                                        $$DistributorsTableReferences
+                                            ._baseIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (areaId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.areaId,
+                                    referencedTable:
+                                        $$DistributorsTableReferences
+                                            ._areaIdTable(db),
+                                    referencedColumn:
+                                        $$DistributorsTableReferences
+                                            ._areaIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
 
-                    return state;
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
                   },
-              getPrefetchedDataCallback: (items) async {
-                return [];
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -17705,7 +23565,7 @@ typedef $$DistributorsTableProcessedTableManager =
       $$DistributorsTableUpdateCompanionBuilder,
       (DistributorEntity, $$DistributorsTableReferences),
       DistributorEntity,
-      PrefetchHooks Function({bool areaId})
+      PrefetchHooks Function({bool upazilaId, bool baseId, bool areaId})
     >;
 typedef $$SalesPersonnelTableCreateCompanionBuilder =
     SalesPersonnelCompanion Function({
@@ -17750,6 +23610,32 @@ final class $$SalesPersonnelTableReferences
   );
 
   static MultiTypedResultKey<
+    $SalesPersonnelRegionsTable,
+    List<SalesPersonnelRegion>
+  >
+  _salesPersonnelRegionsRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.salesPersonnelRegions,
+        aliasName:
+            'sales_personnel__id__sales_personnel_regions__sales_personnel_id',
+      );
+
+  $$SalesPersonnelRegionsTableProcessedTableManager
+  get salesPersonnelRegionsRefs {
+    final manager = $$SalesPersonnelRegionsTableTableManager(
+      $_db,
+      $_db.salesPersonnelRegions,
+    ).filter((f) => f.salesPersonnelId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _salesPersonnelRegionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
     $SalesPersonnelAreasTable,
     List<SalesPersonnelArea>
   >
@@ -17768,6 +23654,57 @@ final class $$SalesPersonnelTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _salesPersonnelAreasRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $SalesPersonnelBasesTable,
+    List<SalesPersonnelBase>
+  >
+  _salesPersonnelBasesRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.salesPersonnelBases,
+        aliasName:
+            'sales_personnel__id__sales_personnel_bases__sales_personnel_id',
+      );
+
+  $$SalesPersonnelBasesTableProcessedTableManager get salesPersonnelBasesRefs {
+    final manager = $$SalesPersonnelBasesTableTableManager(
+      $_db,
+      $_db.salesPersonnelBases,
+    ).filter((f) => f.salesPersonnelId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _salesPersonnelBasesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $SalesPersonnelUpazilasTable,
+    List<SalesPersonnelUpazila>
+  >
+  _salesPersonnelUpazilasRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.salesPersonnelUpazilas,
+        aliasName:
+            'sales_personnel__id__sales_personnel_upazilas__sales_personnel_id',
+      );
+
+  $$SalesPersonnelUpazilasTableProcessedTableManager
+  get salesPersonnelUpazilasRefs {
+    final manager = $$SalesPersonnelUpazilasTableTableManager(
+      $_db,
+      $_db.salesPersonnelUpazilas,
+    ).filter((f) => f.salesPersonnelId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _salesPersonnelUpazilasRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -17839,6 +23776,32 @@ class $$SalesPersonnelTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  Expression<bool> salesPersonnelRegionsRefs(
+    Expression<bool> Function($$SalesPersonnelRegionsTableFilterComposer f) f,
+  ) {
+    final $$SalesPersonnelRegionsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salesPersonnelRegions,
+          getReferencedColumn: (t) => t.salesPersonnelId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalesPersonnelRegionsTableFilterComposer(
+                $db: $db,
+                $table: $db.salesPersonnelRegions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
   Expression<bool> salesPersonnelAreasRefs(
     Expression<bool> Function($$SalesPersonnelAreasTableFilterComposer f) f,
   ) {
@@ -17861,6 +23824,57 @@ class $$SalesPersonnelTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> salesPersonnelBasesRefs(
+    Expression<bool> Function($$SalesPersonnelBasesTableFilterComposer f) f,
+  ) {
+    final $$SalesPersonnelBasesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.salesPersonnelBases,
+      getReferencedColumn: (t) => t.salesPersonnelId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelBasesTableFilterComposer(
+            $db: $db,
+            $table: $db.salesPersonnelBases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> salesPersonnelUpazilasRefs(
+    Expression<bool> Function($$SalesPersonnelUpazilasTableFilterComposer f) f,
+  ) {
+    final $$SalesPersonnelUpazilasTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salesPersonnelUpazilas,
+          getReferencedColumn: (t) => t.salesPersonnelId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalesPersonnelUpazilasTableFilterComposer(
+                $db: $db,
+                $table: $db.salesPersonnelUpazilas,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -17976,6 +23990,32 @@ class $$SalesPersonnelTableAnnotationComposer
   GeneratedColumn<String> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
+  Expression<T> salesPersonnelRegionsRefs<T extends Object>(
+    Expression<T> Function($$SalesPersonnelRegionsTableAnnotationComposer a) f,
+  ) {
+    final $$SalesPersonnelRegionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salesPersonnelRegions,
+          getReferencedColumn: (t) => t.salesPersonnelId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalesPersonnelRegionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.salesPersonnelRegions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
   Expression<T> salesPersonnelAreasRefs<T extends Object>(
     Expression<T> Function($$SalesPersonnelAreasTableAnnotationComposer a) f,
   ) {
@@ -18001,6 +24041,58 @@ class $$SalesPersonnelTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> salesPersonnelBasesRefs<T extends Object>(
+    Expression<T> Function($$SalesPersonnelBasesTableAnnotationComposer a) f,
+  ) {
+    final $$SalesPersonnelBasesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salesPersonnelBases,
+          getReferencedColumn: (t) => t.salesPersonnelId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalesPersonnelBasesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.salesPersonnelBases,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> salesPersonnelUpazilasRefs<T extends Object>(
+    Expression<T> Function($$SalesPersonnelUpazilasTableAnnotationComposer a) f,
+  ) {
+    final $$SalesPersonnelUpazilasTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salesPersonnelUpazilas,
+          getReferencedColumn: (t) => t.salesPersonnelId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalesPersonnelUpazilasTableAnnotationComposer(
+                $db: $db,
+                $table: $db.salesPersonnelUpazilas,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$SalesPersonnelTableTableManager
@@ -18016,7 +24108,12 @@ class $$SalesPersonnelTableTableManager
           $$SalesPersonnelTableUpdateCompanionBuilder,
           (SalesPersonnelEntity, $$SalesPersonnelTableReferences),
           SalesPersonnelEntity,
-          PrefetchHooks Function({bool salesPersonnelAreasRefs})
+          PrefetchHooks Function({
+            bool salesPersonnelRegionsRefs,
+            bool salesPersonnelAreasRefs,
+            bool salesPersonnelBasesRefs,
+            bool salesPersonnelUpazilasRefs,
+          })
         > {
   $$SalesPersonnelTableTableManager(
     _$DistributorsDb db,
@@ -18091,40 +24188,112 @@ class $$SalesPersonnelTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({salesPersonnelAreasRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (salesPersonnelAreasRefs) db.salesPersonnelAreas,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (salesPersonnelAreasRefs)
-                    await $_getPrefetchedData<
-                      SalesPersonnelEntity,
-                      $SalesPersonnelTable,
-                      SalesPersonnelArea
-                    >(
-                      currentTable: table,
-                      referencedTable: $$SalesPersonnelTableReferences
-                          ._salesPersonnelAreasRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$SalesPersonnelTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).salesPersonnelAreasRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.salesPersonnelId == item.id,
-                          ),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({
+                salesPersonnelRegionsRefs = false,
+                salesPersonnelAreasRefs = false,
+                salesPersonnelBasesRefs = false,
+                salesPersonnelUpazilasRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (salesPersonnelRegionsRefs) db.salesPersonnelRegions,
+                    if (salesPersonnelAreasRefs) db.salesPersonnelAreas,
+                    if (salesPersonnelBasesRefs) db.salesPersonnelBases,
+                    if (salesPersonnelUpazilasRefs) db.salesPersonnelUpazilas,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (salesPersonnelRegionsRefs)
+                        await $_getPrefetchedData<
+                          SalesPersonnelEntity,
+                          $SalesPersonnelTable,
+                          SalesPersonnelRegion
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SalesPersonnelTableReferences
+                              ._salesPersonnelRegionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SalesPersonnelTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salesPersonnelRegionsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.salesPersonnelId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (salesPersonnelAreasRefs)
+                        await $_getPrefetchedData<
+                          SalesPersonnelEntity,
+                          $SalesPersonnelTable,
+                          SalesPersonnelArea
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SalesPersonnelTableReferences
+                              ._salesPersonnelAreasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SalesPersonnelTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salesPersonnelAreasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.salesPersonnelId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (salesPersonnelBasesRefs)
+                        await $_getPrefetchedData<
+                          SalesPersonnelEntity,
+                          $SalesPersonnelTable,
+                          SalesPersonnelBase
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SalesPersonnelTableReferences
+                              ._salesPersonnelBasesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SalesPersonnelTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salesPersonnelBasesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.salesPersonnelId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (salesPersonnelUpazilasRefs)
+                        await $_getPrefetchedData<
+                          SalesPersonnelEntity,
+                          $SalesPersonnelTable,
+                          SalesPersonnelUpazila
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SalesPersonnelTableReferences
+                              ._salesPersonnelUpazilasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SalesPersonnelTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salesPersonnelUpazilasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.salesPersonnelId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -18141,7 +24310,385 @@ typedef $$SalesPersonnelTableProcessedTableManager =
       $$SalesPersonnelTableUpdateCompanionBuilder,
       (SalesPersonnelEntity, $$SalesPersonnelTableReferences),
       SalesPersonnelEntity,
-      PrefetchHooks Function({bool salesPersonnelAreasRefs})
+      PrefetchHooks Function({
+        bool salesPersonnelRegionsRefs,
+        bool salesPersonnelAreasRefs,
+        bool salesPersonnelBasesRefs,
+        bool salesPersonnelUpazilasRefs,
+      })
+    >;
+typedef $$SalesPersonnelRegionsTableCreateCompanionBuilder =
+    SalesPersonnelRegionsCompanion Function({
+      required int salesPersonnelId,
+      required int regionId,
+      Value<int> rowid,
+    });
+typedef $$SalesPersonnelRegionsTableUpdateCompanionBuilder =
+    SalesPersonnelRegionsCompanion Function({
+      Value<int> salesPersonnelId,
+      Value<int> regionId,
+      Value<int> rowid,
+    });
+
+final class $$SalesPersonnelRegionsTableReferences
+    extends
+        BaseReferences<
+          _$DistributorsDb,
+          $SalesPersonnelRegionsTable,
+          SalesPersonnelRegion
+        > {
+  $$SalesPersonnelRegionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $SalesPersonnelTable _salesPersonnelIdTable(_$DistributorsDb db) =>
+      db.salesPersonnel.createAlias(
+        'sales_personnel_regions__sales_personnel_id__sales_personnel__id',
+      );
+
+  $$SalesPersonnelTableProcessedTableManager get salesPersonnelId {
+    final $_column = $_itemColumn<int>('sales_personnel_id')!;
+
+    final manager = $$SalesPersonnelTableTableManager(
+      $_db,
+      $_db.salesPersonnel,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_salesPersonnelIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $RegionsTable _regionIdTable(_$DistributorsDb db) =>
+      db.regions.createAlias('sales_personnel_regions__region_id__regions__id');
+
+  $$RegionsTableProcessedTableManager get regionId {
+    final $_column = $_itemColumn<int>('region_id')!;
+
+    final manager = $$RegionsTableTableManager(
+      $_db,
+      $_db.regions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_regionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SalesPersonnelRegionsTableFilterComposer
+    extends Composer<_$DistributorsDb, $SalesPersonnelRegionsTable> {
+  $$SalesPersonnelRegionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SalesPersonnelTableFilterComposer get salesPersonnelId {
+    final $$SalesPersonnelTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.salesPersonnelId,
+      referencedTable: $db.salesPersonnel,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelTableFilterComposer(
+            $db: $db,
+            $table: $db.salesPersonnel,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RegionsTableFilterComposer get regionId {
+    final $$RegionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.regionId,
+      referencedTable: $db.regions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RegionsTableFilterComposer(
+            $db: $db,
+            $table: $db.regions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalesPersonnelRegionsTableOrderingComposer
+    extends Composer<_$DistributorsDb, $SalesPersonnelRegionsTable> {
+  $$SalesPersonnelRegionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SalesPersonnelTableOrderingComposer get salesPersonnelId {
+    final $$SalesPersonnelTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.salesPersonnelId,
+      referencedTable: $db.salesPersonnel,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelTableOrderingComposer(
+            $db: $db,
+            $table: $db.salesPersonnel,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RegionsTableOrderingComposer get regionId {
+    final $$RegionsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.regionId,
+      referencedTable: $db.regions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RegionsTableOrderingComposer(
+            $db: $db,
+            $table: $db.regions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalesPersonnelRegionsTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $SalesPersonnelRegionsTable> {
+  $$SalesPersonnelRegionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SalesPersonnelTableAnnotationComposer get salesPersonnelId {
+    final $$SalesPersonnelTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.salesPersonnelId,
+      referencedTable: $db.salesPersonnel,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelTableAnnotationComposer(
+            $db: $db,
+            $table: $db.salesPersonnel,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RegionsTableAnnotationComposer get regionId {
+    final $$RegionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.regionId,
+      referencedTable: $db.regions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RegionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.regions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalesPersonnelRegionsTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $SalesPersonnelRegionsTable,
+          SalesPersonnelRegion,
+          $$SalesPersonnelRegionsTableFilterComposer,
+          $$SalesPersonnelRegionsTableOrderingComposer,
+          $$SalesPersonnelRegionsTableAnnotationComposer,
+          $$SalesPersonnelRegionsTableCreateCompanionBuilder,
+          $$SalesPersonnelRegionsTableUpdateCompanionBuilder,
+          (SalesPersonnelRegion, $$SalesPersonnelRegionsTableReferences),
+          SalesPersonnelRegion,
+          PrefetchHooks Function({bool salesPersonnelId, bool regionId})
+        > {
+  $$SalesPersonnelRegionsTableTableManager(
+    _$DistributorsDb db,
+    $SalesPersonnelRegionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SalesPersonnelRegionsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SalesPersonnelRegionsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SalesPersonnelRegionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> salesPersonnelId = const Value.absent(),
+                Value<int> regionId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SalesPersonnelRegionsCompanion(
+                salesPersonnelId: salesPersonnelId,
+                regionId: regionId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int salesPersonnelId,
+                required int regionId,
+                Value<int> rowid = const Value.absent(),
+              }) => SalesPersonnelRegionsCompanion.insert(
+                salesPersonnelId: salesPersonnelId,
+                regionId: regionId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$SalesPersonnelRegionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({salesPersonnelId = false, regionId = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (salesPersonnelId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.salesPersonnelId,
+                                    referencedTable:
+                                        $$SalesPersonnelRegionsTableReferences
+                                            ._salesPersonnelIdTable(db),
+                                    referencedColumn:
+                                        $$SalesPersonnelRegionsTableReferences
+                                            ._salesPersonnelIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (regionId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.regionId,
+                                    referencedTable:
+                                        $$SalesPersonnelRegionsTableReferences
+                                            ._regionIdTable(db),
+                                    referencedColumn:
+                                        $$SalesPersonnelRegionsTableReferences
+                                            ._regionIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$SalesPersonnelRegionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $SalesPersonnelRegionsTable,
+      SalesPersonnelRegion,
+      $$SalesPersonnelRegionsTableFilterComposer,
+      $$SalesPersonnelRegionsTableOrderingComposer,
+      $$SalesPersonnelRegionsTableAnnotationComposer,
+      $$SalesPersonnelRegionsTableCreateCompanionBuilder,
+      $$SalesPersonnelRegionsTableUpdateCompanionBuilder,
+      (SalesPersonnelRegion, $$SalesPersonnelRegionsTableReferences),
+      SalesPersonnelRegion,
+      PrefetchHooks Function({bool salesPersonnelId, bool regionId})
     >;
 typedef $$SalesPersonnelAreasTableCreateCompanionBuilder =
     SalesPersonnelAreasCompanion Function({
@@ -18512,6 +25059,748 @@ typedef $$SalesPersonnelAreasTableProcessedTableManager =
       SalesPersonnelArea,
       PrefetchHooks Function({bool salesPersonnelId, bool areaId})
     >;
+typedef $$SalesPersonnelBasesTableCreateCompanionBuilder =
+    SalesPersonnelBasesCompanion Function({
+      required int salesPersonnelId,
+      required int baseId,
+      Value<int> rowid,
+    });
+typedef $$SalesPersonnelBasesTableUpdateCompanionBuilder =
+    SalesPersonnelBasesCompanion Function({
+      Value<int> salesPersonnelId,
+      Value<int> baseId,
+      Value<int> rowid,
+    });
+
+final class $$SalesPersonnelBasesTableReferences
+    extends
+        BaseReferences<
+          _$DistributorsDb,
+          $SalesPersonnelBasesTable,
+          SalesPersonnelBase
+        > {
+  $$SalesPersonnelBasesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $SalesPersonnelTable _salesPersonnelIdTable(_$DistributorsDb db) =>
+      db.salesPersonnel.createAlias(
+        'sales_personnel_bases__sales_personnel_id__sales_personnel__id',
+      );
+
+  $$SalesPersonnelTableProcessedTableManager get salesPersonnelId {
+    final $_column = $_itemColumn<int>('sales_personnel_id')!;
+
+    final manager = $$SalesPersonnelTableTableManager(
+      $_db,
+      $_db.salesPersonnel,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_salesPersonnelIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $BasesTable _baseIdTable(_$DistributorsDb db) =>
+      db.bases.createAlias('sales_personnel_bases__base_id__bases__id');
+
+  $$BasesTableProcessedTableManager get baseId {
+    final $_column = $_itemColumn<int>('base_id')!;
+
+    final manager = $$BasesTableTableManager(
+      $_db,
+      $_db.bases,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_baseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SalesPersonnelBasesTableFilterComposer
+    extends Composer<_$DistributorsDb, $SalesPersonnelBasesTable> {
+  $$SalesPersonnelBasesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SalesPersonnelTableFilterComposer get salesPersonnelId {
+    final $$SalesPersonnelTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.salesPersonnelId,
+      referencedTable: $db.salesPersonnel,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelTableFilterComposer(
+            $db: $db,
+            $table: $db.salesPersonnel,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BasesTableFilterComposer get baseId {
+    final $$BasesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableFilterComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalesPersonnelBasesTableOrderingComposer
+    extends Composer<_$DistributorsDb, $SalesPersonnelBasesTable> {
+  $$SalesPersonnelBasesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SalesPersonnelTableOrderingComposer get salesPersonnelId {
+    final $$SalesPersonnelTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.salesPersonnelId,
+      referencedTable: $db.salesPersonnel,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelTableOrderingComposer(
+            $db: $db,
+            $table: $db.salesPersonnel,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BasesTableOrderingComposer get baseId {
+    final $$BasesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableOrderingComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalesPersonnelBasesTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $SalesPersonnelBasesTable> {
+  $$SalesPersonnelBasesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SalesPersonnelTableAnnotationComposer get salesPersonnelId {
+    final $$SalesPersonnelTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.salesPersonnelId,
+      referencedTable: $db.salesPersonnel,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelTableAnnotationComposer(
+            $db: $db,
+            $table: $db.salesPersonnel,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BasesTableAnnotationComposer get baseId {
+    final $$BasesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalesPersonnelBasesTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $SalesPersonnelBasesTable,
+          SalesPersonnelBase,
+          $$SalesPersonnelBasesTableFilterComposer,
+          $$SalesPersonnelBasesTableOrderingComposer,
+          $$SalesPersonnelBasesTableAnnotationComposer,
+          $$SalesPersonnelBasesTableCreateCompanionBuilder,
+          $$SalesPersonnelBasesTableUpdateCompanionBuilder,
+          (SalesPersonnelBase, $$SalesPersonnelBasesTableReferences),
+          SalesPersonnelBase,
+          PrefetchHooks Function({bool salesPersonnelId, bool baseId})
+        > {
+  $$SalesPersonnelBasesTableTableManager(
+    _$DistributorsDb db,
+    $SalesPersonnelBasesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SalesPersonnelBasesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SalesPersonnelBasesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SalesPersonnelBasesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> salesPersonnelId = const Value.absent(),
+                Value<int> baseId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SalesPersonnelBasesCompanion(
+                salesPersonnelId: salesPersonnelId,
+                baseId: baseId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int salesPersonnelId,
+                required int baseId,
+                Value<int> rowid = const Value.absent(),
+              }) => SalesPersonnelBasesCompanion.insert(
+                salesPersonnelId: salesPersonnelId,
+                baseId: baseId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$SalesPersonnelBasesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({salesPersonnelId = false, baseId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (salesPersonnelId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.salesPersonnelId,
+                                referencedTable:
+                                    $$SalesPersonnelBasesTableReferences
+                                        ._salesPersonnelIdTable(db),
+                                referencedColumn:
+                                    $$SalesPersonnelBasesTableReferences
+                                        ._salesPersonnelIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (baseId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.baseId,
+                                referencedTable:
+                                    $$SalesPersonnelBasesTableReferences
+                                        ._baseIdTable(db),
+                                referencedColumn:
+                                    $$SalesPersonnelBasesTableReferences
+                                        ._baseIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SalesPersonnelBasesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $SalesPersonnelBasesTable,
+      SalesPersonnelBase,
+      $$SalesPersonnelBasesTableFilterComposer,
+      $$SalesPersonnelBasesTableOrderingComposer,
+      $$SalesPersonnelBasesTableAnnotationComposer,
+      $$SalesPersonnelBasesTableCreateCompanionBuilder,
+      $$SalesPersonnelBasesTableUpdateCompanionBuilder,
+      (SalesPersonnelBase, $$SalesPersonnelBasesTableReferences),
+      SalesPersonnelBase,
+      PrefetchHooks Function({bool salesPersonnelId, bool baseId})
+    >;
+typedef $$SalesPersonnelUpazilasTableCreateCompanionBuilder =
+    SalesPersonnelUpazilasCompanion Function({
+      required int salesPersonnelId,
+      required int upazilaId,
+      Value<int> rowid,
+    });
+typedef $$SalesPersonnelUpazilasTableUpdateCompanionBuilder =
+    SalesPersonnelUpazilasCompanion Function({
+      Value<int> salesPersonnelId,
+      Value<int> upazilaId,
+      Value<int> rowid,
+    });
+
+final class $$SalesPersonnelUpazilasTableReferences
+    extends
+        BaseReferences<
+          _$DistributorsDb,
+          $SalesPersonnelUpazilasTable,
+          SalesPersonnelUpazila
+        > {
+  $$SalesPersonnelUpazilasTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $SalesPersonnelTable _salesPersonnelIdTable(_$DistributorsDb db) =>
+      db.salesPersonnel.createAlias(
+        'sales_personnel_upazilas__sales_personnel_id__sales_personnel__id',
+      );
+
+  $$SalesPersonnelTableProcessedTableManager get salesPersonnelId {
+    final $_column = $_itemColumn<int>('sales_personnel_id')!;
+
+    final manager = $$SalesPersonnelTableTableManager(
+      $_db,
+      $_db.salesPersonnel,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_salesPersonnelIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $UpazilasTable _upazilaIdTable(_$DistributorsDb db) => db.upazilas
+      .createAlias('sales_personnel_upazilas__upazila_id__upazilas__id');
+
+  $$UpazilasTableProcessedTableManager get upazilaId {
+    final $_column = $_itemColumn<int>('upazila_id')!;
+
+    final manager = $$UpazilasTableTableManager(
+      $_db,
+      $_db.upazilas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_upazilaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SalesPersonnelUpazilasTableFilterComposer
+    extends Composer<_$DistributorsDb, $SalesPersonnelUpazilasTable> {
+  $$SalesPersonnelUpazilasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SalesPersonnelTableFilterComposer get salesPersonnelId {
+    final $$SalesPersonnelTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.salesPersonnelId,
+      referencedTable: $db.salesPersonnel,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelTableFilterComposer(
+            $db: $db,
+            $table: $db.salesPersonnel,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UpazilasTableFilterComposer get upazilaId {
+    final $$UpazilasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableFilterComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalesPersonnelUpazilasTableOrderingComposer
+    extends Composer<_$DistributorsDb, $SalesPersonnelUpazilasTable> {
+  $$SalesPersonnelUpazilasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SalesPersonnelTableOrderingComposer get salesPersonnelId {
+    final $$SalesPersonnelTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.salesPersonnelId,
+      referencedTable: $db.salesPersonnel,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelTableOrderingComposer(
+            $db: $db,
+            $table: $db.salesPersonnel,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UpazilasTableOrderingComposer get upazilaId {
+    final $$UpazilasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableOrderingComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalesPersonnelUpazilasTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $SalesPersonnelUpazilasTable> {
+  $$SalesPersonnelUpazilasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SalesPersonnelTableAnnotationComposer get salesPersonnelId {
+    final $$SalesPersonnelTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.salesPersonnelId,
+      referencedTable: $db.salesPersonnel,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalesPersonnelTableAnnotationComposer(
+            $db: $db,
+            $table: $db.salesPersonnel,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UpazilasTableAnnotationComposer get upazilaId {
+    final $$UpazilasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalesPersonnelUpazilasTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $SalesPersonnelUpazilasTable,
+          SalesPersonnelUpazila,
+          $$SalesPersonnelUpazilasTableFilterComposer,
+          $$SalesPersonnelUpazilasTableOrderingComposer,
+          $$SalesPersonnelUpazilasTableAnnotationComposer,
+          $$SalesPersonnelUpazilasTableCreateCompanionBuilder,
+          $$SalesPersonnelUpazilasTableUpdateCompanionBuilder,
+          (SalesPersonnelUpazila, $$SalesPersonnelUpazilasTableReferences),
+          SalesPersonnelUpazila,
+          PrefetchHooks Function({bool salesPersonnelId, bool upazilaId})
+        > {
+  $$SalesPersonnelUpazilasTableTableManager(
+    _$DistributorsDb db,
+    $SalesPersonnelUpazilasTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SalesPersonnelUpazilasTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SalesPersonnelUpazilasTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SalesPersonnelUpazilasTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> salesPersonnelId = const Value.absent(),
+                Value<int> upazilaId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SalesPersonnelUpazilasCompanion(
+                salesPersonnelId: salesPersonnelId,
+                upazilaId: upazilaId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int salesPersonnelId,
+                required int upazilaId,
+                Value<int> rowid = const Value.absent(),
+              }) => SalesPersonnelUpazilasCompanion.insert(
+                salesPersonnelId: salesPersonnelId,
+                upazilaId: upazilaId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$SalesPersonnelUpazilasTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({salesPersonnelId = false, upazilaId = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (salesPersonnelId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.salesPersonnelId,
+                                    referencedTable:
+                                        $$SalesPersonnelUpazilasTableReferences
+                                            ._salesPersonnelIdTable(db),
+                                    referencedColumn:
+                                        $$SalesPersonnelUpazilasTableReferences
+                                            ._salesPersonnelIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (upazilaId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.upazilaId,
+                                    referencedTable:
+                                        $$SalesPersonnelUpazilasTableReferences
+                                            ._upazilaIdTable(db),
+                                    referencedColumn:
+                                        $$SalesPersonnelUpazilasTableReferences
+                                            ._upazilaIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$SalesPersonnelUpazilasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $SalesPersonnelUpazilasTable,
+      SalesPersonnelUpazila,
+      $$SalesPersonnelUpazilasTableFilterComposer,
+      $$SalesPersonnelUpazilasTableOrderingComposer,
+      $$SalesPersonnelUpazilasTableAnnotationComposer,
+      $$SalesPersonnelUpazilasTableCreateCompanionBuilder,
+      $$SalesPersonnelUpazilasTableUpdateCompanionBuilder,
+      (SalesPersonnelUpazila, $$SalesPersonnelUpazilasTableReferences),
+      SalesPersonnelUpazila,
+      PrefetchHooks Function({bool salesPersonnelId, bool upazilaId})
+    >;
 typedef $$VetDoctorsTableCreateCompanionBuilder =
     VetDoctorsCompanion Function({
       Value<int> id,
@@ -18556,6 +25845,27 @@ final class $$VetDoctorsTableReferences
         BaseReferences<_$DistributorsDb, $VetDoctorsTable, VetDoctorEntity> {
   $$VetDoctorsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
+  static MultiTypedResultKey<$VetDoctorsRegionsTable, List<VetDoctorsRegion>>
+  _vetDoctorsRegionsRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.vetDoctorsRegions,
+        aliasName: 'vet_doctors__id__vet_doctors_regions__vet_doctor_id',
+      );
+
+  $$VetDoctorsRegionsTableProcessedTableManager get vetDoctorsRegionsRefs {
+    final manager = $$VetDoctorsRegionsTableTableManager(
+      $_db,
+      $_db.vetDoctorsRegions,
+    ).filter((f) => f.vetDoctorId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _vetDoctorsRegionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
   static MultiTypedResultKey<$VetDoctorsAreasTable, List<VetDoctorsArea>>
   _vetDoctorsAreasRefsTable(_$DistributorsDb db) =>
       MultiTypedResultKey.fromTable(
@@ -18571,6 +25881,48 @@ final class $$VetDoctorsTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _vetDoctorsAreasRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$VetDoctorsBasesTable, List<VetDoctorsBase>>
+  _vetDoctorsBasesRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.vetDoctorsBases,
+        aliasName: 'vet_doctors__id__vet_doctors_bases__vet_doctor_id',
+      );
+
+  $$VetDoctorsBasesTableProcessedTableManager get vetDoctorsBasesRefs {
+    final manager = $$VetDoctorsBasesTableTableManager(
+      $_db,
+      $_db.vetDoctorsBases,
+    ).filter((f) => f.vetDoctorId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _vetDoctorsBasesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$VetDoctorsUpazilasTable, List<VetDoctorsUpazila>>
+  _vetDoctorsUpazilasRefsTable(_$DistributorsDb db) =>
+      MultiTypedResultKey.fromTable(
+        db.vetDoctorsUpazilas,
+        aliasName: 'vet_doctors__id__vet_doctors_upazilas__vet_doctor_id',
+      );
+
+  $$VetDoctorsUpazilasTableProcessedTableManager get vetDoctorsUpazilasRefs {
+    final manager = $$VetDoctorsUpazilasTableTableManager(
+      $_db,
+      $_db.vetDoctorsUpazilas,
+    ).filter((f) => f.vetDoctorId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _vetDoctorsUpazilasRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -18667,6 +26019,31 @@ class $$VetDoctorsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  Expression<bool> vetDoctorsRegionsRefs(
+    Expression<bool> Function($$VetDoctorsRegionsTableFilterComposer f) f,
+  ) {
+    final $$VetDoctorsRegionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.vetDoctorsRegions,
+      getReferencedColumn: (t) => t.vetDoctorId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsRegionsTableFilterComposer(
+            $db: $db,
+            $table: $db.vetDoctorsRegions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<bool> vetDoctorsAreasRefs(
     Expression<bool> Function($$VetDoctorsAreasTableFilterComposer f) f,
   ) {
@@ -18683,6 +26060,56 @@ class $$VetDoctorsTableFilterComposer
           }) => $$VetDoctorsAreasTableFilterComposer(
             $db: $db,
             $table: $db.vetDoctorsAreas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> vetDoctorsBasesRefs(
+    Expression<bool> Function($$VetDoctorsBasesTableFilterComposer f) f,
+  ) {
+    final $$VetDoctorsBasesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.vetDoctorsBases,
+      getReferencedColumn: (t) => t.vetDoctorId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsBasesTableFilterComposer(
+            $db: $db,
+            $table: $db.vetDoctorsBases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> vetDoctorsUpazilasRefs(
+    Expression<bool> Function($$VetDoctorsUpazilasTableFilterComposer f) f,
+  ) {
+    final $$VetDoctorsUpazilasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.vetDoctorsUpazilas,
+      getReferencedColumn: (t) => t.vetDoctorId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsUpazilasTableFilterComposer(
+            $db: $db,
+            $table: $db.vetDoctorsUpazilas,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -18850,6 +26277,32 @@ class $$VetDoctorsTableAnnotationComposer
   GeneratedColumn<String> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
+  Expression<T> vetDoctorsRegionsRefs<T extends Object>(
+    Expression<T> Function($$VetDoctorsRegionsTableAnnotationComposer a) f,
+  ) {
+    final $$VetDoctorsRegionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.vetDoctorsRegions,
+          getReferencedColumn: (t) => t.vetDoctorId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$VetDoctorsRegionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.vetDoctorsRegions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
   Expression<T> vetDoctorsAreasRefs<T extends Object>(
     Expression<T> Function($$VetDoctorsAreasTableAnnotationComposer a) f,
   ) {
@@ -18874,6 +26327,57 @@ class $$VetDoctorsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> vetDoctorsBasesRefs<T extends Object>(
+    Expression<T> Function($$VetDoctorsBasesTableAnnotationComposer a) f,
+  ) {
+    final $$VetDoctorsBasesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.vetDoctorsBases,
+      getReferencedColumn: (t) => t.vetDoctorId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsBasesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.vetDoctorsBases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> vetDoctorsUpazilasRefs<T extends Object>(
+    Expression<T> Function($$VetDoctorsUpazilasTableAnnotationComposer a) f,
+  ) {
+    final $$VetDoctorsUpazilasTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.vetDoctorsUpazilas,
+          getReferencedColumn: (t) => t.vetDoctorId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$VetDoctorsUpazilasTableAnnotationComposer(
+                $db: $db,
+                $table: $db.vetDoctorsUpazilas,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$VetDoctorsTableTableManager
@@ -18889,7 +26393,12 @@ class $$VetDoctorsTableTableManager
           $$VetDoctorsTableUpdateCompanionBuilder,
           (VetDoctorEntity, $$VetDoctorsTableReferences),
           VetDoctorEntity,
-          PrefetchHooks Function({bool vetDoctorsAreasRefs})
+          PrefetchHooks Function({
+            bool vetDoctorsRegionsRefs,
+            bool vetDoctorsAreasRefs,
+            bool vetDoctorsBasesRefs,
+            bool vetDoctorsUpazilasRefs,
+          })
         > {
   $$VetDoctorsTableTableManager(_$DistributorsDb db, $VetDoctorsTable table)
     : super(
@@ -18982,40 +26491,112 @@ class $$VetDoctorsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({vetDoctorsAreasRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (vetDoctorsAreasRefs) db.vetDoctorsAreas,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (vetDoctorsAreasRefs)
-                    await $_getPrefetchedData<
-                      VetDoctorEntity,
-                      $VetDoctorsTable,
-                      VetDoctorsArea
-                    >(
-                      currentTable: table,
-                      referencedTable: $$VetDoctorsTableReferences
-                          ._vetDoctorsAreasRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$VetDoctorsTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).vetDoctorsAreasRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.vetDoctorId == item.id,
-                          ),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({
+                vetDoctorsRegionsRefs = false,
+                vetDoctorsAreasRefs = false,
+                vetDoctorsBasesRefs = false,
+                vetDoctorsUpazilasRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (vetDoctorsRegionsRefs) db.vetDoctorsRegions,
+                    if (vetDoctorsAreasRefs) db.vetDoctorsAreas,
+                    if (vetDoctorsBasesRefs) db.vetDoctorsBases,
+                    if (vetDoctorsUpazilasRefs) db.vetDoctorsUpazilas,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (vetDoctorsRegionsRefs)
+                        await $_getPrefetchedData<
+                          VetDoctorEntity,
+                          $VetDoctorsTable,
+                          VetDoctorsRegion
+                        >(
+                          currentTable: table,
+                          referencedTable: $$VetDoctorsTableReferences
+                              ._vetDoctorsRegionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$VetDoctorsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).vetDoctorsRegionsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.vetDoctorId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (vetDoctorsAreasRefs)
+                        await $_getPrefetchedData<
+                          VetDoctorEntity,
+                          $VetDoctorsTable,
+                          VetDoctorsArea
+                        >(
+                          currentTable: table,
+                          referencedTable: $$VetDoctorsTableReferences
+                              ._vetDoctorsAreasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$VetDoctorsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).vetDoctorsAreasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.vetDoctorId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (vetDoctorsBasesRefs)
+                        await $_getPrefetchedData<
+                          VetDoctorEntity,
+                          $VetDoctorsTable,
+                          VetDoctorsBase
+                        >(
+                          currentTable: table,
+                          referencedTable: $$VetDoctorsTableReferences
+                              ._vetDoctorsBasesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$VetDoctorsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).vetDoctorsBasesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.vetDoctorId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (vetDoctorsUpazilasRefs)
+                        await $_getPrefetchedData<
+                          VetDoctorEntity,
+                          $VetDoctorsTable,
+                          VetDoctorsUpazila
+                        >(
+                          currentTable: table,
+                          referencedTable: $$VetDoctorsTableReferences
+                              ._vetDoctorsUpazilasRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$VetDoctorsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).vetDoctorsUpazilasRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.vetDoctorId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -19032,7 +26613,377 @@ typedef $$VetDoctorsTableProcessedTableManager =
       $$VetDoctorsTableUpdateCompanionBuilder,
       (VetDoctorEntity, $$VetDoctorsTableReferences),
       VetDoctorEntity,
-      PrefetchHooks Function({bool vetDoctorsAreasRefs})
+      PrefetchHooks Function({
+        bool vetDoctorsRegionsRefs,
+        bool vetDoctorsAreasRefs,
+        bool vetDoctorsBasesRefs,
+        bool vetDoctorsUpazilasRefs,
+      })
+    >;
+typedef $$VetDoctorsRegionsTableCreateCompanionBuilder =
+    VetDoctorsRegionsCompanion Function({
+      required int vetDoctorId,
+      required int regionId,
+      Value<int> rowid,
+    });
+typedef $$VetDoctorsRegionsTableUpdateCompanionBuilder =
+    VetDoctorsRegionsCompanion Function({
+      Value<int> vetDoctorId,
+      Value<int> regionId,
+      Value<int> rowid,
+    });
+
+final class $$VetDoctorsRegionsTableReferences
+    extends
+        BaseReferences<
+          _$DistributorsDb,
+          $VetDoctorsRegionsTable,
+          VetDoctorsRegion
+        > {
+  $$VetDoctorsRegionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $VetDoctorsTable _vetDoctorIdTable(_$DistributorsDb db) => db
+      .vetDoctors
+      .createAlias('vet_doctors_regions__vet_doctor_id__vet_doctors__id');
+
+  $$VetDoctorsTableProcessedTableManager get vetDoctorId {
+    final $_column = $_itemColumn<int>('vet_doctor_id')!;
+
+    final manager = $$VetDoctorsTableTableManager(
+      $_db,
+      $_db.vetDoctors,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_vetDoctorIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $RegionsTable _regionIdTable(_$DistributorsDb db) =>
+      db.regions.createAlias('vet_doctors_regions__region_id__regions__id');
+
+  $$RegionsTableProcessedTableManager get regionId {
+    final $_column = $_itemColumn<int>('region_id')!;
+
+    final manager = $$RegionsTableTableManager(
+      $_db,
+      $_db.regions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_regionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$VetDoctorsRegionsTableFilterComposer
+    extends Composer<_$DistributorsDb, $VetDoctorsRegionsTable> {
+  $$VetDoctorsRegionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$VetDoctorsTableFilterComposer get vetDoctorId {
+    final $$VetDoctorsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.vetDoctorId,
+      referencedTable: $db.vetDoctors,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsTableFilterComposer(
+            $db: $db,
+            $table: $db.vetDoctors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RegionsTableFilterComposer get regionId {
+    final $$RegionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.regionId,
+      referencedTable: $db.regions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RegionsTableFilterComposer(
+            $db: $db,
+            $table: $db.regions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VetDoctorsRegionsTableOrderingComposer
+    extends Composer<_$DistributorsDb, $VetDoctorsRegionsTable> {
+  $$VetDoctorsRegionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$VetDoctorsTableOrderingComposer get vetDoctorId {
+    final $$VetDoctorsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.vetDoctorId,
+      referencedTable: $db.vetDoctors,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsTableOrderingComposer(
+            $db: $db,
+            $table: $db.vetDoctors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RegionsTableOrderingComposer get regionId {
+    final $$RegionsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.regionId,
+      referencedTable: $db.regions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RegionsTableOrderingComposer(
+            $db: $db,
+            $table: $db.regions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VetDoctorsRegionsTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $VetDoctorsRegionsTable> {
+  $$VetDoctorsRegionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$VetDoctorsTableAnnotationComposer get vetDoctorId {
+    final $$VetDoctorsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.vetDoctorId,
+      referencedTable: $db.vetDoctors,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.vetDoctors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RegionsTableAnnotationComposer get regionId {
+    final $$RegionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.regionId,
+      referencedTable: $db.regions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RegionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.regions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VetDoctorsRegionsTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $VetDoctorsRegionsTable,
+          VetDoctorsRegion,
+          $$VetDoctorsRegionsTableFilterComposer,
+          $$VetDoctorsRegionsTableOrderingComposer,
+          $$VetDoctorsRegionsTableAnnotationComposer,
+          $$VetDoctorsRegionsTableCreateCompanionBuilder,
+          $$VetDoctorsRegionsTableUpdateCompanionBuilder,
+          (VetDoctorsRegion, $$VetDoctorsRegionsTableReferences),
+          VetDoctorsRegion,
+          PrefetchHooks Function({bool vetDoctorId, bool regionId})
+        > {
+  $$VetDoctorsRegionsTableTableManager(
+    _$DistributorsDb db,
+    $VetDoctorsRegionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VetDoctorsRegionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VetDoctorsRegionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VetDoctorsRegionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> vetDoctorId = const Value.absent(),
+                Value<int> regionId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VetDoctorsRegionsCompanion(
+                vetDoctorId: vetDoctorId,
+                regionId: regionId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int vetDoctorId,
+                required int regionId,
+                Value<int> rowid = const Value.absent(),
+              }) => VetDoctorsRegionsCompanion.insert(
+                vetDoctorId: vetDoctorId,
+                regionId: regionId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$VetDoctorsRegionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({vetDoctorId = false, regionId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (vetDoctorId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.vetDoctorId,
+                                referencedTable:
+                                    $$VetDoctorsRegionsTableReferences
+                                        ._vetDoctorIdTable(db),
+                                referencedColumn:
+                                    $$VetDoctorsRegionsTableReferences
+                                        ._vetDoctorIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (regionId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.regionId,
+                                referencedTable:
+                                    $$VetDoctorsRegionsTableReferences
+                                        ._regionIdTable(db),
+                                referencedColumn:
+                                    $$VetDoctorsRegionsTableReferences
+                                        ._regionIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$VetDoctorsRegionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $VetDoctorsRegionsTable,
+      VetDoctorsRegion,
+      $$VetDoctorsRegionsTableFilterComposer,
+      $$VetDoctorsRegionsTableOrderingComposer,
+      $$VetDoctorsRegionsTableAnnotationComposer,
+      $$VetDoctorsRegionsTableCreateCompanionBuilder,
+      $$VetDoctorsRegionsTableUpdateCompanionBuilder,
+      (VetDoctorsRegion, $$VetDoctorsRegionsTableReferences),
+      VetDoctorsRegion,
+      PrefetchHooks Function({bool vetDoctorId, bool regionId})
     >;
 typedef $$VetDoctorsAreasTableCreateCompanionBuilder =
     VetDoctorsAreasCompanion Function({
@@ -19396,24 +27347,776 @@ typedef $$VetDoctorsAreasTableProcessedTableManager =
       VetDoctorsArea,
       PrefetchHooks Function({bool vetDoctorId, bool areaId})
     >;
+typedef $$VetDoctorsBasesTableCreateCompanionBuilder =
+    VetDoctorsBasesCompanion Function({
+      required int vetDoctorId,
+      required int baseId,
+      Value<int> rowid,
+    });
+typedef $$VetDoctorsBasesTableUpdateCompanionBuilder =
+    VetDoctorsBasesCompanion Function({
+      Value<int> vetDoctorId,
+      Value<int> baseId,
+      Value<int> rowid,
+    });
+
+final class $$VetDoctorsBasesTableReferences
+    extends
+        BaseReferences<
+          _$DistributorsDb,
+          $VetDoctorsBasesTable,
+          VetDoctorsBase
+        > {
+  $$VetDoctorsBasesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $VetDoctorsTable _vetDoctorIdTable(_$DistributorsDb db) => db
+      .vetDoctors
+      .createAlias('vet_doctors_bases__vet_doctor_id__vet_doctors__id');
+
+  $$VetDoctorsTableProcessedTableManager get vetDoctorId {
+    final $_column = $_itemColumn<int>('vet_doctor_id')!;
+
+    final manager = $$VetDoctorsTableTableManager(
+      $_db,
+      $_db.vetDoctors,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_vetDoctorIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $BasesTable _baseIdTable(_$DistributorsDb db) =>
+      db.bases.createAlias('vet_doctors_bases__base_id__bases__id');
+
+  $$BasesTableProcessedTableManager get baseId {
+    final $_column = $_itemColumn<int>('base_id')!;
+
+    final manager = $$BasesTableTableManager(
+      $_db,
+      $_db.bases,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_baseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$VetDoctorsBasesTableFilterComposer
+    extends Composer<_$DistributorsDb, $VetDoctorsBasesTable> {
+  $$VetDoctorsBasesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$VetDoctorsTableFilterComposer get vetDoctorId {
+    final $$VetDoctorsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.vetDoctorId,
+      referencedTable: $db.vetDoctors,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsTableFilterComposer(
+            $db: $db,
+            $table: $db.vetDoctors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BasesTableFilterComposer get baseId {
+    final $$BasesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableFilterComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VetDoctorsBasesTableOrderingComposer
+    extends Composer<_$DistributorsDb, $VetDoctorsBasesTable> {
+  $$VetDoctorsBasesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$VetDoctorsTableOrderingComposer get vetDoctorId {
+    final $$VetDoctorsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.vetDoctorId,
+      referencedTable: $db.vetDoctors,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsTableOrderingComposer(
+            $db: $db,
+            $table: $db.vetDoctors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BasesTableOrderingComposer get baseId {
+    final $$BasesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableOrderingComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VetDoctorsBasesTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $VetDoctorsBasesTable> {
+  $$VetDoctorsBasesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$VetDoctorsTableAnnotationComposer get vetDoctorId {
+    final $$VetDoctorsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.vetDoctorId,
+      referencedTable: $db.vetDoctors,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.vetDoctors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$BasesTableAnnotationComposer get baseId {
+    final $$BasesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.baseId,
+      referencedTable: $db.bases,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BasesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.bases,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VetDoctorsBasesTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $VetDoctorsBasesTable,
+          VetDoctorsBase,
+          $$VetDoctorsBasesTableFilterComposer,
+          $$VetDoctorsBasesTableOrderingComposer,
+          $$VetDoctorsBasesTableAnnotationComposer,
+          $$VetDoctorsBasesTableCreateCompanionBuilder,
+          $$VetDoctorsBasesTableUpdateCompanionBuilder,
+          (VetDoctorsBase, $$VetDoctorsBasesTableReferences),
+          VetDoctorsBase,
+          PrefetchHooks Function({bool vetDoctorId, bool baseId})
+        > {
+  $$VetDoctorsBasesTableTableManager(
+    _$DistributorsDb db,
+    $VetDoctorsBasesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VetDoctorsBasesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VetDoctorsBasesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VetDoctorsBasesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> vetDoctorId = const Value.absent(),
+                Value<int> baseId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VetDoctorsBasesCompanion(
+                vetDoctorId: vetDoctorId,
+                baseId: baseId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int vetDoctorId,
+                required int baseId,
+                Value<int> rowid = const Value.absent(),
+              }) => VetDoctorsBasesCompanion.insert(
+                vetDoctorId: vetDoctorId,
+                baseId: baseId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$VetDoctorsBasesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({vetDoctorId = false, baseId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (vetDoctorId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.vetDoctorId,
+                                referencedTable:
+                                    $$VetDoctorsBasesTableReferences
+                                        ._vetDoctorIdTable(db),
+                                referencedColumn:
+                                    $$VetDoctorsBasesTableReferences
+                                        ._vetDoctorIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (baseId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.baseId,
+                                referencedTable:
+                                    $$VetDoctorsBasesTableReferences
+                                        ._baseIdTable(db),
+                                referencedColumn:
+                                    $$VetDoctorsBasesTableReferences
+                                        ._baseIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$VetDoctorsBasesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $VetDoctorsBasesTable,
+      VetDoctorsBase,
+      $$VetDoctorsBasesTableFilterComposer,
+      $$VetDoctorsBasesTableOrderingComposer,
+      $$VetDoctorsBasesTableAnnotationComposer,
+      $$VetDoctorsBasesTableCreateCompanionBuilder,
+      $$VetDoctorsBasesTableUpdateCompanionBuilder,
+      (VetDoctorsBase, $$VetDoctorsBasesTableReferences),
+      VetDoctorsBase,
+      PrefetchHooks Function({bool vetDoctorId, bool baseId})
+    >;
+typedef $$VetDoctorsUpazilasTableCreateCompanionBuilder =
+    VetDoctorsUpazilasCompanion Function({
+      required int vetDoctorId,
+      required int upazilaId,
+      Value<int> rowid,
+    });
+typedef $$VetDoctorsUpazilasTableUpdateCompanionBuilder =
+    VetDoctorsUpazilasCompanion Function({
+      Value<int> vetDoctorId,
+      Value<int> upazilaId,
+      Value<int> rowid,
+    });
+
+final class $$VetDoctorsUpazilasTableReferences
+    extends
+        BaseReferences<
+          _$DistributorsDb,
+          $VetDoctorsUpazilasTable,
+          VetDoctorsUpazila
+        > {
+  $$VetDoctorsUpazilasTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $VetDoctorsTable _vetDoctorIdTable(_$DistributorsDb db) => db
+      .vetDoctors
+      .createAlias('vet_doctors_upazilas__vet_doctor_id__vet_doctors__id');
+
+  $$VetDoctorsTableProcessedTableManager get vetDoctorId {
+    final $_column = $_itemColumn<int>('vet_doctor_id')!;
+
+    final manager = $$VetDoctorsTableTableManager(
+      $_db,
+      $_db.vetDoctors,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_vetDoctorIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $UpazilasTable _upazilaIdTable(_$DistributorsDb db) =>
+      db.upazilas.createAlias('vet_doctors_upazilas__upazila_id__upazilas__id');
+
+  $$UpazilasTableProcessedTableManager get upazilaId {
+    final $_column = $_itemColumn<int>('upazila_id')!;
+
+    final manager = $$UpazilasTableTableManager(
+      $_db,
+      $_db.upazilas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_upazilaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$VetDoctorsUpazilasTableFilterComposer
+    extends Composer<_$DistributorsDb, $VetDoctorsUpazilasTable> {
+  $$VetDoctorsUpazilasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$VetDoctorsTableFilterComposer get vetDoctorId {
+    final $$VetDoctorsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.vetDoctorId,
+      referencedTable: $db.vetDoctors,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsTableFilterComposer(
+            $db: $db,
+            $table: $db.vetDoctors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UpazilasTableFilterComposer get upazilaId {
+    final $$UpazilasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableFilterComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VetDoctorsUpazilasTableOrderingComposer
+    extends Composer<_$DistributorsDb, $VetDoctorsUpazilasTable> {
+  $$VetDoctorsUpazilasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$VetDoctorsTableOrderingComposer get vetDoctorId {
+    final $$VetDoctorsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.vetDoctorId,
+      referencedTable: $db.vetDoctors,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsTableOrderingComposer(
+            $db: $db,
+            $table: $db.vetDoctors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UpazilasTableOrderingComposer get upazilaId {
+    final $$UpazilasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableOrderingComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VetDoctorsUpazilasTableAnnotationComposer
+    extends Composer<_$DistributorsDb, $VetDoctorsUpazilasTable> {
+  $$VetDoctorsUpazilasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$VetDoctorsTableAnnotationComposer get vetDoctorId {
+    final $$VetDoctorsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.vetDoctorId,
+      referencedTable: $db.vetDoctors,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VetDoctorsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.vetDoctors,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$UpazilasTableAnnotationComposer get upazilaId {
+    final $$UpazilasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.upazilaId,
+      referencedTable: $db.upazilas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$UpazilasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.upazilas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$VetDoctorsUpazilasTableTableManager
+    extends
+        RootTableManager<
+          _$DistributorsDb,
+          $VetDoctorsUpazilasTable,
+          VetDoctorsUpazila,
+          $$VetDoctorsUpazilasTableFilterComposer,
+          $$VetDoctorsUpazilasTableOrderingComposer,
+          $$VetDoctorsUpazilasTableAnnotationComposer,
+          $$VetDoctorsUpazilasTableCreateCompanionBuilder,
+          $$VetDoctorsUpazilasTableUpdateCompanionBuilder,
+          (VetDoctorsUpazila, $$VetDoctorsUpazilasTableReferences),
+          VetDoctorsUpazila,
+          PrefetchHooks Function({bool vetDoctorId, bool upazilaId})
+        > {
+  $$VetDoctorsUpazilasTableTableManager(
+    _$DistributorsDb db,
+    $VetDoctorsUpazilasTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VetDoctorsUpazilasTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VetDoctorsUpazilasTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VetDoctorsUpazilasTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> vetDoctorId = const Value.absent(),
+                Value<int> upazilaId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VetDoctorsUpazilasCompanion(
+                vetDoctorId: vetDoctorId,
+                upazilaId: upazilaId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int vetDoctorId,
+                required int upazilaId,
+                Value<int> rowid = const Value.absent(),
+              }) => VetDoctorsUpazilasCompanion.insert(
+                vetDoctorId: vetDoctorId,
+                upazilaId: upazilaId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$VetDoctorsUpazilasTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({vetDoctorId = false, upazilaId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (vetDoctorId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.vetDoctorId,
+                                referencedTable:
+                                    $$VetDoctorsUpazilasTableReferences
+                                        ._vetDoctorIdTable(db),
+                                referencedColumn:
+                                    $$VetDoctorsUpazilasTableReferences
+                                        ._vetDoctorIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (upazilaId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.upazilaId,
+                                referencedTable:
+                                    $$VetDoctorsUpazilasTableReferences
+                                        ._upazilaIdTable(db),
+                                referencedColumn:
+                                    $$VetDoctorsUpazilasTableReferences
+                                        ._upazilaIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$VetDoctorsUpazilasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$DistributorsDb,
+      $VetDoctorsUpazilasTable,
+      VetDoctorsUpazila,
+      $$VetDoctorsUpazilasTableFilterComposer,
+      $$VetDoctorsUpazilasTableOrderingComposer,
+      $$VetDoctorsUpazilasTableAnnotationComposer,
+      $$VetDoctorsUpazilasTableCreateCompanionBuilder,
+      $$VetDoctorsUpazilasTableUpdateCompanionBuilder,
+      (VetDoctorsUpazila, $$VetDoctorsUpazilasTableReferences),
+      VetDoctorsUpazila,
+      PrefetchHooks Function({bool vetDoctorId, bool upazilaId})
+    >;
 
 class $DistributorsDbManager {
   final _$DistributorsDb _db;
   $DistributorsDbManager(this._db);
+  $$DivisionsTableTableManager get divisions =>
+      $$DivisionsTableTableManager(_db, _db.divisions);
+  $$DistrictsTableTableManager get districts =>
+      $$DistrictsTableTableManager(_db, _db.districts);
+  $$UpazilasTableTableManager get upazilas =>
+      $$UpazilasTableTableManager(_db, _db.upazilas);
   $$RegionsTableTableManager get regions =>
       $$RegionsTableTableManager(_db, _db.regions);
   $$AreasTableTableManager get areas =>
       $$AreasTableTableManager(_db, _db.areas);
+  $$BasesTableTableManager get bases =>
+      $$BasesTableTableManager(_db, _db.bases);
+  $$BaseUpazilasTableTableManager get baseUpazilas =>
+      $$BaseUpazilasTableTableManager(_db, _db.baseUpazilas);
   $$DistributorsTableTableManager get distributors =>
       $$DistributorsTableTableManager(_db, _db.distributors);
   $$SalesPersonnelTableTableManager get salesPersonnel =>
       $$SalesPersonnelTableTableManager(_db, _db.salesPersonnel);
+  $$SalesPersonnelRegionsTableTableManager get salesPersonnelRegions =>
+      $$SalesPersonnelRegionsTableTableManager(_db, _db.salesPersonnelRegions);
   $$SalesPersonnelAreasTableTableManager get salesPersonnelAreas =>
       $$SalesPersonnelAreasTableTableManager(_db, _db.salesPersonnelAreas);
+  $$SalesPersonnelBasesTableTableManager get salesPersonnelBases =>
+      $$SalesPersonnelBasesTableTableManager(_db, _db.salesPersonnelBases);
+  $$SalesPersonnelUpazilasTableTableManager get salesPersonnelUpazilas =>
+      $$SalesPersonnelUpazilasTableTableManager(
+        _db,
+        _db.salesPersonnelUpazilas,
+      );
   $$VetDoctorsTableTableManager get vetDoctors =>
       $$VetDoctorsTableTableManager(_db, _db.vetDoctors);
+  $$VetDoctorsRegionsTableTableManager get vetDoctorsRegions =>
+      $$VetDoctorsRegionsTableTableManager(_db, _db.vetDoctorsRegions);
   $$VetDoctorsAreasTableTableManager get vetDoctorsAreas =>
       $$VetDoctorsAreasTableTableManager(_db, _db.vetDoctorsAreas);
+  $$VetDoctorsBasesTableTableManager get vetDoctorsBases =>
+      $$VetDoctorsBasesTableTableManager(_db, _db.vetDoctorsBases);
+  $$VetDoctorsUpazilasTableTableManager get vetDoctorsUpazilas =>
+      $$VetDoctorsUpazilasTableTableManager(_db, _db.vetDoctorsUpazilas);
 }
 
 class $FavoriteProductsTable extends FavoriteProducts
