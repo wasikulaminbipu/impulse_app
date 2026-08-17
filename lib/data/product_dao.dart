@@ -118,12 +118,9 @@ class ProductDao {
       presMap.putIfAbsent(p.productId, () => []).add(p);
     }
 
-    // Lookup categories and target groups
-    final allCategories = await lookupDao.getCategories();
-    final catMap = { for (var c in allCategories) c.id : c };
-    
-    final allTargetGroups = await lookupDao.getTargetGroups();
-    final allTgMap = { for (var tg in allTargetGroups) tg.id : tg };
+    // Lookup categories and target groups via cached maps
+    final catMap = await lookupDao.getCategoryMap();
+    final allTgMap = await lookupDao.getTargetGroupMap();
 
     return products.map((p) {
       final tgIds = tgMap[p.id] ?? [];

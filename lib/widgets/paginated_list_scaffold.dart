@@ -131,6 +131,10 @@ class _PaginatedListScaffoldState<T>
           return ListView.builder(
             controller: _scrollController,
             itemCount: items.length + (state.hasMore ? 1 : 0),
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: true,
+            // ignore: deprecated_member_use
+            cacheExtent: 300.0,
             padding: const EdgeInsets.only(
               left: 12,
               right: 12,

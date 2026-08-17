@@ -47,19 +47,23 @@ Future<LookupDao> lookupDao(Ref ref) async {
 // ------------------------------------------------------------
 
 @riverpod
-class ProductSearchQuery extends _$ProductSearchQuery {
+class ProductSearchQuery extends _$ProductSearchQuery with DebouncedQuery {
   @override
-  String build() => '';
+  String build() {
+    ref.onDispose(cancelDebounce);
+    return '';
+  }
 
   void update(String newQuery) {
-    state = newQuery;
+    debouncedUpdate(newQuery, (val) => state = val);
   }
 
   void updateQuery(String newQuery) {
-    state = newQuery;
+    debouncedUpdate(newQuery, (val) => state = val);
   }
 
   void clear() {
+    cancelDebounce();
     state = '';
   }
 }

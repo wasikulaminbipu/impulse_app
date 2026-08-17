@@ -14,6 +14,9 @@ class LookupDao {
   List<DosageUnit>? _dosageUnits;
   List<DosageBasis>? _dosageBases;
 
+  Map<int, Category>? _categoryMap;
+  Map<int, TargetGroup>? _targetGroupMap;
+
   Future<void> preloadAll() async {
     await Future.wait([
       getCategories(forceRefresh: true),
@@ -29,13 +32,29 @@ class LookupDao {
   Future<List<Category>> getCategories({bool forceRefresh = false}) async {
     if (_categories != null && !forceRefresh) return _categories!;
     final rows = await (db.select(db.categories)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
-    return _categories = rows.map((e) => Category(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn, iconName: e.iconName)).toList();
+    _categories = rows.map((e) => Category(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn, iconName: e.iconName)).toList();
+    _categoryMap = { for (var c in _categories!) c.id : c };
+    return _categories!;
+  }
+
+  Future<Map<int, Category>> getCategoryMap({bool forceRefresh = false}) async {
+    if (_categoryMap != null && !forceRefresh) return _categoryMap!;
+    await getCategories(forceRefresh: forceRefresh);
+    return _categoryMap!;
   }
 
   Future<List<TargetGroup>> getTargetGroups({bool forceRefresh = false}) async {
     if (_targetGroups != null && !forceRefresh) return _targetGroups!;
     final rows = await (db.select(db.targetGroups)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
-    return _targetGroups = rows.map((e) => TargetGroup(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn, iconName: e.iconName)).toList();
+    _targetGroups = rows.map((e) => TargetGroup(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn, iconName: e.iconName)).toList();
+    _targetGroupMap = { for (var tg in _targetGroups!) tg.id : tg };
+    return _targetGroups!;
+  }
+
+  Future<Map<int, TargetGroup>> getTargetGroupMap({bool forceRefresh = false}) async {
+    if (_targetGroupMap != null && !forceRefresh) return _targetGroupMap!;
+    await getTargetGroups(forceRefresh: forceRefresh);
+    return _targetGroupMap!;
   }
 
   Future<List<ContentType>> getContentTypes({bool forceRefresh = false}) async {

@@ -216,7 +216,6 @@ async function openDb(){
     if(err.name !== 'AbortError') toast('Could not open file: '+err.message, true);
   }
 }
-
 async function saveDb(forceDialog){
   if(!db) return;
   const data = db.export();
@@ -781,6 +780,8 @@ function productDetailPage(id, onDone){
     <div class="field"><label>Manufacturer</label><select id="f_manufacturer_id"></select></div>
     <div class="field"><label>Motto (EN)</label><input type="text" id="f_motto_en" value="${esc(val(p.motto_en))}"></div>
     <div class="field"><label>Motto (BN)</label><input type="text" id="f_motto_bn" value="${esc(val(p.motto_bn))}"></div>
+    <div class="field"><label>Composition basis / Amount (EN)</label><input type="text" id="f_composition_basis_en" placeholder="e.g. 1 Liter" value="${esc(val(p.composition_basis_en))}"></div>
+    <div class="field"><label>Composition basis / Amount (BN)</label><input type="text" id="f_composition_basis_bn" placeholder="e.g. ১ লিটার" value="${esc(val(p.composition_basis_bn))}"></div>
     <div class="field" style="grid-column:1/-1;"><label>Short description (EN)</label><textarea id="f_short_description_en">${esc(val(p.short_description_en))}</textarea></div>
     <div class="field" style="grid-column:1/-1;"><label>Short description (BN)</label><textarea id="f_short_description_bn">${esc(val(p.short_description_bn))}</textarea></div>
     <div class="field"><label>Image URL</label><input type="url" id="f_image_url" value="${esc(val(p.image_url))}"></div>
@@ -832,6 +833,8 @@ function productDetailPage(id, onDone){
       manufacturer_id: manSel.value ? +manSel.value : null,
       motto_en: document.getElementById('f_motto_en').value || null,
       motto_bn: document.getElementById('f_motto_bn').value || null,
+      composition_basis_en: document.getElementById('f_composition_basis_en').value || null,
+      composition_basis_bn: document.getElementById('f_composition_basis_bn').value || null,
       short_description_en: document.getElementById('f_short_description_en').value || null,
       short_description_bn: document.getElementById('f_short_description_bn').value || null,
       image_url: document.getElementById('f_image_url').value || null,
@@ -841,13 +844,13 @@ function productDetailPage(id, onDone){
     try{
       let productId = id;
       if(isNew){
-        run(`insert into products (manufacturer_id,category_id,title_en,title_bn,motto_en,motto_bn,short_description_en,short_description_bn,image_url,is_active)
-             values (?,?,?,?,?,?,?,?,?,?)`,
-          [data.manufacturer_id,data.category_id,data.title_en,data.title_bn,data.motto_en,data.motto_bn,data.short_description_en,data.short_description_bn,data.image_url,data.is_active]);
+        run(`insert into products (manufacturer_id,category_id,title_en,title_bn,motto_en,motto_bn,composition_basis_en,composition_basis_bn,short_description_en,short_description_bn,image_url,is_active)
+             values (?,?,?,?,?,?,?,?,?,?,?,?)`,
+          [data.manufacturer_id,data.category_id,data.title_en,data.title_bn,data.motto_en,data.motto_bn,data.composition_basis_en,data.composition_basis_bn,data.short_description_en,data.short_description_bn,data.image_url,data.is_active]);
         productId = q('select last_insert_rowid() as id').at(0).id;
       } else {
-        run(`update products set manufacturer_id=?,category_id=?,title_en=?,title_bn=?,motto_en=?,motto_bn=?,short_description_en=?,short_description_bn=?,image_url=?,is_active=?,updated_at=? where id=?`,
-          [data.manufacturer_id,data.category_id,data.title_en,data.title_bn,data.motto_en,data.motto_bn,data.short_description_en,data.short_description_bn,data.image_url,data.is_active,nowIso(),productId]);
+        run(`update products set manufacturer_id=?,category_id=?,title_en=?,title_bn=?,motto_en=?,motto_bn=?,composition_basis_en=?,composition_basis_bn=?,short_description_en=?,short_description_bn=?,image_url=?,is_active=?,updated_at=? where id=?`,
+          [data.manufacturer_id,data.category_id,data.title_en,data.title_bn,data.motto_en,data.motto_bn,data.composition_basis_en,data.composition_basis_bn,data.short_description_en,data.short_description_bn,data.image_url,data.is_active,nowIso(),productId]);
       }
       run('delete from product_target_groups where product_id=?',[productId]);
       tgSelected.forEach(tid=>run('insert into product_target_groups (product_id,target_group_id) values (?,?)',[productId,tid]));
