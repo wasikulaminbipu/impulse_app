@@ -157,7 +157,7 @@ final class ProductSearchQueryProvider
 }
 
 String _$productSearchQueryHash() =>
-    r'74036ddd92054d63495710b4616ad8df2e9a796e';
+    r'3f92e55c37e520796571944c864a8fcef1b34bc4';
 
 abstract class _$ProductSearchQuery extends $Notifier<String> {
   String build();
@@ -170,6 +170,59 @@ abstract class _$ProductSearchQuery extends $Notifier<String> {
             as $ClassProviderElement<
               AnyNotifier<String, String>,
               String,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(ProductSearchScope)
+final productSearchScopeProvider = ProductSearchScopeProvider._();
+
+final class ProductSearchScopeProvider
+    extends $NotifierProvider<ProductSearchScope, SearchScope> {
+  ProductSearchScopeProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'productSearchScopeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$productSearchScopeHash();
+
+  @$internal
+  @override
+  ProductSearchScope create() => ProductSearchScope();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SearchScope value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SearchScope>(value),
+    );
+  }
+}
+
+String _$productSearchScopeHash() =>
+    r'c65374d3ccf42698e900c2f720dd3acb7e58fd8c';
+
+abstract class _$ProductSearchScope extends $Notifier<SearchScope> {
+  SearchScope build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<SearchScope, SearchScope>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SearchScope, SearchScope>,
+              SearchScope,
               Object?,
               Object?
             >;
@@ -771,7 +824,7 @@ final class PaginatedCategoryProductsProvider
 }
 
 String _$paginatedCategoryProductsHash() =>
-    r'ebbb39680f848c8a5c738f2df65ef3d72c365caa';
+    r'4065edb5fd703422be15fa7c95fe66a852ca9697';
 
 final class PaginatedCategoryProductsFamily extends $Family
     with

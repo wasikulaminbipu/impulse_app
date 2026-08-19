@@ -11,6 +11,8 @@ import 'package:impulse_dex/utils/bilingual_string.dart';
 import 'package:impulse_dex/utils/app_constants.dart';
 import 'package:impulse_dex/theme/app_theme.dart';
 
+import 'package:flutter/services.dart';
+
 class ProductCard extends StatefulWidget {
   final ProductLabel product;
   final bool disableNavigation;
@@ -34,20 +36,28 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
+  bool _isPressed = false;
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return RepaintBoundary(
       child: AnimatedScale(
-        scale: 1.0,
-        duration: const Duration(milliseconds: 0),
+        scale: _isPressed ? 0.97 : 1.0,
+        duration: const Duration(milliseconds: 120),
         curve: Curves.easeOutCubic,
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white.withValues(alpha: 0.12)
+                  : colorScheme.outlineVariant.withValues(alpha: 0.5),
+              width: 1,
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(
@@ -67,9 +77,13 @@ class _ProductCardState extends State<ProductCard> {
               color: Colors.transparent,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
+                onTapDown: (_) => setState(() => _isPressed = true),
+                onTapUp: (_) => setState(() => _isPressed = false),
+                onTapCancel: () => setState(() => _isPressed = false),
                 onTap: widget.disableNavigation
                     ? null
                     : () {
+                        HapticFeedback.lightImpact();
                         Navigator.of(context).push(
                           PageRouteBuilder(
                             transitionDuration: const Duration(milliseconds: 400),
@@ -203,6 +217,9 @@ class _ProductCardState extends State<ProductCard> {
                                   textStyle: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
+                                    fontFeatures: const [
+                                      FontFeature.tabularFigures(),
+                                    ],
                                     color: Theme.of(
                                       context,
                                     ).colorScheme.onSurface,

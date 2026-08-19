@@ -22,9 +22,11 @@ class HighlightText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final defaultStyle = style ?? theme.textTheme.bodyMedium ?? const TextStyle();
+    final defaultTextStyle = DefaultTextStyle.of(context).style;
+    final effectiveStyle = defaultTextStyle.merge(style ?? theme.textTheme.bodyMedium);
+
     final defaultHighlightStyle = highlightStyle ??
-        defaultStyle.copyWith(
+        effectiveStyle.copyWith(
           backgroundColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.7),
           color: theme.colorScheme.onPrimaryContainer,
           fontWeight: FontWeight.bold,
@@ -35,7 +37,7 @@ class HighlightText extends StatelessWidget {
     if (trimmedQuery.isEmpty || rawText.isEmpty) {
       return Text(
         rawText,
-        style: defaultStyle,
+        style: style,
         maxLines: maxLines,
         overflow: overflow,
       );
@@ -50,7 +52,7 @@ class HighlightText extends StatelessWidget {
     if (queryTokens.isEmpty) {
       return Text(
         rawText,
-        style: defaultStyle,
+        style: style,
         maxLines: maxLines,
         overflow: overflow,
       );
@@ -60,7 +62,7 @@ class HighlightText extends StatelessWidget {
     if (patternString.isEmpty) {
       return Text(
         rawText,
-        style: defaultStyle,
+        style: style,
         maxLines: maxLines,
         overflow: overflow,
       );
@@ -78,7 +80,7 @@ class HighlightText extends StatelessWidget {
       if (match.start > start) {
         spans.add(TextSpan(
           text: rawText.substring(start, match.start),
-          style: defaultStyle,
+          style: effectiveStyle,
         ));
       }
       spans.add(TextSpan(
@@ -91,12 +93,15 @@ class HighlightText extends StatelessWidget {
     if (start < rawText.length) {
       spans.add(TextSpan(
         text: rawText.substring(start),
-        style: defaultStyle,
+        style: effectiveStyle,
       ));
     }
 
-    return RichText(
-      text: TextSpan(children: spans),
+    return Text.rich(
+      TextSpan(
+        style: effectiveStyle,
+        children: spans,
+      ),
       maxLines: maxLines,
       overflow: overflow,
     );

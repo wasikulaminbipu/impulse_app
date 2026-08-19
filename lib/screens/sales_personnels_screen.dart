@@ -321,7 +321,7 @@ class _RepresentativesTab extends ConsumerWidget {
             return false;
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
             itemCount: data.items.length + (data.isLoadingMore ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == data.items.length) {
@@ -340,7 +340,7 @@ class _RepresentativesTab extends ConsumerWidget {
         );
       },
       loading: () => ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
         itemCount: 6,
         itemBuilder: (context, index) => const DistributorCardSkeleton(),
       ),
@@ -374,7 +374,7 @@ class _VeterinariansTab extends ConsumerWidget {
             return false;
           },
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
             itemCount: data.items.length + (data.isLoadingMore ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == data.items.length) {
@@ -393,7 +393,7 @@ class _VeterinariansTab extends ConsumerWidget {
         );
       },
       loading: () => ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
         itemCount: 6,
         itemBuilder: (context, index) => const DistributorCardSkeleton(),
       ),

@@ -12,6 +12,7 @@ import 'package:impulse_dex/providers/app_maintenance_provider.dart';
 import 'package:impulse_dex/providers/paginated_state.dart';
 import 'package:impulse_dex/providers/debounced_query.dart';
 import 'package:impulse_dex/domain/category_filter.dart';
+import 'package:impulse_dex/domain/search_scope.dart';
 
 part 'products_provider.g.dart';
 
@@ -65,6 +66,16 @@ class ProductSearchQuery extends _$ProductSearchQuery with DebouncedQuery {
   void clear() {
     cancelDebounce();
     state = '';
+  }
+}
+
+@riverpod
+class ProductSearchScope extends _$ProductSearchScope {
+  @override
+  SearchScope build() => SearchScope.all;
+
+  void setScope(SearchScope scope) {
+    state = scope;
   }
 }
 
@@ -244,12 +255,14 @@ class PaginatedCategoryProducts extends _$PaginatedCategoryProducts {
     _criteria = resolveCategoryFilter(category, cats, groups);
     final criteria = _criteria!;
     final query = ref.watch(productSearchQueryProvider);
+    final scope = ref.watch(productSearchScopeProvider);
     
     final initialItems = await dao.getFilteredLabels(
       categoryId: criteria.categoryId,
       targetGroupId: criteria.targetGroupId,
       isFeedAdditive: criteria.isFeedAdditive,
       query: query,
+      scope: scope,
       limit: _pageSize + 1,
       offset: 0,
     );
@@ -278,12 +291,14 @@ class PaginatedCategoryProducts extends _$PaginatedCategoryProducts {
     final groups = await ref.read(targetGroupsProvider.future);
     final criteria = _criteria ?? resolveCategoryFilter(category, cats, groups);
     final query = ref.read(productSearchQueryProvider);
+    final scope = ref.read(productSearchScopeProvider);
 
     final nextChunk = await dao.getFilteredLabels(
       categoryId: criteria.categoryId,
       targetGroupId: criteria.targetGroupId,
       isFeedAdditive: criteria.isFeedAdditive,
       query: query,
+      scope: scope,
       limit: _pageSize + 1,
       offset: currentState.items.length,
     );

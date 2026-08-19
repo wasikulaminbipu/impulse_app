@@ -1,10 +1,12 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_dex/models/app_maintenance.dart';
 import 'package:impulse_dex/providers/app_maintenance_provider.dart';
 import 'package:impulse_dex/providers/products_provider.dart';
 
-class FavoriteButton extends ConsumerWidget {
+import 'package:flutter/services.dart';
+
+class FavoriteButton extends ConsumerStatefulWidget {
   final int refId;
   final FavoriteType type;
   final Color? color;
@@ -21,33 +23,72 @@ class FavoriteButton extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final bool isFav = switch (type) {
+  ConsumerState<FavoriteButton> createState() => _FavoriteButtonState();
+}
+
+class _FavoriteButtonState extends ConsumerState<FavoriteButton> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.35), weight: 50),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.35, end: 1.0), weight: 50),
+    ]).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isFav = switch (widget.type) {
       FavoriteType.product => ref.watch(productFavoritesProvider.select((favs) {
-          return favs.whenOrNull(data: (ids) => ids.contains(refId)) ?? false;
+          return favs.whenOrNull(data: (ids) => ids.contains(widget.refId)) ?? false;
         })),
       FavoriteType.distributor => ref.watch(distributorFavoritesProvider.select((favs) {
-          return favs.whenOrNull(data: (ids) => ids.contains(refId)) ?? false;
+          return favs.whenOrNull(data: (ids) => ids.contains(widget.refId)) ?? false;
         })),
       FavoriteType.salesPersonnel => ref.watch(salesPersonnelFavoritesProvider.select((favs) {
-          return favs.whenOrNull(data: (ids) => ids.contains(refId)) ?? false;
+          return favs.whenOrNull(data: (ids) => ids.contains(widget.refId)) ?? false;
         })),
       FavoriteType.vetDoctor => ref.watch(vetDoctorFavoritesProvider.select((favs) {
-          return favs.whenOrNull(data: (ids) => ids.contains(refId)) ?? false;
+          return favs.whenOrNull(data: (ids) => ids.contains(widget.refId)) ?? false;
         })),
     };
 
-    return IconButton(
-      icon: Icon(
-        isFav ? Icons.favorite : Icons.favorite_border,
-        size: size ?? 24,
-        color: isFav ? (activeColor ?? Colors.red) : (color ?? Colors.grey),
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: IconButton(
+        icon: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (child, animation) {
+            return ScaleTransition(scale: animation, child: child);
+          },
+          child: Icon(
+            isFav ? Icons.favorite : Icons.favorite_border,
+            key: ValueKey<bool>(isFav),
+            size: widget.size ?? 24,
+            color: isFav ? (widget.activeColor ?? Colors.red) : (widget.color ?? Colors.grey),
+          ),
+        ),
+        onPressed: () {
+          _controller.forward(from: 0.0);
+          HapticFeedback.mediumImpact();
+          ref.read(favoriteToggleProvider.notifier).toggle(widget.type, widget.refId);
+        },
+        constraints: const BoxConstraints(),
+        padding: EdgeInsets.zero,
       ),
-      onPressed: () {
-        ref.read(favoriteToggleProvider.notifier).toggle(type, refId);
-      },
-      constraints: const BoxConstraints(),
-      padding: EdgeInsets.zero,
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:impulse_dex/data/fts_utils.dart';
 import 'package:impulse_dex/models/product.dart';
 
 import 'package:impulse_dex/data/db_extensions.dart';
+import 'package:impulse_dex/domain/search_scope.dart';
 
 import 'package:impulse_dex/data/lookup_dao.dart';
 import 'package:impulse_dex/data/manufacturer_dao.dart';
@@ -183,6 +184,7 @@ class ProductDao {
     int? targetGroupId,
     bool isFeedAdditive = false,
     String query = '',
+    SearchScope scope = SearchScope.all,
     required int limit,
     required int offset,
   }) async {
@@ -223,54 +225,82 @@ class ProductDao {
     if (trimmed.isNotEmpty) {
       final candidates = <int, Map<String, dynamic>>{};
 
-      // 1. FTS query
-      final sanitizedTokens = sanitizeFtsQuery(trimmed);
-      if (sanitizedTokens.isNotEmpty) {
-        final isReady = await isFtsReady(db.executor, 'products_fts');
-        if (isReady) {
-          final ftsWhere = List<String>.from(where);
-          final ftsArgs = List<Object?>.from(args);
-          ftsWhere.add('fts.products_fts MATCH ?');
-          ftsArgs.add(sanitizedTokens);
+      // 1. FTS query (run when scope is ALL or NAME)
+      if (scope == SearchScope.all || scope == SearchScope.name) {
+        final sanitizedTokens = sanitizeFtsQuery(trimmed);
+        if (sanitizedTokens.isNotEmpty) {
+          final isReady = await isFtsReady(db.executor, 'products_fts');
+          if (isReady) {
+            final ftsWhere = List<String>.from(where);
+            final ftsArgs = List<Object?>.from(args);
+            ftsWhere.add('fts.products_fts MATCH ?');
+            ftsArgs.add(sanitizedTokens);
 
-          final ftsJoin = 'JOIN products_fts fts ON fts.rowid = p.id';
-          final sqlQuery = '''
-            SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn FROM products p
-            $ftsJoin
-            LEFT JOIN categories c ON c.id = p.category_id
-            $join
-            WHERE ${ftsWhere.join(' AND ')}
-          ''';
-          try {
-            final ftsRows = await db.executor.customQuery(sqlQuery, ftsArgs);
-            for (final r in ftsRows) {
-              candidates[r['id'] as int] = r;
-            }
-          } catch (_) {}
+            final ftsJoin = 'JOIN products_fts fts ON fts.rowid = p.id';
+            final sqlQuery = '''
+              SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn FROM products p
+              $ftsJoin
+              LEFT JOIN categories c ON c.id = p.category_id
+              $join
+              WHERE ${ftsWhere.join(' AND ')}
+            ''';
+            try {
+              final ftsRows = await db.executor.customQuery(sqlQuery, ftsArgs);
+              for (final r in ftsRows) {
+                candidates[r['id'] as int] = r;
+              }
+            } catch (_) {}
+          }
         }
       }
 
-      // 2. Comprehensive LIKE query across title, short description, category, composition & indications
+      // 2. Scope-based LIKE query
       final pattern = '%$trimmed%';
       final baseWhere = List<String>.from(where);
       final baseArgs = List<Object?>.from(args);
-      if (baseWhere.isNotEmpty && baseWhere.last.contains('MATCH')) {
-        baseWhere.removeLast();
-        baseArgs.removeLast();
-      }
 
       final likeWhere = List<String>.from(baseWhere);
       final likeArgs = List<Object?>.from(baseArgs);
-      likeWhere.add('''
-        (
-          p.title_en LIKE ? OR p.title_bn LIKE ? OR 
-          p.short_description_en LIKE ? OR p.short_description_bn LIKE ? OR 
-          c.name_en LIKE ? OR c.name_bn LIKE ? OR
-          EXISTS (SELECT 1 FROM compositions comp WHERE comp.product_id = p.id AND (comp.active_ingredient_en LIKE ? OR comp.active_ingredient_bn LIKE ?)) OR
-          EXISTS (SELECT 1 FROM indications ind WHERE ind.product_id = p.id AND (ind.indication_en LIKE ? OR ind.indication_bn LIKE ?))
-        )
-      ''');
-      likeArgs.addAll([pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern]);
+
+      switch (scope) {
+        case SearchScope.symptom:
+          likeWhere.add('''
+            EXISTS (
+              SELECT 1 FROM indications ind 
+              WHERE ind.product_id = p.id AND (ind.text_en LIKE ? OR ind.text_bn LIKE ?)
+            )
+          ''');
+          likeArgs.addAll([pattern, pattern]);
+          break;
+
+        case SearchScope.ingredient:
+          likeWhere.add('''
+            EXISTS (
+              SELECT 1 FROM compositions comp 
+              WHERE comp.product_id = p.id AND (comp.ingredient_en LIKE ? OR comp.ingredient_bn LIKE ?)
+            )
+          ''');
+          likeArgs.addAll([pattern, pattern]);
+          break;
+
+        case SearchScope.name:
+          likeWhere.add('(p.title_en LIKE ? OR p.title_bn LIKE ? OR p.short_description_en LIKE ? OR p.short_description_bn LIKE ?)');
+          likeArgs.addAll([pattern, pattern, pattern, pattern]);
+          break;
+
+        case SearchScope.all:
+          likeWhere.add('''
+            (
+              p.title_en LIKE ? OR p.title_bn LIKE ? OR 
+              p.short_description_en LIKE ? OR p.short_description_bn LIKE ? OR 
+              c.name_en LIKE ? OR c.name_bn LIKE ? OR
+              EXISTS (SELECT 1 FROM compositions comp WHERE comp.product_id = p.id AND (comp.ingredient_en LIKE ? OR comp.ingredient_bn LIKE ?)) OR
+              EXISTS (SELECT 1 FROM indications ind WHERE ind.product_id = p.id AND (ind.text_en LIKE ? OR ind.text_bn LIKE ?))
+            )
+          ''');
+          likeArgs.addAll([pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern]);
+          break;
+      }
 
       final likeSqlQuery = '''
         SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn FROM products p
@@ -580,6 +610,26 @@ class ProductDao {
       for (final r in tgRows) {
         final en = r['name_en'] as String?;
         final bn = r['name_bn'] as String?;
+        if (en != null && en.isNotEmpty) terms.add(en);
+        if (bn != null && bn.isNotEmpty) terms.add(bn);
+      }
+
+      final indRows = await db.executor.customQuery(
+        'SELECT DISTINCT text_en, text_bn FROM indications'
+      );
+      for (final r in indRows) {
+        final en = r['text_en'] as String?;
+        final bn = r['text_bn'] as String?;
+        if (en != null && en.isNotEmpty) terms.add(en);
+        if (bn != null && bn.isNotEmpty) terms.add(bn);
+      }
+
+      final compRows = await db.executor.customQuery(
+        'SELECT DISTINCT ingredient_en, ingredient_bn FROM compositions'
+      );
+      for (final r in compRows) {
+        final en = r['ingredient_en'] as String?;
+        final bn = r['ingredient_bn'] as String?;
         if (en != null && en.isNotEmpty) terms.add(en);
         if (bn != null && bn.isNotEmpty) terms.add(bn);
       }

@@ -1,5 +1,6 @@
-﻿import 'dart:ui' show ImageFilter;
+import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_dex/screens/manufacturers_screen.dart';
 import 'package:impulse_dex/screens/products_screen.dart';
@@ -89,7 +90,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   height: 66,
                   child: Stack(
                     children: [
-                      // Sliding Indicator
+                      // Floating Pill Background Indicator
                       Positioned(
                         left: 8,
                         right: 8,
@@ -100,24 +101,27 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                           curve: Curves.fastOutSlowIn,
                           alignment: Alignment(
                             -1.0 + (_currentIndex * (2.0 / (_screens.length - 1))),
-                            1.0,
+                            0.0,
                           ),
                           child: FractionallySizedBox(
                             widthFactor: 1.0 / _screens.length,
                             child: Align(
-                              alignment: Alignment.bottomCenter,
+                              alignment: Alignment.center,
                               child: Container(
-                                margin: const EdgeInsets.only(bottom: 6),
-                                height: 3.5,
-                                width: 28,
+                                height: 50,
+                                margin: const EdgeInsets.symmetric(horizontal: 4),
                                 decoration: BoxDecoration(
-                                  color: colorScheme.primary,
-                                  borderRadius: BorderRadius.circular(2),
+                                  color: colorScheme.primaryContainer.withValues(alpha: 0.6),
+                                  borderRadius: BorderRadius.circular(25),
+                                  border: Border.all(
+                                    color: colorScheme.primary.withValues(alpha: 0.25),
+                                    width: 1,
+                                  ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: colorScheme.primary.withValues(alpha: 0.5),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, -2),
+                                      color: colorScheme.primary.withValues(alpha: 0.15),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
@@ -178,9 +182,12 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          setState(() {
-            _currentIndex = index;
-          });
+          if (_currentIndex != index) {
+            HapticFeedback.selectionClick();
+            setState(() {
+              _currentIndex = index;
+            });
+          }
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

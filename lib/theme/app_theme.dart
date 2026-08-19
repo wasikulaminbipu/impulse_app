@@ -63,7 +63,66 @@ class CategoryColors extends ThemeExtension<CategoryColors> {
   }
 }
 
+class GlassThemeExtension extends ThemeExtension<GlassThemeExtension> {
+  final double blurSigma;
+  final Color backgroundColor;
+  final Color borderColor;
+  final Color topSpecularColor;
+
+  const GlassThemeExtension({
+    required this.blurSigma,
+    required this.backgroundColor,
+    required this.borderColor,
+    required this.topSpecularColor,
+  });
+
+  @override
+  GlassThemeExtension copyWith({
+    double? blurSigma,
+    Color? backgroundColor,
+    Color? borderColor,
+    Color? topSpecularColor,
+  }) {
+    return GlassThemeExtension(
+      blurSigma: blurSigma ?? this.blurSigma,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      borderColor: borderColor ?? this.borderColor,
+      topSpecularColor: topSpecularColor ?? this.topSpecularColor,
+    );
+  }
+
+  @override
+  GlassThemeExtension lerp(
+    covariant ThemeExtension<GlassThemeExtension>? other,
+    double t,
+  ) {
+    if (other is! GlassThemeExtension) {
+      return this;
+    }
+    return GlassThemeExtension(
+      blurSigma: blurSigma + (other.blurSigma - blurSigma) * t,
+      backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
+      borderColor: Color.lerp(borderColor, other.borderColor, t)!,
+      topSpecularColor: Color.lerp(topSpecularColor, other.topSpecularColor, t)!,
+    );
+  }
+}
+
 class AppTheme {
+  static final _glassLight = const GlassThemeExtension(
+    blurSigma: 16.0,
+    backgroundColor: Color(0x99FFFFFF),
+    borderColor: Color(0x33000000),
+    topSpecularColor: Color(0x66FFFFFF),
+  );
+
+  static final _glassDark = const GlassThemeExtension(
+    blurSigma: 20.0,
+    backgroundColor: Color(0x1F2B2930),
+    borderColor: Color(0x26FFFFFF),
+    topSpecularColor: Color(0x33FFFFFF),
+  );
+
   static final _categoryColors = CategoryColors(
     feedAdditiveColor: const Color(0xFF00796B), // Premium Teal
     vaccineColor: const Color(0xFF673AB7), // Premium Deep Purple
@@ -76,6 +135,7 @@ class AppTheme {
   static final lightTheme = ThemeData(
     fontFamily: 'Inter',
     useMaterial3: true,
+    splashFactory: InkRipple.splashFactory,
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFF006B5F), // Rich Emerald Teal
       brightness: Brightness.light,
@@ -212,12 +272,21 @@ class AppTheme {
       thickness: 1,
       space: 1,
     ),
-    extensions: [_categoryColors],
+    textTheme: const TextTheme(
+      labelLarge: TextStyle(
+        fontFeatures: [FontFeature.tabularFigures()],
+      ),
+      bodyMedium: TextStyle(
+        fontFeatures: [FontFeature.tabularFigures()],
+      ),
+    ),
+    extensions: [_categoryColors, _glassLight],
   );
 
   static final darkTheme = ThemeData(
     fontFamily: 'Inter',
     useMaterial3: true,
+    splashFactory: InkRipple.splashFactory,
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFF4DB6AC),
       brightness: Brightness.dark,
@@ -354,6 +423,30 @@ class AppTheme {
       thickness: 1,
       space: 1,
     ),
-    extensions: [_categoryColors],
+    extensions: [_categoryColors, _glassDark],
   );
 }
+
+class AppScrollBehavior extends MaterialScrollBehavior {
+  const AppScrollBehavior();
+
+  @override
+  Widget buildOverscrollIndicator(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    switch (getPlatform(context)) {
+      case TargetPlatform.android:
+      case TargetPlatform.fuchsia:
+        return GlowingOverscrollIndicator(
+          axisDirection: details.direction,
+          color: Theme.of(context).colorScheme.primary,
+          child: child,
+        );
+      default:
+        return super.buildOverscrollIndicator(context, child, details);
+    }
+  }
+}
+

@@ -163,25 +163,53 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              AppAssets.appLogo,
-              height: 32,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) =>
-                  const Icon(Icons.inventory_2, size: 32),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              'Impulse Dex',
-              style: const TextStyle(
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.5,
+        title: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                AppAssets.appLogo,
+                height: 32,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.inventory_2, size: 32),
               ),
-            ),
-          ],
+              const SizedBox(width: 10),
+              Text(
+                'Impulse Dex',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              if (ref.watch(productSearchQueryProvider).isNotEmpty) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.search_rounded, size: 12, color: colorScheme.onPrimaryContainer),
+                      const SizedBox(width: 4),
+                      Text(
+                        lang == 'bn' ? 'ফিল্টার' : 'Active',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -230,8 +258,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
                   },
                   decoration: InputDecoration(
                     hintText: lang == 'bn'
-                        ? 'প্রোডাক্ট খুঁজুন...'
-                        : 'Search products...',
+                        ? 'প্রোডাক্ট, উপসর্গ, উপাদান খুঁজুন...'
+                        : 'Search products, symptoms, ingredients...',
                     isDense: true,
                     prefixIcon: Icon(
                       Icons.search_rounded,

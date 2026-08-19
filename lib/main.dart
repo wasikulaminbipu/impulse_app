@@ -20,6 +20,7 @@ class ImpulseProductsApp extends StatelessWidget {
       title: 'Impulse Dex',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
+      scrollBehavior: const AppScrollBehavior(),
       home: const MainScreen(),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
