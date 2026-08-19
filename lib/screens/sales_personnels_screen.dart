@@ -10,6 +10,7 @@ import 'package:impulse_dex/utils/bilingual_string.dart';
 import 'package:impulse_dex/widgets/animated_list_item.dart';
 import 'package:impulse_dex/providers/search_history_provider.dart';
 import 'package:impulse_dex/widgets/highlight_text.dart';
+import 'package:impulse_dex/widgets/asset_fallback_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
@@ -411,9 +412,19 @@ class _SalesPersonnelCard extends ConsumerWidget {
     final personnel = personnelWithAreas.personnel;
     final query = ref.watch(salesPersonnelSearchQueryProvider);
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(
+            alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.65,
+          ),
+          width: 1,
+        ),
+      ),
       child: Column(
         children: [
           Padding(
@@ -424,12 +435,14 @@ class _SalesPersonnelCard extends ConsumerWidget {
                 if (personnel.photoUrl != null && personnel.photoUrl!.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
-                    child: CircleAvatar(
-                      radius: 24,
-                      backgroundImage: AssetImage(
-                        personnel.photoUrl!.startsWith('assets/') 
-                            ? personnel.photoUrl! 
+                    child: ClipOval(
+                      child: AssetFallbackImage(
+                        imagePath: personnel.photoUrl!.startsWith('assets/')
+                            ? personnel.photoUrl!
                             : 'assets/images/${personnel.photoUrl}',
+                        width: 48,
+                        height: 48,
+                        fallbackIcon: Icons.person,
                       ),
                     ),
                   ),
@@ -618,9 +631,19 @@ class _VetDoctorCard extends ConsumerWidget {
     final doctor = doctorWithAreas.doctor;
     final query = ref.watch(vetDoctorsSearchQueryProvider);
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(
+            alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.65,
+          ),
+          width: 1,
+        ),
+      ),
       child: Column(
         children: [
           Padding(
@@ -631,12 +654,14 @@ class _VetDoctorCard extends ConsumerWidget {
                 if (doctor.photoUrl != null && doctor.photoUrl!.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
-                    child: CircleAvatar(
-                      radius: 24,
-                      backgroundImage: AssetImage(
-                        doctor.photoUrl!.startsWith('assets/')
+                    child: ClipOval(
+                      child: AssetFallbackImage(
+                        imagePath: doctor.photoUrl!.startsWith('assets/')
                             ? doctor.photoUrl!
                             : 'assets/images/${doctor.photoUrl}',
+                        width: 48,
+                        height: 48,
+                        fallbackIcon: Icons.medical_services,
                       ),
                     ),
                   ),

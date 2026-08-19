@@ -7,9 +7,10 @@ class GroupLogoViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final validLogos = groupLogos.where((logo) => logo.trim().isNotEmpty).toList();
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: groupLogos.map((logo) {
+      children: validLogos.map((logo) {
         return Padding(
           padding: const EdgeInsets.only(right: 4.0),
           child: SvgPicture.asset(
@@ -19,6 +20,7 @@ class GroupLogoViewer extends StatelessWidget {
                 : null,
             width: 20,
             height: 20,
+            errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
           ),
         );
       }).toList(),

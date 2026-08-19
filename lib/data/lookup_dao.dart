@@ -46,7 +46,10 @@ class LookupDao {
   Future<List<TargetGroup>> getTargetGroups({bool forceRefresh = false}) async {
     if (_targetGroups != null && !forceRefresh) return _targetGroups!;
     final rows = await (db.select(db.targetGroups)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
-    _targetGroups = rows.map((e) => TargetGroup(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn, iconName: e.iconName)).toList();
+    _targetGroups = rows.map((e) {
+      final icon = e.iconName == 'feed_additive' ? 'feed_additives' : e.iconName;
+      return TargetGroup(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn, iconName: icon);
+    }).toList();
     _targetGroupMap = { for (var tg in _targetGroups!) tg.id : tg };
     return _targetGroups!;
   }

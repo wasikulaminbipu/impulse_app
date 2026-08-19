@@ -52,10 +52,11 @@ class _ProductCardState extends State<ProductCard> {
               BoxShadow(
                 color: Colors.black.withValues(
                   alpha: Theme.of(context).brightness == Brightness.dark
-                      ? 0.2
-                      : 0.05,
+                      ? 0.35
+                      : 0.08,
                 ),
                 blurRadius: 16,
+                spreadRadius: 1,
                 offset: const Offset(0, 4),
               ),
             ],

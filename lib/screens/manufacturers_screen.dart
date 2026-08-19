@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_dex/models/product.dart';
 import 'package:impulse_dex/providers/app_maintenance_provider.dart';
@@ -100,10 +100,18 @@ class _ManufacturerCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(
+            alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.65,
+          ),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.08),
-            blurRadius: 10,
+            color: Colors.black.withValues(
+              alpha: Theme.of(context).brightness == Brightness.dark ? 0.25 : 0.06,
+            ),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],

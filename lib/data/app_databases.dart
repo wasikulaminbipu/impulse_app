@@ -161,7 +161,17 @@ Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
 
   final versionFile = File('$dbPath.version');
 
-  final byteData = await rootBundle.load('assets/db/$assetName');
+  ByteData byteData;
+  try {
+    byteData = await rootBundle.load('assets/db/$assetName');
+  } catch (e) {
+    throw Exception('Failed to load database asset "assets/db/$assetName": $e');
+  }
+
+  if (byteData.lengthInBytes == 0) {
+    throw Exception('Database asset "assets/db/$assetName" has empty data.');
+  }
+
   final assetBytes = byteData.buffer.asUint8List(
     byteData.offsetInBytes,
     byteData.lengthInBytes,

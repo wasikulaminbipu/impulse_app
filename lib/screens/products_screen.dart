@@ -170,6 +170,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
               AppAssets.appLogo,
               height: 32,
               fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.inventory_2, size: 32),
             ),
             const SizedBox(width: 10),
             Text(

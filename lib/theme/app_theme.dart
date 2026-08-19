@@ -104,13 +104,13 @@ class AppTheme {
     scaffoldBackgroundColor: const Color(0xFFF8F9FA),
     cardTheme: CardThemeData(
       color: Colors.white,
-      elevation: 0,
+      elevation: 1.5,
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFFE0E3E2), width: 1),
+        side: const BorderSide(color: Color(0xFFD4DAD7), width: 1),
       ),
-      shadowColor: const Color(0x0C000000),
+      shadowColor: const Color(0x14000000),
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFFF8F9FA),
@@ -245,14 +245,14 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: const Color(0xFF121414),
     cardTheme: CardThemeData(
-      color: const Color(0xFF1E2020),
-      elevation: 0,
+      color: const Color(0xFF1D2121),
+      elevation: 1.5,
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFF282B2A), width: 1),
+        side: const BorderSide(color: Color(0xFF333A38), width: 1),
       ),
-      shadowColor: const Color(0x33000000),
+      shadowColor: const Color(0x3D000000),
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF121414),

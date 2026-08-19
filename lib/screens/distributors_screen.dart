@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_dex/models/distributor.dart';
 import 'package:impulse_dex/models/app_maintenance.dart';
@@ -63,12 +63,22 @@ class _DistributorCard extends StatelessWidget {
     final area = distributorWithLocation.area;
     final region = distributorWithLocation.region;
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(
+            alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.65,
+          ),
+          width: 1,
+        ),
+      ),
       child: InkWell(
         onTap: null,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(

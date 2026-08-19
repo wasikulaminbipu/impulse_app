@@ -20,10 +20,18 @@ class SectionCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant.withValues(
+            alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.65,
+          ),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.08),
+            color: Theme.of(context).shadowColor.withValues(
+              alpha: Theme.of(context).brightness == Brightness.dark ? 0.25 : 0.06,
+            ),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
