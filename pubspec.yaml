@@ -92,14 +92,24 @@ flutter_launcher_icons:
 
 # Splash Screen Configuration
 flutter_native_splash:
-  color: "#0D1117"
+  color: "#F8F9FA"
+  color_dark: "#121414"
   image: assets/images/app_logo.png
+  image_dark: assets/images/app_logo.png
+  branding: assets/images/branding_light.png
+  branding_dark: assets/images/branding_dark.png
   fullscreen: true
   android_gravity: center
 
   android_12:
     image: assets/images/app_logo.png
-    color: "#0D1117"
+    image_dark: assets/images/app_logo.png
+    branding: assets/images/branding_light.png
+    branding_dark: assets/images/branding_dark.png
+    color: "#F8F9FA"
+    color_dark: "#121414"
+    icon_background_color: "#F8F9FA"
+    icon_background_color_dark: "#121414"
 
   web: false  # set true if you want it on web too
 

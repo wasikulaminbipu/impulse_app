@@ -14,6 +14,28 @@ import 'package:impulse_dex/widgets/asset_fallback_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
+Future<void> _saveContactToPhone({
+  required String fullName,
+  required String? mobile,
+  required String? designation,
+  required BuildContext context,
+}) async {
+  final cleanMobile = mobile?.trim() ?? '';
+  final cleanDesignation = designation?.trim() ?? '';
+
+  final newContact = Contact(
+    name: Name(first: fullName.trim()),
+    phones: [if (cleanMobile.isNotEmpty) Phone(number: cleanMobile)],
+    organizations: [
+      Organization(
+        name: 'Impulse Agriscience Ltd.',
+        jobTitle: cleanDesignation,
+      ),
+    ],
+  );
+  await FlutterContacts.native.showCreator(contact: newContact);
+}
+
 class SalesPersonnelsScreen extends ConsumerStatefulWidget {
   const SalesPersonnelsScreen({super.key});
 
@@ -582,17 +604,13 @@ class _SalesPersonnelCard extends ConsumerWidget {
                 child: TextButton.icon(
                   onPressed: () async {
                     try {
-                      final newContact = Contact(
-                        name: Name(first: personnel.nameEn.resolve(personnel.nameBn, lang)),
-                        phones: [Phone(number: personnel.mobile ?? '')],
-                        organizations: [
-                          Organization(
-                            name: 'Impulse',
-                            jobTitle: personnel.designation ?? '',
-                          )
-                        ],
+                      final fullName = personnel.nameEn.resolve(personnel.nameBn, lang);
+                      await _saveContactToPhone(
+                        fullName: fullName,
+                        mobile: personnel.mobile,
+                        designation: personnel.designation,
+                        context: context,
                       );
-                      await FlutterContacts.native.showCreator(contact: newContact);
                     } catch (e) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -814,19 +832,13 @@ class _VetDoctorCard extends ConsumerWidget {
                 child: TextButton.icon(
                   onPressed: () async {
                     try {
-                      final newContact = Contact(
-                        name: Name(
-                            first: doctor.nameEn.resolve(doctor.nameBn, lang)),
-                        phones: [Phone(number: doctor.mobile ?? '')],
-                        organizations: [
-                          Organization(
-                            name: 'Impulse',
-                            jobTitle: doctor.specialization ?? '',
-                          )
-                        ],
+                      final fullName = doctor.nameEn.resolve(doctor.nameBn, lang);
+                      await _saveContactToPhone(
+                        fullName: fullName,
+                        mobile: doctor.mobile,
+                        designation: doctor.specialization,
+                        context: context,
                       );
-                      await FlutterContacts.native
-                          .showCreator(contact: newContact);
                     } catch (e) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
