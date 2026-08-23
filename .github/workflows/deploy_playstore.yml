@@ -123,9 +123,7 @@ jobs:
           fi
 
           cp android/app/key.p12 android/key.p12 2>/dev/null || true
-          cp android/app/key.p12 android/app/key.jks 2>/dev/null || true
-          cp android/app/key.p12 android/key.jks 2>/dev/null || true
-          echo "Release signing keystore successfully decoded and validated."
+          echo "Release signing PKCS12 keystore (key.p12) successfully decoded and validated."
           if [ -n "$KEY_PROPERTIES" ]; then
             echo "$KEY_PROPERTIES" > android/key.properties
           fi
@@ -199,7 +197,8 @@ jobs:
       - name: Clean Up Secrets
         if: always()
         run: |
-          rm -f android/app/key.jks
+          rm -f android/app/key.p12
+          rm -f android/key.p12
           rm -f android/key.properties
           rm -f android/pc-api-key.json
 

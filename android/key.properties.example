@@ -1,8 +1,8 @@
 # Key properties configuration for Android Release Signing
 # Copy this file to android/key.properties and populate with your production credentials.
-# NEVER commit android/key.properties or your *.jks keystore to git!
+# NEVER commit android/key.properties or your *.p12 keystore to git!
 
 storePassword=YOUR_STORE_PASSWORD
 keyPassword=YOUR_KEY_PASSWORD
 keyAlias=upload
-storeFile=release-upload-key.jks
+storeFile=key.p12
