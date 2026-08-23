@@ -110,18 +110,22 @@ jobs:
           PLAYSTORE_JSON_KEY: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
         run: |
           set -e
-          if [ -n "$KEYSTORE_BASE64" ]; then
-            echo "$KEYSTORE_BASE64" | base64 -d > android/app/key.p12 2>/dev/null || echo "$KEYSTORE_BASE64" | base64 --decode > android/app/key.p12 2>/dev/null || true
-            if [ -s android/app/key.p12 ] && [ $(wc -c < android/app/key.p12) -gt 100 ]; then
-              cp android/app/key.p12 android/app/key.jks 2>/dev/null || true
-              cp android/app/key.p12 android/key.p12 2>/dev/null || true
-              cp android/app/key.p12 android/key.jks 2>/dev/null || true
-              echo "Keystore file decoded and validated successfully."
-            else
-              echo "::warning::PLAYSTORE_UPLOAD_KEYSTORE_BASE64 secret was missing or invalid. Cleaning up invalid keystore files."
-              rm -f android/app/key.p12 android/app/key.jks android/key.p12 android/key.jks
-            fi
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::PLAYSTORE_UPLOAD_KEYSTORE_BASE64 secret is missing! A valid signing keystore is required for release builds."
+            exit 1
           fi
+
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > android/app/key.p12 2>/dev/null || printf '%s' "$KEYSTORE_BASE64" | base64 -d > android/app/key.p12 2>/dev/null || true
+
+          if [ ! -s android/app/key.p12 ]; then
+            echo "::error::PLAYSTORE_UPLOAD_KEYSTORE_BASE64 secret failed base64 decoding or resulted in an empty file!"
+            exit 1
+          fi
+
+          cp android/app/key.p12 android/key.p12 2>/dev/null || true
+          cp android/app/key.p12 android/app/key.jks 2>/dev/null || true
+          cp android/app/key.p12 android/key.jks 2>/dev/null || true
+          echo "Release signing keystore successfully decoded and validated."
           if [ -n "$KEY_PROPERTIES" ]; then
             echo "$KEY_PROPERTIES" > android/key.properties
           fi

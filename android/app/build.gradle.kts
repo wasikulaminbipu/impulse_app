@@ -36,25 +36,23 @@ android {
     signingConfigs {
         create("release") {
             val sFile = keystoreProperties["storeFile"]?.let { file(it) }
-            if (sFile != null && sFile.exists() && sFile.length() > 100) {
-                keyAlias = keystoreProperties["keyAlias"] as String?
-                keyPassword = keystoreProperties["keyPassword"] as String?
-                storeFile = sFile
-                storePassword = keystoreProperties["storePassword"] as String?
-                enableV1Signing = true
-                enableV2Signing = true
-                enableV3Signing = true
-                enableV4Signing = true
+            if (sFile == null || !sFile.exists()) {
+                throw GradleException("Release signing keystore file '${keystoreProperties["storeFile"]}' is missing or invalid! Build aborted.")
             }
+            keyAlias = keystoreProperties["keyAlias"] as String? ?: throw GradleException("keyAlias missing in key.properties")
+            keyPassword = keystoreProperties["keyPassword"] as String? ?: throw GradleException("keyPassword missing in key.properties")
+            storeFile = sFile
+            storePassword = keystoreProperties["storePassword"] as String? ?: throw GradleException("storePassword missing in key.properties")
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
+            enableV4Signing = true
         }
     }
 
     buildTypes {
         release {
-            val relConfig = signingConfigs.findByName("release")
-            if (relConfig?.storeFile != null && relConfig.storeFile!!.exists() && relConfig.storeFile!!.length() > 100) {
-                signingConfig = relConfig
-            }
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
