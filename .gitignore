@@ -50,8 +50,30 @@ app.*.map.json
 *.clinerules
 APP_Plan.md
 
-# Keystore secrets
+# Keystore & Security Secrets
 key.properties
+**/key.properties
+local.properties
+**/local.properties
 *.jks
 *.keystore
+*.p12
+*.p8
+*.pem
+*.key
+*.der
+*.cer
+*.crt
+*.pfx
+
+# Service Account & API Keys
+*service_account*.json
+pc-api-key.json
+google-services.json
+GoogleService-Info.plist
+
+# Environment Files
+.env
+.env.*
+*.env
 
