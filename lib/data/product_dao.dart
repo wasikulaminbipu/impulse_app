@@ -17,6 +17,7 @@ class ProductDao {
   final ProductsDb db;
   final LookupDao lookupDao;
   final ManufacturerDao manufacturerDao;
+  final SearchQueryCache<ProductLabel> _searchCache = SearchQueryCache<ProductLabel>(capacity: 100);
 
   ProductDao(this.db, this.lookupDao, {ManufacturerDao? manufacturerDao})
       : manufacturerDao = manufacturerDao ?? ManufacturerDao(db);
@@ -219,11 +220,21 @@ class ProductDao {
       args.add(categoryId);
     }
     
-    List<Map<String, dynamic>> rows = [];
     final trimmed = query.trim();
+    final cacheKey = '$categoryId:$targetGroupId:$isFeedAdditive:$scope:$trimmed:$limit:$offset';
+
+    if (trimmed.isNotEmpty && offset == 0) {
+      final cached = _searchCache.get(cacheKey);
+      if (cached != null) return cached;
+    }
+    
+    List<Map<String, dynamic>> rows = [];
     
     if (trimmed.isNotEmpty) {
-      final candidates = <int, Map<String, dynamic>>{};
+      final ftsCandidateList = <Map<String, dynamic>>[];
+      final triCandidateList = <Map<String, dynamic>>[];
+      final likeCandidateList = <Map<String, dynamic>>[];
+      final fuzzyCandidateList = <Map<String, dynamic>>[];
 
       // 1. FTS query (run when scope is ALL or NAME)
       if (scope == SearchScope.all || scope == SearchScope.name) {
@@ -238,19 +249,45 @@ class ProductDao {
 
             final ftsJoin = 'JOIN products_fts fts ON fts.rowid = p.id';
             final sqlQuery = '''
-              SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn FROM products p
+              SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn,
+                     bm25(fts, 10.0, 5.0, 3.0, 1.0) AS bm25_rank
+              FROM products p
               $ftsJoin
               LEFT JOIN categories c ON c.id = p.category_id
               $join
               WHERE ${ftsWhere.join(' AND ')}
+              ORDER BY bm25_rank ASC
             ''';
             try {
               final ftsRows = await db.executor.customQuery(sqlQuery, ftsArgs);
-              for (final r in ftsRows) {
-                candidates[r['id'] as int] = r;
-              }
+              ftsCandidateList.addAll(ftsRows);
             } catch (_) {}
           }
+        }
+      }
+
+      // 1b. Trigram FTS query (for mid-word, SKU, and code substring matching)
+      if ((scope == SearchScope.all || scope == SearchScope.name) && trimmed.length >= 3) {
+        final isTrigramReady = await isFtsReady(db.executor, 'products_trigram_fts');
+        if (isTrigramReady) {
+          final triWhere = List<String>.from(where);
+          final triArgs = List<Object?>.from(args);
+          triWhere.add('tri.products_trigram_fts MATCH ?');
+          triArgs.add('"$trimmed"');
+
+          final triJoin = 'JOIN products_trigram_fts tri ON tri.rowid = p.id';
+          final triSqlQuery = '''
+            SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn
+            FROM products p
+            $triJoin
+            LEFT JOIN categories c ON c.id = p.category_id
+            $join
+            WHERE ${triWhere.join(' AND ')}
+          ''';
+          try {
+            final triRows = await db.executor.customQuery(triSqlQuery, triArgs);
+            triCandidateList.addAll(triRows);
+          } catch (_) {}
         }
       }
 
@@ -310,20 +347,29 @@ class ProductDao {
       ''';
       try {
         final likeRows = await db.executor.customQuery(likeSqlQuery, likeArgs);
-        for (final r in likeRows) {
-          candidates.putIfAbsent(r['id'] as int, () => r);
-        }
+        likeCandidateList.addAll(likeRows);
       } catch (_) {}
 
       // 3. Fuzzy fallback query
       try {
         final fuzzyRows = await _fuzzyFallbackSearch(trimmed, baseWhere, baseArgs, join);
-        for (final r in fuzzyRows) {
-          candidates.putIfAbsent(r['id'] as int, () => r);
-        }
+        fuzzyCandidateList.addAll(fuzzyRows);
       } catch (_) {}
 
-      // Score and sort all candidate results
+      // 4. Perform Hybrid Search Fusion via Reciprocal Rank Fusion (RRF)
+      final activeRankedLists = <List<Map<String, dynamic>>>[];
+      if (ftsCandidateList.isNotEmpty) activeRankedLists.add(ftsCandidateList);
+      if (triCandidateList.isNotEmpty) activeRankedLists.add(triCandidateList);
+      if (likeCandidateList.isNotEmpty) activeRankedLists.add(likeCandidateList);
+      if (fuzzyCandidateList.isNotEmpty) activeRankedLists.add(fuzzyCandidateList);
+
+      final fusedCandidates = reciprocalRankFusion<Map<String, dynamic>>(
+        rankedResultLists: activeRankedLists,
+        getId: (row) => (row['id'] as int).toString(),
+        k: 60,
+      );
+
+      // Score and sort all candidate results with Tier Precedence
       final qLower = trimmed.toLowerCase();
       int getScore(Map<String, dynamic> row) {
         final titleEn = (row['title_en'] as String? ?? '').toLowerCase();
@@ -356,7 +402,7 @@ class ProductDao {
         return 7;
       }
 
-      final sortedList = candidates.values.toList();
+      final sortedList = List<Map<String, dynamic>>.from(fusedCandidates);
       sortedList.sort((a, b) {
         final scoreA = getScore(a);
         final scoreB = getScore(b);
@@ -379,7 +425,13 @@ class ProductDao {
     }
 
     final products = await _hydrateList(rows.map(Product.fromRow).toList());
-    return products.map((p) => p.toLabel()).toList();
+    final labels = products.map((p) => p.toLabel()).toList();
+
+    if (trimmed.isNotEmpty && offset == 0) {
+      _searchCache.put(cacheKey, labels);
+    }
+
+    return labels;
   }
 
   Future<List<Product>> getByManufacturer(
@@ -415,49 +467,67 @@ class ProductDao {
       ${baseWhere.isNotEmpty ? 'WHERE ${baseWhere.join(' AND ')}' : ''}
     ''';
     final candidates = await db.executor.customQuery(sqlQuery, baseArgs);
+    if (candidates.isEmpty) return [];
 
-    final scored = <Map<String, dynamic>>[];
-    for (final row in candidates) {
-      final titleEn = (row['title_en'] as String? ?? '').toLowerCase();
-      final titleBn = (row['title_bn'] as String? ?? '').toLowerCase();
-      final catEn = (row['cat_en'] as String? ?? '').toLowerCase();
-      final catBn = (row['cat_bn'] as String? ?? '').toLowerCase();
+    return compute(
+      computeFuzzyFallbackScores,
+      FuzzyCandidateInput(query: query, candidates: candidates),
+    );
+  }
 
-      int minDistance = 999;
-      // Evaluate product title matches first (no score penalty)
-      for (final target in [titleEn, titleBn]) {
-        if (target.isEmpty) continue;
-        final words = target.split(RegExp(r'\s+'));
-        for (final word in words) {
-          if (word.isEmpty) continue;
-          final dist = levenshteinDistance(trimmed, word);
-          if (dist < minDistance) minDistance = dist;
-        }
-        final fullDist = levenshteinDistance(trimmed, target);
-        if (fullDist < minDistance) minDistance = fullDist;
-      }
+  /// Retrieves products that are alike / similar to the specified [productId]
+  /// based on matching active ingredients (compositions), indications, or category.
+  Future<List<Product>> getAlikeProducts(int productId, {int limit = 10}) async {
+    final compositions = await _getCompositions(productId);
+    final targetProductRows = await db.executor.query(
+      'products',
+      where: 'id = ?',
+      whereArgs: [productId],
+    );
 
-      // Evaluate category matches with a +2 score penalty so title matches take priority
-      for (final target in [catEn, catBn]) {
-        if (target.isEmpty) continue;
-        final words = target.split(RegExp(r'\s+'));
-        for (final word in words) {
-          if (word.isEmpty) continue;
-          final dist = levenshteinDistance(trimmed, word) + 2;
-          if (dist < minDistance) minDistance = dist;
-        }
-        final fullDist = levenshteinDistance(trimmed, target) + 2;
-        if (fullDist < minDistance) minDistance = fullDist;
-      }
+    if (targetProductRows.isEmpty) return const [];
+    final categoryId = targetProductRows.first['category_id'] as int?;
 
-      final maxAllowed = trimmed.length <= 4 ? 1 : (trimmed.length <= 7 ? 2 : 3);
-      if (minDistance <= maxAllowed) {
-        scored.add({'row': row, 'score': minDistance});
+    final ingredientTokens = compositions
+        .map((c) => c.ingredientEn.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+
+    final where = <String>['p.id != ?', 'p.is_active = 1'];
+    final args = <Object?>[productId];
+
+    final conditions = <String>[];
+    if (ingredientTokens.isNotEmpty) {
+      for (final ing in ingredientTokens.take(3)) {
+        conditions.add('''
+          EXISTS (
+            SELECT 1 FROM compositions comp 
+            WHERE comp.product_id = p.id AND (comp.ingredient_en LIKE ? OR comp.ingredient_bn LIKE ?)
+          )
+        ''');
+        final pat = '%$ing%';
+        args.addAll([pat, pat]);
       }
     }
 
-    scored.sort((a, b) => (a['score'] as int).compareTo(b['score'] as int));
-    return scored.map((e) => e['row'] as Map<String, dynamic>).toList();
+    if (categoryId != null) {
+      conditions.add('p.category_id = ?');
+      args.add(categoryId);
+    }
+
+    if (conditions.isNotEmpty) {
+      where.add('(${conditions.join(' OR ')})');
+    }
+
+    final sqlQuery = '''
+      SELECT DISTINCT p.* FROM products p
+      WHERE ${where.join(' AND ')}
+      LIMIT ?
+    ''';
+    args.add(limit);
+
+    final rows = await db.executor.customQuery(sqlQuery, args);
+    return _hydrateList(rows.map(Product.fromRow).toList());
   }
 
   // ------------------------------------------------------------

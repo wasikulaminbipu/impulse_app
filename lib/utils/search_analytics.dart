@@ -26,10 +26,29 @@ class SearchAnalyticsEvent {
       };
 }
 
+typedef OnSearchExecuted = void Function(SearchAnalyticsEvent event);
+typedef OnZeroResultQuery = void Function(SearchAnalyticsEvent event);
+
 /// Search analytics tracker for monitoring latency, search conversion, and zero-result queries.
 class SearchAnalyticsTracker {
   static final List<SearchAnalyticsEvent> _recentLogs = [];
   static const int _maxLogSize = 100;
+  static OnSearchExecuted? _onSearchExecutedListener;
+  static OnZeroResultQuery? _onZeroResultQueryListener;
+
+  /// Registers external telemetry handlers for remote analytics services (e.g. Firebase Analytics, REST telemetry).
+  static void registerListeners({
+    OnSearchExecuted? onSearchExecuted,
+    OnZeroResultQuery? onZeroResultQuery,
+  }) {
+    _onSearchExecutedListener = onSearchExecuted;
+    _onZeroResultQueryListener = onZeroResultQuery;
+  }
+
+  static void clearListeners() {
+    _onSearchExecutedListener = null;
+    _onZeroResultQueryListener = null;
+  }
 
   static void logSearch({
     required String query,
@@ -51,6 +70,12 @@ class SearchAnalyticsTracker {
     _recentLogs.insert(0, event);
     if (_recentLogs.length > _maxLogSize) {
       _recentLogs.removeLast();
+    }
+
+    // Trigger external telemetry listeners
+    _onSearchExecutedListener?.call(event);
+    if (event.resultCount == 0) {
+      _onZeroResultQueryListener?.call(event);
     }
 
     if (kDebugMode) {

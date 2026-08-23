@@ -14,6 +14,7 @@ import 'package:impulse_dex/providers/debounced_query.dart';
 import 'package:impulse_dex/domain/category_filter.dart';
 import 'package:impulse_dex/domain/search_scope.dart';
 import 'package:impulse_dex/utils/app_constants.dart';
+import 'package:impulse_dex/utils/search_analytics.dart';
 
 part 'products_provider.g.dart';
 
@@ -108,6 +109,29 @@ Future<List<String>> productSearchFuzzySuggestions(Ref ref) async {
   
   final dao = await ref.watch(productDaoProvider.future);
   return dao.findFuzzyProductSuggestions(query);
+}
+
+/// Provides dynamic search facet aggregations (category counts) for active search query results.
+@riverpod
+Future<Map<String, List<FacetCount>>> productSearchFacets(Ref ref) async {
+  final query = ref.watch(productSearchQueryProvider);
+  final scope = ref.watch(productSearchScopeProvider);
+  if (query.trim().isEmpty) return const {};
+
+  final dao = await ref.watch(productDaoProvider.future);
+  final items = await dao.getFilteredLabels(
+    query: query,
+    scope: scope,
+    limit: 100,
+    offset: 0,
+  );
+
+  return calculateFacets<ProductLabel>(
+    items: items,
+    facetExtractors: {
+      'category': (item) => item.category.nameEn,
+    },
+  );
 }
 
 // Removed ProductCategoryTab
@@ -300,6 +324,7 @@ class PaginatedCategoryProducts extends _$PaginatedCategoryProducts {
     final query = ref.watch(productSearchQueryProvider);
     final scope = ref.watch(productSearchScopeProvider);
     
+    final stopwatch = Stopwatch()..start();
     final initialItems = await dao.getFilteredLabels(
       categoryId: criteria.categoryId,
       targetGroupId: criteria.targetGroupId,
@@ -309,6 +334,15 @@ class PaginatedCategoryProducts extends _$PaginatedCategoryProducts {
       limit: _pageSize + 1,
       offset: 0,
     );
+    stopwatch.stop();
+
+    if (query.trim().isNotEmpty) {
+      SearchAnalyticsTracker.logSearch(
+        query: query,
+        resultCount: initialItems.length > _pageSize ? initialItems.length - 1 : initialItems.length,
+        executionTimeMs: stopwatch.elapsedMilliseconds,
+      );
+    }
 
     final hasMore = initialItems.length > _pageSize;
     if (hasMore) {
@@ -376,6 +410,16 @@ Future<List<Product>> productsByManufacturer(
 }
 
 // Removed dead bulkProviders
+
+@riverpod
+Future<List<Product>> alikeProducts(
+  Ref ref,
+  int productId, {
+  int limit = 10,
+}) async {
+  final dao = await ref.watch(productDaoProvider.future);
+  return dao.getAlikeProducts(productId, limit: limit);
+}
 
 @Riverpod(keepAlive: true)
 class FavoriteToggle extends _$FavoriteToggle {

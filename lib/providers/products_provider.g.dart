@@ -366,6 +366,53 @@ final class ProductSearchFuzzySuggestionsProvider
 String _$productSearchFuzzySuggestionsHash() =>
     r'89d000228e01f46f0207e13506a5bc089b8c51ef';
 
+/// Provides dynamic search facet aggregations (category counts) for active search query results.
+
+@ProviderFor(productSearchFacets)
+final productSearchFacetsProvider = ProductSearchFacetsProvider._();
+
+/// Provides dynamic search facet aggregations (category counts) for active search query results.
+
+final class ProductSearchFacetsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Map<String, List<FacetCount>>>,
+          Map<String, List<FacetCount>>,
+          FutureOr<Map<String, List<FacetCount>>>
+        >
+    with
+        $FutureModifier<Map<String, List<FacetCount>>>,
+        $FutureProvider<Map<String, List<FacetCount>>> {
+  /// Provides dynamic search facet aggregations (category counts) for active search query results.
+  ProductSearchFacetsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'productSearchFacetsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$productSearchFacetsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<Map<String, List<FacetCount>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<Map<String, List<FacetCount>>> create(Ref ref) {
+    return productSearchFacets(ref);
+  }
+}
+
+String _$productSearchFacetsHash() =>
+    r'cdceb61c0de20bd6c2bf73d745f34968bb0a9124';
+
 @ProviderFor(categories)
 final categoriesProvider = CategoriesProvider._();
 
@@ -864,7 +911,7 @@ final class PaginatedCategoryProductsProvider
 }
 
 String _$paginatedCategoryProductsHash() =>
-    r'4065edb5fd703422be15fa7c95fe66a852ca9697';
+    r'65836cce2b69c98e001bdf749b48fa33118488e1';
 
 final class PaginatedCategoryProductsFamily extends $Family
     with
@@ -1015,6 +1062,82 @@ final class ProductsByManufacturerFamily extends $Family
 
   @override
   String toString() => r'productsByManufacturerProvider';
+}
+
+@ProviderFor(alikeProducts)
+final alikeProductsProvider = AlikeProductsFamily._();
+
+final class AlikeProductsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Product>>,
+          List<Product>,
+          FutureOr<List<Product>>
+        >
+    with $FutureModifier<List<Product>>, $FutureProvider<List<Product>> {
+  AlikeProductsProvider._({
+    required AlikeProductsFamily super.from,
+    required (int, {int limit}) super.argument,
+  }) : super(
+         retry: null,
+         name: r'alikeProductsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$alikeProductsHash();
+
+  @override
+  String toString() {
+    return r'alikeProductsProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<List<Product>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<Product>> create(Ref ref) {
+    final argument = this.argument as (int, {int limit});
+    return alikeProducts(ref, argument.$1, limit: argument.limit);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is AlikeProductsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$alikeProductsHash() => r'67c161957723134c55d4fe1557fd176d524abf39';
+
+final class AlikeProductsFamily extends $Family
+    with
+        $FunctionalFamilyOverride<FutureOr<List<Product>>, (int, {int limit})> {
+  AlikeProductsFamily._()
+    : super(
+        retry: null,
+        name: r'alikeProductsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  AlikeProductsProvider call(int productId, {int limit = 10}) =>
+      AlikeProductsProvider._(argument: (productId, limit: limit), from: this);
+
+  @override
+  String toString() => r'alikeProductsProvider';
 }
 
 @ProviderFor(FavoriteToggle)

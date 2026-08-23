@@ -11,6 +11,7 @@ import 'package:impulse_dex/data/db_extensions.dart';
 import 'package:impulse_dex/data/maintenance_tables.dart';
 import 'package:impulse_dex/data/products_tables.dart';
 import 'package:impulse_dex/data/distributors_tables.dart';
+import 'package:impulse_dex/data/fts_utils.dart';
 
 part 'app_databases.g.dart';
 
@@ -209,6 +210,7 @@ Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
     Future.microtask(() async {
       try {
         await ftsSetup(executor);
+        await optimizeAllFtsTables(executor);
       } catch (e) {
         // ignore: avoid_print
         print('FTS setup exception for $dbName (non-fatal): $e');
@@ -261,6 +263,11 @@ Future<void> _buildSingleFtsTable({
   List<String> extraSql = const [],
 }) async {
   if (await _isFtsTableReady(executor, tableName)) {
+    try {
+      await _runRaw(executor, ["INSERT INTO $tableName($tableName) VALUES('optimize');"]);
+    } catch (e, st) {
+      debugPrint('FTS periodic optimize error ($tableName): $e\n$st');
+    }
     return;
   }
 
@@ -346,6 +353,25 @@ Future<void> setupProductsFts(QueryExecutor executor) async {
       END;
       ''',
     ],
+  );
+
+  await _buildSingleFtsTable(
+    executor: executor,
+    tableName: 'products_trigram_fts',
+    createSql: '''
+    CREATE VIRTUAL TABLE IF NOT EXISTS products_trigram_fts
+    USING fts5(
+      title_en,
+      title_bn,
+      slug,
+      tokenize='trigram'
+    )
+    ''',
+    populateSql: '''
+    INSERT INTO products_trigram_fts(rowid, title_en, title_bn, slug)
+    SELECT p.id, p.title_en, p.title_bn, p.slug
+    FROM products p
+    ''',
   );
 }
 

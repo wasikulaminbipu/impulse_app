@@ -398,12 +398,24 @@ class _ProductCategoryTab extends ConsumerWidget {
                       if (suggestions.isEmpty) return const SizedBox.shrink();
                       return Column(
                         children: [
-                          Text(
-                            lang == 'bn' ? 'আপনি কি বোঝাতে চেয়েছেন:' : 'Did you mean:',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.auto_awesome,
+                                size: 14,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                lang == 'bn' ? 'আপনি কি বোঝাতে চেয়েছেন:' : 'Did you mean:',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 8),
                           Wrap(
@@ -412,12 +424,39 @@ class _ProductCategoryTab extends ConsumerWidget {
                             alignment: WrapAlignment.center,
                             children: suggestions.map((suggestion) {
                               return ActionChip(
-                                label: Text(suggestion),
+                                avatar: Icon(
+                                  Icons.search,
+                                  size: 14,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                label: Text(
+                                  suggestion,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer
+                                    .withValues(alpha: 0.3),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  side: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.3),
+                                  ),
+                                ),
                                 onPressed: () {
                                   if (onCategoryTap != null) {
                                     onCategoryTap!(suggestion);
                                   } else {
-                                    ref.read(productSearchQueryProvider.notifier).updateQuery(suggestion);
+                                    ref
+                                        .read(productSearchQueryProvider.notifier)
+                                        .updateQuery(suggestion);
                                   }
                                 },
                               );
