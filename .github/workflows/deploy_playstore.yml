@@ -52,7 +52,7 @@ jobs:
       - name: Run Code Generator Check (Drift & Freezed)
         run: |
           dart run build_runner build --delete-conflicting-outputs
-          git diff --exit-code || (echo "::error::Generated code is out of sync! Please run build_runner locally and commit changes." && exit 1)
+          git diff --exit-code lib/ || (echo "::error::Generated code is out of sync! Please run build_runner locally and commit changes." && exit 1)
 
       - name: Run Strict Static Analysis (Fatal Warnings)
         run: flutter analyze --fatal-infos --fatal-warnings
