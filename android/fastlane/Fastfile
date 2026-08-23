@@ -1,0 +1,34 @@
+default_platform(:android)
+
+platform :android do
+  desc "Deploy Internal QA / Testing Build to Google Play Internal Track"
+  lane :internal do
+    upload_to_play_store(
+      track: 'internal',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_images: true
+    )
+  end
+
+  desc "Deploy to Google Play Production Track with 10% Staged Rollout"
+  lane :production do
+    upload_to_play_store(
+      track: 'production',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      user_fraction: 0.10,
+      skip_upload_apk: true
+    )
+  end
+
+  desc "Upload Store Metadata and Localized Listings Only"
+  lane :metadata do
+    upload_to_play_store(
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: false,
+      skip_upload_images: false
+    )
+  end
+end

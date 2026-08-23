@@ -5,9 +5,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:impulse_dex/theme/app_theme.dart';
 import 'package:impulse_dex/screens/main_screen.dart';
 
-void main() {
+import 'package:flutter/services.dart';
+
+void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const ProviderScope(child: ImpulseProductsApp()));
 }
 
