@@ -112,6 +112,9 @@ jobs:
           set -e
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "$KEYSTORE_BASE64" | base64 --decode > android/app/key.jks
+            echo "$KEYSTORE_BASE64" | base64 --decode > android/app/key.p12
+            echo "$KEYSTORE_BASE64" | base64 --decode > android/key.jks
+            echo "$KEYSTORE_BASE64" | base64 --decode > android/key.p12
           fi
           if [ -n "$KEY_PROPERTIES" ]; then
             echo "$KEY_PROPERTIES" > android/key.properties
