@@ -17,25 +17,13 @@ class ProductsScreen extends ConsumerStatefulWidget {
   ConsumerState<ProductsScreen> createState() => _ProductsScreenState();
 }
 
-class _ProductsScreenState extends ConsumerState<ProductsScreen>
-    with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
+class _ProductsScreenState extends ConsumerState<ProductsScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
-
-  final List<String> _categories = [
-    'All',
-    'Poultry',
-    'Cattle',
-    'Aqua',
-    'Feed Additives',
-    'Vaccines',
-  ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _categories.length, vsync: this);
     _searchFocusNode.addListener(_onFocusChange);
     _searchController.addListener(_onSearchTextChange);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -56,7 +44,6 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
     _searchFocusNode.removeListener(_onFocusChange);
     _searchController.removeListener(_onSearchTextChange);
     _searchFocusNode.dispose();
-    _tabController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -158,205 +145,209 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen>
     final lang = ref.watch(languageSettingProvider);
     final history = ref.watch(searchHistoryProvider).value ?? [];
     final trieSuggestions = ref.watch(productSearchTrieSuggestionsProvider).value ?? [];
+    final categoriesAsync = ref.watch(availableCategoriesProvider);
+    final categories = categoriesAsync.value ?? const ['All'];
     final bool showChips = _searchFocusNode.hasFocus &&
         (_searchController.text.trim().isNotEmpty ? trieSuggestions.isNotEmpty : history.isNotEmpty);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                AppAssets.appLogo,
-                height: 32,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.inventory_2, size: 32),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                'Impulse Dex',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.5,
+    return DefaultTabController(
+      key: ValueKey(categories.join(',')),
+      length: categories.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  AppAssets.appLogo,
+                  height: 32,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.inventory_2, size: 32),
                 ),
-              ),
-              if (ref.watch(productSearchQueryProvider).isNotEmpty) ...[
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(12),
+                const SizedBox(width: 10),
+                Text(
+                  'Impulse Dex',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.5,
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.search_rounded, size: 12, color: colorScheme.onPrimaryContainer),
-                      const SizedBox(width: 4),
-                      Text(
-                        lang == 'bn' ? 'ফিল্টার' : 'Active',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.onPrimaryContainer,
+                ),
+                if (ref.watch(productSearchQueryProvider).isNotEmpty) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.search_rounded, size: 12, color: colorScheme.onPrimaryContainer),
+                        const SizedBox(width: 4),
+                        Text(
+                          lang == 'bn' ? 'ফিল্টার' : 'Active',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onPrimaryContainer,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          backgroundColor: colorScheme.surface,
+          foregroundColor: colorScheme.onSurface,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.info_outline_rounded, size: 20),
+              tooltip: 'Privacy Policy & Info',
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => const PrivacyPolicyDialog(),
+                );
+              },
+            ),
+            IconButton(
+              icon: Text(
+                lang == 'bn' ? 'EN' : 'বাংলা',
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+              ),
+              onPressed: () =>
+                  ref.read(languageSettingProvider.notifier).toggle(),
+            ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(showChips ? 140 : 102),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 2, 16, 6),
+                  child: TextField(
+                    controller: _searchController,
+                    focusNode: _searchFocusNode,
+                    onChanged: (val) => ref
+                        .read(productSearchQueryProvider.notifier)
+                        .updateQuery(val),
+                    onSubmitted: (val) async {
+                      if (val.trim().isNotEmpty) {
+                        ref.read(searchHistoryProvider.notifier).addQuery(val);
+                        final dao = await ref.read(appMaintenanceDaoProvider.future);
+                        final currentItems = ref.read(paginatedCategoryProductsProvider('All')).value?.items.length ?? 0;
+                        await dao.logSearchEvent(val, currentItems);
+                      }
+                    },
+                    decoration: InputDecoration(
+                      hintText: lang == 'bn'
+                          ? 'প্রোডাক্ট, উপসর্গ, উপাদান খুঁজুন...'
+                          : 'Search products, symptoms, ingredients...',
+                      isDense: true,
+                      prefixIcon: Icon(
+                        Icons.search_rounded,
+                        color: colorScheme.primary,
+                        size: 22,
+                      ),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear_rounded, size: 20),
+                              onPressed: () {
+                                _searchController.clear();
+                                ref
+                                    .read(productSearchQueryProvider.notifier)
+                                    .updateQuery('');
+                                FocusScope.of(context).unfocus();
+                              },
+                            )
+                          : null,
+                      filled: true,
+                      fillColor: colorScheme.surfaceContainerHighest
+                          .withValues(alpha: 0.4),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 11,
+                        horizontal: 16,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide(
+                          color:
+                              colorScheme.outlineVariant.withValues(alpha: 0.4),
+                          width: 1,
                         ),
                       ),
-                    ],
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide(
+                          color:
+                              colorScheme.outlineVariant.withValues(alpha: 0.4),
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide(
+                          color: colorScheme.primary,
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                _buildSearchHistoryChips(context, ref, lang),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: TabBar(
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
+                    labelColor: colorScheme.primary,
+                    unselectedLabelColor:
+                        colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                    indicatorColor: colorScheme.primary,
+                    indicatorWeight: 3,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    dividerColor: Colors.transparent,
+                    labelPadding: const EdgeInsets.symmetric(horizontal: 14),
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13.5,
+                      letterSpacing: 0.2,
+                    ),
+                    unselectedLabelStyle: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13.5,
+                    ),
+                    tabs: categories
+                        .map(
+                          (c) => Tab(
+                            height: 36,
+                            text: c,
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
               ],
-            ],
-          ),
-        ),
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        backgroundColor: colorScheme.surface,
-        foregroundColor: colorScheme.onSurface,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.info_outline_rounded, size: 20),
-            tooltip: 'Privacy Policy & Info',
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => const PrivacyPolicyDialog(),
-              );
-            },
-          ),
-          IconButton(
-            icon: Text(
-              lang == 'bn' ? 'EN' : 'বাংলা',
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
             ),
-            onPressed: () =>
-                ref.read(languageSettingProvider.notifier).toggle(),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(showChips ? 140 : 102),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 2, 16, 6),
-                child: TextField(
-                  controller: _searchController,
-                  focusNode: _searchFocusNode,
-                  onChanged: (val) => ref
-                      .read(productSearchQueryProvider.notifier)
-                      .updateQuery(val),
-                  onSubmitted: (val) async {
-                    if (val.trim().isNotEmpty) {
-                      ref.read(searchHistoryProvider.notifier).addQuery(val);
-                      final dao = await ref.read(appMaintenanceDaoProvider.future);
-                      final currentItems = ref.read(paginatedCategoryProductsProvider('All')).value?.items.length ?? 0;
-                      await dao.logSearchEvent(val, currentItems);
-                    }
-                  },
-                  decoration: InputDecoration(
-                    hintText: lang == 'bn'
-                        ? 'প্রোডাক্ট, উপসর্গ, উপাদান খুঁজুন...'
-                        : 'Search products, symptoms, ingredients...',
-                    isDense: true,
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      color: colorScheme.primary,
-                      size: 22,
-                    ),
-                    suffixIcon: _searchController.text.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear_rounded, size: 20),
-                            onPressed: () {
-                              _searchController.clear();
-                              ref
-                                  .read(productSearchQueryProvider.notifier)
-                                  .updateQuery('');
-                              FocusScope.of(context).unfocus();
-                            },
-                          )
-                        : null,
-                    filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest
-                        .withValues(alpha: 0.4),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 11,
-                      horizontal: 16,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide(
-                        color:
-                            colorScheme.outlineVariant.withValues(alpha: 0.4),
-                        width: 1,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide(
-                        color:
-                            colorScheme.outlineVariant.withValues(alpha: 0.4),
-                        width: 1,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
-                      borderSide: BorderSide(
-                        color: colorScheme.primary,
-                        width: 1.5,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              _buildSearchHistoryChips(context, ref, lang),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: TabBar(
-                  controller: _tabController,
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.start,
-                  labelColor: colorScheme.primary,
-                  unselectedLabelColor:
-                      colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
-                  indicatorColor: colorScheme.primary,
-                  indicatorWeight: 3,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  dividerColor: Colors.transparent,
-                  labelPadding: const EdgeInsets.symmetric(horizontal: 14),
-                  labelStyle: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13.5,
-                    letterSpacing: 0.2,
-                  ),
-                  unselectedLabelStyle: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 13.5,
-                  ),
-                  tabs: _categories
-                      .map(
-                        (c) => Tab(
-                          height: 36,
-                          text: c,
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
-            ],
           ),
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: _categories.map((category) {
-          return _ProductCategoryTab(
-            category: category,
-            onCategoryTap: _onCategoryTap,
-          );
-        }).toList(),
+        body: TabBarView(
+          children: categories.map((category) {
+            return _ProductCategoryTab(
+              category: category,
+              onCategoryTap: _onCategoryTap,
+            );
+          }).toList(),
+        ),
       ),
     );
   }

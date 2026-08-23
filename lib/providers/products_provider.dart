@@ -13,6 +13,7 @@ import 'package:impulse_dex/providers/paginated_state.dart';
 import 'package:impulse_dex/providers/debounced_query.dart';
 import 'package:impulse_dex/domain/category_filter.dart';
 import 'package:impulse_dex/domain/search_scope.dart';
+import 'package:impulse_dex/utils/app_constants.dart';
 
 part 'products_provider.g.dart';
 
@@ -121,6 +122,48 @@ Future<List<String>> productSearchFuzzySuggestions(Ref ref) async {
 Future<List<Category>> categories(Ref ref) async {
   final dao = await ref.watch(lookupDaoProvider.future);
   return dao.getCategories();
+}
+
+@riverpod
+Future<List<String>> availableCategories(Ref ref) async {
+  final dao = await ref.watch(productDaoProvider.future);
+  final cats = await ref.watch(categoriesProvider.future);
+  final groups = await ref.watch(targetGroupsProvider.future);
+
+  final candidateCategories = [
+    AppConstants.categoryAll,
+    AppConstants.categoryPoultry,
+    AppConstants.categoryCattle,
+    AppConstants.categoryAqua,
+    AppConstants.categoryFeedAdditives,
+    AppConstants.categoryVaccines,
+  ];
+
+  final available = <String>[];
+
+  for (final category in candidateCategories) {
+    if (category == AppConstants.categoryAll) {
+      available.add(category);
+      continue;
+    }
+
+    final criteria = resolveCategoryFilter(category, cats, groups);
+    final items = await dao.getFilteredLabels(
+      categoryId: criteria.categoryId,
+      targetGroupId: criteria.targetGroupId,
+      isFeedAdditive: criteria.isFeedAdditive,
+      query: '',
+      scope: SearchScope.all,
+      limit: 1,
+      offset: 0,
+    );
+
+    if (items.isNotEmpty) {
+      available.add(category);
+    }
+  }
+
+  return available;
 }
 
 @riverpod

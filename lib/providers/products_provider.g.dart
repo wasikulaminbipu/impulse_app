@@ -405,6 +405,46 @@ final class CategoriesProvider
 
 String _$categoriesHash() => r'446091015abc6cac5b4a0b3e3966b60008cf7593';
 
+@ProviderFor(availableCategories)
+final availableCategoriesProvider = AvailableCategoriesProvider._();
+
+final class AvailableCategoriesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<String>>,
+          List<String>,
+          FutureOr<List<String>>
+        >
+    with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
+  AvailableCategoriesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'availableCategoriesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$availableCategoriesHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<String>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<String>> create(Ref ref) {
+    return availableCategories(ref);
+  }
+}
+
+String _$availableCategoriesHash() =>
+    r'd1dd23978ca8ba6873c4e7944ecbfabaa366c461';
+
 @ProviderFor(targetGroups)
 final targetGroupsProvider = TargetGroupsProvider._();
 
