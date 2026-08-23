@@ -1,2 +1,3 @@
-json_key_file("pc-api-key.json")
+json_key_file(ENV["PLAY_STORE_JSON_KEY"] || ENV["JSON_KEY_FILE"] || "pc-api-key.json")
 package_name("com.impulseagriscienceltd.impulse_products")
+

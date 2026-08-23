@@ -120,3 +120,13 @@
 -dontwarn kotlinx.coroutines.**
 -dontwarn androidx.sqlite.**
 -dontwarn com.caverock.androidsvg.**
+
+# ------------------------------------------------------------------------------
+# 8. Java Security & Cryptography / Keystore Provider Rules
+# ------------------------------------------------------------------------------
+# Preserve Java Security Providers and KeyStore factories for 256-bit EC (P-256)
+-keep class java.security.** { *; }
+-keep class javax.crypto.** { *; }
+-keep class sun.security.** { *; }
+-keep class org.bouncycastle.** { *; }
+

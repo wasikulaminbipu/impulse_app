@@ -6,6 +6,19 @@ platform :android do
     upload_to_play_store(
       track: 'internal',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
+      mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_images: true
+    )
+  end
+
+  desc "Deploy to Google Play Closed Testing / Beta Track"
+  lane :beta do
+    upload_to_play_store(
+      track: 'beta',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
       skip_upload_apk: true,
       skip_upload_metadata: false,
       skip_upload_images: true
@@ -17,8 +30,19 @@ platform :android do
     upload_to_play_store(
       track: 'production',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
+      mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
       user_fraction: 0.10,
       skip_upload_apk: true
+    )
+  end
+
+  desc "Promote Beta track build to Production Track (100% rollout)"
+  lane :promote_beta do
+    upload_to_play_store(
+      track: 'beta',
+      track_promote_to: 'production',
+      skip_upload_apk: true,
+      skip_upload_aab: true
     )
   end
 
@@ -32,3 +56,4 @@ platform :android do
     )
   end
 end
+
