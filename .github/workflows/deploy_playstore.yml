@@ -111,10 +111,16 @@ jobs:
         run: |
           set -e
           if [ -n "$KEYSTORE_BASE64" ]; then
-            echo "$KEYSTORE_BASE64" | base64 --decode > android/app/key.jks
-            echo "$KEYSTORE_BASE64" | base64 --decode > android/app/key.p12
-            echo "$KEYSTORE_BASE64" | base64 --decode > android/key.jks
-            echo "$KEYSTORE_BASE64" | base64 --decode > android/key.p12
+            echo "$KEYSTORE_BASE64" | base64 -d > android/app/key.p12 2>/dev/null || echo "$KEYSTORE_BASE64" | base64 --decode > android/app/key.p12 2>/dev/null || true
+            if [ -s android/app/key.p12 ] && [ $(wc -c < android/app/key.p12) -gt 100 ]; then
+              cp android/app/key.p12 android/app/key.jks 2>/dev/null || true
+              cp android/app/key.p12 android/key.p12 2>/dev/null || true
+              cp android/app/key.p12 android/key.jks 2>/dev/null || true
+              echo "Keystore file decoded and validated successfully."
+            else
+              echo "::warning::PLAYSTORE_UPLOAD_KEYSTORE_BASE64 secret was missing or invalid. Cleaning up invalid keystore files."
+              rm -f android/app/key.p12 android/app/key.jks android/key.p12 android/key.jks
+            fi
           fi
           if [ -n "$KEY_PROPERTIES" ]; then
             echo "$KEY_PROPERTIES" > android/key.properties

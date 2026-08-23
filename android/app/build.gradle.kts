@@ -36,7 +36,7 @@ android {
     signingConfigs {
         create("release") {
             val sFile = keystoreProperties["storeFile"]?.let { file(it) }
-            if (sFile != null && sFile.exists()) {
+            if (sFile != null && sFile.exists() && sFile.length() > 100) {
                 keyAlias = keystoreProperties["keyAlias"] as String?
                 keyPassword = keystoreProperties["keyPassword"] as String?
                 storeFile = sFile
@@ -52,7 +52,7 @@ android {
     buildTypes {
         release {
             val relConfig = signingConfigs.findByName("release")
-            if (relConfig?.storeFile?.exists() == true) {
+            if (relConfig?.storeFile != null && relConfig.storeFile!!.exists() && relConfig.storeFile!!.length() > 100) {
                 signingConfig = relConfig
             }
             isMinifyEnabled = true
