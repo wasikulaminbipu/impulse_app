@@ -133,7 +133,8 @@ jobs:
         run: |
           flutter clean
           cd android
-          ./gradlew clean
+          chmod +x gradlew || true
+          ./gradlew clean || gradle clean
           cd ..
           flutter pub get
 
