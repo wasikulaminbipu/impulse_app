@@ -19,7 +19,7 @@ class ManufacturerSection extends StatelessWidget {
       icon: Icons.factory,
       child: InkWell(
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
+          MaterialPageRoute<void>(
             builder: (context) => ManufacturerDetailsScreen(manufacturer: manufacturer),
           ),
         ),

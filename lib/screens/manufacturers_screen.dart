@@ -123,7 +123,7 @@ class _ManufacturerCard extends StatelessWidget {
           child: InkWell(
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
+                MaterialPageRoute<void>(
                   builder: (context) =>
                       ManufacturerDetailsScreen(manufacturer: manufacturer),
                 ),

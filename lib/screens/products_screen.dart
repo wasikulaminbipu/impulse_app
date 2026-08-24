@@ -212,7 +212,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
               icon: const Icon(Icons.info_outline_rounded, size: 20),
               tooltip: 'Privacy Policy & Info',
               onPressed: () {
-                showDialog(
+                showDialog<void>(
                   context: context,
                   builder: (context) => const PrivacyPolicyDialog(),
                 );
@@ -242,7 +242,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                         .updateQuery(val),
                     onSubmitted: (val) async {
                       if (val.trim().isNotEmpty) {
-                        ref.read(searchHistoryProvider.notifier).addQuery(val);
+                        await ref.read(searchHistoryProvider.notifier).addQuery(val);
                         final dao = await ref.read(appMaintenanceDaoProvider.future);
                         final currentItems = ref.read(paginatedCategoryProductsProvider('All')).value?.items.length ?? 0;
                         await dao.logSearchEvent(val, currentItems);

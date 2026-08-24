@@ -14,6 +14,10 @@ analyzer:
     strict-casts: true
     strict-inference: true
     strict-raw-types: true
+  errors:
+    missing_required_param: error
+    missing_return: error
+    invalid_annotation_target: ignore
 
 linter:
   rules:
@@ -27,6 +31,8 @@ linter:
     - unawaited_futures
     - unnecessary_null_checks
     - unnecessary_nullable_for_final_variable_declarations
+    - unnecessary_null_aware_assignments
+    - unnecessary_late
     - use_super_parameters
 
 plugins:

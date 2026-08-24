@@ -480,9 +480,9 @@ class _SalesPersonnelCard extends ConsumerWidget {
                           fontSize: 17,
                         ),
                       ),
-                      if (personnel.designation != null)
+                      if (personnel.designation case final designation?)
                         HighlightText(
-                          text: personnel.designation!,
+                          text: designation,
                           query: query,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -519,10 +519,10 @@ class _SalesPersonnelCard extends ConsumerWidget {
                             ),
                           ],
                         ),
-                      if (personnel.mobile != null && personnel.mobile!.isNotEmpty) ...[
+                      if (personnel.mobile case final mobile? when mobile.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         HighlightText(
-                          text: personnel.mobile!,
+                          text: mobile,
                           query: query,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -695,18 +695,18 @@ class _VetDoctorCard extends ConsumerWidget {
                           fontSize: 17,
                         ),
                       ),
-                      if (doctor.qualification != null && doctor.qualification!.isNotEmpty)
+                      if (doctor.qualification case final qualification? when qualification.isNotEmpty)
                         HighlightText(
-                          text: doctor.qualification!,
+                          text: qualification,
                           query: query,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 13,
                           ),
                         ),
-                      if (doctor.specialization != null && doctor.specialization!.isNotEmpty)
+                      if (doctor.specialization case final specialization? when specialization.isNotEmpty)
                         HighlightText(
-                          text: doctor.specialization!,
+                          text: specialization,
                           query: query,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -746,10 +746,10 @@ class _VetDoctorCard extends ConsumerWidget {
                             ),
                           ],
                         ),
-                      if (doctor.mobile != null && doctor.mobile!.isNotEmpty) ...[
+                      if (doctor.mobile case final mobile? when mobile.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         HighlightText(
-                          text: doctor.mobile!,
+                          text: mobile,
                           query: query,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,

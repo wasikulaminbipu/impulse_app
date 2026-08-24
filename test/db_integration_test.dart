@@ -29,7 +29,7 @@ void main() {
 
         final product = await dao.getById(products.first.id);
         expect(product, isNotNull);
-        expect(product!.directions, isA<List>());
+        expect(product!.directions, isA<List<dynamic>>());
 
         for (final d in product.directions) {
           expect(d.id, isNotNull);
@@ -53,7 +53,7 @@ void main() {
 
         // 1. Before FTS setup (FTS table not ready), search uses LIKE fallback
         final searchBeforeFts = await dao.search('aqua');
-        expect(searchBeforeFts, isA<List>());
+        expect(searchBeforeFts, isA<List<dynamic>>());
 
         // 2. Perform FTS setup
         await setupProductsFts(db.executor);
@@ -66,18 +66,18 @@ void main() {
 
         // Search with special characters (should not crash FTS5)
         final searchSpecial = await dao.search('test: (123)* &%');
-        expect(searchSpecial, isA<List>());
+        expect(searchSpecial, isA<List<dynamic>>());
 
         // Search for existing keyword via FTS
         final searchKeyword = await dao.search('aqua');
-        expect(searchKeyword, isA<List>());
+        expect(searchKeyword, isA<List<dynamic>>());
 
         // 3. Category search indexing test
         final categories = await LookupDao(db).getCategories();
         if (categories.isNotEmpty) {
           final catName = categories.first.nameEn;
           final catResults = await dao.search(catName);
-          expect(catResults, isA<List>());
+          expect(catResults, isA<List<dynamic>>());
 
           // 4. Test category update trigger propagation to products_fts
           final catId = categories.first.id;
@@ -87,7 +87,7 @@ void main() {
             [updatedCatName, catId],
           );
           final updatedResults = await dao.search(updatedCatName);
-          expect(updatedResults, isA<List>());
+          expect(updatedResults, isA<List<dynamic>>());
         }
       } finally {
         await db.close();
@@ -110,7 +110,7 @@ void main() {
 
         // 1. Search before FTS setup (fallback to LIKE)
         final distResultsBefore = await distDao.searchDistributors('dhaka');
-        expect(distResultsBefore, isA<List>());
+        expect(distResultsBefore, isA<List<dynamic>>());
 
         // 2. Perform Distributors FTS setup
         await setupDistributorsFts(db.executor);
@@ -122,13 +122,13 @@ void main() {
         expect(metaRows.first.read<String>('value'), equals('1'));
 
         final distResults = await distDao.searchDistributors('dhaka: (test)');
-        expect(distResults, isA<List>());
+        expect(distResults, isA<List<dynamic>>());
 
         final salesResults = await salesDao.searchSalesPersonnel('rahim*');
-        expect(salesResults, isA<List>());
+        expect(salesResults, isA<List<dynamic>>());
 
         final vetResults = await vetDao.searchVetDoctors('doctor &%');
-        expect(vetResults, isA<List>());
+        expect(vetResults, isA<List<dynamic>>());
       } finally {
         await db.close();
         if (tempDbFile.existsSync()) tempDbFile.deleteSync();

@@ -208,10 +208,11 @@ void main() {
         },
       );
 
-      expect(facets.containsKey('category'), isTrue);
-      expect(facets['category']!, isNotEmpty);
-      expect(facets['category']!.first.value, equals('Veterinary Antibiotics'));
-      expect(facets['category']!.first.count, equals(2));
+      final categoryFacet = facets['category'];
+      expect(categoryFacet, isNotNull);
+      expect(categoryFacet, isNotEmpty);
+      expect(categoryFacet!.first.value, equals('Veterinary Antibiotics'));
+      expect(categoryFacet.first.count, equals(2));
     });
 
     test('7. products_trigram_fts performs mid-word and slug substring matching', () async {

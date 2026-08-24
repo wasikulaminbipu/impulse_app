@@ -85,7 +85,7 @@ class _ProductCardState extends State<ProductCard> {
                     : () {
                         HapticFeedback.lightImpact();
                         Navigator.of(context).push(
-                          PageRouteBuilder(
+                          PageRouteBuilder<void>(
                             transitionDuration: const Duration(milliseconds: 400),
                             reverseTransitionDuration: const Duration(
                               milliseconds: 400,

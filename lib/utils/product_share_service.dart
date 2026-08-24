@@ -25,7 +25,7 @@ class ProductShareService {
 
       // Check if boundary is still painting or attached
       if (boundary.debugNeedsPaint) {
-        await Future.delayed(const Duration(milliseconds: 20));
+        await Future<void>.delayed(const Duration(milliseconds: 20));
       }
 
       // Capture image with given pixel ratio (defaults to high resolution 3.0)

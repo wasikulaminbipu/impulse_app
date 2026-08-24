@@ -290,7 +290,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
+                              MaterialPageRoute<void>(
                                 builder: (context) =>
                                     const SalesPersonnelsScreen(),
                               ),
