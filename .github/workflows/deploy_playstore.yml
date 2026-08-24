@@ -18,7 +18,7 @@ on:
       create_github_release:
         description: 'Create GitHub Release'
         required: false
-        default: 'true'
+        default: true
         type: boolean
 
 concurrency:
@@ -42,12 +42,13 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: false
+          cache: true
 
       - name: Install Dependencies
         run: flutter pub get
@@ -79,32 +80,25 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: false
+          cache: true
 
       - name: Set up Ruby & Fastlane
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
           working-directory: 'android'
-          bundler-cache: false
-
-      - name: Install Gem Dependencies
-        run: |
-          cd android
-          bundle install
+          bundler-cache: true
 
       - name: Verify Environment & Flutter Setup
         run: |
           set -e
           flutter doctor -v
-
-
-
 
       - name: Validate & Decode Secrets
         env:
@@ -204,4 +198,3 @@ jobs:
           rm -f android/key.p12
           rm -f android/key.properties
           rm -f android/pc-api-key.json
-
