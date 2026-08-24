@@ -59,6 +59,8 @@ local.properties
 *.keystore
 *.p12
 *.p8
+key.p12.base64
+*.base64
 *.pem
 *.key
 *.der
