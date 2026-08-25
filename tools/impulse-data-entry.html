@@ -780,8 +780,6 @@ function productDetailPage(id, onDone){
     <div class="field"><label>Manufacturer</label><select id="f_manufacturer_id"></select></div>
     <div class="field"><label>Motto (EN)</label><input type="text" id="f_motto_en" value="${esc(val(p.motto_en))}"></div>
     <div class="field"><label>Motto (BN)</label><input type="text" id="f_motto_bn" value="${esc(val(p.motto_bn))}"></div>
-    <div class="field"><label>Composition basis / Amount (EN)</label><input type="text" id="f_composition_basis_en" placeholder="e.g. 1 Liter" value="${esc(val(p.composition_basis_en))}"></div>
-    <div class="field"><label>Composition basis / Amount (BN)</label><input type="text" id="f_composition_basis_bn" placeholder="e.g. ১ লিটার" value="${esc(val(p.composition_basis_bn))}"></div>
     <div class="field" style="grid-column:1/-1;"><label>Short description (EN)</label><textarea id="f_short_description_en">${esc(val(p.short_description_en))}</textarea></div>
     <div class="field" style="grid-column:1/-1;"><label>Short description (BN)</label><textarea id="f_short_description_bn">${esc(val(p.short_description_bn))}</textarea></div>
     <div class="field"><label>Image URL</label><input type="url" id="f_image_url" value="${esc(val(p.image_url))}"></div>
@@ -826,6 +824,8 @@ function productDetailPage(id, onDone){
     const title_en = document.getElementById('f_title_en').value.trim();
     if(!title_en){ toast('Title (EN) is required.', true); return; }
     const category_id = +catSel.value;
+    const compElEn = document.getElementById('f_composition_basis_en');
+    const compElBn = document.getElementById('f_composition_basis_bn');
     const data = {
       title_en,
       title_bn: document.getElementById('f_title_bn').value || null,
@@ -833,8 +833,8 @@ function productDetailPage(id, onDone){
       manufacturer_id: manSel.value ? +manSel.value : null,
       motto_en: document.getElementById('f_motto_en').value || null,
       motto_bn: document.getElementById('f_motto_bn').value || null,
-      composition_basis_en: document.getElementById('f_composition_basis_en').value || null,
-      composition_basis_bn: document.getElementById('f_composition_basis_bn').value || null,
+      composition_basis_en: compElEn ? (compElEn.value || null) : (p.composition_basis_en || null),
+      composition_basis_bn: compElBn ? (compElBn.value || null) : (p.composition_basis_bn || null),
       short_description_en: document.getElementById('f_short_description_en').value || null,
       short_description_bn: document.getElementById('f_short_description_bn').value || null,
       image_url: document.getElementById('f_image_url').value || null,
@@ -884,12 +884,30 @@ function productDetailPage(id, onDone){
   function renderChildSections(productId){
     const slot = document.getElementById('childSections');
     slot.innerHTML = `
-      <div class="card"><h3>Compositions</h3><div id="sec_comp"></div></div>
+      <div class="card">
+        <h3>Compositions</h3>
+        <div class="grid2" style="margin-bottom:12px;">
+          <div class="field"><label>Composition basis / Amount (EN)</label><input type="text" id="f_composition_basis_en" placeholder="e.g. 1 Liter" value="${esc(val(p.composition_basis_en))}"></div>
+          <div class="field"><label>Composition basis / Amount (BN)</label><input type="text" id="f_composition_basis_bn" placeholder="e.g. ১ লিটার" value="${esc(val(p.composition_basis_bn))}"></div>
+        </div>
+        <div id="sec_comp"></div>
+      </div>
       <div class="card"><h3>Indications</h3><div id="sec_ind"></div></div>
       <div class="card"><h3>Dosage &amp; administration (directions)</h3><div id="sec_dir"></div></div>
       <div class="card"><h3>Precautions</h3><div id="sec_prec"></div></div>
       <div class="card"><h3>Presentations &amp; MRP</h3><div id="sec_pres"></div></div>
     `;
+
+    const saveCompBasis = () => {
+      const cb_en = document.getElementById('f_composition_basis_en').value || null;
+      const cb_bn = document.getElementById('f_composition_basis_bn').value || null;
+      run(`update products set composition_basis_en=?, composition_basis_bn=?, updated_at=? where id=?`,
+        [cb_en, cb_bn, nowIso(), productId]);
+      toast('Composition basis updated.');
+    };
+    document.getElementById('f_composition_basis_en').onchange = saveCompBasis;
+    document.getElementById('f_composition_basis_bn').onchange = saveCompBasis;
+
     childRows({
       mount:'sec_comp', table:'compositions', productId,
       cols:[
