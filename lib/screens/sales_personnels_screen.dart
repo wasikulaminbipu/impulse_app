@@ -8,6 +8,7 @@ import 'package:impulse_dex/widgets/skeleton_loader.dart';
 import 'package:impulse_dex/widgets/favorite_button.dart';
 import 'package:impulse_dex/utils/bilingual_string.dart';
 import 'package:impulse_dex/widgets/animated_list_item.dart';
+import 'package:impulse_dex/widgets/app_drawer.dart';
 import 'package:impulse_dex/providers/search_history_provider.dart';
 import 'package:impulse_dex/widgets/highlight_text.dart';
 import 'package:impulse_dex/widgets/asset_fallback_image.dart';
@@ -195,7 +196,23 @@ class _SalesPersonnelsScreenState extends ConsumerState<SalesPersonnelsScreen>
     final hasChips = _searchFocusNode.hasFocus;
 
     return Scaffold(
+      drawer: AppDrawer(
+        currentTabIndex: 2,
+        onTabSelected: (index) {
+          // Handled by parent tab controller if needed
+        },
+      ),
       appBar: AppBar(
+        titleSpacing: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu_rounded, size: 24),
+            tooltip: lang == 'bn' ? 'মেনু খুলুন' : 'Open Menu',
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
         title: Text(
           lang == 'bn' ? 'যোগাযোগ' : 'Contacts',
           style: const TextStyle(

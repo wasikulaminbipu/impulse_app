@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:impulse_dex/constants/app_assets.dart';
 import 'package:impulse_dex/models/product.dart';
 import 'package:impulse_dex/providers/app_maintenance_provider.dart';
 import 'package:impulse_dex/providers/products_provider.dart';
 import 'package:impulse_dex/providers/search_history_provider.dart';
+import 'package:impulse_dex/widgets/app_drawer.dart';
 import 'package:impulse_dex/widgets/product_card.dart';
-import 'package:impulse_dex/widgets/privacy_policy_dialog.dart';
 import 'package:impulse_dex/widgets/skeleton_loader.dart';
 
 class ProductsScreen extends ConsumerStatefulWidget {
@@ -154,20 +153,28 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
       key: ValueKey(categories.join(',')),
       length: categories.length,
       child: Scaffold(
+        drawer: AppDrawer(
+          currentTabIndex: 0,
+          onTabSelected: (index) {
+            // Handled by parent MainScreen or Tab selection
+          },
+        ),
         appBar: AppBar(
+          titleSpacing: 0,
+          leading: Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu_rounded, size: 24),
+              tooltip: lang == 'bn' ? 'মেনু খুলুন' : 'Open Menu',
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
+          ),
           title: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(
-                  AppAssets.appLogo,
-                  height: 32,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.inventory_2, size: 32),
-                ),
-                const SizedBox(width: 10),
                 Text(
                   'Impulse Dex',
                   style: const TextStyle(
@@ -208,16 +215,6 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
           backgroundColor: colorScheme.surface,
           foregroundColor: colorScheme.onSurface,
           actions: [
-            IconButton(
-              icon: const Icon(Icons.info_outline_rounded, size: 20),
-              tooltip: 'Privacy Policy & Info',
-              onPressed: () {
-                showDialog<void>(
-                  context: context,
-                  builder: (context) => const PrivacyPolicyDialog(),
-                );
-              },
-            ),
             IconButton(
               icon: Text(
                 lang == 'bn' ? 'EN' : 'বাংলা',

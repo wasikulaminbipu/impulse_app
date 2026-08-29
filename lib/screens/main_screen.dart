@@ -6,6 +6,7 @@ import 'package:impulse_dex/screens/manufacturers_screen.dart';
 import 'package:impulse_dex/screens/products_screen.dart';
 import 'package:impulse_dex/screens/sales_personnels_screen.dart';
 import 'package:impulse_dex/providers/app_maintenance_provider.dart';
+import 'package:impulse_dex/widgets/app_drawer.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -32,6 +33,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
+      drawer: AppDrawer(
+        currentTabIndex: _currentIndex,
+        onTabSelected: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      ),
       extendBody: true, // Allows the screens to scroll behind the floating glass nav bar
       body: SlideIndexedStack(
         index: _currentIndex,

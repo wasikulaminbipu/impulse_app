@@ -16,6 +16,7 @@ class PaginatedListScaffold<T> extends ConsumerStatefulWidget {
   final PreferredSizeWidget? bottom;
   final List<Widget>? actions;
   final Widget? emptyWidget;
+  final Widget? drawer;
 
   const PaginatedListScaffold({
     super.key,
@@ -30,6 +31,7 @@ class PaginatedListScaffold<T> extends ConsumerStatefulWidget {
     this.bottom,
     this.actions,
     this.emptyWidget,
+    this.drawer,
   });
 
   @override
@@ -74,7 +76,9 @@ class _PaginatedListScaffoldState<T>
     final asyncValue = ref.watch(widget.provider);
 
     return Scaffold(
+      drawer: widget.drawer,
       appBar: AppBar(
+        titleSpacing: 0,
         title: Text(widget.title),
         actions: widget.actions,
         bottom:

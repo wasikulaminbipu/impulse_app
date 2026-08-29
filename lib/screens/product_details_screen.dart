@@ -103,6 +103,30 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                         child: Container(
                           color: Colors.black.withValues(alpha: 0.2),
                           child: IconButton(
+                            icon: Text(
+                              lang == 'bn' ? 'EN' : 'বাংলা',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            tooltip: lang == 'bn' ? 'English' : 'বাংলা',
+                            onPressed: () =>
+                                ref.read(languageSettingProvider.notifier).toggle(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipOval(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          child: IconButton(
                             icon: _isSharing
                                 ? const SizedBox(
                                     width: 18,

@@ -8,6 +8,7 @@ import 'package:impulse_dex/providers/products_provider.dart';
 import 'package:impulse_dex/screens/manufacturer_details_screen.dart';
 import 'package:impulse_dex/widgets/paginated_list_scaffold.dart';
 import 'package:impulse_dex/widgets/animated_list_item.dart';
+import 'package:impulse_dex/widgets/app_drawer.dart';
 import 'package:impulse_dex/widgets/asset_fallback_image.dart';
 
 class ManufacturersScreen extends ConsumerWidget {
@@ -19,6 +20,7 @@ class ManufacturersScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return PaginatedListScaffold<Manufacturer>(
+      drawer: const AppDrawer(currentTabIndex: 1),
       title: lang == 'bn' ? 'প্রস্তুতকারক তালিকা' : 'Manufacturers List',
       searchHint: lang == 'bn'
           ? 'প্রস্তুতকারক খুঁজুন...'

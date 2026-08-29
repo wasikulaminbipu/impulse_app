@@ -49,6 +49,7 @@ app.*.map.json
 *.clientignore
 *.clinerules
 APP_Plan.md
+graphify-out/
 
 # Keystore & Security Secrets
 key.properties
