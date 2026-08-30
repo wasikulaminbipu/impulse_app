@@ -1,5 +1,5 @@
 # ==============================================================================
-# Comprehensive Production ProGuard / R8 Rules for Impulse DEX
+# Comprehensive Production ProGuard / R8 Rules for Impulse
 # Tech Stack: Flutter + Drift SQLite + Freezed + Riverpod + Native Plugins
 # ==============================================================================
 
@@ -95,7 +95,7 @@
 
 # flutter_native_splash & splash screen drawables
 -keep class net.jonhanson.flutter_native_splash.** { *; }
--keep class com.impulseagriscienceltd.impulse_dex.MainActivity { *; }
+-keep class com.impulseagriscienceltd.impulse_app.MainActivity { *; }
 
 # flutter_svg & SVG rendering engine
 -keep class com.caverock.androidsvg.** { *; }

@@ -1,24 +1,24 @@
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/models/app_maintenance.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
-import 'package:impulse_dex/providers/products_provider.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/models/app_maintenance.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/products_provider.dart';
 
-import 'package:impulse_dex/widgets/custom_badge.dart';
-import 'package:impulse_dex/widgets/group_logo_viewer.dart';
-import 'package:impulse_dex/widgets/favorite_button.dart';
-import 'package:impulse_dex/screens/sales_personnels_screen.dart';
-import 'package:impulse_dex/utils/bilingual_string.dart';
-import 'package:impulse_dex/utils/product_share_service.dart';
+import 'package:impulse_app/widgets/custom_badge.dart';
+import 'package:impulse_app/widgets/group_logo_viewer.dart';
+import 'package:impulse_app/widgets/favorite_button.dart';
+import 'package:impulse_app/screens/sales_personnels_screen.dart';
+import 'package:impulse_app/utils/bilingual_string.dart';
+import 'package:impulse_app/utils/product_share_service.dart';
 
-import 'package:impulse_dex/widgets/product_details/composition_section.dart';
-import 'package:impulse_dex/widgets/product_details/indications_section.dart';
-import 'package:impulse_dex/widgets/product_details/directions_section.dart';
-import 'package:impulse_dex/widgets/product_details/precautions_section.dart';
-import 'package:impulse_dex/widgets/product_details/presentations_section.dart';
-import 'package:impulse_dex/widgets/product_details/manufacturer_section.dart';
+import 'package:impulse_app/widgets/product_details/composition_section.dart';
+import 'package:impulse_app/widgets/product_details/indications_section.dart';
+import 'package:impulse_app/widgets/product_details/directions_section.dart';
+import 'package:impulse_app/widgets/product_details/precautions_section.dart';
+import 'package:impulse_app/widgets/product_details/presentations_section.dart';
+import 'package:impulse_app/widgets/product_details/manufacturer_section.dart';
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
   final ProductLabel product;
@@ -382,7 +382,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'IMPULSE DEX',
+                                'IMPULSE',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -535,7 +535,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                 size: 16, color: colorScheme.primary),
                             const SizedBox(width: 6),
                             Text(
-                              'Shared from Impulse Dex Mobile App',
+                              'Shared from Impulse Mobile App',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,

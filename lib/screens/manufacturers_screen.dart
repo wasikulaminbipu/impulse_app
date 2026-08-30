@@ -1,15 +1,15 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
-import 'package:impulse_dex/providers/products_provider.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/products_provider.dart';
 
 
-import 'package:impulse_dex/screens/manufacturer_details_screen.dart';
-import 'package:impulse_dex/widgets/paginated_list_scaffold.dart';
-import 'package:impulse_dex/widgets/animated_list_item.dart';
-import 'package:impulse_dex/widgets/app_drawer.dart';
-import 'package:impulse_dex/widgets/asset_fallback_image.dart';
+import 'package:impulse_app/screens/manufacturer_details_screen.dart';
+import 'package:impulse_app/widgets/paginated_list_scaffold.dart';
+import 'package:impulse_app/widgets/animated_list_item.dart';
+import 'package:impulse_app/widgets/app_drawer.dart';
+import 'package:impulse_app/widgets/asset_fallback_image.dart';
 
 class ManufacturersScreen extends ConsumerWidget {
   const ManufacturersScreen({super.key});

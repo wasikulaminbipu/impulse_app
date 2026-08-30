@@ -1,8 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_dex/providers/products_provider.dart';
-import 'package:impulse_dex/data/fts_utils.dart';
-import 'package:impulse_dex/utils/search_analytics.dart';
+import 'package:impulse_app/providers/products_provider.dart';
+import 'package:impulse_app/data/fts_utils.dart';
+import 'package:impulse_app/utils/search_analytics.dart';
 
 void main() {
   group('ProductSearchQuery Provider Tests', () {

@@ -1,4 +1,4 @@
-# Impulse Dex
+# Impulse
 
 [![Flutter](https://img.shields.io/badge/Flutter-v3.12.2%2B-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-v3.0%2B-0175C2?logo=dart&logoColor=white)](https://dart.dev)
@@ -6,7 +6,7 @@
 [![Database](https://img.shields.io/badge/SQLite-Drift%20ORM-003B57?logo=sqlite&logoColor=white)](https://drift.simonbinder.eu/)
 [![License](https://img.shields.io/badge/License-Proprietary-red)](#license)
 
-**Impulse Dex** is a high-performance, offline-first Flutter mobile application designed as a digital product showcase and directory for [Impulse Agriscience Ltd.](https://www.impulseagrisciencelimited.com).
+**Impulse** is a high-performance, offline-first Flutter mobile application designed as a digital product showcase and directory for [Impulse Agriscience Ltd.](https://www.impulseagrisciencelimited.com).
 
 It provides veterinarians, pharmacists, farmers, chemists, and pharma shop owners with rapid, offline access to detailed product catalogs (veterinary vaccines, medicines, feed additives) and a complete directory of regional sales representatives and distributors.
 
@@ -85,8 +85,8 @@ tools/
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/wasikulaminbipu/impulse_dex.git
-   cd impulse_dex
+   git clone https://github.com/wasikulaminbipu/impulse_app.git
+   cd impulse_app
    ```
 
 2. **Fetch Dependencies**
@@ -110,7 +110,7 @@ tools/
 ## 💻 Internal Tools & Data Management
 
 The workspace includes a built-in interactive web utility for viewing and preparing catalog content:
-- **Location:** [impulse-data-entry.html](file:///d:/App%20Development/impulse_products/impulse_dex/tools/impulse-data-entry.html)
+- **Location:** `tools/impulse-data-entry.html`
 - **Features:** Single-file HTML/JS web tool for managing product records, compositions, indications, and distributor data to generate SQLite seed files.
 
 ---

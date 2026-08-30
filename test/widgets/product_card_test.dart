@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/widgets/product_card.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/widgets/product_card.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
 
 Widget createProductCardHarness({
   required Widget child,

@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+﻿import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:drift/drift.dart';
@@ -7,11 +7,11 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:impulse_dex/data/db_extensions.dart';
-import 'package:impulse_dex/data/maintenance_tables.dart';
-import 'package:impulse_dex/data/products_tables.dart';
-import 'package:impulse_dex/data/distributors_tables.dart';
-import 'package:impulse_dex/data/fts_utils.dart';
+import 'package:impulse_app/data/db_extensions.dart';
+import 'package:impulse_app/data/maintenance_tables.dart';
+import 'package:impulse_app/data/products_tables.dart';
+import 'package:impulse_app/data/distributors_tables.dart';
+import 'package:impulse_app/data/fts_utils.dart';
 
 part 'app_databases.g.dart';
 

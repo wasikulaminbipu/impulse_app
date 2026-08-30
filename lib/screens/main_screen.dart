@@ -1,12 +1,12 @@
-import 'dart:ui' show ImageFilter;
+﻿import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_dex/screens/manufacturers_screen.dart';
-import 'package:impulse_dex/screens/products_screen.dart';
-import 'package:impulse_dex/screens/sales_personnels_screen.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
-import 'package:impulse_dex/widgets/app_drawer.dart';
+import 'package:impulse_app/screens/manufacturers_screen.dart';
+import 'package:impulse_app/screens/products_screen.dart';
+import 'package:impulse_app/screens/sales_personnels_screen.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/widgets/app_drawer.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});

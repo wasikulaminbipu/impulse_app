@@ -1,9 +1,9 @@
-# Privacy Policy for Impulse DEX
+# Privacy Policy for Impulse
 
 **Effective Date:** August 11, 2026  
-**Last Updated:** August 11, 2026  
+**Last Updated:** August 30, 2026  
 
-Impulse Agri Science Ltd. ("we", "our", or "us") operates the **Impulse DEX** mobile application (the "App"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our App.
+Impulse Agri Science Ltd. ("we", "our", or "us") operates the **Impulse** mobile application (the "App"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our App.
 
 Please read this Privacy Policy carefully. If you do not agree with the terms of this privacy policy, please do not access or use the application.
 
@@ -44,11 +44,11 @@ We use the information collected strictly to:
 ## 4. User Rights & Data Deletion
 
 ### A. No Account Creation Required
-Impulse DEX does **not require user accounts, registration, or login**. We do not create, maintain, or store user accounts on remote servers.
+Impulse does **not require user accounts, registration, or login**. We do not create, maintain, or store user accounts on remote servers.
 
 ### B. Local Data Deletion
 All app data (such as saved favorite items and language preferences) is stored locally on your device:
-- **Clearing Data**: You can clear all app data at any time via your device's settings: **Settings > Apps > Impulse DEX > Storage > Clear Data**.
+- **Clearing Data**: You can clear all app data at any time via your device's settings: **Settings > Apps > Impulse > Storage > Clear Data**.
 - **Uninstalling**: Uninstalling the App instantly deletes all locally cached databases, preferences, and saved favorites from your device.
 ### C. Contact Inquiries
 If you contact us via email or web forms, you may request the deletion of your correspondence by emailing [impulseagriscienceltd@gmail.com](mailto:impulseagriscienceltd@gmail.com).
@@ -72,6 +72,6 @@ We do not knowingly solicit information from or market to children under the age
 If you have questions or comments about this Privacy Policy, please contact us at:
 
 **Impulse Agri Science Ltd.**  
-Online Privacy Policy: [https://github.com/wasikulaminbipu/impulse_dex/blob/main/PRIVACY_POLICY.md](https://github.com/wasikulaminbipu/impulse_dex/blob/main/PRIVACY_POLICY.md)  
+Online Privacy Policy: [https://github.com/wasikulaminbipu/impulse_app/blob/main/PRIVACY_POLICY.md](https://github.com/wasikulaminbipu/impulse_app/blob/main/PRIVACY_POLICY.md)  
 Website: [https://www.impulseagrisciencelimited.com](https://www.impulseagrisciencelimited.com)  
 Email: [impulseagriscienceltd@gmail.com](mailto:impulseagriscienceltd@gmail.com)  

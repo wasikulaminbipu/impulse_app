@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_dex/models/distributor.dart';
-import 'package:impulse_dex/models/app_maintenance.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
-import 'package:impulse_dex/providers/stakeholder_provider.dart';
-import 'package:impulse_dex/widgets/skeleton_loader.dart';
-import 'package:impulse_dex/widgets/favorite_button.dart';
-import 'package:impulse_dex/widgets/paginated_list_scaffold.dart';
-import 'package:impulse_dex/widgets/animated_list_item.dart';
-import 'package:impulse_dex/utils/bilingual_string.dart';
+import 'package:impulse_app/models/distributor.dart';
+import 'package:impulse_app/models/app_maintenance.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/stakeholder_provider.dart';
+import 'package:impulse_app/widgets/skeleton_loader.dart';
+import 'package:impulse_app/widgets/favorite_button.dart';
+import 'package:impulse_app/widgets/paginated_list_scaffold.dart';
+import 'package:impulse_app/widgets/animated_list_item.dart';
+import 'package:impulse_app/utils/bilingual_string.dart';
 
 class DistributorsScreen extends ConsumerWidget {
   const DistributorsScreen({super.key});

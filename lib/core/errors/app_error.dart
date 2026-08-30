@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-/// Base exception class for all domain and application errors in Impulse Dex.
+/// Base exception class for all domain and application errors in Impulse.
 @immutable
 abstract class AppException implements Exception {
   final String message;

@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/utils/bilingual_string.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:impulse_app/utils/bilingual_string.dart';
 
 void main() {
   group('BilingualString Extension Tests', () {

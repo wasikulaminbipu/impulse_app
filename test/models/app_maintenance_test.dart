@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/models/app_maintenance.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:impulse_app/models/app_maintenance.dart';
 
 void main() {
   group('FavoriteType Enum Tests', () {

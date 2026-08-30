@@ -1,5 +1,5 @@
 ﻿import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:impulse_dex/models/product.dart';
+import 'package:impulse_app/models/product.dart';
 
 
 part 'product_model.freezed.dart';

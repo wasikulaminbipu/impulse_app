@@ -1,15 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/models/app_maintenance.dart';
-import 'package:impulse_dex/screens/product_details_screen.dart';
-import 'package:impulse_dex/widgets/custom_badge.dart';
-import 'package:impulse_dex/widgets/group_logo_viewer.dart';
-import 'package:impulse_dex/widgets/favorite_button.dart';
-import 'package:impulse_dex/widgets/asset_fallback_image.dart';
-import 'package:impulse_dex/widgets/highlight_text.dart';
-import 'package:impulse_dex/utils/bilingual_string.dart';
-import 'package:impulse_dex/utils/app_constants.dart';
-import 'package:impulse_dex/theme/app_theme.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/models/app_maintenance.dart';
+import 'package:impulse_app/screens/product_details_screen.dart';
+import 'package:impulse_app/widgets/custom_badge.dart';
+import 'package:impulse_app/widgets/group_logo_viewer.dart';
+import 'package:impulse_app/widgets/favorite_button.dart';
+import 'package:impulse_app/widgets/asset_fallback_image.dart';
+import 'package:impulse_app/widgets/highlight_text.dart';
+import 'package:impulse_app/utils/bilingual_string.dart';
+import 'package:impulse_app/utils/app_constants.dart';
+import 'package:impulse_app/theme/app_theme.dart';
 
 import 'package:flutter/services.dart';
 

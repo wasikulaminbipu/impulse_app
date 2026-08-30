@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_dex/constants/app_assets.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
-import 'package:impulse_dex/screens/about_us_screen.dart';
-import 'package:impulse_dex/widgets/glass_container.dart';
-import 'package:impulse_dex/widgets/privacy_policy_dialog.dart';
+import 'package:impulse_app/constants/app_assets.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/screens/about_us_screen.dart';
+import 'package:impulse_app/widgets/glass_container.dart';
+import 'package:impulse_app/widgets/privacy_policy_dialog.dart';
 
 class AppDrawer extends ConsumerWidget {
   final void Function(int index)? onTabSelected;
@@ -68,7 +68,7 @@ class AppDrawer extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Impulse DEX',
+                            'Impulse',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w900,
                               letterSpacing: 0.3,
@@ -89,7 +89,7 @@ class AppDrawer extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              'v1.3.0',
+                              'v1.0.0',
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,

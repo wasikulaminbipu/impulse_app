@@ -1,6 +1,6 @@
-import 'package:drift/drift.dart';
-import 'package:impulse_dex/models/app_maintenance.dart' as models;
-import 'package:impulse_dex/data/app_databases.dart';
+﻿import 'package:drift/drift.dart';
+import 'package:impulse_app/models/app_maintenance.dart' as models;
+import 'package:impulse_app/data/app_databases.dart';
 
 class AppMaintenanceDao {
   AppMaintenanceDao(this._db);

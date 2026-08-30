@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
+﻿import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/core/errors/app_error.dart';
-import 'package:impulse_dex/core/errors/app_error_handler.dart';
+import 'package:impulse_app/core/errors/app_error.dart';
+import 'package:impulse_app/core/errors/app_error_handler.dart';
 
 void main() {
   group('AppException Tests', () {

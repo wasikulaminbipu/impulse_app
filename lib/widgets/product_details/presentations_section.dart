@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/widgets/product_details/section_card.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/widgets/product_details/section_card.dart';
 
 class PresentationsSection extends StatelessWidget {
   final List<Presentation> presentations;

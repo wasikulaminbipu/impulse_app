@@ -1,5 +1,5 @@
 ﻿import 'package:drift/drift.dart';
-import 'package:impulse_dex/data/db_extensions.dart';
+import 'package:impulse_app/data/db_extensions.dart';
 
 class DbMetaDao {
   final QueryExecutor db;

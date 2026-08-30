@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:impulse_dex/core/errors/app_error_handler.dart';
-import 'package:impulse_dex/core/errors/app_provider_observer.dart';
-import 'package:impulse_dex/widgets/app_error_boundary.dart';
-import 'package:impulse_dex/theme/app_theme.dart';
-import 'package:impulse_dex/screens/main_screen.dart';
+import 'package:impulse_app/core/errors/app_error_handler.dart';
+import 'package:impulse_app/core/errors/app_provider_observer.dart';
+import 'package:impulse_app/widgets/app_error_boundary.dart';
+import 'package:impulse_app/theme/app_theme.dart';
+import 'package:impulse_app/screens/main_screen.dart';
 
 import 'package:flutter/services.dart';
 
@@ -34,7 +34,7 @@ class ImpulseProductsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Impulse Dex',
+      title: 'Impulse',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       scrollBehavior: const AppScrollBehavior(),

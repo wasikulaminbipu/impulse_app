@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/core/errors/app_error_handler.dart';
-import 'package:impulse_dex/widgets/app_error_boundary.dart';
+import 'package:impulse_app/core/errors/app_error_handler.dart';
+import 'package:impulse_app/widgets/app_error_boundary.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

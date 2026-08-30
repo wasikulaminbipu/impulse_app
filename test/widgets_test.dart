@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:impulse_dex/widgets/highlight_text.dart';
+import 'package:impulse_app/widgets/highlight_text.dart';
 
 void main() {
   group('Widget Unit Tests', () {
@@ -10,13 +10,13 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: Center(
-              child: Text('Impulse DEX Test'),
+              child: Text('Impulse Test'),
             ),
           ),
         ),
       );
 
-      expect(find.text('Impulse DEX Test'), findsOneWidget);
+      expect(find.text('Impulse Test'), findsOneWidget);
     });
 
     testWidgets('HighlightText renders without error when text or query is null',

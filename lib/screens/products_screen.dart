@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
-import 'package:impulse_dex/providers/products_provider.dart';
-import 'package:impulse_dex/providers/search_history_provider.dart';
-import 'package:impulse_dex/widgets/app_drawer.dart';
-import 'package:impulse_dex/widgets/product_card.dart';
-import 'package:impulse_dex/widgets/skeleton_loader.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/products_provider.dart';
+import 'package:impulse_app/providers/search_history_provider.dart';
+import 'package:impulse_app/widgets/app_drawer.dart';
+import 'package:impulse_app/widgets/product_card.dart';
+import 'package:impulse_app/widgets/skeleton_loader.dart';
 
 class ProductsScreen extends ConsumerStatefulWidget {
   const ProductsScreen({super.key});
@@ -170,45 +170,71 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
               },
             ),
           ),
-          title: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Impulse Dex',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                if (ref.watch(productSearchQueryProvider).isNotEmpty) ...[
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(12),
+          title: LayoutBuilder(
+            builder: (context, constraints) {
+              const fullTitle = 'Impulse Agriscience Ltd.';
+              const shortTitle = 'Impulse Agriscience';
+              const titleStyle = TextStyle(
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.5,
+              );
+
+              final isQueryActive =
+                  ref.watch(productSearchQueryProvider).isNotEmpty;
+              final extraReserved = isQueryActive ? 75.0 : 0.0;
+
+              final textPainter = TextPainter(
+                text: const TextSpan(text: fullTitle, style: titleStyle),
+                maxLines: 1,
+                textDirection: Directionality.of(context),
+              )..layout();
+
+              final bool fitsFull =
+                  (textPainter.width + extraReserved) <= constraints.maxWidth;
+              final displayTitle = fitsFull ? fullTitle : shortTitle;
+
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
+                      displayTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: titleStyle,
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.search_rounded, size: 12, color: colorScheme.onPrimaryContainer),
-                        const SizedBox(width: 4),
-                        Text(
-                          lang == 'bn' ? 'ফিল্টার' : 'Active',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onPrimaryContainer,
+                  ),
+                  if (isQueryActive) ...[
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.search_rounded,
+                              size: 12,
+                              color: colorScheme.onPrimaryContainer),
+                          const SizedBox(width: 4),
+                          Text(
+                            lang == 'bn' ? 'ফিল্টার' : 'Active',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onPrimaryContainer,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ],
-              ],
-            ),
+              );
+            },
           ),
           elevation: 0,
           scrolledUnderElevation: 0,

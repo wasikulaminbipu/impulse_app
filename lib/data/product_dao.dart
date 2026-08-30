@@ -1,17 +1,17 @@
-import 'package:flutter/foundation.dart' hide Category;
-import 'package:impulse_dex/data/fts_utils.dart';
+﻿import 'package:flutter/foundation.dart' hide Category;
+import 'package:impulse_app/data/fts_utils.dart';
 // Data access layer for products.db (schema v2).
 // Built on sqflite. See products_schema.sql and products_db_changes.md.
 
-import 'package:impulse_dex/models/product.dart';
+import 'package:impulse_app/models/product.dart';
 
-import 'package:impulse_dex/data/db_extensions.dart';
-import 'package:impulse_dex/domain/search_scope.dart';
+import 'package:impulse_app/data/db_extensions.dart';
+import 'package:impulse_app/domain/search_scope.dart';
 
-import 'package:impulse_dex/data/lookup_dao.dart';
-import 'package:impulse_dex/data/manufacturer_dao.dart';
+import 'package:impulse_app/data/lookup_dao.dart';
+import 'package:impulse_app/data/manufacturer_dao.dart';
 
-import 'package:impulse_dex/data/app_databases.dart';
+import 'package:impulse_app/data/app_databases.dart';
 
 class ProductDao {
   final ProductsDb db;

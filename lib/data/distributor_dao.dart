@@ -1,13 +1,13 @@
-import 'package:impulse_dex/data/db_extensions.dart';
+﻿import 'package:impulse_app/data/db_extensions.dart';
 
-import 'package:impulse_dex/models/distributor.dart';
-import 'package:impulse_dex/data/fts_utils.dart';
+import 'package:impulse_app/models/distributor.dart';
+import 'package:impulse_app/data/fts_utils.dart';
 
 // ============================================================================
 // DISTRIBUTOR DAO
 // ============================================================================
 
-import 'package:impulse_dex/data/app_databases.dart';
+import 'package:impulse_app/data/app_databases.dart';
 
 class DistributorDao {
   final DistributorsDb db;

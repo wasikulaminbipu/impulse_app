@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
-import 'package:impulse_dex/widgets/app_drawer.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/widgets/app_drawer.dart';
 
 class MockLanguageSettingEn extends LanguageSetting {
   @override
@@ -42,7 +42,7 @@ void main() {
       await tester.tap(find.text('Open Drawer'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Impulse DEX'), findsOneWidget);
+      expect(find.text('Impulse'), findsOneWidget);
       expect(find.text('Products Directory'), findsOneWidget);
       expect(find.text('Manufacturers'), findsOneWidget);
       expect(find.text('Sales Representatives'), findsOneWidget);

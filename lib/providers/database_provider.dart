@@ -1,9 +1,9 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:drift/native.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'package:impulse_dex/data/app_databases.dart';
+import 'package:impulse_app/data/app_databases.dart';
 
 part 'database_provider.g.dart';
 

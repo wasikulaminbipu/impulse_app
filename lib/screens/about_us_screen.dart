@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:impulse_dex/constants/app_assets.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
-import 'package:impulse_dex/widgets/glass_container.dart';
-import 'package:impulse_dex/widgets/privacy_policy_dialog.dart';
-import 'package:impulse_dex/widgets/tactile_button.dart';
+import 'package:impulse_app/constants/app_assets.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/widgets/glass_container.dart';
+import 'package:impulse_app/widgets/privacy_policy_dialog.dart';
+import 'package:impulse_app/widgets/tactile_button.dart';
 
 class AboutUsScreen extends ConsumerWidget {
   const AboutUsScreen({super.key});
@@ -191,7 +191,7 @@ class AboutUsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Impulse DEX',
+                    'Impulse',
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w900,
                       letterSpacing: 0.5,
@@ -232,7 +232,7 @@ class AboutUsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          'v1.3.0 (Build 4)',
+                          'v1.0.0 (Build 1)',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,

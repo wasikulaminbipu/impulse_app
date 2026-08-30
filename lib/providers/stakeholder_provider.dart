@@ -1,14 +1,14 @@
-import 'dart:async';
-import 'package:impulse_dex/models/distributor.dart';
-import 'package:impulse_dex/providers/database_provider.dart';
+﻿import 'dart:async';
+import 'package:impulse_app/models/distributor.dart';
+import 'package:impulse_app/providers/database_provider.dart';
 
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:impulse_dex/data/distributor_dao.dart';
-import 'package:impulse_dex/providers/paginated_state.dart';
-import 'package:impulse_dex/providers/debounced_query.dart';
-import 'package:impulse_dex/data/fts_utils.dart';
-import 'package:impulse_dex/utils/search_analytics.dart';
+import 'package:impulse_app/data/distributor_dao.dart';
+import 'package:impulse_app/providers/paginated_state.dart';
+import 'package:impulse_app/providers/debounced_query.dart';
+import 'package:impulse_app/data/fts_utils.dart';
+import 'package:impulse_app/utils/search_analytics.dart';
 
 part 'stakeholder_provider.g.dart';
 

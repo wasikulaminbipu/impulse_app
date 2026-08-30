@@ -5,7 +5,7 @@ class PrivacyPolicyDialog extends StatelessWidget {
   const PrivacyPolicyDialog({super.key});
 
   static const String privacyPolicyUrl =
-      'https://github.com/wasikulaminbipu/impulse_dex/blob/main/PRIVACY_POLICY.md';
+      'https://github.com/wasikulaminbipu/impulse_app/blob/main/PRIVACY_POLICY.md';
   static const String dataDeletionUrl = 'https://www.impulseagrisciencelimited.com/delete-account';
 
   Future<void> _launchUrl(String urlString) async {
@@ -41,7 +41,7 @@ class PrivacyPolicyDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Impulse DEX respects your privacy.',
+              'Impulse respects your privacy.',
               style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -64,7 +64,7 @@ class PrivacyPolicyDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 4.0),
               child: Text(
-                'Note: Impulse DEX does not require user accounts. Clearing app data or uninstalling removes all local preferences.',
+                'Note: Impulse does not require user accounts. Clearing app data or uninstalling removes all local preferences.',
                 style: TextStyle(fontSize: 11, color: colorScheme.onSurfaceVariant),
               ),
             ),

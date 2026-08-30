@@ -1,13 +1,13 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/data/product_dao.dart';
-import 'package:impulse_dex/data/lookup_dao.dart';
-import 'package:impulse_dex/models/product.dart';
+import 'package:impulse_app/data/product_dao.dart';
+import 'package:impulse_app/data/lookup_dao.dart';
+import 'package:impulse_app/models/product.dart';
 
 
-import 'package:impulse_dex/data/app_databases.dart';
-import 'package:impulse_dex/data/fts_utils.dart';
+import 'package:impulse_app/data/app_databases.dart';
+import 'package:impulse_app/data/fts_utils.dart';
 
 void main() {
   group('ProductFilter Mechanism Tests', () {

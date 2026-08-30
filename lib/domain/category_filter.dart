@@ -1,5 +1,5 @@
-﻿import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/utils/app_constants.dart';
+﻿import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/utils/app_constants.dart';
 import 'package:collection/collection.dart';
 
 class CategoryFilterCriteria {

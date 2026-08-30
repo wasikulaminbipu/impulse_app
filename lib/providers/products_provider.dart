@@ -1,20 +1,20 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/models/app_maintenance.dart';
-import 'package:impulse_dex/data/product_dao.dart';
-import 'package:impulse_dex/data/lookup_dao.dart';
-import 'package:impulse_dex/data/manufacturer_dao.dart';
-import 'package:impulse_dex/data/fts_utils.dart';
-import 'package:impulse_dex/providers/database_provider.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/models/app_maintenance.dart';
+import 'package:impulse_app/data/product_dao.dart';
+import 'package:impulse_app/data/lookup_dao.dart';
+import 'package:impulse_app/data/manufacturer_dao.dart';
+import 'package:impulse_app/data/fts_utils.dart';
+import 'package:impulse_app/providers/database_provider.dart';
 
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
-import 'package:impulse_dex/providers/paginated_state.dart';
-import 'package:impulse_dex/providers/debounced_query.dart';
-import 'package:impulse_dex/domain/category_filter.dart';
-import 'package:impulse_dex/domain/search_scope.dart';
-import 'package:impulse_dex/utils/app_constants.dart';
-import 'package:impulse_dex/utils/search_analytics.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/paginated_state.dart';
+import 'package:impulse_app/providers/debounced_query.dart';
+import 'package:impulse_app/domain/category_filter.dart';
+import 'package:impulse_app/domain/search_scope.dart';
+import 'package:impulse_app/utils/app_constants.dart';
+import 'package:impulse_app/utils/search_analytics.dart';
 
 part 'products_provider.g.dart';
 

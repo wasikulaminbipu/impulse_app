@@ -1,5 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_dex/core/errors/app_error_handler.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:impulse_app/core/errors/app_error_handler.dart';
 
 /// ProviderObserver that monitors Riverpod state changes and logs provider exceptions.
 base class AppProviderObserver extends ProviderObserver {

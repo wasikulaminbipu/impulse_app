@@ -1,8 +1,8 @@
-import 'package:drift/drift.dart';
+﻿import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/data/app_databases.dart';
-import 'package:impulse_dex/data/lookup_dao.dart';
+import 'package:impulse_app/data/app_databases.dart';
+import 'package:impulse_app/data/lookup_dao.dart';
 
 void main() {
   late ProductsDb db;

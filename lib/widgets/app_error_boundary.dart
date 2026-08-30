@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:impulse_dex/core/errors/app_error_handler.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:impulse_app/core/errors/app_error_handler.dart';
 
 /// Widget error boundary that catches rendering/build exceptions in its child tree
 /// and presents a safe fallback UI without crashing the rest of the application.

@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
+﻿import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:impulse_dex/core/errors/app_error.dart';
-import 'package:impulse_dex/widgets/app_error_boundary.dart';
-import 'package:impulse_dex/widgets/feedback_banner.dart';
+import 'package:impulse_app/core/errors/app_error.dart';
+import 'package:impulse_app/widgets/app_error_boundary.dart';
+import 'package:impulse_app/widgets/feedback_banner.dart';
 
 /// Central handler for intercepting, logging, guarding, and processing application errors.
 class AppErrorHandler {

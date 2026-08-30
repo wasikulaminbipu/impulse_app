@@ -1,5 +1,5 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
+﻿import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
 
 part 'search_history_provider.g.dart';
 

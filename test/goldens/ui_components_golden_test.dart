@@ -1,20 +1,20 @@
-@Tags(['golden'])
+﻿@Tags(['golden'])
 library;
 
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/models/app_maintenance.dart';
-import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/providers/app_maintenance_provider.dart';
-import 'package:impulse_dex/theme/app_theme.dart';
-import 'package:impulse_dex/widgets/custom_badge.dart';
-import 'package:impulse_dex/widgets/tactile_button.dart';
-import 'package:impulse_dex/widgets/glass_container.dart';
-import 'package:impulse_dex/widgets/feedback_banner.dart';
-import 'package:impulse_dex/widgets/favorite_button.dart';
-import 'package:impulse_dex/widgets/product_card.dart';
+import 'package:impulse_app/models/app_maintenance.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/theme/app_theme.dart';
+import 'package:impulse_app/widgets/custom_badge.dart';
+import 'package:impulse_app/widgets/tactile_button.dart';
+import 'package:impulse_app/widgets/glass_container.dart';
+import 'package:impulse_app/widgets/feedback_banner.dart';
+import 'package:impulse_app/widgets/favorite_button.dart';
+import 'package:impulse_app/widgets/product_card.dart';
 
 /// Custom golden comparator with a controlled cross-platform tolerance threshold (5%)
 /// to account for OS-level font rasterization / anti-aliasing variations (e.g. Linux CI vs Windows).

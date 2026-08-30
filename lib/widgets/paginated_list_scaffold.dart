@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:impulse_dex/providers/paginated_state.dart';
+import 'package:impulse_app/providers/paginated_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class PaginatedListScaffold<T> extends ConsumerStatefulWidget {

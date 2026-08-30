@@ -1,6 +1,6 @@
-import 'package:drift/drift.dart';
-import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/data/app_databases.dart';
+﻿import 'package:drift/drift.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/data/app_databases.dart';
 
 class ManufacturerDao {
   final ProductsDb db;

@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/widgets/custom_badge.dart';
-import 'package:impulse_dex/widgets/tactile_button.dart';
-import 'package:impulse_dex/widgets/glass_container.dart';
-import 'package:impulse_dex/widgets/feedback_banner.dart';
+import 'package:impulse_app/widgets/custom_badge.dart';
+import 'package:impulse_app/widgets/tactile_button.dart';
+import 'package:impulse_app/widgets/glass_container.dart';
+import 'package:impulse_app/widgets/feedback_banner.dart';
 
 Widget createTestHarness(Widget child) {
   return MaterialApp(

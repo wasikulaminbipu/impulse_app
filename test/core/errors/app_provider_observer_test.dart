@@ -1,8 +1,8 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/core/errors/app_error.dart';
-import 'package:impulse_dex/core/errors/app_error_handler.dart';
-import 'package:impulse_dex/core/errors/app_provider_observer.dart';
+import 'package:impulse_app/core/errors/app_error.dart';
+import 'package:impulse_app/core/errors/app_error_handler.dart';
+import 'package:impulse_app/core/errors/app_provider_observer.dart';
 
 void main() {
   group('AppProviderObserver Tests', () {

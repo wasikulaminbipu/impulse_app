@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_dex/models/product.dart';
-import 'package:impulse_dex/providers/products_provider.dart';
-import 'package:impulse_dex/providers/paginated_state.dart';
-import 'package:impulse_dex/screens/manufacturers_screen.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/providers/products_provider.dart';
+import 'package:impulse_app/providers/paginated_state.dart';
+import 'package:impulse_app/screens/manufacturers_screen.dart';
 
 class _FakePaginatedManufacturers extends PaginatedManufacturers {
   final PaginatedState<Manufacturer> initialState;
