@@ -45,7 +45,7 @@ final class ProductsDatabaseProvider
   }
 }
 
-String _$productsDatabaseHash() => r'f8b41d8cc11b8acf8fd6aa24a567d077e0432483';
+String _$productsDatabaseHash() => r'65c2a2ea6c09e73ee258928b36fe7b3be3bb684b';
 
 @ProviderFor(distributorsDatabase)
 final distributorsDatabaseProvider = DistributorsDatabaseProvider._();
@@ -85,7 +85,7 @@ final class DistributorsDatabaseProvider
 }
 
 String _$distributorsDatabaseHash() =>
-    r'934a212a48f2f20d587cb1de6b77e5cd7c025779';
+    r'3f2942afd5eab2c1474886ca751e48f281399ac5';
 
 @ProviderFor(appMaintenanceDatabase)
 final appMaintenanceDatabaseProvider = AppMaintenanceDatabaseProvider._();

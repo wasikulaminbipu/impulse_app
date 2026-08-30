@@ -472,7 +472,7 @@ final class PaginatedDistributorsProvider
 }
 
 String _$paginatedDistributorsHash() =>
-    r'140d5dd4740112df3fc7b6b6c11a63f6b759f113';
+    r'649e3c7cc7aca638d1412d6d317a762fd5752e6f';
 
 abstract class _$PaginatedDistributors
     extends $AsyncNotifier<PaginatedState<DistributorWithLocation>> {
@@ -530,7 +530,7 @@ final class PaginatedVetDoctorsProvider
 }
 
 String _$paginatedVetDoctorsHash() =>
-    r'b7e9cd4a94ecf6efa728b22085f5b24bab182f73';
+    r'3d549016c6be77d18bebff6b9454a6784f4d3e25';
 
 abstract class _$PaginatedVetDoctors
     extends $AsyncNotifier<PaginatedState<VetDoctorWithAreas>> {
@@ -641,7 +641,7 @@ final class PaginatedSalesPersonnelProvider
 }
 
 String _$paginatedSalesPersonnelHash() =>
-    r'f367af14419b9f7ceeb9282dd4c59b6029398997';
+    r'692d7d46744057abf6477a9ee1e56a26fd6765dc';
 
 abstract class _$PaginatedSalesPersonnel
     extends $AsyncNotifier<PaginatedState<SalesPersonnelWithAreas>> {
@@ -843,7 +843,7 @@ final class VetDoctorSearchTrieProvider
 }
 
 String _$vetDoctorSearchTrieHash() =>
-    r'da3d5a35f510e5d9767b4b27f078966c09561f6e';
+    r'a09af3483fb5caa54ccc3b61ed655bd4d16d39c7';
 
 @ProviderFor(vetDoctorSearchTrieSuggestions)
 final vetDoctorSearchTrieSuggestionsProvider =

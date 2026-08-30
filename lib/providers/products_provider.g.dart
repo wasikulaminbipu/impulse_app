@@ -318,7 +318,7 @@ final class ProductSearchTrieSuggestionsProvider
 }
 
 String _$productSearchTrieSuggestionsHash() =>
-    r'a3b2d97ed4a3de6d1bcd61be2903f9be9f83e37b';
+    r'ebfb6588cfc8bfc4c0b23d74cd46865d4ab7ac84';
 
 /// Provides fuzzy typo suggestions when search query returns zero results.
 
@@ -490,7 +490,7 @@ final class AvailableCategoriesProvider
 }
 
 String _$availableCategoriesHash() =>
-    r'd1dd23978ca8ba6873c4e7944ecbfabaa366c461';
+    r'6cdabfe3fe0d2d5b7ba3cad06cc6b9bba81ae010';
 
 @ProviderFor(targetGroups)
 final targetGroupsProvider = TargetGroupsProvider._();
@@ -695,7 +695,7 @@ final class PaginatedManufacturersProvider
 }
 
 String _$paginatedManufacturersHash() =>
-    r'f5a538611e7517165edcbb74fb218fa95b70501c';
+    r'8223eb1fd0248bb099090cb5d2d1e4eca13122f8';
 
 abstract class _$PaginatedManufacturers
     extends $AsyncNotifier<PaginatedState<Manufacturer>> {
@@ -774,7 +774,7 @@ final class ProductsProvider
   }
 }
 
-String _$productsHash() => r'84607d8315a78aae149643758e64dc653d42dc41';
+String _$productsHash() => r'666f31bbc786d6516bd13d397ffdb1041b85544a';
 
 /// Fully hydrated product for the Product Detail Page: compositions,
 /// indications, directions, precautions, presentations, target groups and
@@ -911,7 +911,7 @@ final class PaginatedCategoryProductsProvider
 }
 
 String _$paginatedCategoryProductsHash() =>
-    r'65836cce2b69c98e001bdf749b48fa33118488e1';
+    r'430e015be0be60cb48372cf9c142fad1afaa11dc';
 
 final class PaginatedCategoryProductsFamily extends $Family
     with
@@ -1172,7 +1172,7 @@ final class FavoriteToggleProvider
   }
 }
 
-String _$favoriteToggleHash() => r'05ef636721f0103e09865ebb2cc6acc036f59d9a';
+String _$favoriteToggleHash() => r'942e86940fe294a6fed3729482de321acfae6ad8';
 
 abstract class _$FavoriteToggle extends $Notifier<void> {
   void build();
