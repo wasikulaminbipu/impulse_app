@@ -1,0 +1,3 @@
+tags:
+  golden:
+    description: "Golden pixel-comparison tests that depend on OS rasterization"

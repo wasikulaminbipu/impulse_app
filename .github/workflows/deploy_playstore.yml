@@ -62,7 +62,7 @@ jobs:
         run: flutter analyze --fatal-infos --fatal-warnings
 
       - name: Run Unit & Widget Tests with Coverage
-        run: flutter test --coverage
+        run: flutter test --coverage --exclude-tags=golden
 
   build-and-deploy:
     name: Build AAB & Deploy via Fastlane
