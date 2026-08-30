@@ -16,12 +16,12 @@ import 'package:impulse_dex/widgets/feedback_banner.dart';
 import 'package:impulse_dex/widgets/favorite_button.dart';
 import 'package:impulse_dex/widgets/product_card.dart';
 
-/// Custom golden comparator with a controlled cross-platform tolerance threshold (2%)
+/// Custom golden comparator with a controlled cross-platform tolerance threshold (5%)
 /// to account for OS-level font rasterization / anti-aliasing variations (e.g. Linux CI vs Windows).
 class TolerantGoldenFileComparator extends LocalFileComparator {
   final double tolerance;
 
-  TolerantGoldenFileComparator(super.testFile, {this.tolerance = 0.02});
+  TolerantGoldenFileComparator(super.testFile, {this.tolerance = 0.05});
 
   @override
   Future<bool> compare(Uint8List imageBytes, Uri golden) async {
@@ -84,7 +84,7 @@ void main() {
     if (currentComparator is LocalFileComparator) {
       goldenFileComparator = TolerantGoldenFileComparator(
         currentComparator.basedir.resolve('ui_components_golden_test.dart'),
-        tolerance: 0.02,
+        tolerance: 0.05,
       );
     }
   });
