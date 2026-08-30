@@ -1,6 +1,7 @@
 @Tags(['golden'])
 library;
 
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,6 +15,37 @@ import 'package:impulse_dex/widgets/glass_container.dart';
 import 'package:impulse_dex/widgets/feedback_banner.dart';
 import 'package:impulse_dex/widgets/favorite_button.dart';
 import 'package:impulse_dex/widgets/product_card.dart';
+
+/// Custom golden comparator with a controlled cross-platform tolerance threshold (2%)
+/// to account for OS-level font rasterization / anti-aliasing variations (e.g. Linux CI vs Windows).
+class TolerantGoldenFileComparator extends LocalFileComparator {
+  final double tolerance;
+
+  TolerantGoldenFileComparator(super.testFile, {this.tolerance = 0.02});
+
+  @override
+  Future<bool> compare(Uint8List imageBytes, Uri golden) async {
+    final ComparisonResult result = await GoldenFileComparator.compareLists(
+      imageBytes,
+      await getGoldenBytes(golden),
+    );
+
+    if (result.passed) {
+      return true;
+    }
+
+    if (result.diffPercent <= tolerance) {
+      debugPrint(
+        'Golden diff of ${(result.diffPercent * 100).toStringAsFixed(2)}% '
+        'detected for $golden (within tolerance of ${(tolerance * 100).toStringAsFixed(2)}%). Passing test.',
+      );
+      return true;
+    }
+
+    final String error = await generateFailureOutput(result, golden, basedir);
+    throw FlutterError(error);
+  }
+}
 
 Widget createGoldenHarness({
   required Widget child,
@@ -47,6 +79,15 @@ Widget createGoldenHarness({
 }
 
 void main() {
+  setUpAll(() {
+    final currentComparator = goldenFileComparator;
+    if (currentComparator is LocalFileComparator) {
+      goldenFileComparator = TolerantGoldenFileComparator(
+        currentComparator.basedir.resolve('ui_components_golden_test.dart'),
+        tolerance: 0.02,
+      );
+    }
+  });
   final sampleProduct = ProductLabel(
     id: 1,
     titleEn: 'Amoxivet 50% WSP',
