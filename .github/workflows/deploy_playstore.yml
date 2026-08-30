@@ -9,7 +9,7 @@ on:
       track:
         description: 'Google Play Store Track (internal / beta / production)'
         required: true
-        default: 'internal'
+        default: 'beta'
         type: choice
         options:
           - internal
@@ -382,7 +382,7 @@ jobs:
 
       - name: "Execute Fastlane deployment to Google Play Store"
         env:
-          TRACK: ${{ github.event.inputs.track || 'internal' }}
+          TRACK: ${{ github.event.inputs.track || 'beta' }}
         run: |
           set -e
           cd android
@@ -395,7 +395,7 @@ jobs:
           echo "## 🚀 Google Play Deployment Status" >> $GITHUB_STEP_SUMMARY
           echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Target Track** | `${{ github.event.inputs.track || 'internal' }}` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target Track** | `${{ github.event.inputs.track || 'beta' }}` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Deployment Status** | ✅ Successfully Uploaded |" >> $GITHUB_STEP_SUMMARY
           echo "| **Timestamp** | `$(date -u)` |" >> $GITHUB_STEP_SUMMARY
 

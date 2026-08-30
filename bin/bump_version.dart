@@ -23,12 +23,18 @@ void main(List<String> args) {
     stdout.writeln(
       '  --skip-tests  Bypasses pre-release testing gate (NOT RECOMMENDED)\n',
     );
+    stdout.writeln(
+      '💡 Note: For full regeneration (models, splash screen, launcher icons, asset audits, privacy checks & GH Actions monitoring), use:',
+    );
+    stdout.writeln(
+      '  dart run bin/release.dart <patch|minor|major|custom_version>\n',
+    );
     stdout.writeln('Examples:');
     stdout.writeln(
       '  dart run bin/bump_version.dart patch            # Preview 1.0.0+1 -> 1.0.1+2',
     );
     stdout.writeln(
-      '  dart run bin/bump_version.dart patch --push     # Runs full test suite -> bumps -> pushes to GitHub',
+      '  dart run bin/release.dart patch                 # Full automated end-to-end release',
     );
     exit(0);
   }

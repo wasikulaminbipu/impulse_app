@@ -96,16 +96,16 @@ flutter_native_splash:
   color_dark: "#121414"
   image: assets/images/app_logo.png
   image_dark: assets/images/app_logo.png
-  branding: assets/images/branding_light.png
-  branding_dark: assets/images/branding_dark.png
+  branding: assets/images/logo_impulse.png
+  branding_dark: assets/images/logo_impulse.png
   fullscreen: true
   android_gravity: center
 
   android_12:
     image: assets/images/app_logo.png
     image_dark: assets/images/app_logo.png
-    branding: assets/images/branding_light.png
-    branding_dark: assets/images/branding_dark.png
+    branding: assets/images/logo_impulse.png
+    branding_dark: assets/images/logo_impulse.png
     color: "#F8F9FA"
     color_dark: "#121414"
     icon_background_color: "#F8F9FA"

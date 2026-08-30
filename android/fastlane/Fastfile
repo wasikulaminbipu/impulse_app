@@ -9,9 +9,10 @@ platform :android do
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
       skip_upload_apk: true,
-      skip_upload_metadata: false,
+      skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
+      skip_upload_changelogs: false,
       changes_not_sent_for_review: true
     )
   end
@@ -23,9 +24,10 @@ platform :android do
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
       skip_upload_apk: true,
-      skip_upload_metadata: false,
+      skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
+      skip_upload_changelogs: false,
       changes_not_sent_for_review: true
     )
   end
@@ -38,6 +40,10 @@ platform :android do
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
       user_fraction: 0.10,
       skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: false,
       changes_not_sent_for_review: true
     )
   end
@@ -67,6 +73,7 @@ platform :android do
       skip_upload_aab: true,
       skip_upload_metadata: false,
       skip_upload_images: false,
+      skip_upload_screenshots: false,
       changes_not_sent_for_review: true
     )
   end

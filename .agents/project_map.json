@@ -1,0 +1,518 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-08-30T11:40:00Z",
+  "project_info": {
+    "name": "impulse_dex",
+    "architecture_pattern": "Clean Architecture / Feature-based with Riverpod, Drift, Freezed",
+    "entry_points": [
+      "lib/main.dart"
+    ],
+    "tech_stack": {
+      "languages": [
+        "Dart"
+      ],
+      "frameworks": [
+        "Flutter"
+      ],
+      "tools": [
+        "flutter_riverpod",
+        "drift",
+        "freezed",
+        "flutter_svg",
+        "flutter_native_splash",
+        "url_launcher",
+        "flutter_contacts"
+      ]
+    }
+  },
+  "conventions_and_commands": {
+    "build_command": "dart run build_runner build --delete-conflicting-outputs",
+    "test_command": "flutter test",
+    "lint_command": "flutter analyze",
+    "styling_rules": "Follow standard Flutter/Dart best practices, Material 3, and token-efficient engineering"
+  },
+  "modules": [
+    {
+      "id": "data",
+      "name": "Data Layer",
+      "path": "lib/data",
+      "description": "Drift database, tables, DAOs, FTS search, and asset loaders",
+      "key_files": [
+        "lib/data/app_databases.dart",
+        "lib/data/product_dao.dart",
+        "lib/data/distributor_dao.dart",
+        "lib/data/manufacturer_dao.dart",
+        "lib/data/app_maintenance_dao.dart"
+      ],
+      "dependencies": [
+        "drift",
+        "sqlite3",
+        "sqlite3_flutter_libs"
+      ]
+    },
+    {
+      "id": "models",
+      "name": "Models Layer",
+      "path": "lib/models",
+      "description": "Freezed data models and JSON serialization",
+      "key_files": [
+        "lib/models/distributor.dart",
+        "lib/models/app_maintenance.dart",
+        "lib/models/product.dart"
+      ],
+      "dependencies": [
+        "freezed_annotation",
+        "json_annotation"
+      ]
+    },
+    {
+      "id": "providers",
+      "name": "Providers Layer",
+      "path": "lib/providers",
+      "description": "Riverpod state management providers and query state controllers",
+      "key_files": [
+        "lib/providers/products_provider.dart",
+        "lib/providers/stakeholder_provider.dart",
+        "lib/providers/app_maintenance_provider.dart",
+        "lib/providers/database_provider.dart"
+      ],
+      "dependencies": [
+        "flutter_riverpod",
+        "riverpod_annotation"
+      ]
+    },
+    {
+      "id": "screens",
+      "path": "lib/screens",
+      "name": "Screens Layer",
+      "description": "UI screens and navigation flows",
+      "key_files": [
+        "lib/screens/main_screen.dart",
+        "lib/screens/products_screen.dart",
+        "lib/screens/product_details_screen.dart",
+        "lib/screens/manufacturers_screen.dart",
+        "lib/screens/distributors_screen.dart",
+        "lib/screens/sales_personnels_screen.dart",
+        "lib/screens/about_us_screen.dart"
+      ],
+      "dependencies": [
+        "flutter",
+        "url_launcher",
+        "flutter_contacts"
+      ]
+    },
+    {
+      "id": "widgets",
+      "path": "lib/widgets",
+      "name": "Widgets Layer",
+      "description": "Reusable UI components",
+      "key_files": [
+        "lib/widgets/product_card.dart",
+        "lib/widgets/paginated_list_scaffold.dart",
+        "lib/widgets/skeleton_loader.dart",
+        "lib/widgets/favorite_button.dart",
+        "lib/widgets/app_drawer.dart"
+      ],
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "id": "tools",
+      "path": "tools",
+      "name": "Tools Layer",
+      "description": "Offline data entry and SQLite compiling tool",
+      "key_files": [
+        "tools/impulse-data-entry.html"
+      ],
+      "dependencies": [
+        "sql.js"
+      ]
+    }
+  ],
+  "file_routing_index": {
+    "entry": [
+      "lib/main.dart"
+    ],
+    "database": [
+      "lib/data/app_databases.dart",
+      "lib/data/product_dao.dart",
+      "lib/data/distributor_dao.dart"
+    ],
+    "state": [
+      "lib/providers/products_provider.dart",
+      "lib/providers/stakeholder_provider.dart"
+    ],
+    "ui_screens": [
+      "lib/screens/main_screen.dart",
+      "lib/screens/products_screen.dart",
+      "lib/screens/product_details_screen.dart",
+      "lib/screens/distributors_screen.dart",
+      "lib/screens/sales_personnels_screen.dart"
+    ],
+    "tools": [
+      "tools/impulse-data-entry.html"
+    ],
+    "plan": [
+      "APP_PLAN.md"
+    ],
+    "tests": [
+      "test/db_integration_test.dart",
+      "test/db_unit_test.dart",
+      "test/in_memory_dao_test.dart",
+      "test/product_filter_test.dart",
+      "test/providers/products_provider_test.dart",
+      "test/widgets_test.dart",
+      "test/utils/bilingual_string_test.dart",
+      "test/models/app_maintenance_test.dart",
+      "test/models/distributor_model_test.dart",
+      "test/core/database/lookup_dao_test.dart",
+      "test/widgets/components_test.dart",
+      "test/widgets/product_card_test.dart",
+      "test/screens/manufacturers_screen_test.dart",
+      "test/goldens/ui_components_golden_test.dart"
+    ]
+  },
+  "tasks": [
+    {
+      "id": 31,
+      "desc": "Implement Automated Version Bumper & Release Trigger CLI (bin/bump_version.dart), Smart High-Signal Coverage Badge Generator, In-App Database Freshness & Health Checker (lib/core/database/database_freshness_checker.dart), and Codebase Hygiene & Orphaned Code Auditor (bin/audit_unused_code.dart)",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "bin/bump_version.dart",
+        "bin/generate_coverage_badge.dart",
+        "bin/audit_unused_code.dart",
+        "lib/core/database/database_freshness_checker.dart",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 30,
+      "desc": "Implement Asset Bloat & Database Image Auditor (bin/audit_assets.dart), dynamic SVG coverage badge generator (bin/generate_coverage_badge.dart), and Android App Links / Digital Asset Links deep link verification (bin/audit_app_links.dart + .well-known/assetlinks.json)",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "bin/audit_assets.dart",
+        "bin/generate_coverage_badge.dart",
+        "bin/audit_app_links.dart",
+        ".well-known/assetlinks.json",
+        "android/app/src/main/AndroidManifest.xml",
+        "badges/coverage.svg",
+        ".github/workflows/deploy_playstore.yml",
+        ".github/workflows/pr_ci.yml",
+        "README.md",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 29,
+      "desc": "Add automated Google Play Store Requirement & Publishing Audit tool (bin/audit_playstore_compliance.dart), fixed Fastlane short description character limits for en-US/bn-BD, and wired audit checks into CI/CD pipelines and local pre-commit hooks",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "bin/audit_playstore_compliance.dart",
+        "android/fastlane/metadata/android/en-US/short_description.txt",
+        "android/fastlane/metadata/android/bn-BD/short_description.txt",
+        ".github/workflows/deploy_playstore.yml",
+        ".github/workflows/pr_ci.yml",
+        ".githooks/pre-commit",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 28,
+      "desc": "Add SQLite asset integrity validator (bin/validate_db.dart), GitHub Issue and PR templates, Dependabot config, app size budget checks, and update README with status badges",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "bin/validate_db.dart",
+        ".github/dependabot.yml",
+        ".github/PULL_REQUEST_TEMPLATE.md",
+        ".github/ISSUE_TEMPLATE/bug_report.yml",
+        ".github/ISSUE_TEMPLATE/feature_request.yml",
+        ".github/ISSUE_TEMPLATE/database_update.yml",
+        ".github/workflows/deploy_playstore.yml",
+        ".github/workflows/pr_ci.yml",
+        "README.md",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 27,
+      "desc": "Implement full DevOps automation suite: Fastlane track promotion workflow (promote_release.yml), automated PR sticky comment with test metrics, scheduled weekly maintenance health checks (weekly_maintenance.yml), and local pre-commit/pre-push Git hooks (.githooks)",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        ".github/workflows/promote_release.yml",
+        ".github/workflows/weekly_maintenance.yml",
+        ".github/workflows/pr_ci.yml",
+        "android/fastlane/Fastfile",
+        ".githooks/pre-commit",
+        ".githooks/pre-push",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 26,
+      "desc": "Modularize GitHub Actions CI/CD workflows (deploy_playstore.yml, pr_ci.yml) with human-readable step names, clean DAG job dependencies, strict Google Play deployment validation, and zero-defect quality gate verification",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        ".github/workflows/deploy_playstore.yml",
+        ".github/workflows/pr_ci.yml",
+        ".agents/AGENTS.md",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 25,
+      "desc": "Update About Us screen with official company profile, mission statement, interactive journey timeline (2009 to 2026), updated customer support email, and hotline",
+      "status": "completed",
+      "priority": "medium",
+      "affected_files": [
+        "lib/screens/about_us_screen.dart"
+      ]
+    },
+    {
+      "id": 24,
+      "desc": "Add Golden UI test suite testing core UI components (CustomBadge, TactileButton, GlassContainer, FeedbackBanner, FavoriteButton, ProductCard) across Light & Dark themes",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "test/goldens/ui_components_golden_test.dart",
+        "test/goldens/goldens/custom_badge_variants.png",
+        "test/goldens/goldens/tactile_button_states.png",
+        "test/goldens/goldens/glass_container_card.png",
+        "test/goldens/goldens/feedback_banners.png",
+        "test/goldens/goldens/favorite_button_states.png",
+        "test/goldens/goldens/product_card_light.png",
+        "test/goldens/goldens/product_card_dark.png"
+      ]
+    },
+    {
+      "id": 22,
+      "desc": "Write complete test suite using flutter-testing skill across unit, model, provider, DAO, widget, and screen test layers",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "test/utils/bilingual_string_test.dart",
+        "test/models/app_maintenance_test.dart",
+        "test/models/distributor_model_test.dart",
+        "test/core/database/lookup_dao_test.dart",
+        "test/widgets/components_test.dart",
+        "test/widgets/product_card_test.dart",
+        "test/screens/manufacturers_screen_test.dart"
+      ]
+    },
+    {
+      "id": 1,
+      "desc": "Add comprehensive test suite for impulse_dex",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "test/in_memory_dao_test.dart",
+        "test/providers/products_provider_test.dart",
+        "test/widgets_test.dart"
+      ]
+    },
+    {
+      "id": 2,
+      "desc": "Analyze full app architecture and update APP_PLAN.md",
+      "status": "completed",
+      "priority": "medium",
+      "affected_files": [
+        "APP_PLAN.md",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 3,
+      "desc": "Perform full multi-skill architectural analysis and quality audit",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 4,
+      "desc": "App performance optimization (search debouncing, repaint boundaries, lookup caching)",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "lib/providers/products_provider.dart",
+        "lib/widgets/product_card.dart",
+        "lib/widgets/paginated_list_scaffold.dart",
+        "lib/data/product_dao.dart",
+        "lib/data/lookup_dao.dart"
+      ]
+    },
+    {
+      "id": 5,
+      "desc": "Mobile Design System UI/UX evaluation and recommendations",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "lib/theme/app_theme.dart",
+        "lib/widgets/product_card.dart",
+        "lib/widgets/favorite_button.dart",
+        "lib/widgets/glass_container.dart",
+        "lib/screens/main_screen.dart"
+      ]
+    },
+    {
+      "id": 6,
+      "desc": "Implement spatial specular glass, WCAG 2.2 AA touch targets, and tactile haptic micro-interactions",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "lib/widgets/glass_container.dart",
+        "lib/widgets/tactile_button.dart",
+        "lib/widgets/favorite_button.dart"
+      ]
+    },
+    {
+      "id": 7,
+      "desc": "Implement unified Symptom/Indication and Active Ingredient/Composition search engine with updated text_en/ingredient_en database columns and clean UI",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "lib/data/product_dao.dart",
+        "lib/screens/products_screen.dart"
+      ]
+    },
+    {
+      "id": 8,
+      "desc": "Enhanced pure Flutter Native Splash with center emblem logo, bottom brand signature (branding & branding_dark), light (#F8F9FA) and dark (#121414) theme support, and Android 12+ adaptive splash resources",
+      "status": "completed",
+      "priority": "medium",
+      "affected_files": [
+        "pubspec.yaml",
+        "lib/main.dart",
+        "assets/images/branding_light.png",
+        "assets/images/branding_dark.png",
+        "android/app/src/main/res/values-v31/styles.xml",
+        "android/app/src/main/res/values-night-v31/styles.xml",
+        "android/app/src/main/res/drawable/launch_background.xml",
+        "android/app/src/main/res/drawable-night/launch_background.xml"
+      ]
+    },
+    {
+      "id": 9,
+      "desc": "Implement search engine expert enhancements: FTS index segment optimization, stopword filtering across English & Bangla, and search telemetry integration",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "lib/data/fts_utils.dart",
+        "lib/data/app_databases.dart",
+        "lib/providers/products_provider.dart",
+        "test/providers/products_provider_test.dart"
+      ]
+    },
+    {
+      "id": 10,
+      "desc": "Implement Reciprocal Rank Fusion (RRF) hybrid search combining Sparse FTS BM25, Trigram sub-word, scope LIKE, and Isolate fuzzy queries, alongside expanded pharmaceutical, veterinary, livestock, and dosage form synonym dictionary",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "lib/data/fts_utils.dart",
+        "lib/data/product_dao.dart",
+        "test/providers/products_provider_test.dart"
+      ]
+    },
+    {
+      "id": 11,
+      "desc": "Complete enterprise architecture skill update: Clean Layer boundaries, Drift Isolates/WebWorkers, Offline-first cache sync, Riverpod performance, Material 3 Design Tokens, Testing Doubles Strategy, Performance Telemetry, Deep Linking, and CI/CD Quality Checklist",
+      "status": "completed",
+      "priority": "medium",
+      "affected_files": [
+        ".agents/skills/project-architecture/SKILL.md",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 16,
+      "desc": "Configure ProGuard/R8 minification (isMinifyEnabled = true, isShrinkResources = true) and create comprehensive production proguard-rules.pro keeping Flutter Engine, Drift SQLite, Freezed, Parcelable, Enums, and all plugin contracts 100% safe",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "android/app/build.gradle.kts",
+        "android/app/proguard-rules.pro",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 18,
+      "desc": "Check and update Fastlane configuration (android/fastlane/Appfile and Fastfile) with ProGuard R8 mapping paths, closed testing beta lane, promote lane, and environment variable fallbacks",
+      "status": "completed",
+      "priority": "medium",
+      "affected_files": [
+        "android/fastlane/Appfile",
+        "android/fastlane/Fastfile",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 19,
+      "desc": "Improve GitHub CI/CD Workflows: Add PR quality gate workflow (pr_ci.yml), disable caching across jobs for clean builds, and cleanly separate PR verification from Play Store release deployment",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        ".github/workflows/pr_ci.yml",
+        ".github/workflows/deploy_playstore.yml",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 20,
+      "desc": "Regenerate Android release signing keystore (key.jks) as PKCS12 with 256-bit EC (secp256r1) key for Dr. Wasikul Amin Bipu, Impulse Agriscience Ltd., and update android/key.properties credentials",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "android/app/key.jks",
+        "android/key.properties",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 22,
+      "desc": "Add native-device-integrations, offline-database-pipeline, and code-generation-pipeline skills; update riverpod-state-management to Riverpod 3 / Annotation 4, freezed-models to Freezed 3, sync mobile-design-system skill, and update AGENTS.md",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        ".agents/skills/native-device-integrations/SKILL.md",
+        ".agents/skills/offline-database-pipeline/SKILL.md",
+        ".agents/skills/code-generation-pipeline/SKILL.md",
+        ".agents/skills/riverpod-state-management/SKILL.md",
+        ".agents/skills/freezed-models/SKILL.md",
+        ".agents/skills/mobile-design-system/SKILL.md",
+        ".agents/AGENTS.md",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 23,
+      "desc": "Audit and modernize full workspace skill suite across 14 specialized domains and remove duplicate design-skill directory",
+      "status": "completed",
+      "priority": "medium",
+      "affected_files": [
+        ".agents/skills/asset-management/SKILL.md",
+        ".agents/skills/code-generation-pipeline/SKILL.md",
+        ".agents/skills/drift-database/SKILL.md",
+        ".agents/skills/flutter-size-reduction/SKILL.md",
+        ".agents/skills/flutter-testing/SKILL.md",
+        ".agents/skills/freezed-models/SKILL.md",
+        ".agents/skills/github/SKILL.md",
+        ".agents/skills/mobile-design-system/SKILL.md",
+        ".agents/skills/native-device-integrations/SKILL.md",
+        ".agents/skills/offline-database-pipeline/SKILL.md",
+        ".agents/skills/playstore-release/SKILL.md",
+        ".agents/skills/project-architecture/SKILL.md",
+        ".agents/skills/riverpod-state-management/SKILL.md",
+        ".agents/skills/searchengine-expert/SKILL.md",
+        ".agents/project_map.json"
+      ]
+    }
+  ]
+}
