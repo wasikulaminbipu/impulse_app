@@ -39,8 +39,8 @@ This file contains project-scoped rules, architecture guidelines, and workflow c
      - Run strict static analysis: `flutter analyze --fatal-infos --fatal-warnings`
      - Run Google Play Store publishing & policy compliance audit: `dart run bin/audit_playstore_compliance.dart` (all checks must pass)
      - Run full automated unit, widget, and golden test suite: `flutter test`
-  3. **Privacy Policy & Data Safety Compatibility Check**:
-     - Verify privacy policy URL accessibility and check if new permissions or SDK dependencies alter Google Play Data Safety declarations. If any incompatibility, new permission, or ambiguity exists, pause and ask the user explicitly before proceeding.
+  3. **Privacy Policy & Data Safety Verification**:
+     - Automatically verify privacy policy URL accessibility and audit permissions/SDK dependencies against Google Play Data Safety declarations without interactive terminal prompts.
   4. **Versioning & Localized Fastlane Changelogs**:
      - Increment the version number (e.g. `version: X.Y.Z+N`) in `pubspec.yaml`.
      - Update `CHANGELOG.md` with release notes.

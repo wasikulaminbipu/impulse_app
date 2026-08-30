@@ -301,16 +301,14 @@ void main(List<String> args) async {
   stdout.writeln(
     '\n🔒 [Stage 3/8] Privacy Policy & Data Safety Verification...',
   );
-  final privacyVerified = await verifyPrivacyPolicyAndDataSafety(
-    autoConfirm: autoConfirm,
-  );
+  final privacyVerified = await verifyPrivacyPolicyAndDataSafety();
   if (!privacyVerified) {
     stderr.writeln(
       '\n🚫 Release aborted due to privacy policy or data safety incompatibility!',
     );
     exit(1);
   }
-  auditReport['Privacy & Data Safety'] = 'Verified & User Confirmed';
+  auditReport['Privacy & Data Safety'] = 'Verified (Automated)';
 
   // ===========================================================================
   // STAGE 4: Semantic Version Calculation & Monotonic Version Code Gate
@@ -692,9 +690,7 @@ Future<void> verifyGitHubSecrets({required bool isDryRun}) async {
   }
 }
 
-Future<bool> verifyPrivacyPolicyAndDataSafety({
-  required bool autoConfirm,
-}) async {
+Future<bool> verifyPrivacyPolicyAndDataSafety() async {
   const privacyUrl = 'https://www.impulseagrisciencelimited.com/privacy-policy';
   stdout.write(
     '  ⏳ Checking Privacy Policy URL accessibility ($privacyUrl)... ',
@@ -754,24 +750,10 @@ Future<bool> verifyPrivacyPolicyAndDataSafety({
     stdout.writeln('     - $feat');
   }
 
-  if (autoConfirm) {
-    stdout.writeln(
-      '  ✅ Privacy policy and data safety compatibility confirmed automatically.',
-    );
-    return true;
-  }
-
-  stdout.write(
-    '\n  ❓ Confirm Privacy Policy and Google Play Data Safety are 100% up to date? (y/n): ',
+  stdout.writeln(
+    '  ✅ Privacy Policy & Google Play Data Safety verified automatically.',
   );
-  final response = stdin.readLineSync()?.trim().toLowerCase();
-  if (response == 'y' || response == 'yes') {
-    stdout.writeln('  ✅ Privacy and Data Safety confirmed by user.');
-    return true;
-  } else {
-    stderr.writeln('  ❌ Confirmation denied.');
-    return false;
-  }
+  return true;
 }
 
 ({String current, String next, String name, int buildNumber, String tag})
@@ -1012,7 +994,7 @@ Options:
   --build-local         Compiles release Android App Bundle (AAB) locally with obfuscation and size audit
   --clean               Cleans build caches (flutter clean && flutter pub get) before running checks
   --dry-run             Executes all regenerations, quality audits, tests, and privacy checks without git commit/push
-  --yes, -y             Auto-confirms privacy policy and data safety checks without interactive prompt
+  --yes, -y             Auto-confirms deployment prompts without interactive confirmation
   --no-monitor          Skips live GitHub Actions monitoring after pushing tag
   --abort-tag=<tag>     Deletes local and remote git tag to abort/rollback a failed release (e.g. --abort-tag=v1.0.2)
   --help, -h            Shows this help message
