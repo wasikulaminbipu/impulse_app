@@ -5,11 +5,12 @@ import 'package:impulse_dex/models/product.dart';
 import 'package:impulse_dex/widgets/product_card.dart';
 import 'package:impulse_dex/providers/app_maintenance_provider.dart';
 
-Widget createProductCardHarness(Widget child) {
-  return ProviderScope(
-    overrides: [
-      productFavoritesProvider.overrideWith((ref) async => [1]),
-    ],
+Widget createProductCardHarness({
+  required Widget child,
+  required ProviderContainer container,
+}) {
+  return UncontrolledProviderScope(
+    container: container,
     child: MaterialApp(
       home: Scaffold(
         body: child,
@@ -32,10 +33,25 @@ void main() {
   );
 
   group('ProductCard Widget Tests', () {
+    late ProviderContainer container;
+
+    setUp(() {
+      container = ProviderContainer(
+        overrides: [
+          productFavoritesProvider.overrideWith((ref) async => [1]),
+        ],
+      );
+    });
+
+    tearDown(() {
+      container.dispose();
+    });
+
     testWidgets('Renders product title, description and presentation badge', (tester) async {
       await tester.pumpWidget(
         createProductCardHarness(
-          ProductCard(product: sampleProduct),
+          container: container,
+          child: ProductCard(product: sampleProduct),
         ),
       );
       await tester.pump();
@@ -48,7 +64,8 @@ void main() {
     testWidgets('Renders Bengali title when lang is bn', (tester) async {
       await tester.pumpWidget(
         createProductCardHarness(
-          ProductCard(
+          container: container,
+          child: ProductCard(
             product: sampleProduct,
             lang: 'bn',
           ),
