@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.1] - 2026-08-30
+### What's Changed
+- Release build 2 (Version 1.0.1).
+- 100% verified: All tests, database integrity, assets, and Google Play Store compliance passed.
 
 All notable changes to the **Impulse DEX** mobile application will be documented in this file.
 
