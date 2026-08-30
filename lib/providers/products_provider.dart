@@ -1,20 +1,20 @@
-﻿import 'dart:async';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:impulse_app/models/product.dart';
-import 'package:impulse_app/models/app_maintenance.dart';
-import 'package:impulse_app/data/product_dao.dart';
+import 'dart:async';
+
+import 'package:impulse_app/data/fts_utils.dart';
 import 'package:impulse_app/data/lookup_dao.dart';
 import 'package:impulse_app/data/manufacturer_dao.dart';
-import 'package:impulse_app/data/fts_utils.dart';
-import 'package:impulse_app/providers/database_provider.dart';
-
-import 'package:impulse_app/providers/app_maintenance_provider.dart';
-import 'package:impulse_app/providers/paginated_state.dart';
-import 'package:impulse_app/providers/debounced_query.dart';
+import 'package:impulse_app/data/product_dao.dart';
 import 'package:impulse_app/domain/category_filter.dart';
 import 'package:impulse_app/domain/search_scope.dart';
+import 'package:impulse_app/models/app_maintenance.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/database_provider.dart';
+import 'package:impulse_app/providers/debounced_query.dart';
+import 'package:impulse_app/providers/paginated_state.dart';
 import 'package:impulse_app/utils/app_constants.dart';
 import 'package:impulse_app/utils/search_analytics.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'products_provider.g.dart';
 
@@ -98,7 +98,7 @@ Future<List<String>> productSearchTrieSuggestions(Ref ref) async {
   if (query.trim().isEmpty) return const [];
 
   final trie = await ref.watch(autocompleteTrieProvider.future);
-  return trie.getSuggestions(query, maxResults: 5);
+  return trie.getSuggestions(query);
 }
 
 /// Provides fuzzy typo suggestions when search query returns zero results.
@@ -106,7 +106,7 @@ Future<List<String>> productSearchTrieSuggestions(Ref ref) async {
 Future<List<String>> productSearchFuzzySuggestions(Ref ref) async {
   final query = ref.watch(productSearchQueryProvider);
   if (query.trim().isEmpty) return const [];
-  
+
   final dao = await ref.watch(productDaoProvider.future);
   return dao.findFuzzyProductSuggestions(query);
 }
@@ -128,9 +128,7 @@ Future<Map<String, List<FacetCount>>> productSearchFacets(Ref ref) async {
 
   return calculateFacets<ProductLabel>(
     items: items,
-    facetExtractors: {
-      'category': (item) => item.category.nameEn,
-    },
+    facetExtractors: {'category': (item) => item.category.nameEn},
   );
 }
 
@@ -176,8 +174,6 @@ Future<List<String>> availableCategories(Ref ref) async {
       categoryId: criteria.categoryId,
       targetGroupId: criteria.targetGroupId,
       isFeedAdditive: criteria.isFeedAdditive,
-      query: '',
-      scope: SearchScope.all,
       limit: 1,
       offset: 0,
     );
@@ -209,7 +205,8 @@ Future<List<Manufacturer>> manufacturers(Ref ref) async {
 }
 
 @riverpod
-class ManufacturersSearchQuery extends _$ManufacturersSearchQuery with DebouncedQuery {
+class ManufacturersSearchQuery extends _$ManufacturersSearchQuery
+    with DebouncedQuery {
   @override
   String build() {
     ref.onDispose(cancelDebounce);
@@ -229,7 +226,7 @@ class PaginatedManufacturers extends _$PaginatedManufacturers {
   Future<PaginatedState<Manufacturer>> build() async {
     final dao = await ref.watch(manufacturerDaoProvider.future);
     final query = ref.watch(manufacturersSearchQueryProvider);
-    
+
     final items = await dao.getFilteredManufacturers(
       query: query,
       limit: _pageSize + 1,
@@ -241,15 +238,14 @@ class PaginatedManufacturers extends _$PaginatedManufacturers {
       items.removeLast();
     }
 
-    return PaginatedState<Manufacturer>(
-      items: items,
-      hasMore: hasMore,
-    );
+    return PaginatedState<Manufacturer>(items: items, hasMore: hasMore);
   }
 
   Future<void> fetchNextPage() async {
     final currentState = state.value;
-    if (currentState == null || !currentState.hasMore || currentState.isLoadingMore) {
+    if (currentState == null ||
+        !currentState.hasMore ||
+        currentState.isLoadingMore) {
       return;
     }
 
@@ -272,11 +268,7 @@ class PaginatedManufacturers extends _$PaginatedManufacturers {
     final newItems = [...currentState.items, ...nextChunk];
 
     state = AsyncValue.data(
-      PaginatedState<Manufacturer>(
-        items: newItems,
-        hasMore: hasMore,
-        isLoadingMore: false,
-      ),
+      PaginatedState<Manufacturer>(items: newItems, hasMore: hasMore),
     );
   }
 }
@@ -291,7 +283,7 @@ class PaginatedManufacturers extends _$PaginatedManufacturers {
 @riverpod
 Future<List<ProductLabel>> products(Ref ref) async {
   final dao = await ref.watch(productDaoProvider.future);
-  return dao.getAllLabels(activeOnly: true);
+  return dao.getAllLabels();
 }
 
 // CategoryFilterCriteria moved to domain layer
@@ -323,7 +315,7 @@ class PaginatedCategoryProducts extends _$PaginatedCategoryProducts {
     final criteria = _criteria!;
     final query = ref.watch(productSearchQueryProvider);
     final scope = ref.watch(productSearchScopeProvider);
-    
+
     final stopwatch = Stopwatch()..start();
     final initialItems = await dao.getFilteredLabels(
       categoryId: criteria.categoryId,
@@ -339,7 +331,9 @@ class PaginatedCategoryProducts extends _$PaginatedCategoryProducts {
     if (query.trim().isNotEmpty) {
       SearchAnalyticsTracker.logSearch(
         query: query,
-        resultCount: initialItems.length > _pageSize ? initialItems.length - 1 : initialItems.length,
+        resultCount: initialItems.length > _pageSize
+            ? initialItems.length - 1
+            : initialItems.length,
         executionTimeMs: stopwatch.elapsedMilliseconds,
       );
     }
@@ -349,15 +343,14 @@ class PaginatedCategoryProducts extends _$PaginatedCategoryProducts {
       initialItems.removeLast();
     }
 
-    return PaginatedState<ProductLabel>(
-      items: initialItems,
-      hasMore: hasMore,
-    );
+    return PaginatedState<ProductLabel>(items: initialItems, hasMore: hasMore);
   }
 
   Future<void> fetchNextPage() async {
     final currentState = state.value;
-    if (currentState == null || !currentState.hasMore || currentState.isLoadingMore) {
+    if (currentState == null ||
+        !currentState.hasMore ||
+        currentState.isLoadingMore) {
       return;
     }
 
@@ -388,11 +381,7 @@ class PaginatedCategoryProducts extends _$PaginatedCategoryProducts {
     final newItems = [...currentState.items, ...nextChunk];
 
     state = AsyncValue.data(
-      PaginatedState<ProductLabel>(
-        items: newItems,
-        hasMore: hasMore,
-        isLoadingMore: false,
-      ),
+      PaginatedState<ProductLabel>(items: newItems, hasMore: hasMore),
     );
   }
 }
@@ -433,16 +422,12 @@ class FavoriteToggle extends _$FavoriteToggle {
     switch (type) {
       case FavoriteType.product:
         ref.invalidate(productFavoritesProvider);
-        break;
       case FavoriteType.distributor:
         ref.invalidate(distributorFavoritesProvider);
-        break;
       case FavoriteType.salesPersonnel:
         ref.invalidate(salesPersonnelFavoritesProvider);
-        break;
       case FavoriteType.vetDoctor:
         ref.invalidate(vetDoctorFavoritesProvider);
-        break;
     }
   }
 }

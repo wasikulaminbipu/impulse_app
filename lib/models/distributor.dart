@@ -194,8 +194,10 @@ abstract class Distributor with _$Distributor {
     areaId: row['area_id'] as int?,
     mobile: row['mobile'] as String?,
     isActive: (row['is_active'] as int?) == 1,
-    createdAt: DateTime.tryParse(row['created_at'] as String? ?? '') ?? DateTime.now(),
-    updatedAt: DateTime.tryParse(row['updated_at'] as String? ?? '') ?? DateTime.now(),
+    createdAt:
+        DateTime.tryParse(row['created_at'] as String? ?? '') ?? DateTime.now(),
+    updatedAt:
+        DateTime.tryParse(row['updated_at'] as String? ?? '') ?? DateTime.now(),
   );
 
   Map<String, dynamic> toMap() => {
@@ -234,9 +236,9 @@ abstract class SalesPersonnel with _$SalesPersonnel {
     required DateTime createdAt,
     required DateTime updatedAt,
     @Default([]) List<int> regionIds, // sales_personnel_regions
-    @Default([]) List<int> areaIds,   // sales_personnel_areas
-    @Default([]) List<int> baseIds,   // sales_personnel_bases
-    @Default([]) List<int> upazilaIds,// sales_personnel_upazilas
+    @Default([]) List<int> areaIds, // sales_personnel_areas
+    @Default([]) List<int> baseIds, // sales_personnel_bases
+    @Default([]) List<int> upazilaIds, // sales_personnel_upazilas
   }) = _SalesPersonnel;
 
   const SalesPersonnel._();
@@ -251,8 +253,10 @@ abstract class SalesPersonnel with _$SalesPersonnel {
     email: row['email'] as String?,
     employeeId: row['employee_id'] as String?,
     isActive: (row['is_active'] as int?) == 1,
-    createdAt: DateTime.tryParse(row['created_at'] as String? ?? '') ?? DateTime.now(),
-    updatedAt: DateTime.tryParse(row['updated_at'] as String? ?? '') ?? DateTime.now(),
+    createdAt:
+        DateTime.tryParse(row['created_at'] as String? ?? '') ?? DateTime.now(),
+    updatedAt:
+        DateTime.tryParse(row['updated_at'] as String? ?? '') ?? DateTime.now(),
   );
 
   Map<String, dynamic> toMap() => {
@@ -294,9 +298,9 @@ abstract class VetDoctor with _$VetDoctor {
     required DateTime createdAt,
     required DateTime updatedAt,
     @Default([]) List<int> regionIds, // vet_doctors_regions
-    @Default([]) List<int> areaIds,   // vet_doctors_areas
-    @Default([]) List<int> baseIds,   // vet_doctors_bases
-    @Default([]) List<int> upazilaIds,// vet_doctors_upazilas
+    @Default([]) List<int> areaIds, // vet_doctors_areas
+    @Default([]) List<int> baseIds, // vet_doctors_bases
+    @Default([]) List<int> upazilaIds, // vet_doctors_upazilas
   }) = _VetDoctor;
 
   const VetDoctor._();
@@ -316,8 +320,10 @@ abstract class VetDoctor with _$VetDoctor {
     mobile: row['mobile'] as String?,
     email: row['email'] as String?,
     isActive: (row['is_active'] as int?) == 1,
-    createdAt: DateTime.tryParse(row['created_at'] as String? ?? '') ?? DateTime.now(),
-    updatedAt: DateTime.tryParse(row['updated_at'] as String? ?? '') ?? DateTime.now(),
+    createdAt:
+        DateTime.tryParse(row['created_at'] as String? ?? '') ?? DateTime.now(),
+    updatedAt:
+        DateTime.tryParse(row['updated_at'] as String? ?? '') ?? DateTime.now(),
   );
 
   Map<String, dynamic> toMap() => {
@@ -396,4 +402,3 @@ abstract class BaseWithUpazilas with _$BaseWithUpazilas {
     required List<Upazila> upazilas,
   }) = _BaseWithUpazilas;
 }
-

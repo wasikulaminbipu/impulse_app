@@ -1,6 +1,6 @@
-﻿import 'package:drift/drift.dart';
-import 'package:impulse_app/models/app_maintenance.dart' as models;
+import 'package:drift/drift.dart';
 import 'package:impulse_app/data/app_databases.dart';
+import 'package:impulse_app/models/app_maintenance.dart' as models;
 
 class AppMaintenanceDao {
   AppMaintenanceDao(this._db);
@@ -11,62 +11,80 @@ class AppMaintenanceDao {
   Future<void> addFavorite(models.FavoriteType type, int id) async {
     switch (type) {
       case models.FavoriteType.product:
-        await _db.into(_db.favoriteProducts).insert(
+        await _db
+            .into(_db.favoriteProducts)
+            .insert(
               FavoriteProductsCompanion.insert(productId: Value(id)),
               mode: InsertMode.insertOrIgnore,
             );
-        break;
       case models.FavoriteType.distributor:
-        await _db.into(_db.favoriteDistributors).insert(
+        await _db
+            .into(_db.favoriteDistributors)
+            .insert(
               FavoriteDistributorsCompanion.insert(distributorId: Value(id)),
               mode: InsertMode.insertOrIgnore,
             );
-        break;
       case models.FavoriteType.salesPersonnel:
-        await _db.into(_db.favoriteSalesPersonnel).insert(
-              FavoriteSalesPersonnelCompanion.insert(salesPersonnelId: Value(id)),
+        await _db
+            .into(_db.favoriteSalesPersonnel)
+            .insert(
+              FavoriteSalesPersonnelCompanion.insert(
+                salesPersonnelId: Value(id),
+              ),
               mode: InsertMode.insertOrIgnore,
             );
-        break;
       case models.FavoriteType.vetDoctor:
-        await _db.into(_db.favoriteVetDoctors).insert(
+        await _db
+            .into(_db.favoriteVetDoctors)
+            .insert(
               FavoriteVetDoctorsCompanion.insert(vetDoctorId: Value(id)),
               mode: InsertMode.insertOrIgnore,
             );
-        break;
     }
   }
 
   Future<void> removeFavorite(models.FavoriteType type, int id) async {
     switch (type) {
       case models.FavoriteType.product:
-        await (_db.delete(_db.favoriteProducts)..where((t) => t.productId.equals(id))).go();
-        break;
+        await (_db.delete(
+          _db.favoriteProducts,
+        )..where((t) => t.productId.equals(id))).go();
       case models.FavoriteType.distributor:
-        await (_db.delete(_db.favoriteDistributors)..where((t) => t.distributorId.equals(id))).go();
-        break;
+        await (_db.delete(
+          _db.favoriteDistributors,
+        )..where((t) => t.distributorId.equals(id))).go();
       case models.FavoriteType.salesPersonnel:
-        await (_db.delete(_db.favoriteSalesPersonnel)..where((t) => t.salesPersonnelId.equals(id))).go();
-        break;
+        await (_db.delete(
+          _db.favoriteSalesPersonnel,
+        )..where((t) => t.salesPersonnelId.equals(id))).go();
       case models.FavoriteType.vetDoctor:
-        await (_db.delete(_db.favoriteVetDoctors)..where((t) => t.vetDoctorId.equals(id))).go();
-        break;
+        await (_db.delete(
+          _db.favoriteVetDoctors,
+        )..where((t) => t.vetDoctorId.equals(id))).go();
     }
   }
 
   Future<bool> isFavorite(models.FavoriteType type, int id) async {
     switch (type) {
       case models.FavoriteType.product:
-        final q = _db.select(_db.favoriteProducts)..where((t) => t.productId.equals(id))..limit(1);
+        final q = _db.select(_db.favoriteProducts)
+          ..where((t) => t.productId.equals(id))
+          ..limit(1);
         return (await q.get()).isNotEmpty;
       case models.FavoriteType.distributor:
-        final q = _db.select(_db.favoriteDistributors)..where((t) => t.distributorId.equals(id))..limit(1);
+        final q = _db.select(_db.favoriteDistributors)
+          ..where((t) => t.distributorId.equals(id))
+          ..limit(1);
         return (await q.get()).isNotEmpty;
       case models.FavoriteType.salesPersonnel:
-        final q = _db.select(_db.favoriteSalesPersonnel)..where((t) => t.salesPersonnelId.equals(id))..limit(1);
+        final q = _db.select(_db.favoriteSalesPersonnel)
+          ..where((t) => t.salesPersonnelId.equals(id))
+          ..limit(1);
         return (await q.get()).isNotEmpty;
       case models.FavoriteType.vetDoctor:
-        final q = _db.select(_db.favoriteVetDoctors)..where((t) => t.vetDoctorId.equals(id))..limit(1);
+        final q = _db.select(_db.favoriteVetDoctors)
+          ..where((t) => t.vetDoctorId.equals(id))
+          ..limit(1);
         return (await q.get()).isNotEmpty;
     }
   }
@@ -79,28 +97,58 @@ class AppMaintenanceDao {
     }
   }
 
-  Future<List<models.FavoriteEntry>> getFavorites(models.FavoriteType type) async {
+  Future<List<models.FavoriteEntry>> getFavorites(
+    models.FavoriteType type,
+  ) async {
     switch (type) {
       case models.FavoriteType.product:
-        final rows = await (_db.select(_db.favoriteProducts)
-              ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
-            .get();
-        return rows.map((r) => models.FavoriteEntry(id: r.productId, addedAt: DateTime.parse(r.addedAt))).toList();
+        final rows = await (_db.select(
+          _db.favoriteProducts,
+        )..orderBy([(t) => OrderingTerm.desc(t.addedAt)])).get();
+        return rows
+            .map(
+              (r) => models.FavoriteEntry(
+                id: r.productId,
+                addedAt: DateTime.parse(r.addedAt),
+              ),
+            )
+            .toList();
       case models.FavoriteType.distributor:
-        final rows = await (_db.select(_db.favoriteDistributors)
-              ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
-            .get();
-        return rows.map((r) => models.FavoriteEntry(id: r.distributorId, addedAt: DateTime.parse(r.addedAt))).toList();
+        final rows = await (_db.select(
+          _db.favoriteDistributors,
+        )..orderBy([(t) => OrderingTerm.desc(t.addedAt)])).get();
+        return rows
+            .map(
+              (r) => models.FavoriteEntry(
+                id: r.distributorId,
+                addedAt: DateTime.parse(r.addedAt),
+              ),
+            )
+            .toList();
       case models.FavoriteType.salesPersonnel:
-        final rows = await (_db.select(_db.favoriteSalesPersonnel)
-              ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
-            .get();
-        return rows.map((r) => models.FavoriteEntry(id: r.salesPersonnelId, addedAt: DateTime.parse(r.addedAt))).toList();
+        final rows = await (_db.select(
+          _db.favoriteSalesPersonnel,
+        )..orderBy([(t) => OrderingTerm.desc(t.addedAt)])).get();
+        return rows
+            .map(
+              (r) => models.FavoriteEntry(
+                id: r.salesPersonnelId,
+                addedAt: DateTime.parse(r.addedAt),
+              ),
+            )
+            .toList();
       case models.FavoriteType.vetDoctor:
-        final rows = await (_db.select(_db.favoriteVetDoctors)
-              ..orderBy([(t) => OrderingTerm.desc(t.addedAt)]))
-            .get();
-        return rows.map((r) => models.FavoriteEntry(id: r.vetDoctorId, addedAt: DateTime.parse(r.addedAt))).toList();
+        final rows = await (_db.select(
+          _db.favoriteVetDoctors,
+        )..orderBy([(t) => OrderingTerm.desc(t.addedAt)])).get();
+        return rows
+            .map(
+              (r) => models.FavoriteEntry(
+                id: r.vetDoctorId,
+                addedAt: DateTime.parse(r.addedAt),
+              ),
+            )
+            .toList();
     }
   }
 
@@ -124,14 +172,18 @@ class AppMaintenanceDao {
   // ---------------- app_settings ----------------
 
   Future<String?> getSetting(String key) async {
-    final q = _db.select(_db.appSettings)..where((t) => t.key.equals(key))..limit(1);
+    final q = _db.select(_db.appSettings)
+      ..where((t) => t.key.equals(key))
+      ..limit(1);
     final rows = await q.get();
     if (rows.isEmpty) return null;
     return rows.first.value;
   }
 
   Future<void> setSetting(String key, String? value) async {
-    await _db.into(_db.appSettings).insert(
+    await _db
+        .into(_db.appSettings)
+        .insert(
           AppSettingsCompanion.insert(key: key, value: Value(value)),
           mode: InsertMode.insertOrReplace,
         );
@@ -139,7 +191,9 @@ class AppMaintenanceDao {
 
   Future<List<models.AppSetting>> getAllSettings() async {
     final rows = await _db.select(_db.appSettings).get();
-    return rows.map((r) => models.AppSetting(key: r.key, value: r.value)).toList();
+    return rows
+        .map((r) => models.AppSetting(key: r.key, value: r.value))
+        .toList();
   }
 
   Future<bool> getDarkMode() async => (await getSetting('dark_mode')) == 'true';
@@ -152,13 +206,17 @@ class AppMaintenanceDao {
   // ---------------- db_meta ----------------
 
   Future<String?> getSchemaVersion() async {
-    final q = _db.select(_db.dbMeta)..where((t) => t.key.equals('schema_version'))..limit(1);
+    final q = _db.select(_db.dbMeta)
+      ..where((t) => t.key.equals('schema_version'))
+      ..limit(1);
     final rows = await q.get();
     return rows.isEmpty ? null : rows.first.value;
   }
 
   Future<DateTime?> getGeneratedAt() async {
-    final q = _db.select(_db.dbMeta)..where((t) => t.key.equals('schema_version'))..limit(1);
+    final q = _db.select(_db.dbMeta)
+      ..where((t) => t.key.equals('schema_version'))
+      ..limit(1);
     final rows = await q.get();
     if (rows.isEmpty || rows.first.value == null) return null;
     return DateTime.parse(rows.first.value!);
@@ -186,13 +244,21 @@ class AppMaintenanceDao {
     if (history.length > 15) {
       history.removeRange(15, history.length);
     }
-    await setSetting('search_history', Uri.encodeComponent(history.join('|||')));
+    await setSetting(
+      'search_history',
+      Uri.encodeComponent(history.join('|||')),
+    );
   }
 
   Future<void> removeSearchHistory(String query) async {
     final history = await getSearchHistory();
-    history.removeWhere((item) => item.toLowerCase() == query.trim().toLowerCase());
-    await setSetting('search_history', Uri.encodeComponent(history.join('|||')));
+    history.removeWhere(
+      (item) => item.toLowerCase() == query.trim().toLowerCase(),
+    );
+    await setSetting(
+      'search_history',
+      Uri.encodeComponent(history.join('|||')),
+    );
   }
 
   Future<void> clearSearchHistory() async {
@@ -202,7 +268,11 @@ class AppMaintenanceDao {
   // ---------------- search_telemetry ----------------
 
   /// Logs search execution metrics including query text, result counts, and zero-result flags.
-  Future<void> logSearchEvent(String query, int resultCount, {int executionTimeMs = 0}) async {
+  Future<void> logSearchEvent(
+    String query,
+    int resultCount, {
+    int executionTimeMs = 0,
+  }) async {
     final trimmed = query.trim().toLowerCase();
     if (trimmed.isEmpty) return;
 
@@ -215,13 +285,17 @@ class AppMaintenanceDao {
     }
 
     if (resultCount == 0) {
-      final entry = '$trimmed::$resultCount::${DateTime.now().toIso8601String()}';
+      final entry =
+          '$trimmed::$resultCount::${DateTime.now().toIso8601String()}';
       logEntries.removeWhere((e) => e.startsWith('$trimmed::'));
       logEntries.insert(0, entry);
       if (logEntries.length > 50) {
         logEntries.removeRange(50, logEntries.length);
       }
-      await setSetting('zero_result_log', Uri.encodeComponent(logEntries.join('|||')));
+      await setSetting(
+        'zero_result_log',
+        Uri.encodeComponent(logEntries.join('|||')),
+      );
     }
   }
 
@@ -231,7 +305,10 @@ class AppMaintenanceDao {
     if (raw == null || raw.isEmpty) return [];
     try {
       final entries = Uri.decodeComponent(raw).split('|||');
-      return entries.map((e) => e.split('::').first).where((e) => e.isNotEmpty).toList();
+      return entries
+          .map((e) => e.split('::').first)
+          .where((e) => e.isNotEmpty)
+          .toList();
     } catch (_) {
       return [];
     }

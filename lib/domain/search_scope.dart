@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Defines the search target scope for product search in Impulse.
-enum SearchScope {
-  all,
-  symptom,
-  ingredient,
-  name,
-}
+enum SearchScope { all, symptom, ingredient, name }
 
 extension SearchScopeExtension on SearchScope {
   String get labelEn {

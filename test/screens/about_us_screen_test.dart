@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
@@ -16,47 +16,48 @@ class MockLanguageSettingBn extends LanguageSetting {
 
 void main() {
   group('AboutUsScreen Widget Tests', () {
-    testWidgets('renders app header, company mission, bento grid, and contact links in English', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            languageSettingProvider.overrideWith(MockLanguageSettingEn.new),
-          ],
-          child: const MaterialApp(
-            home: AboutUsScreen(),
+    testWidgets(
+      'renders app header, company mission, bento grid, and contact links in English',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              languageSettingProvider.overrideWith(MockLanguageSettingEn.new),
+            ],
+            child: const MaterialApp(home: AboutUsScreen()),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      expect(find.text('About Us'), findsOneWidget);
-      expect(find.text('Impulse'), findsOneWidget);
-      expect(find.text('v1.0.0 (Build 1)'), findsOneWidget);
-      expect(find.text('Our Companies'), findsOneWidget);
-      expect(find.text('Adyan Agro'), findsOneWidget);
-      expect(find.text('Impulse Agri'), findsOneWidget);
-      expect(find.text('JP Pharma'), findsOneWidget);
-      expect(find.text('About Company'), findsOneWidget);
-      expect(find.text('Our Mission'), findsOneWidget);
-      expect(find.text('Our Journey'), findsOneWidget);
-      expect(find.text('Key Capabilities'), findsOneWidget);
-      expect(find.text('Contact & Support'), findsOneWidget);
-      expect(find.text('Official Website'), findsOneWidget);
-      expect(find.text('Customer Support Email'), findsOneWidget);
-      expect(find.text('impulseagriscienceltd@gmail.com'), findsOneWidget);
-      expect(find.text('+880-1629-389015'), findsOneWidget);
-    });
+        expect(find.text('About Us'), findsOneWidget);
+        expect(find.text('Impulse'), findsOneWidget);
+        expect(find.text('v1.0.0 (Build 1)'), findsOneWidget);
+        expect(find.text('Our Companies'), findsOneWidget);
+        expect(find.text('Adyan Agro'), findsOneWidget);
+        expect(find.text('Impulse Agri'), findsOneWidget);
+        expect(find.text('JP Pharma'), findsOneWidget);
+        expect(find.text('About Company'), findsOneWidget);
+        expect(find.text('Our Mission'), findsOneWidget);
+        expect(find.text('Our Journey'), findsOneWidget);
+        expect(find.text('Key Capabilities'), findsOneWidget);
+        expect(find.text('Contact & Support'), findsOneWidget);
+        expect(find.text('Official Website'), findsOneWidget);
+        expect(find.text('Customer Support Email'), findsOneWidget);
+        expect(find.text('impulseagriscienceltd@gmail.com'), findsOneWidget);
+        expect(find.text('+880-1629-389015'), findsOneWidget);
+      },
+    );
 
-    testWidgets('renders bilingual Bengali translations when language is bn', (WidgetTester tester) async {
+    testWidgets('renders bilingual Bengali translations when language is bn', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             languageSettingProvider.overrideWith(MockLanguageSettingBn.new),
           ],
-          child: const MaterialApp(
-            home: AboutUsScreen(),
-          ),
+          child: const MaterialApp(home: AboutUsScreen()),
         ),
       );
 

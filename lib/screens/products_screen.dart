@@ -1,6 +1,6 @@
-﻿import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/products_provider.dart';
@@ -48,7 +48,10 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
   }
 
   Widget _buildSearchHistoryChips(
-      BuildContext context, WidgetRef ref, String lang) {
+    BuildContext context,
+    WidgetRef ref,
+    String lang,
+  ) {
     if (!_searchFocusNode.hasFocus) {
       return const SizedBox.shrink();
     }
@@ -70,10 +73,17 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(right: 6),
                   child: ActionChip(
-                    avatar: Icon(Icons.auto_awesome, size: 14, color: Theme.of(context).colorScheme.primary),
+                    avatar: Icon(
+                      Icons.auto_awesome,
+                      size: 14,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     label: Text(
                       term,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     onPressed: () {
                       _searchController.text = term;
@@ -109,10 +119,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                 padding: const EdgeInsets.only(right: 6),
                 child: ActionChip(
                   avatar: const Icon(Icons.history, size: 14),
-                  label: Text(
-                    term,
-                    style: const TextStyle(fontSize: 12),
-                  ),
+                  label: Text(term, style: const TextStyle(fontSize: 12)),
                   onPressed: () {
                     _searchController.text = term;
                     ref
@@ -143,18 +150,21 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final lang = ref.watch(languageSettingProvider);
     final history = ref.watch(searchHistoryProvider).value ?? [];
-    final trieSuggestions = ref.watch(productSearchTrieSuggestionsProvider).value ?? [];
+    final trieSuggestions =
+        ref.watch(productSearchTrieSuggestionsProvider).value ?? [];
     final categoriesAsync = ref.watch(availableCategoriesProvider);
     final categories = categoriesAsync.value ?? const ['All'];
-    final bool showChips = _searchFocusNode.hasFocus &&
-        (_searchController.text.trim().isNotEmpty ? trieSuggestions.isNotEmpty : history.isNotEmpty);
+    final bool showChips =
+        _searchFocusNode.hasFocus &&
+        (_searchController.text.trim().isNotEmpty
+            ? trieSuggestions.isNotEmpty
+            : history.isNotEmpty);
 
     return DefaultTabController(
       key: ValueKey(categories.join(',')),
       length: categories.length,
       child: Scaffold(
         drawer: AppDrawer(
-          currentTabIndex: 0,
           onTabSelected: (index) {
             // Handled by parent MainScreen or Tab selection
           },
@@ -179,8 +189,9 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                 letterSpacing: 0.5,
               );
 
-              final isQueryActive =
-                  ref.watch(productSearchQueryProvider).isNotEmpty;
+              final isQueryActive = ref
+                  .watch(productSearchQueryProvider)
+                  .isNotEmpty;
               final extraReserved = isQueryActive ? 75.0 : 0.0;
 
               final textPainter = TextPainter(
@@ -208,7 +219,9 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: colorScheme.primaryContainer,
                         borderRadius: BorderRadius.circular(12),
@@ -216,9 +229,11 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.search_rounded,
-                              size: 12,
-                              color: colorScheme.onPrimaryContainer),
+                          Icon(
+                            Icons.search_rounded,
+                            size: 12,
+                            color: colorScheme.onPrimaryContainer,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             lang == 'bn' ? 'ফিল্টার' : 'Active',
@@ -244,7 +259,10 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
             IconButton(
               icon: Text(
                 lang == 'bn' ? 'EN' : 'বাংলা',
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               onPressed: () =>
                   ref.read(languageSettingProvider.notifier).toggle(),
@@ -265,9 +283,19 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                         .updateQuery(val),
                     onSubmitted: (val) async {
                       if (val.trim().isNotEmpty) {
-                        await ref.read(searchHistoryProvider.notifier).addQuery(val);
-                        final dao = await ref.read(appMaintenanceDaoProvider.future);
-                        final currentItems = ref.read(paginatedCategoryProductsProvider('All')).value?.items.length ?? 0;
+                        await ref
+                            .read(searchHistoryProvider.notifier)
+                            .addQuery(val);
+                        final dao = await ref.read(
+                          appMaintenanceDaoProvider.future,
+                        );
+                        final currentItems =
+                            ref
+                                .read(paginatedCategoryProductsProvider('All'))
+                                .value
+                                ?.items
+                                .length ??
+                            0;
                         await dao.logSearchEvent(val, currentItems);
                       }
                     },
@@ -294,8 +322,9 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                             )
                           : null,
                       filled: true,
-                      fillColor: colorScheme.surfaceContainerHighest
-                          .withValues(alpha: 0.4),
+                      fillColor: colorScheme.surfaceContainerHighest.withValues(
+                        alpha: 0.4,
+                      ),
                       contentPadding: const EdgeInsets.symmetric(
                         vertical: 11,
                         horizontal: 16,
@@ -303,17 +332,17 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
                         borderSide: BorderSide(
-                          color:
-                              colorScheme.outlineVariant.withValues(alpha: 0.4),
-                          width: 1,
+                          color: colorScheme.outlineVariant.withValues(
+                            alpha: 0.4,
+                          ),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
                         borderSide: BorderSide(
-                          color:
-                              colorScheme.outlineVariant.withValues(alpha: 0.4),
-                          width: 1,
+                          color: colorScheme.outlineVariant.withValues(
+                            alpha: 0.4,
+                          ),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
@@ -333,8 +362,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                     isScrollable: true,
                     tabAlignment: TabAlignment.start,
                     labelColor: colorScheme.primary,
-                    unselectedLabelColor:
-                        colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                    unselectedLabelColor: colorScheme.onSurfaceVariant
+                        .withValues(alpha: 0.8),
                     indicatorColor: colorScheme.primary,
                     indicatorWeight: 3,
                     indicatorSize: TabBarIndicatorSize.label,
@@ -350,12 +379,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                       fontSize: 13.5,
                     ),
                     tabs: categories
-                        .map(
-                          (c) => Tab(
-                            height: 36,
-                            text: c,
-                          ),
-                        )
+                        .map((c) => Tab(height: 36, text: c))
                         .toList(),
                   ),
                 ),
@@ -380,22 +404,23 @@ class _ProductCategoryTab extends ConsumerWidget {
   final String category;
   final void Function(String categoryName)? onCategoryTap;
 
-  const _ProductCategoryTab({
-    required this.category,
-    this.onCategoryTap,
-  });
+  const _ProductCategoryTab({required this.category, this.onCategoryTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchQuery = ref.watch(productSearchQueryProvider);
     final lang = ref.watch(languageSettingProvider);
-    final productsAsync = ref.watch(paginatedCategoryProductsProvider(category));
+    final productsAsync = ref.watch(
+      paginatedCategoryProductsProvider(category),
+    );
 
     return productsAsync.when(
       data: (state) {
         final products = state.items;
         if (products.isEmpty) {
-          final suggestionsAsync = ref.watch(productSearchFuzzySuggestionsProvider);
+          final suggestionsAsync = ref.watch(
+            productSearchFuzzySuggestionsProvider,
+          );
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -403,15 +428,21 @@ class _ProductCategoryTab extends ConsumerWidget {
                 Icon(
                   Icons.inventory_2_outlined,
                   size: 64,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  lang == 'bn' ? 'কোনো প্রোডাক্ট পাওয়া যায়নি' : 'No products found',
+                  lang == 'bn'
+                      ? 'কোনো প্রোডাক্ট পাওয়া যায়নি'
+                      : 'No products found',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
                   ),
                 ),
                 if (searchQuery.isNotEmpty) ...[
@@ -431,7 +462,9 @@ class _ProductCategoryTab extends ConsumerWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                lang == 'bn' ? 'আপনি কি বোঝাতে চেয়েছেন:' : 'Did you mean:',
+                                lang == 'bn'
+                                    ? 'আপনি কি বোঝাতে চেয়েছেন:'
+                                    : 'Did you mean:',
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -457,7 +490,9 @@ class _ProductCategoryTab extends ConsumerWidget {
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
-                                    color: Theme.of(context).colorScheme.onSurface,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                   ),
                                 ),
                                 backgroundColor: Theme.of(context)
@@ -467,9 +502,7 @@ class _ProductCategoryTab extends ConsumerWidget {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                   side: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary
+                                    color: Theme.of(context).colorScheme.primary
                                         .withValues(alpha: 0.3),
                                   ),
                                 ),
@@ -478,7 +511,9 @@ class _ProductCategoryTab extends ConsumerWidget {
                                     onCategoryTap!(suggestion);
                                   } else {
                                     ref
-                                        .read(productSearchQueryProvider.notifier)
+                                        .read(
+                                          productSearchQueryProvider.notifier,
+                                        )
                                         .updateQuery(suggestion);
                                   }
                                 },
@@ -569,7 +604,11 @@ class _ProductCategoryTab extends ConsumerWidget {
               const SizedBox(height: 16),
               Text(
                 '$err',
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.8)),
+                style: TextStyle(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -599,7 +638,8 @@ class _AnimatedProductCard extends StatefulWidget {
   State<_AnimatedProductCard> createState() => _AnimatedProductCardState();
 }
 
-class _AnimatedProductCardState extends State<_AnimatedProductCard> with SingleTickerProviderStateMixin {
+class _AnimatedProductCardState extends State<_AnimatedProductCard>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
 

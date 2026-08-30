@@ -1,4 +1,4 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:impulse_app/core/errors/app_error.dart';
 import 'package:impulse_app/widgets/app_error_boundary.dart';
@@ -37,20 +37,14 @@ class AppErrorHandler {
 
     // Catch uncaught errors in the root isolate
     PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
-      logError(
-        error,
-        stackTrace: stack,
-        context: 'PlatformDispatcher',
-      );
+      logError(error, stackTrace: stack, context: 'PlatformDispatcher');
       // Return true to mark exception as handled so app engine does not crash
       return true;
     };
 
     // Replace Flutter red screen of death with custom error widget builder
     ErrorWidget.builder = (FlutterErrorDetails details) {
-      return GlobalErrorFallbackWidget(
-        errorDetails: details,
-      );
+      return GlobalErrorFallbackWidget(errorDetails: details);
     };
   }
 
@@ -96,11 +90,7 @@ class AppErrorHandler {
   }
 
   /// Safely executes a synchronous operation [action], returning [fallback] (or null) if an exception occurs.
-  static T? guard<T>(
-    T Function() action, {
-    T? fallback,
-    String? context,
-  }) {
+  static T? guard<T>(T Function() action, {T? fallback, String? context}) {
     try {
       return action();
     } catch (e, st) {
@@ -118,7 +108,11 @@ class AppErrorHandler {
     try {
       return await action();
     } catch (e, st) {
-      logError(e, stackTrace: st, context: context ?? 'AppErrorHandler.guardAsync');
+      logError(
+        e,
+        stackTrace: st,
+        context: context ?? 'AppErrorHandler.guardAsync',
+      );
       return fallback;
     }
   }

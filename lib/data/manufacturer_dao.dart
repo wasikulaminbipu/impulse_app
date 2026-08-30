@@ -1,6 +1,6 @@
-﻿import 'package:drift/drift.dart';
-import 'package:impulse_app/models/product.dart';
+import 'package:drift/drift.dart';
 import 'package:impulse_app/data/app_databases.dart';
+import 'package:impulse_app/models/product.dart';
 
 class ManufacturerDao {
   final ProductsDb db;
@@ -21,12 +21,16 @@ class ManufacturerDao {
   );
 
   Future<Manufacturer?> getById(int id) async {
-    final e = await (db.select(db.manufacturers)..where((t) => t.id.equals(id))).getSingleOrNull();
+    final e = await (db.select(
+      db.manufacturers,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
     return e == null ? null : _map(e);
   }
 
   Future<List<Manufacturer>> getAll() async {
-    final rows = await (db.select(db.manufacturers)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
+    final rows = await (db.select(
+      db.manufacturers,
+    )..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
     return rows.map(_map).toList();
   }
 
@@ -42,7 +46,7 @@ class ManufacturerDao {
     }
     statement.orderBy([(t) => OrderingTerm(expression: t.nameEn)]);
     statement.limit(limit, offset: offset);
-    
+
     final rows = await statement.get();
     return rows.map(_map).toList();
   }

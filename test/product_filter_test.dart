@@ -1,13 +1,12 @@
-﻿import 'dart:io';
+import 'dart:io';
+
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_app/data/product_dao.dart';
-import 'package:impulse_app/data/lookup_dao.dart';
-import 'package:impulse_app/models/product.dart';
-
-
 import 'package:impulse_app/data/app_databases.dart';
 import 'package:impulse_app/data/fts_utils.dart';
+import 'package:impulse_app/data/lookup_dao.dart';
+import 'package:impulse_app/data/product_dao.dart';
+import 'package:impulse_app/models/product.dart';
 
 void main() {
   group('ProductFilter Mechanism Tests', () {
@@ -25,7 +24,7 @@ void main() {
     });
 
     test('getAllLight includes target groups from directions', () async {
-      final products = await dao.getAllLight(activeOnly: true);
+      final products = await dao.getAllLight();
       expect(products, isNotEmpty);
       for (final p in products) {
         expect(p.targetGroupIds, isNotNull);
@@ -33,10 +32,10 @@ void main() {
     });
 
     test('Filter logic helper checks all conditions correctly', () {
-      final vaccineCategory = Category(id: 3, nameEn: 'Vaccine');
-      final otherCategory = Category(id: 1, nameEn: 'Medicine');
+      const vaccineCategory = Category(id: 3, nameEn: 'Vaccine');
+      const otherCategory = Category(id: 1, nameEn: 'Medicine');
 
-      final prodVaccine = Product(
+      const prodVaccine = Product(
         id: 101,
         titleEn: 'Vaccine A',
         slug: 'vaccine-a',
@@ -46,11 +45,16 @@ void main() {
         createdAt: '',
         updatedAt: '',
         presentations: [
-          Presentation(id: 1, productId: 101, productTypeId: 1, contentTypeId: 1, bulkItem: false),
+          Presentation(
+            id: 1,
+            productId: 101,
+            productTypeId: 1,
+            contentTypeId: 1,
+          ),
         ],
       );
 
-      final prodFeedAdditiveBulk = Product(
+      const prodFeedAdditiveBulk = Product(
         id: 102,
         titleEn: 'Bulk Feed Additive',
         slug: 'bulk-feed-additive',
@@ -60,11 +64,17 @@ void main() {
         createdAt: '',
         updatedAt: '',
         presentations: [
-          Presentation(id: 2, productId: 102, productTypeId: 1, contentTypeId: 1, bulkItem: true),
+          Presentation(
+            id: 2,
+            productId: 102,
+            productTypeId: 1,
+            contentTypeId: 1,
+            bulkItem: true,
+          ),
         ],
       );
 
-      final prodPoultryNoBulk = Product(
+      const prodPoultryNoBulk = Product(
         id: 103,
         titleEn: 'Poultry Medicine',
         slug: 'poultry-medicine',
@@ -74,11 +84,16 @@ void main() {
         createdAt: '',
         updatedAt: '',
         presentations: [
-          Presentation(id: 3, productId: 103, productTypeId: 1, contentTypeId: 1, bulkItem: false),
+          Presentation(
+            id: 3,
+            productId: 103,
+            productTypeId: 1,
+            contentTypeId: 1,
+          ),
         ],
       );
 
-      final multiGroupProd = Product(
+      const multiGroupProd = Product(
         id: 104,
         titleEn: 'Multi Group Prod',
         slug: 'multi-group-prod',
@@ -88,16 +103,26 @@ void main() {
         createdAt: '',
         updatedAt: '',
         presentations: [
-          Presentation(id: 4, productId: 104, productTypeId: 1, contentTypeId: 1, bulkItem: true),
+          Presentation(
+            id: 4,
+            productId: 104,
+            productTypeId: 1,
+            contentTypeId: 1,
+            bulkItem: true,
+          ),
         ],
       );
 
       // Verify Feed Additives filter (Condition 3: bulk_item == 1 / true)
-      bool isFeedAdditive(Product p) => p.presentations.any((pres) => pres.bulkItem);
+      bool isFeedAdditive(Product p) =>
+          p.presentations.any((pres) => pres.bulkItem);
       expect(isFeedAdditive(prodFeedAdditiveBulk), isTrue);
       expect(isFeedAdditive(prodVaccine), isFalse);
       expect(isFeedAdditive(prodPoultryNoBulk), isFalse);
-      expect(isFeedAdditive(multiGroupProd), isTrue); // Multi-group: satisfies bulk_item
+      expect(
+        isFeedAdditive(multiGroupProd),
+        isTrue,
+      ); // Multi-group: satisfies bulk_item
 
       // Verify Vaccine filter (Condition 2: Category is Vaccine only)
       bool isVaccine(Product p) => p.categoryId == 3;
@@ -114,7 +139,12 @@ void main() {
 
       // Condition 4: Multi-group verification
       // multiGroupProd should be present in Poultry, Vaccine, AND Feed Additives
-      expect(isPoultry(multiGroupProd) && isVaccine(multiGroupProd) && isFeedAdditive(multiGroupProd), isTrue);
+      expect(
+        isPoultry(multiGroupProd) &&
+            isVaccine(multiGroupProd) &&
+            isFeedAdditive(multiGroupProd),
+        isTrue,
+      );
     });
 
     test('Levenshtein distance handles fuzzy string matching', () {

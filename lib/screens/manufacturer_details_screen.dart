@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
@@ -40,6 +40,7 @@ class _ManufacturerDetailsScreenState
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final lang = ref.watch(languageSettingProvider);
@@ -84,7 +85,7 @@ class _ManufacturerDetailsScreenState
                       Text(
                         lang == 'bn'
                             ? (widget.manufacturer.nameBn ??
-                                widget.manufacturer.nameEn)
+                                  widget.manufacturer.nameEn)
                             : widget.manufacturer.nameEn,
                         style: const TextStyle(
                           fontSize: 20,
@@ -169,9 +170,8 @@ class _ManufacturerDetailsScreenState
             loading: () => const SliverFillRemaining(
               child: Center(child: CircularProgressIndicator()),
             ),
-            error: (err, _) => SliverFillRemaining(
-              child: Center(child: Text(err.toString())),
-            ),
+            error: (err, _) =>
+                SliverFillRemaining(child: Center(child: Text(err.toString()))),
           ),
         ],
       ),

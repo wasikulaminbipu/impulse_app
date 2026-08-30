@@ -4,4 +4,3 @@ abstract final class AppAssets {
   static const String logoImpulse = 'assets/images/logo_impulse.png';
   static const String logoJpPharma = 'assets/images/logo_jp_pharma.jpg';
 }
-

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_app/core/errors/app_error.dart';
 import 'package:impulse_app/core/errors/app_error_handler.dart';
@@ -7,26 +7,42 @@ void main() {
   group('AppException Tests', () {
     test('AppException subclasses format toString correctly', () {
       const dbException = DatabaseException('Database failed');
-      expect(dbException.toString(), equals('DatabaseException: Database failed'));
+      expect(
+        dbException.toString(),
+        equals('DatabaseException: Database failed'),
+      );
       expect(dbException.message, equals('Database failed'));
 
       const netException = NetworkException('No internet');
       expect(netException.toString(), equals('NetworkException: No internet'));
 
       const renderException = RenderException('Layout overflow');
-      expect(renderException.toString(), equals('RenderException: Layout overflow'));
+      expect(
+        renderException.toString(),
+        equals('RenderException: Layout overflow'),
+      );
 
       const valException = ValidationException('Invalid ID');
-      expect(valException.toString(), equals('ValidationException: Invalid ID'));
+      expect(
+        valException.toString(),
+        equals('ValidationException: Invalid ID'),
+      );
 
       const unknownException = UnknownException('Unexpected error');
-      expect(unknownException.toString(), equals('UnknownException: Unexpected error'));
+      expect(
+        unknownException.toString(),
+        equals('UnknownException: Unexpected error'),
+      );
     });
 
     test('AppException stores originalError and stackTrace', () {
       final original = Exception('Original cause');
       final stack = StackTrace.current;
-      final appEx = DatabaseException('DB error', originalError: original, stackTrace: stack);
+      final appEx = DatabaseException(
+        'DB error',
+        originalError: original,
+        stackTrace: stack,
+      );
 
       expect(appEx.originalError, equals(original));
       expect(appEx.stackTrace, equals(stack));
@@ -51,7 +67,10 @@ void main() {
 
     test('logError converts FlutterError to RenderException', () {
       final flutterError = FlutterError('Widget layout failure');
-      final logged = AppErrorHandler.logError(flutterError, context: 'TestContext');
+      final logged = AppErrorHandler.logError(
+        flutterError,
+        context: 'TestContext',
+      );
 
       expect(logged, isA<RenderException>());
       expect(logged.message, contains('Widget layout failure'));
@@ -87,10 +106,7 @@ void main() {
     });
 
     test('guard returns value on success', () {
-      final result = AppErrorHandler.guard<int>(
-        () => 100,
-        fallback: 0,
-      );
+      final result = AppErrorHandler.guard<int>(() => 100, fallback: 0);
       expect(result, equals(100));
     });
 

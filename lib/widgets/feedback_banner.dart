@@ -25,7 +25,6 @@ class FeedbackBanner extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 20, left: 16, right: 16),
         content: FeedbackBanner(
           message: message,
-          isError: false,
           icon: Icons.check_circle_outline,
         ),
       ),
@@ -40,7 +39,6 @@ class FeedbackBanner extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 4),
         margin: const EdgeInsets.only(bottom: 20, left: 16, right: 16),
         content: FeedbackBanner(
           message: message,
@@ -69,10 +67,7 @@ class FeedbackBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: accentColor.withValues(alpha: 0.4),
-          width: 1,
-        ),
+        border: Border.all(color: accentColor.withValues(alpha: 0.4)),
         boxShadow: [
           BoxShadow(
             color: accentColor.withValues(alpha: 0.15),

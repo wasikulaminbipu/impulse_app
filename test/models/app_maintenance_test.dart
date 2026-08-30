@@ -1,4 +1,4 @@
-﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_app/models/app_maintenance.dart';
 
 void main() {
@@ -8,8 +8,14 @@ void main() {
       expect(FavoriteType.product.idColumn, equals('product_id'));
       expect(FavoriteType.distributor.table, equals('favorite_distributors'));
       expect(FavoriteType.distributor.idColumn, equals('distributor_id'));
-      expect(FavoriteType.salesPersonnel.table, equals('favorite_sales_personnel'));
-      expect(FavoriteType.salesPersonnel.idColumn, equals('sales_personnel_id'));
+      expect(
+        FavoriteType.salesPersonnel.table,
+        equals('favorite_sales_personnel'),
+      );
+      expect(
+        FavoriteType.salesPersonnel.idColumn,
+        equals('sales_personnel_id'),
+      );
       expect(FavoriteType.vetDoctor.table, equals('favorite_vet_doctors'));
       expect(FavoriteType.vetDoctor.idColumn, equals('vet_doctor_id'));
     });
@@ -17,11 +23,8 @@ void main() {
 
   group('FavoriteEntry Freezed Model Tests', () {
     test('FavoriteEntry.fromMap creates instance properly', () {
-      final nowStr = '2026-08-24T10:00:00.000Z';
-      final map = {
-        'product_id': 42,
-        'added_at': nowStr,
-      };
+      const nowStr = '2026-08-24T10:00:00.000Z';
+      final map = {'product_id': 42, 'added_at': nowStr};
 
       final entry = FavoriteEntry.fromMap(map, 'product_id');
       expect(entry.id, equals(42));

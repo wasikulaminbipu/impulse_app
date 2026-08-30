@@ -1,18 +1,25 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:impulse_app/models/product.dart';
-import 'package:impulse_app/utils/bilingual_string.dart';
 import 'package:impulse_app/screens/manufacturer_details_screen.dart';
+import 'package:impulse_app/utils/bilingual_string.dart';
 import 'package:impulse_app/widgets/product_details/section_card.dart';
 
 class ManufacturerSection extends StatelessWidget {
   final Manufacturer manufacturer;
   final String lang;
 
-  const ManufacturerSection({super.key, required this.manufacturer, required this.lang});
+  const ManufacturerSection({
+    super.key,
+    required this.manufacturer,
+    required this.lang,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final addressText = manufacturer.addressEn.resolve(manufacturer.addressBn, lang);
+    final addressText = manufacturer.addressEn.resolve(
+      manufacturer.addressBn,
+      lang,
+    );
 
     return SectionCard(
       title: lang == 'bn' ? 'প্রস্তুতকারক' : 'Manufacturer',
@@ -20,18 +27,21 @@ class ManufacturerSection extends StatelessWidget {
       child: InkWell(
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (context) => ManufacturerDetailsScreen(manufacturer: manufacturer),
+            builder: (context) =>
+                ManufacturerDetailsScreen(manufacturer: manufacturer),
           ),
         ),
         child: Row(
           children: [
-            if (manufacturer.logoUrl != null && manufacturer.logoUrl!.isNotEmpty) ...[
+            if (manufacturer.logoUrl != null &&
+                manufacturer.logoUrl!.isNotEmpty) ...[
               const SizedBox(width: 8),
               Image.asset(
                 'assets/manufacturers_logo/${manufacturer.logoUrl}',
                 width: 48,
                 height: 48,
-                errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                errorBuilder: (context, error, stackTrace) =>
+                    const SizedBox.shrink(),
               ),
             ],
             const SizedBox(width: 12),
@@ -57,10 +67,7 @@ class ManufacturerSection extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
-              Icons.chevron_right,
-              color: Colors.grey,
-            ),
+            const Icon(Icons.chevron_right, color: Colors.grey),
           ],
         ),
       ),

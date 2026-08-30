@@ -1,7 +1,8 @@
-﻿@Tags(['golden'])
+@Tags(['golden'])
 library;
 
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,11 +11,11 @@ import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/theme/app_theme.dart';
 import 'package:impulse_app/widgets/custom_badge.dart';
-import 'package:impulse_app/widgets/tactile_button.dart';
-import 'package:impulse_app/widgets/glass_container.dart';
-import 'package:impulse_app/widgets/feedback_banner.dart';
 import 'package:impulse_app/widgets/favorite_button.dart';
+import 'package:impulse_app/widgets/feedback_banner.dart';
+import 'package:impulse_app/widgets/glass_container.dart';
 import 'package:impulse_app/widgets/product_card.dart';
+import 'package:impulse_app/widgets/tactile_button.dart';
 
 /// Custom golden comparator with a controlled cross-platform tolerance threshold (5%)
 /// to account for OS-level font rasterization / anti-aliasing variations (e.g. Linux CI vs Windows).
@@ -69,10 +70,7 @@ Widget createGoldenHarness({
   );
 
   if (container != null) {
-    return UncontrolledProviderScope(
-      container: container,
-      child: app,
-    );
+    return UncontrolledProviderScope(container: container, child: app);
   }
 
   return ProviderScope(child: app);
@@ -84,22 +82,36 @@ void main() {
     if (currentComparator is LocalFileComparator) {
       goldenFileComparator = TolerantGoldenFileComparator(
         currentComparator.basedir.resolve('ui_components_golden_test.dart'),
-        tolerance: 0.05,
       );
     }
   });
-  final sampleProduct = ProductLabel(
+  const sampleProduct = ProductLabel(
     id: 1,
     titleEn: 'Amoxivet 50% WSP',
     titleBn: 'অ্যামোক্সিভেট ৫০% ডব্লিউএসপি',
     shortDescriptionEn: 'Broad spectrum antibiotic for poultry & livestock',
-    shortDescriptionBn: 'পোল্ট্রি এবং গবাদি পশুর জন্য ব্রড স্পেকট্রাম অ্যান্টিবায়োটিক',
+    shortDescriptionBn:
+        'পোল্ট্রি এবং গবাদি পশুর জন্য ব্রড স্পেকট্রাম অ্যান্টিবায়োটিক',
     categoryId: 1,
-    category: const Category(id: 1, nameEn: 'Antibiotics'),
-    targetGroups: const [TargetGroup(id: 1, nameEn: 'Poultry', iconName: 'poultry')],
-    presentations: const [
-      Presentation(id: 1, productId: 1, productTypeId: 1, contentTypeId: 1, size: '100g', mrp: 450.0),
-      Presentation(id: 2, productId: 1, productTypeId: 1, contentTypeId: 1, size: '500g', mrp: 1950.0),
+    category: Category(id: 1, nameEn: 'Antibiotics'),
+    targetGroups: [TargetGroup(id: 1, nameEn: 'Poultry', iconName: 'poultry')],
+    presentations: [
+      Presentation(
+        id: 1,
+        productId: 1,
+        productTypeId: 1,
+        contentTypeId: 1,
+        size: '100g',
+        mrp: 450.0,
+      ),
+      Presentation(
+        id: 2,
+        productId: 1,
+        productTypeId: 1,
+        contentTypeId: 1,
+        size: '500g',
+        mrp: 1950.0,
+      ),
     ],
   );
 
@@ -132,7 +144,9 @@ void main() {
       );
     });
 
-    testWidgets('TactileButton Golden - Active and Disabled States', (tester) async {
+    testWidgets('TactileButton Golden - Active and Disabled States', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(400, 300);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -164,7 +178,9 @@ void main() {
       );
     });
 
-    testWidgets('GlassContainer Golden - Frosted specular effect', (tester) async {
+    testWidgets('GlassContainer Golden - Frosted specular effect', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(400, 300);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -172,7 +188,6 @@ void main() {
       final widgetUnderTest = createGoldenHarness(
         surfaceSize: const Size(360, 220),
         child: const GlassContainer(
-          borderRadius: 16.0,
           child: Padding(
             padding: EdgeInsets.all(20.0),
             child: Column(
@@ -204,7 +219,9 @@ void main() {
       );
     });
 
-    testWidgets('FeedbackBanner Golden - Success and Error banners', (tester) async {
+    testWidgets('FeedbackBanner Golden - Success and Error banners', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(400, 300);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -214,10 +231,7 @@ void main() {
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FeedbackBanner(
-              message: 'Product added to favorites',
-              isError: false,
-            ),
+            FeedbackBanner(message: 'Product added to favorites'),
             SizedBox(height: 16),
             FeedbackBanner(
               message: 'Database synchronization failed',
@@ -236,7 +250,9 @@ void main() {
       );
     });
 
-    testWidgets('FavoriteButton Golden - Active and Inactive states', (tester) async {
+    testWidgets('FavoriteButton Golden - Active and Inactive states', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(500, 300);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -299,7 +315,7 @@ void main() {
         theme: AppTheme.lightTheme,
         container: container,
         surfaceSize: const Size(380, 240),
-        child: ProductCard(product: sampleProduct),
+        child: const ProductCard(product: sampleProduct),
       );
 
       await tester.pumpWidget(widgetUnderTest);
@@ -327,7 +343,7 @@ void main() {
         theme: AppTheme.darkTheme,
         container: container,
         surfaceSize: const Size(380, 240),
-        child: ProductCard(product: sampleProduct),
+        child: const ProductCard(product: sampleProduct),
       );
 
       await tester.pumpWidget(widgetUnderTest);

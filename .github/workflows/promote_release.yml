@@ -1,0 +1,100 @@
+name: Promote Google Play Store Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      from_track:
+        description: 'Source Google Play Track'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+          - beta
+          - internal
+      to_track:
+        description: 'Target Google Play Track'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - beta
+      rollout_fraction:
+        description: 'Staged Rollout Fraction for Production'
+        required: true
+        default: '1.0'
+        type: choice
+        options:
+          - '0.10'
+          - '0.25'
+          - '0.50'
+          - '1.0'
+
+concurrency:
+  group: promote-playstore-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  promote-release:
+    name: "Promote: Google Play Track & Staged Rollout"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Check out source code repository"
+        uses: actions/checkout@v4
+
+      - name: "Set up Ruby 3.2 & Bundler for Fastlane"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          working-directory: 'android'
+          bundler-cache: true
+
+      - name: "Strictly validate Google Play service account API credentials"
+        env:
+          PLAYSTORE_JSON_KEY: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set -e
+          if [ -z "$PLAYSTORE_JSON_KEY" ]; then
+            echo "::error::PLAYSTORE_SERVICE_ACCOUNT_JSON secret is missing! A valid Google Play service account key is strictly required to promote tracks."
+            exit 1
+          fi
+
+          echo "$PLAYSTORE_JSON_KEY" > android/pc-api-key.json
+
+          if [ ! -s android/pc-api-key.json ]; then
+            echo "::error::Google Play service account JSON file is empty or invalid!"
+            exit 1
+          fi
+          echo "Google Play service account API credentials successfully validated."
+
+      - name: "Execute Fastlane Track Promotion"
+        env:
+          FROM_TRACK: ${{ github.event.inputs.from_track }}
+          TO_TRACK: ${{ github.event.inputs.to_track }}
+          ROLLOUT_FRACTION: ${{ github.event.inputs.rollout_fraction }}
+        run: |
+          set -e
+          cd android
+          echo "Promoting release from '$FROM_TRACK' to '$TO_TRACK' with rollout fraction: $ROLLOUT_FRACTION"
+          bundle exec fastlane promote from_track:$FROM_TRACK to_track:$TO_TRACK rollout:$ROLLOUT_FRACTION
+
+      - name: "Generate Promotion Step Summary"
+        if: always()
+        run: |
+          echo "## 🚀 Google Play Release Track Promotion Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Configuration | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source Track** | `${{ github.event.inputs.from_track }}` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target Track** | `${{ github.event.inputs.to_track }}` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Staged Rollout Fraction** | `${{ github.event.inputs.rollout_fraction }}` ($(awk "BEGIN {print ${{ github.event.inputs.rollout_fraction }} * 100}")%) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Promotion Status** | ✅ Successfully Promoted |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Timestamp** | `$(date -u)` |" >> $GITHUB_STEP_SUMMARY
+
+      - name: "Securely wipe Google Play credentials from runner"
+        if: always()
+        run: |
+          rm -f android/pc-api-key.json

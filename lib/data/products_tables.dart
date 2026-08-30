@@ -35,7 +35,8 @@ class ProductTypes extends Table {
 @DataClassName('SpeciesEntity')
 class Species extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get targetGroupId => integer().customConstraint('NOT NULL REFERENCES target_groups(id)')();
+  IntColumn get targetGroupId =>
+      integer().customConstraint('NOT NULL REFERENCES target_groups(id)')();
   TextColumn get nameEn => text()();
   TextColumn get nameBn => text()();
 }
@@ -72,8 +73,10 @@ class Manufacturers extends Table {
 @DataClassName('ProductEntity')
 class Products extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get manufacturerId => integer().nullable().customConstraint('REFERENCES manufacturers(id)')();
-  IntColumn get categoryId => integer().customConstraint('NOT NULL REFERENCES categories(id)')();
+  IntColumn get manufacturerId =>
+      integer().nullable().customConstraint('REFERENCES manufacturers(id)')();
+  IntColumn get categoryId =>
+      integer().customConstraint('NOT NULL REFERENCES categories(id)')();
   TextColumn get titleEn => text()();
   TextColumn get titleBn => text().nullable()();
   TextColumn get slug => text().unique()();
@@ -83,15 +86,20 @@ class Products extends Table {
   TextColumn get shortDescriptionBn => text().nullable()();
   TextColumn get imageUrl => text().nullable()();
   IntColumn get isActive => integer().withDefault(const Constant(1))();
-  TextColumn get createdAt => text().clientDefault(() => DateTime.now().toIso8601String())();
-  TextColumn get updatedAt => text().clientDefault(() => DateTime.now().toIso8601String())();
+  TextColumn get createdAt =>
+      text().clientDefault(() => DateTime.now().toIso8601String())();
+  TextColumn get updatedAt =>
+      text().clientDefault(() => DateTime.now().toIso8601String())();
   TextColumn get compositionBasisEn => text().nullable()();
   TextColumn get compositionBasisBn => text().nullable()();
 }
 
 class ProductTargetGroups extends Table {
-  IntColumn get productId => integer().customConstraint('NOT NULL REFERENCES products(id) ON DELETE CASCADE')();
-  IntColumn get targetGroupId => integer().customConstraint('NOT NULL REFERENCES target_groups(id)')();
+  IntColumn get productId => integer().customConstraint(
+    'NOT NULL REFERENCES products(id) ON DELETE CASCADE',
+  )();
+  IntColumn get targetGroupId =>
+      integer().customConstraint('NOT NULL REFERENCES target_groups(id)')();
   @override
   Set<Column> get primaryKey => {productId, targetGroupId};
 }
@@ -99,7 +107,9 @@ class ProductTargetGroups extends Table {
 @DataClassName('CompositionEntity')
 class Compositions extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get productId => integer().customConstraint('NOT NULL REFERENCES products(id) ON DELETE CASCADE')();
+  IntColumn get productId => integer().customConstraint(
+    'NOT NULL REFERENCES products(id) ON DELETE CASCADE',
+  )();
   TextColumn get ingredientEn => text()();
   TextColumn get ingredientBn => text().nullable()();
   TextColumn get concentration => text().nullable()();
@@ -109,7 +119,9 @@ class Compositions extends Table {
 @DataClassName('IndicationEntity')
 class Indications extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get productId => integer().customConstraint('NOT NULL REFERENCES products(id) ON DELETE CASCADE')();
+  IntColumn get productId => integer().customConstraint(
+    'NOT NULL REFERENCES products(id) ON DELETE CASCADE',
+  )();
   TextColumn get textEn => text()();
   TextColumn get textBn => text().nullable()();
   IntColumn get displayOrder => integer().withDefault(const Constant(0))();
@@ -118,13 +130,19 @@ class Indications extends Table {
 @DataClassName('DirectionEntity')
 class Directions extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get productId => integer().customConstraint('NOT NULL REFERENCES products(id) ON DELETE CASCADE')();
-  IntColumn get contentTypeId => integer().customConstraint('NOT NULL REFERENCES content_types(id)')();
-  IntColumn get speciesId => integer().customConstraint('NOT NULL REFERENCES species(id)')();
+  IntColumn get productId => integer().customConstraint(
+    'NOT NULL REFERENCES products(id) ON DELETE CASCADE',
+  )();
+  IntColumn get contentTypeId =>
+      integer().customConstraint('NOT NULL REFERENCES content_types(id)')();
+  IntColumn get speciesId =>
+      integer().customConstraint('NOT NULL REFERENCES species(id)')();
   RealColumn get doseValueMin => real()();
   RealColumn get doseValueMax => real().nullable()();
-  IntColumn get doseUnitId => integer().customConstraint('NOT NULL REFERENCES dosage_units(id)')();
-  IntColumn get doseBasisId => integer().customConstraint('NOT NULL REFERENCES dosage_bases(id)')();
+  IntColumn get doseUnitId =>
+      integer().customConstraint('NOT NULL REFERENCES dosage_units(id)')();
+  IntColumn get doseBasisId =>
+      integer().customConstraint('NOT NULL REFERENCES dosage_bases(id)')();
   IntColumn get durationDaysMin => integer().nullable()();
   IntColumn get durationDaysMax => integer().nullable()();
   TextColumn get administrationEn => text().nullable()();
@@ -137,7 +155,9 @@ class Directions extends Table {
 @DataClassName('PrecautionEntity')
 class Precautions extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get productId => integer().customConstraint('NOT NULL REFERENCES products(id) ON DELETE CASCADE')();
+  IntColumn get productId => integer().customConstraint(
+    'NOT NULL REFERENCES products(id) ON DELETE CASCADE',
+  )();
   TextColumn get textEn => text()();
   TextColumn get textBn => text().nullable()();
   IntColumn get displayOrder => integer().withDefault(const Constant(0))();
@@ -146,9 +166,13 @@ class Precautions extends Table {
 @DataClassName('PresentationEntity')
 class Presentations extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get productId => integer().customConstraint('NOT NULL REFERENCES products(id) ON DELETE CASCADE')();
-  IntColumn get productTypeId => integer().customConstraint('NOT NULL REFERENCES product_types(id)')();
-  IntColumn get contentTypeId => integer().customConstraint('NOT NULL REFERENCES content_types(id)')();
+  IntColumn get productId => integer().customConstraint(
+    'NOT NULL REFERENCES products(id) ON DELETE CASCADE',
+  )();
+  IntColumn get productTypeId =>
+      integer().customConstraint('NOT NULL REFERENCES product_types(id)')();
+  IntColumn get contentTypeId =>
+      integer().customConstraint('NOT NULL REFERENCES content_types(id)')();
   TextColumn get size => text().nullable()();
   RealColumn get mrp => real().nullable()();
   TextColumn get imageUrl => text().nullable()();

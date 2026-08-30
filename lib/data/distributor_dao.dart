@@ -1,13 +1,11 @@
-﻿import 'package:impulse_app/data/db_extensions.dart';
-
-import 'package:impulse_app/models/distributor.dart';
-import 'package:impulse_app/data/fts_utils.dart';
-
 // ============================================================================
 // DISTRIBUTOR DAO
 // ============================================================================
 
 import 'package:impulse_app/data/app_databases.dart';
+import 'package:impulse_app/data/db_extensions.dart';
+import 'package:impulse_app/data/fts_utils.dart';
+import 'package:impulse_app/models/distributor.dart';
 
 class DistributorDao {
   final DistributorsDb db;
@@ -30,7 +28,8 @@ class DistributorDao {
 
   /// Get all active distributors with their area and region details
   Future<List<DistributorWithLocation>> getAllDistributors() async {
-    const query = '''
+    const query =
+        '''
       $_baseSelect
       WHERE d.is_active = 1
       ORDER BY d.name_en
@@ -42,7 +41,8 @@ class DistributorDao {
 
   /// Get distributor by ID with area/region
   Future<DistributorWithLocation?> getDistributorById(int id) async {
-    const query = '''
+    const query =
+        '''
       $_baseSelect
       WHERE d.id = ?
     ''';
@@ -57,7 +57,8 @@ class DistributorDao {
   Future<List<DistributorWithLocation>> getDistributorsByArea(
     int areaId,
   ) async {
-    const query = '''
+    const query =
+        '''
       $_baseSelect
       WHERE d.area_id = ? AND d.is_active = 1
       ORDER BY d.name_en
@@ -71,7 +72,8 @@ class DistributorDao {
   Future<List<DistributorWithLocation>> getDistributorsByRegion(
     int regionId,
   ) async {
-    const query = '''
+    const query =
+        '''
       $_baseSelect
       WHERE a.region_id = ? AND d.is_active = 1
       ORDER BY d.name_en
@@ -115,7 +117,8 @@ class DistributorDao {
 
     if (rows.isEmpty) {
       final pattern = '%$trimmed%';
-      const fallbackQuery = '''
+      const fallbackQuery =
+          '''
         $_baseSelect
         WHERE d.is_active = 1 AND (d.name_en LIKE ? OR d.name_bn LIKE ? OR d.address_en LIKE ? OR d.address_bn LIKE ? OR d.mobile LIKE ?)
         ORDER BY d.name_en
@@ -140,7 +143,7 @@ class DistributorDao {
     Set<int>? favoriteIds,
   }) async {
     final args = <dynamic>[];
-    List<String> where = ['d.is_active = 1'];
+    final List<String> where = ['d.is_active = 1'];
     String orderBy = '';
 
     if (query != null && query.isNotEmpty) {
@@ -265,9 +268,7 @@ class SalesPersonnelDao {
         'SELECT * FROM sales_personnel WHERE is_active = 1 ORDER BY name_en';
     final rows = await db.executor.customQuery(query);
 
-    return _hydrateList(
-      rows.map((row) => SalesPersonnel.fromRow(row)).toList(),
-    );
+    return _hydrateList(rows.map(SalesPersonnel.fromRow).toList());
   }
 
   /// Paginated, filtered query for Sales Personnel screen
@@ -278,7 +279,7 @@ class SalesPersonnelDao {
     Set<int>? favoriteIds,
   }) async {
     final args = <dynamic>[];
-    List<String> where = ['sp.is_active = 1'];
+    final List<String> where = ['sp.is_active = 1'];
     String orderBy = '';
 
     final trimmed = query?.trim() ?? '';
@@ -301,11 +302,20 @@ class SalesPersonnelDao {
              OR EXISTS (SELECT 1 FROM sales_personnel_upazilas spu JOIN upazilas u ON u.id = spu.upazila_id WHERE spu.sales_personnel_id = sp.id AND (u.name_en LIKE ? OR u.name_bn LIKE ?)))
           ''');
           args.addAll([
-            pattern, pattern, pattern, pattern, pattern, pattern,
-            pattern, pattern,
-            pattern, pattern,
-            pattern, pattern,
-            pattern, pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
           ]);
         }
         where.add('(${tokenConditions.join(' AND ')})');
@@ -335,9 +345,7 @@ class SalesPersonnelDao {
     ''';
 
     final rows = await db.executor.customQuery(sqlQuery, args);
-    var results = await _hydrateList(
-      rows.map((row) => SalesPersonnel.fromRow(row)).toList(),
-    );
+    var results = await _hydrateList(rows.map(SalesPersonnel.fromRow).toList());
 
     if (results.isEmpty && trimmed.isNotEmpty) {
       final allPersonnel = await getAllSalesPersonnel();
@@ -422,7 +430,7 @@ class SalesPersonnelDao {
     ''';
 
     final rows = await db.executor.customQuery(query, [salesPersonnelId]);
-    return rows.map((row) => Area.fromRow(row)).toList();
+    return rows.map(Area.fromRow).toList();
   }
 
   /// Get all sales personnel covering a specific area
@@ -437,9 +445,7 @@ class SalesPersonnelDao {
     ''';
 
     final rows = await db.executor.customQuery(query, [areaId]);
-    return _hydrateList(
-      rows.map((row) => SalesPersonnel.fromRow(row)).toList(),
-    );
+    return _hydrateList(rows.map(SalesPersonnel.fromRow).toList());
   }
 
   /// Full-text search on sales personnel
@@ -483,9 +489,7 @@ class SalesPersonnelDao {
       ]);
     }
 
-    return _hydrateList(
-      rows.map((row) => SalesPersonnel.fromRow(row)).toList(),
-    );
+    return _hydrateList(rows.map(SalesPersonnel.fromRow).toList());
   }
 
   /// Helper to batch hydrate SalesPersonnel with full coverage details (regions, areas, bases, upazilas)
@@ -509,7 +513,9 @@ class SalesPersonnelDao {
     final Map<int, List<Area>> areasByPersonnelId = {};
     for (final row in areaRows) {
       final personnelId = row['sales_personnel_id'] as int;
-      areasByPersonnelId.putIfAbsent(personnelId, () => []).add(Area.fromRow(row));
+      areasByPersonnelId
+          .putIfAbsent(personnelId, () => [])
+          .add(Area.fromRow(row));
     }
 
     // 2. Fetch Regions
@@ -525,7 +531,9 @@ class SalesPersonnelDao {
     final Map<int, List<Region>> regionsByPersonnelId = {};
     for (final row in regionRows) {
       final personnelId = row['sales_personnel_id'] as int;
-      regionsByPersonnelId.putIfAbsent(personnelId, () => []).add(Region.fromRow(row));
+      regionsByPersonnelId
+          .putIfAbsent(personnelId, () => [])
+          .add(Region.fromRow(row));
     }
 
     // 3. Fetch Bases
@@ -541,7 +549,9 @@ class SalesPersonnelDao {
     final Map<int, List<Base>> basesByPersonnelId = {};
     for (final row in baseRows) {
       final personnelId = row['sales_personnel_id'] as int;
-      basesByPersonnelId.putIfAbsent(personnelId, () => []).add(Base.fromRow(row));
+      basesByPersonnelId
+          .putIfAbsent(personnelId, () => [])
+          .add(Base.fromRow(row));
     }
 
     // 4. Fetch Upazilas
@@ -557,16 +567,26 @@ class SalesPersonnelDao {
     final Map<int, List<Upazila>> upazilasByPersonnelId = {};
     for (final row in upazilaRows) {
       final personnelId = row['sales_personnel_id'] as int;
-      upazilasByPersonnelId.putIfAbsent(personnelId, () => []).add(Upazila.fromRow(row));
+      upazilasByPersonnelId
+          .putIfAbsent(personnelId, () => [])
+          .add(Upazila.fromRow(row));
     }
 
     return personnelList.map((personnel) {
       return SalesPersonnelWithAreas(
         personnel: personnel.copyWith(
-          regionIds: (regionsByPersonnelId[personnel.id] ?? []).map((r) => r.id).toList(),
-          areaIds: (areasByPersonnelId[personnel.id] ?? []).map((a) => a.id).toList(),
-          baseIds: (basesByPersonnelId[personnel.id] ?? []).map((b) => b.id).toList(),
-          upazilaIds: (upazilasByPersonnelId[personnel.id] ?? []).map((u) => u.id).toList(),
+          regionIds: (regionsByPersonnelId[personnel.id] ?? [])
+              .map((r) => r.id)
+              .toList(),
+          areaIds: (areasByPersonnelId[personnel.id] ?? [])
+              .map((a) => a.id)
+              .toList(),
+          baseIds: (basesByPersonnelId[personnel.id] ?? [])
+              .map((b) => b.id)
+              .toList(),
+          upazilaIds: (upazilasByPersonnelId[personnel.id] ?? [])
+              .map((u) => u.id)
+              .toList(),
         ),
         areas: areasByPersonnelId[personnel.id] ?? [],
         regions: regionsByPersonnelId[personnel.id] ?? [],
@@ -627,7 +647,7 @@ class VetDoctorDao {
         'SELECT * FROM vet_doctors WHERE is_active = 1 ORDER BY name_en';
     final rows = await db.executor.customQuery(query);
 
-    return _hydrateList(rows.map((row) => VetDoctor.fromRow(row)).toList());
+    return _hydrateList(rows.map(VetDoctor.fromRow).toList());
   }
 
   /// Paginated, filtered query for Vet Doctors screen
@@ -638,7 +658,7 @@ class VetDoctorDao {
     Set<int>? favoriteIds,
   }) async {
     final args = <dynamic>[];
-    List<String> where = ['vd.is_active = 1'];
+    final List<String> where = ['vd.is_active = 1'];
     String orderBy = '';
 
     final trimmed = query?.trim() ?? '';
@@ -661,11 +681,25 @@ class VetDoctorDao {
              OR EXISTS (SELECT 1 FROM vet_doctors_upazilas vdu JOIN upazilas u ON u.id = vdu.upazila_id WHERE vdu.vet_doctor_id = vd.id AND (u.name_en LIKE ? OR u.name_bn LIKE ?)))
           ''');
           args.addAll([
-            pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern,
-            pattern, pattern,
-            pattern, pattern,
-            pattern, pattern,
-            pattern, pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
           ]);
         }
         where.add('(${tokenConditions.join(' AND ')})');
@@ -695,7 +729,7 @@ class VetDoctorDao {
     ''';
 
     final rows = await db.executor.customQuery(sqlQuery, args);
-    var results = await _hydrateList(rows.map((row) => VetDoctor.fromRow(row)).toList());
+    var results = await _hydrateList(rows.map(VetDoctor.fromRow).toList());
 
     if (results.isEmpty && trimmed.isNotEmpty) {
       final allDoctors = await getAllVetDoctors();
@@ -784,7 +818,7 @@ class VetDoctorDao {
     ''';
 
     final rows = await db.executor.customQuery(query, [vetDoctorId]);
-    return rows.map((row) => Area.fromRow(row)).toList();
+    return rows.map(Area.fromRow).toList();
   }
 
   /// Get all vet doctors in a specific area
@@ -797,7 +831,7 @@ class VetDoctorDao {
     ''';
 
     final rows = await db.executor.customQuery(query, [areaId]);
-    return _hydrateList(rows.map((row) => VetDoctor.fromRow(row)).toList());
+    return _hydrateList(rows.map(VetDoctor.fromRow).toList());
   }
 
   /// Full-text search on vet doctors
@@ -839,7 +873,7 @@ class VetDoctorDao {
       ]);
     }
 
-    return _hydrateList(rows.map((row) => VetDoctor.fromRow(row)).toList());
+    return _hydrateList(rows.map(VetDoctor.fromRow).toList());
   }
 
   /// Helper to batch hydrate VetDoctors with full coverage details (regions, areas, bases, upazilas)
@@ -877,7 +911,9 @@ class VetDoctorDao {
     final Map<int, List<Region>> regionsByDoctorId = {};
     for (final row in regionRows) {
       final doctorId = row['vet_doctor_id'] as int;
-      regionsByDoctorId.putIfAbsent(doctorId, () => []).add(Region.fromRow(row));
+      regionsByDoctorId
+          .putIfAbsent(doctorId, () => [])
+          .add(Region.fromRow(row));
     }
 
     // 3. Fetch Bases
@@ -909,16 +945,22 @@ class VetDoctorDao {
     final Map<int, List<Upazila>> upazilasByDoctorId = {};
     for (final row in upazilaRows) {
       final doctorId = row['vet_doctor_id'] as int;
-      upazilasByDoctorId.putIfAbsent(doctorId, () => []).add(Upazila.fromRow(row));
+      upazilasByDoctorId
+          .putIfAbsent(doctorId, () => [])
+          .add(Upazila.fromRow(row));
     }
 
     return doctors.map((doctor) {
       return VetDoctorWithAreas(
         doctor: doctor.copyWith(
-          regionIds: (regionsByDoctorId[doctor.id] ?? []).map((r) => r.id).toList(),
+          regionIds: (regionsByDoctorId[doctor.id] ?? [])
+              .map((r) => r.id)
+              .toList(),
           areaIds: (areasByDoctorId[doctor.id] ?? []).map((a) => a.id).toList(),
           baseIds: (basesByDoctorId[doctor.id] ?? []).map((b) => b.id).toList(),
-          upazilaIds: (upazilasByDoctorId[doctor.id] ?? []).map((u) => u.id).toList(),
+          upazilaIds: (upazilasByDoctorId[doctor.id] ?? [])
+              .map((u) => u.id)
+              .toList(),
         ),
         areas: areasByDoctorId[doctor.id] ?? [],
         regions: regionsByDoctorId[doctor.id] ?? [],
@@ -987,16 +1029,20 @@ class LocationDao {
     if (_cachedRegions != null) {
       return _cachedRegions!;
     }
-    final rows = await db.executor.customQuery('SELECT * FROM regions ORDER BY name_en');
-    _cachedRegions = rows.map((row) => Region.fromRow(row)).toList();
+    final rows = await db.executor.customQuery(
+      'SELECT * FROM regions ORDER BY name_en',
+    );
+    _cachedRegions = rows.map(Region.fromRow).toList();
     return _cachedRegions!;
   }
 
   /// Get all areas (cached in memory, optionally filtered by region)
   Future<List<Area>> getAllAreas({int? regionId}) async {
     if (_cachedAreas == null) {
-      final rows = await db.executor.customQuery('SELECT * FROM areas ORDER BY name_en');
-      _cachedAreas = rows.map((row) => Area.fromRow(row)).toList();
+      final rows = await db.executor.customQuery(
+        'SELECT * FROM areas ORDER BY name_en',
+      );
+      _cachedAreas = rows.map(Area.fromRow).toList();
     }
 
     if (regionId == null) {
@@ -1014,7 +1060,10 @@ class LocationDao {
       }
       return null;
     }
-    final rows = await db.executor.customQuery('SELECT * FROM areas WHERE id = ?', [id]);
+    final rows = await db.executor.customQuery(
+      'SELECT * FROM areas WHERE id = ?',
+      [id],
+    );
     return rows.isNotEmpty ? Area.fromRow(rows.first) : null;
   }
 
@@ -1026,9 +1075,10 @@ class LocationDao {
       }
       return null;
     }
-    final rows = await db.executor.customQuery('SELECT * FROM regions WHERE id = ?', [
-      id,
-    ]);
+    final rows = await db.executor.customQuery(
+      'SELECT * FROM regions WHERE id = ?',
+      [id],
+    );
     return rows.isNotEmpty ? Region.fromRow(rows.first) : null;
   }
 
@@ -1036,13 +1086,19 @@ class LocationDao {
   Future<List<Base>> getAllBases({int? areaId}) async {
     final rows = areaId == null
         ? await db.executor.customQuery('SELECT * FROM bases ORDER BY name_en')
-        : await db.executor.customQuery('SELECT * FROM bases WHERE area_id = ? ORDER BY name_en', [areaId]);
-    return rows.map((row) => Base.fromRow(row)).toList();
+        : await db.executor.customQuery(
+            'SELECT * FROM bases WHERE area_id = ? ORDER BY name_en',
+            [areaId],
+          );
+    return rows.map(Base.fromRow).toList();
   }
 
   /// Get base by ID
   Future<Base?> getBaseById(int id) async {
-    final rows = await db.executor.customQuery('SELECT * FROM bases WHERE id = ?', [id]);
+    final rows = await db.executor.customQuery(
+      'SELECT * FROM bases WHERE id = ?',
+      [id],
+    );
     return rows.isNotEmpty ? Base.fromRow(rows.first) : null;
   }
 
@@ -1055,7 +1111,7 @@ class LocationDao {
       ORDER BY u.name_en
     ''';
     final rows = await db.executor.customQuery(query, [baseId]);
-    return rows.map((row) => Upazila.fromRow(row)).toList();
+    return rows.map(Upazila.fromRow).toList();
   }
 
   /// Get all bases hydrated with Area, Region, and covered Upazilas
@@ -1122,24 +1178,36 @@ class LocationDao {
 
   /// Get all divisions
   Future<List<Division>> getAllDivisions() async {
-    final rows = await db.executor.customQuery('SELECT * FROM divisions ORDER BY name_en');
-    return rows.map((row) => Division.fromRow(row)).toList();
+    final rows = await db.executor.customQuery(
+      'SELECT * FROM divisions ORDER BY name_en',
+    );
+    return rows.map(Division.fromRow).toList();
   }
 
   /// Get all districts (optionally filtered by division)
   Future<List<District>> getAllDistricts({int? divisionId}) async {
     final rows = divisionId == null
-        ? await db.executor.customQuery('SELECT * FROM districts ORDER BY name_en')
-        : await db.executor.customQuery('SELECT * FROM districts WHERE division_id = ? ORDER BY name_en', [divisionId]);
-    return rows.map((row) => District.fromRow(row)).toList();
+        ? await db.executor.customQuery(
+            'SELECT * FROM districts ORDER BY name_en',
+          )
+        : await db.executor.customQuery(
+            'SELECT * FROM districts WHERE division_id = ? ORDER BY name_en',
+            [divisionId],
+          );
+    return rows.map(District.fromRow).toList();
   }
 
   /// Get all upazilas (optionally filtered by district)
   Future<List<Upazila>> getAllUpazilas({int? districtId}) async {
     final rows = districtId == null
-        ? await db.executor.customQuery('SELECT * FROM upazilas ORDER BY name_en')
-        : await db.executor.customQuery('SELECT * FROM upazilas WHERE district_id = ? ORDER BY name_en', [districtId]);
-    return rows.map((row) => Upazila.fromRow(row)).toList();
+        ? await db.executor.customQuery(
+            'SELECT * FROM upazilas ORDER BY name_en',
+          )
+        : await db.executor.customQuery(
+            'SELECT * FROM upazilas WHERE district_id = ? ORDER BY name_en',
+            [districtId],
+          );
+    return rows.map(Upazila.fromRow).toList();
   }
 
   /// Insert or update base and set its covered upazilas
@@ -1153,7 +1221,10 @@ class LocationDao {
     );
 
     if (upazilaIds != null) {
-      await db.executor.customExecute('DELETE FROM base_upazilas WHERE base_id = ?', [base.id]);
+      await db.executor.customExecute(
+        'DELETE FROM base_upazilas WHERE base_id = ?',
+        [base.id],
+      );
       for (final uId in upazilaIds) {
         await assignUpazilaToBase(base.id, uId);
       }
@@ -1181,4 +1252,3 @@ class LocationDao {
     await db.executor.customExecute('DELETE FROM bases WHERE id = ?', [id]);
   }
 }
-

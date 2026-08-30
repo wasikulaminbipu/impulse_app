@@ -1,14 +1,14 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_app/models/distributor.dart';
 import 'package:impulse_app/models/app_maintenance.dart';
+import 'package:impulse_app/models/distributor.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/stakeholder_provider.dart';
-import 'package:impulse_app/widgets/skeleton_loader.dart';
+import 'package:impulse_app/utils/bilingual_string.dart';
+import 'package:impulse_app/widgets/animated_list_item.dart';
 import 'package:impulse_app/widgets/favorite_button.dart';
 import 'package:impulse_app/widgets/paginated_list_scaffold.dart';
-import 'package:impulse_app/widgets/animated_list_item.dart';
-import 'package:impulse_app/utils/bilingual_string.dart';
+import 'package:impulse_app/widgets/skeleton_loader.dart';
 
 class DistributorsScreen extends ConsumerWidget {
   const DistributorsScreen({super.key});
@@ -23,9 +23,8 @@ class DistributorsScreen extends ConsumerWidget {
           ? 'ডিস্ট্রিবিউটর বা এলাকা খুঁজুন...'
           : 'Search distributor or area...',
       provider: paginatedDistributorsProvider,
-      onSearchChanged: (val) => ref
-          .read(distributorSearchQueryProvider.notifier)
-          .updateQuery(val),
+      onSearchChanged: (val) =>
+          ref.read(distributorSearchQueryProvider.notifier).updateQuery(val),
       fetchNextPage: () =>
           ref.read(paginatedDistributorsProvider.notifier).fetchNextPage(),
       skeletonBuilder: (context, index) => const DistributorCardSkeleton(),
@@ -55,7 +54,10 @@ class DistributorsScreen extends ConsumerWidget {
 class _DistributorCard extends StatelessWidget {
   final DistributorWithLocation distributorWithLocation;
   final String lang;
-  const _DistributorCard({required this.distributorWithLocation, required this.lang});
+  const _DistributorCard({
+    required this.distributorWithLocation,
+    required this.lang,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -71,13 +73,13 @@ class _DistributorCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: colorScheme.outlineVariant.withValues(
-            alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.65,
+            alpha: Theme.of(context).brightness == Brightness.dark
+                ? 0.45
+                : 0.65,
           ),
-          width: 1,
         ),
       ),
       child: InkWell(
-        onTap: null,
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -111,7 +113,10 @@ class _DistributorCard extends StatelessWidget {
                           Icon(
                             Icons.location_on,
                             size: 14,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant
+                                .withValues(alpha: 0.6),
                           ),
                           const SizedBox(width: 4),
                           Expanded(
@@ -147,7 +152,12 @@ class _DistributorCard extends StatelessWidget {
     );
   }
 
-  String _buildAddress(Distributor distributor, Area area, Region region, String lang) {
+  String _buildAddress(
+    Distributor distributor,
+    Area area,
+    Region region,
+    String lang,
+  ) {
     final parts = <String>[];
     if (lang == 'bn') {
       if (distributor.addressBn != null) parts.add(distributor.addressBn!);

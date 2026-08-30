@@ -1,26 +1,24 @@
-﻿import 'package:flutter/foundation.dart' hide Category;
+import 'package:flutter/foundation.dart' hide Category;
+import 'package:impulse_app/data/app_databases.dart';
+import 'package:impulse_app/data/db_extensions.dart';
 import 'package:impulse_app/data/fts_utils.dart';
+import 'package:impulse_app/data/lookup_dao.dart';
+import 'package:impulse_app/data/manufacturer_dao.dart';
+import 'package:impulse_app/domain/search_scope.dart';
 // Data access layer for products.db (schema v2).
 // Built on sqflite. See products_schema.sql and products_db_changes.md.
 
 import 'package:impulse_app/models/product.dart';
 
-import 'package:impulse_app/data/db_extensions.dart';
-import 'package:impulse_app/domain/search_scope.dart';
-
-import 'package:impulse_app/data/lookup_dao.dart';
-import 'package:impulse_app/data/manufacturer_dao.dart';
-
-import 'package:impulse_app/data/app_databases.dart';
-
 class ProductDao {
   final ProductsDb db;
   final LookupDao lookupDao;
   final ManufacturerDao manufacturerDao;
-  final SearchQueryCache<ProductLabel> _searchCache = SearchQueryCache<ProductLabel>(capacity: 100);
+  final SearchQueryCache<ProductLabel> _searchCache =
+      SearchQueryCache<ProductLabel>(capacity: 100);
 
   ProductDao(this.db, this.lookupDao, {ManufacturerDao? manufacturerDao})
-      : manufacturerDao = manufacturerDao ?? ManufacturerDao(db);
+    : manufacturerDao = manufacturerDao ?? ManufacturerDao(db);
 
   // ------------------------------------------------------------
   // Single product, fully hydrated (Product Detail Page)
@@ -37,8 +35,6 @@ class ProductDao {
     return _hydrate(Product.fromRow(rows.first));
   }
 
-
-
   Future<Product> _hydrate(Product base) async {
     final results = await Future.wait([
       _getTargetGroupIds(base.id),
@@ -48,29 +44,32 @@ class ProductDao {
       _getPrecautions(base.id),
       _getPresentations(base.id),
       base.manufacturerId == null
-          ? Future.value(null)
+          ? Future<Manufacturer?>.value()
           : manufacturerDao.getById(base.manufacturerId!),
       lookupDao.getCategories(),
       lookupDao.getTargetGroups(),
     ]);
 
-    final tgIds = results[0] as List<int>;
-    final allCategories = results[7] as List<Category>;
-    final allTargetGroups = results[8] as List<TargetGroup>;
-    
-    final catMap = { for (var c in allCategories) c.id : c };
-    final allTgMap = { for (var tg in allTargetGroups) tg.id : tg };
+    final tgIds = results[0]! as List<int>;
+    final allCategories = results[7]! as List<Category>;
+    final allTargetGroups = results[8]! as List<TargetGroup>;
+
+    final catMap = {for (final c in allCategories) c.id: c};
+    final allTgMap = {for (final tg in allTargetGroups) tg.id: tg};
 
     return base.copyWith(
       targetGroupIds: tgIds,
-      compositions: results[1] as List<Composition>,
-      indications: results[2] as List<Indication>,
-      directions: results[3] as List<Direction>,
-      precautions: results[4] as List<Precaution>,
-      presentations: results[5] as List<Presentation>,
+      compositions: results[1]! as List<Composition>,
+      indications: results[2]! as List<Indication>,
+      directions: results[3]! as List<Direction>,
+      precautions: results[4]! as List<Precaution>,
+      presentations: results[5]! as List<Presentation>,
       manufacturer: (results[6] as Manufacturer?) ?? const Manufacturer.empty(),
       category: catMap[base.categoryId] ?? const Category.empty(),
-      targetGroups: tgIds.map((id) => allTgMap[id]).whereType<TargetGroup>().toList(),
+      targetGroups: tgIds
+          .map((id) => allTgMap[id])
+          .whereType<TargetGroup>()
+          .toList(),
     );
   }
 
@@ -129,7 +128,10 @@ class ProductDao {
       return p.copyWith(
         category: catMap[p.categoryId] ?? const Category.empty(),
         targetGroupIds: tgIds,
-        targetGroups: tgIds.map((id) => allTgMap[id]).whereType<TargetGroup>().toList(),
+        targetGroups: tgIds
+            .map((id) => allTgMap[id])
+            .whereType<TargetGroup>()
+            .toList(),
         presentations: presMap[p.id] ?? [],
       );
     }).toList();
@@ -190,16 +192,17 @@ class ProductDao {
     required int offset,
   }) async {
     final args = <dynamic>[];
-    List<String> where = ['p.is_active = 1'];
+    final List<String> where = ['p.is_active = 1'];
     String join = '';
-    String orderBy = 'ORDER BY p.title_en';
-    
+    const String orderBy = 'ORDER BY p.title_en';
+
     if (targetGroupId != null) {
-      join += 'JOIN product_target_groups ptg ON ptg.product_id = p.id\n        ';
+      join +=
+          'JOIN product_target_groups ptg ON ptg.product_id = p.id\n        ';
       where.add('ptg.target_group_id = ?');
       args.add(targetGroupId);
     }
-    
+
     if (isFeedAdditive) {
       where.add('''
         (
@@ -214,22 +217,23 @@ class ProductDao {
         )
       ''');
     }
-    
+
     if (categoryId != null) {
       where.add('p.category_id = ?');
       args.add(categoryId);
     }
-    
+
     final trimmed = query.trim();
-    final cacheKey = '$categoryId:$targetGroupId:$isFeedAdditive:$scope:$trimmed:$limit:$offset';
+    final cacheKey =
+        '$categoryId:$targetGroupId:$isFeedAdditive:$scope:$trimmed:$limit:$offset';
 
     if (trimmed.isNotEmpty && offset == 0) {
       final cached = _searchCache.get(cacheKey);
       if (cached != null) return cached;
     }
-    
+
     List<Map<String, dynamic>> rows = [];
-    
+
     if (trimmed.isNotEmpty) {
       final ftsCandidateList = <Map<String, dynamic>>[];
       final triCandidateList = <Map<String, dynamic>>[];
@@ -247,8 +251,9 @@ class ProductDao {
             ftsWhere.add('fts.products_fts MATCH ?');
             ftsArgs.add(sanitizedTokens);
 
-            final ftsJoin = 'JOIN products_fts fts ON fts.rowid = p.id';
-            final sqlQuery = '''
+            const ftsJoin = 'JOIN products_fts fts ON fts.rowid = p.id';
+            final sqlQuery =
+                '''
               SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn,
                      bm25(fts, 10.0, 5.0, 3.0, 1.0) AS bm25_rank
               FROM products p
@@ -267,16 +272,21 @@ class ProductDao {
       }
 
       // 1b. Trigram FTS query (for mid-word, SKU, and code substring matching)
-      if ((scope == SearchScope.all || scope == SearchScope.name) && trimmed.length >= 3) {
-        final isTrigramReady = await isFtsReady(db.executor, 'products_trigram_fts');
+      if ((scope == SearchScope.all || scope == SearchScope.name) &&
+          trimmed.length >= 3) {
+        final isTrigramReady = await isFtsReady(
+          db.executor,
+          'products_trigram_fts',
+        );
         if (isTrigramReady) {
           final triWhere = List<String>.from(where);
           final triArgs = List<Object?>.from(args);
           triWhere.add('tri.products_trigram_fts MATCH ?');
           triArgs.add('"$trimmed"');
 
-          final triJoin = 'JOIN products_trigram_fts tri ON tri.rowid = p.id';
-          final triSqlQuery = '''
+          const triJoin = 'JOIN products_trigram_fts tri ON tri.rowid = p.id';
+          final triSqlQuery =
+              '''
             SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn
             FROM products p
             $triJoin
@@ -308,7 +318,6 @@ class ProductDao {
             )
           ''');
           likeArgs.addAll([pattern, pattern]);
-          break;
 
         case SearchScope.ingredient:
           likeWhere.add('''
@@ -318,12 +327,12 @@ class ProductDao {
             )
           ''');
           likeArgs.addAll([pattern, pattern]);
-          break;
 
         case SearchScope.name:
-          likeWhere.add('(p.title_en LIKE ? OR p.title_bn LIKE ? OR p.short_description_en LIKE ? OR p.short_description_bn LIKE ?)');
+          likeWhere.add(
+            '(p.title_en LIKE ? OR p.title_bn LIKE ? OR p.short_description_en LIKE ? OR p.short_description_bn LIKE ?)',
+          );
           likeArgs.addAll([pattern, pattern, pattern, pattern]);
-          break;
 
         case SearchScope.all:
           likeWhere.add('''
@@ -335,11 +344,22 @@ class ProductDao {
               EXISTS (SELECT 1 FROM indications ind WHERE ind.product_id = p.id AND (ind.text_en LIKE ? OR ind.text_bn LIKE ?))
             )
           ''');
-          likeArgs.addAll([pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern]);
-          break;
+          likeArgs.addAll([
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+            pattern,
+          ]);
       }
 
-      final likeSqlQuery = '''
+      final likeSqlQuery =
+          '''
         SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn FROM products p
         LEFT JOIN categories c ON c.id = p.category_id
         $join
@@ -352,21 +372,33 @@ class ProductDao {
 
       // 3. Fuzzy fallback query
       try {
-        final fuzzyRows = await _fuzzyFallbackSearch(trimmed, baseWhere, baseArgs, join);
+        final fuzzyRows = await _fuzzyFallbackSearch(
+          trimmed,
+          baseWhere,
+          baseArgs,
+          join,
+        );
         fuzzyCandidateList.addAll(fuzzyRows);
       } catch (_) {}
 
       // 4. Perform Hybrid Search Fusion via Reciprocal Rank Fusion (RRF)
       final activeRankedLists = <List<Map<String, dynamic>>>[];
-      if (ftsCandidateList.isNotEmpty) activeRankedLists.add(ftsCandidateList);
-      if (triCandidateList.isNotEmpty) activeRankedLists.add(triCandidateList);
-      if (likeCandidateList.isNotEmpty) activeRankedLists.add(likeCandidateList);
-      if (fuzzyCandidateList.isNotEmpty) activeRankedLists.add(fuzzyCandidateList);
+      if (ftsCandidateList.isNotEmpty) {
+        activeRankedLists.add(ftsCandidateList);
+      }
+      if (triCandidateList.isNotEmpty) {
+        activeRankedLists.add(triCandidateList);
+      }
+      if (likeCandidateList.isNotEmpty) {
+        activeRankedLists.add(likeCandidateList);
+      }
+      if (fuzzyCandidateList.isNotEmpty) {
+        activeRankedLists.add(fuzzyCandidateList);
+      }
 
       final fusedCandidates = reciprocalRankFusion<Map<String, dynamic>>(
         rankedResultLists: activeRankedLists,
         getId: (row) => (row['id'] as int).toString(),
-        k: 60,
       );
 
       // Score and sort all candidate results with Tier Precedence
@@ -374,8 +406,16 @@ class ProductDao {
       int getScore(Map<String, dynamic> row) {
         final titleEn = (row['title_en'] as String? ?? '').toLowerCase();
         final titleBn = (row['title_bn'] as String? ?? '').toLowerCase();
-        final catEn = (row['cat_name_en'] as String? ?? row['category_en'] as String? ?? '').toLowerCase();
-        final catBn = (row['cat_name_bn'] as String? ?? row['category_bn'] as String? ?? '').toLowerCase();
+        final catEn =
+            (row['cat_name_en'] as String? ??
+                    row['category_en'] as String? ??
+                    '')
+                .toLowerCase();
+        final catBn =
+            (row['cat_name_bn'] as String? ??
+                    row['category_bn'] as String? ??
+                    '')
+                .toLowerCase();
 
         // Priority Tier 1: Exact title match
         if (titleEn == qLower || titleBn == qLower) return 1;
@@ -414,7 +454,8 @@ class ProductDao {
 
       rows = sortedList.skip(offset).take(limit).toList();
     } else {
-      final sqlQuery = '''
+      final sqlQuery =
+          '''
         SELECT DISTINCT p.* FROM products p
         $join
         WHERE ${where.join(' AND ')}
@@ -460,7 +501,8 @@ class ProductDao {
     final trimmed = query.trim().toLowerCase();
     if (trimmed.length < 2) return [];
 
-    final sqlQuery = '''
+    final sqlQuery =
+        '''
       SELECT DISTINCT p.*, c.name_en as cat_en, c.name_bn as cat_bn FROM products p
       LEFT JOIN categories c ON c.id = p.category_id
       $joinSql
@@ -477,7 +519,10 @@ class ProductDao {
 
   /// Retrieves products that are alike / similar to the specified [productId]
   /// based on matching active ingredients (compositions), indications, or category.
-  Future<List<Product>> getAlikeProducts(int productId, {int limit = 10}) async {
+  Future<List<Product>> getAlikeProducts(
+    int productId, {
+    int limit = 10,
+  }) async {
     final compositions = await _getCompositions(productId);
     final targetProductRows = await db.executor.query(
       'products',
@@ -519,7 +564,8 @@ class ProductDao {
       where.add('(${conditions.join(' OR ')})');
     }
 
-    final sqlQuery = '''
+    final sqlQuery =
+        '''
       SELECT DISTINCT p.* FROM products p
       WHERE ${where.join(' AND ')}
       LIMIT ?
@@ -538,7 +584,11 @@ class ProductDao {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return [];
 
-    final labels = await getFilteredLabels(query: trimmed, limit: limit, offset: 0);
+    final labels = await getFilteredLabels(
+      query: trimmed,
+      limit: limit,
+      offset: 0,
+    );
     if (labels.isEmpty) return [];
 
     final ids = labels.map((l) => l.id).toList();
@@ -547,8 +597,11 @@ class ProductDao {
       'SELECT DISTINCT p.* FROM products p WHERE ${where.first}',
       ids,
     );
-    final rowMap = { for (var r in rows) r['id'] as int : r };
-    final orderedRows = ids.map((id) => rowMap[id]).whereType<Map<String, dynamic>>().toList();
+    final rowMap = {for (final r in rows) r['id'] as int: r};
+    final orderedRows = ids
+        .map((id) => rowMap[id])
+        .whereType<Map<String, dynamic>>()
+        .toList();
     return _hydrateList(orderedRows.map(Product.fromRow).toList());
   }
 
@@ -618,25 +671,28 @@ class ProductDao {
 
   /// Finds close matching product title suggestions using Levenshtein distance
   /// when direct search returns no results.
-  Future<List<String>> findFuzzyProductSuggestions(String query, {int maxSuggestions = 3}) async {
+  Future<List<String>> findFuzzyProductSuggestions(
+    String query, {
+    int maxSuggestions = 3,
+  }) async {
     final trimmed = query.trim().toLowerCase();
     if (trimmed.length < 3) return const [];
 
     try {
       final rows = await db.executor.customQuery(
-        'SELECT DISTINCT title_en FROM products WHERE title_en IS NOT NULL LIMIT 200'
+        'SELECT DISTINCT title_en FROM products WHERE title_en IS NOT NULL LIMIT 200',
       );
-      
+
       final candidates = <MapEntry<String, int>>[];
       for (final row in rows) {
         final title = row['title_en'] as String?;
         if (title == null || title.isEmpty) continue;
         final titleLower = title.toLowerCase();
-        
+
         // Calculate distance on full title or first word
         final firstWord = titleLower.split(' ').first;
         final dist = levenshteinDistance(trimmed, firstWord);
-        
+
         if (dist > 0 && dist <= 2) {
           candidates.add(MapEntry(title, dist));
         }
@@ -655,7 +711,7 @@ class ProductDao {
     final terms = <String>{};
     try {
       final titleRows = await db.executor.customQuery(
-        'SELECT DISTINCT title_en, title_bn FROM products WHERE is_active = 1'
+        'SELECT DISTINCT title_en, title_bn FROM products WHERE is_active = 1',
       );
       for (final r in titleRows) {
         final en = r['title_en'] as String?;
@@ -665,7 +721,7 @@ class ProductDao {
       }
 
       final catRows = await db.executor.customQuery(
-        'SELECT DISTINCT name_en, name_bn FROM categories'
+        'SELECT DISTINCT name_en, name_bn FROM categories',
       );
       for (final r in catRows) {
         final en = r['name_en'] as String?;
@@ -675,7 +731,7 @@ class ProductDao {
       }
 
       final tgRows = await db.executor.customQuery(
-        'SELECT DISTINCT name_en, name_bn FROM target_groups'
+        'SELECT DISTINCT name_en, name_bn FROM target_groups',
       );
       for (final r in tgRows) {
         final en = r['name_en'] as String?;
@@ -685,7 +741,7 @@ class ProductDao {
       }
 
       final indRows = await db.executor.customQuery(
-        'SELECT DISTINCT text_en, text_bn FROM indications'
+        'SELECT DISTINCT text_en, text_bn FROM indications',
       );
       for (final r in indRows) {
         final en = r['text_en'] as String?;
@@ -695,7 +751,7 @@ class ProductDao {
       }
 
       final compRows = await db.executor.customQuery(
-        'SELECT DISTINCT ingredient_en, ingredient_bn FROM compositions'
+        'SELECT DISTINCT ingredient_en, ingredient_bn FROM compositions',
       );
       for (final r in compRows) {
         final en = r['ingredient_en'] as String?;

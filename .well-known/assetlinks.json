@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.impulseagriscienceltd.impulse_app",
+      "sha256_cert_fingerprints": [
+        "55:AA:56:FE:37:A6:49:15:AA:C1:26:A6:8B:27:0B:44:A2:E6:B1:32:0A:79:32:0A:79:32:0A:79:32:0A:79:32"
+      ]
+    }
+  }
+]

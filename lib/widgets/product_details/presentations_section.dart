@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/widgets/product_details/section_card.dart';
 
@@ -6,7 +6,11 @@ class PresentationsSection extends StatelessWidget {
   final List<Presentation> presentations;
   final String lang;
 
-  const PresentationsSection({super.key, required this.presentations, required this.lang});
+  const PresentationsSection({
+    super.key,
+    required this.presentations,
+    required this.lang,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/constants/app_assets.dart';
@@ -11,11 +11,7 @@ class AppDrawer extends ConsumerWidget {
   final void Function(int index)? onTabSelected;
   final int currentTabIndex;
 
-  const AppDrawer({
-    super.key,
-    this.onTabSelected,
-    this.currentTabIndex = 0,
-  });
+  const AppDrawer({super.key, this.onTabSelected, this.currentTabIndex = 0});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,11 +42,12 @@ class AppDrawer extends ConsumerWidget {
                       height: 50,
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer.withValues(alpha: 0.5),
+                        color: colorScheme.primaryContainer.withValues(
+                          alpha: 0.5,
+                        ),
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: colorScheme.primary.withValues(alpha: 0.25),
-                          width: 1,
                         ),
                       ),
                       child: Image.asset(
@@ -83,7 +80,10 @@ class AppDrawer extends ConsumerWidget {
                           ),
                           const SizedBox(height: 4),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: colorScheme.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
@@ -138,7 +138,9 @@ class AppDrawer extends ConsumerWidget {
                     context,
                     icon: Icons.contacts_outlined,
                     selectedIcon: Icons.contacts,
-                    label: isBn ? 'প্রতিনিধি কন্টাক্টস' : 'Sales Representatives',
+                    label: isBn
+                        ? 'প্রতিনিধি কন্টাক্টস'
+                        : 'Sales Representatives',
                     isSelected: currentTabIndex == 2,
                     onTap: () {
                       Navigator.of(context).pop();
@@ -147,7 +149,10 @@ class AppDrawer extends ConsumerWidget {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 8,
+                    ),
                     child: Divider(
                       height: 1,
                       color: colorScheme.outlineVariant.withValues(alpha: 0.3),
@@ -226,7 +231,10 @@ class AppDrawer extends ConsumerWidget {
                     icon: const Icon(Icons.swap_horiz, size: 16),
                     label: Text(
                       isBn ? 'English' : 'বাংলা',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ],
@@ -251,14 +259,14 @@ class AppDrawer extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: ListTile(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         selected: isSelected,
         selectedTileColor: colorScheme.primaryContainer.withValues(alpha: 0.6),
         leading: Icon(
           isSelected ? selectedIcon : icon,
-          color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant,
+          color: isSelected
+              ? colorScheme.primary
+              : colorScheme.onSurfaceVariant,
         ),
         title: Text(
           label,

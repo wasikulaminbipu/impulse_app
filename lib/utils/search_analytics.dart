@@ -17,13 +17,13 @@ class SearchAnalyticsEvent {
   });
 
   Map<String, dynamic> toJson() => {
-        'query': query,
-        'result_count': resultCount,
-        'execution_time_ms': executionTimeMs,
-        'timestamp': timestamp.toIso8601String(),
-        'category_or_scope': categoryOrScope,
-        'is_zero_result': resultCount == 0,
-      };
+    'query': query,
+    'result_count': resultCount,
+    'execution_time_ms': executionTimeMs,
+    'timestamp': timestamp.toIso8601String(),
+    'category_or_scope': categoryOrScope,
+    'is_zero_result': resultCount == 0,
+  };
 }
 
 typedef OnSearchExecuted = void Function(SearchAnalyticsEvent event);
@@ -91,7 +91,8 @@ class SearchAnalyticsTracker {
     }
   }
 
-  static List<SearchAnalyticsEvent> getRecentLogs() => List.unmodifiable(_recentLogs);
+  static List<SearchAnalyticsEvent> getRecentLogs() =>
+      List.unmodifiable(_recentLogs);
 
   static double getZeroResultRate() {
     if (_recentLogs.isEmpty) return 0.0;

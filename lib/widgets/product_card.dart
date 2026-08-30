@@ -1,17 +1,16 @@
-﻿import 'package:flutter/material.dart';
-import 'package:impulse_app/models/product.dart';
-import 'package:impulse_app/models/app_maintenance.dart';
-import 'package:impulse_app/screens/product_details_screen.dart';
-import 'package:impulse_app/widgets/custom_badge.dart';
-import 'package:impulse_app/widgets/group_logo_viewer.dart';
-import 'package:impulse_app/widgets/favorite_button.dart';
-import 'package:impulse_app/widgets/asset_fallback_image.dart';
-import 'package:impulse_app/widgets/highlight_text.dart';
-import 'package:impulse_app/utils/bilingual_string.dart';
-import 'package:impulse_app/utils/app_constants.dart';
-import 'package:impulse_app/theme/app_theme.dart';
-
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:impulse_app/models/app_maintenance.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/screens/product_details_screen.dart';
+import 'package:impulse_app/theme/app_theme.dart';
+import 'package:impulse_app/utils/app_constants.dart';
+import 'package:impulse_app/utils/bilingual_string.dart';
+import 'package:impulse_app/widgets/asset_fallback_image.dart';
+import 'package:impulse_app/widgets/custom_badge.dart';
+import 'package:impulse_app/widgets/favorite_button.dart';
+import 'package:impulse_app/widgets/group_logo_viewer.dart';
+import 'package:impulse_app/widgets/highlight_text.dart';
 
 class ProductCard extends StatefulWidget {
   final ProductLabel product;
@@ -56,7 +55,6 @@ class _ProductCardState extends State<ProductCard> {
               color: Theme.of(context).brightness == Brightness.dark
                   ? Colors.white.withValues(alpha: 0.12)
                   : colorScheme.outlineVariant.withValues(alpha: 0.5),
-              width: 1,
             ),
             boxShadow: [
               BoxShadow(
@@ -86,15 +84,24 @@ class _ProductCardState extends State<ProductCard> {
                         HapticFeedback.lightImpact();
                         Navigator.of(context).push(
                           PageRouteBuilder<void>(
-                            transitionDuration: const Duration(milliseconds: 400),
+                            transitionDuration: const Duration(
+                              milliseconds: 400,
+                            ),
                             reverseTransitionDuration: const Duration(
                               milliseconds: 400,
                             ),
                             pageBuilder:
                                 (context, animation, secondaryAnimation) =>
-                                    ProductDetailsScreen(product: widget.product),
+                                    ProductDetailsScreen(
+                                      product: widget.product,
+                                    ),
                             transitionsBuilder:
-                                (context, animation, secondaryAnimation, child) {
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
                                   return FadeTransition(
                                     opacity: animation,
                                     child: child,
@@ -135,22 +142,29 @@ class _ProductCardState extends State<ProductCard> {
                                       widget.product,
                                     ),
                                     text: widget.product.categoryId != 0
-                                        ? widget.product.category.nameEn.resolve(
-                                            widget.product.category.nameBn,
-                                            widget.lang,
-                                          )
+                                        ? widget.product.category.nameEn
+                                              .resolve(
+                                                widget.product.category.nameBn,
+                                                widget.lang,
+                                              )
                                         : '',
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
-                                    onTap: widget.onCategoryTap != null &&
+                                    onTap:
+                                        widget.onCategoryTap != null &&
                                             widget.product.categoryId != 0
                                         ? () {
                                             final catName = widget
-                                                .product.category.nameEn
+                                                .product
+                                                .category
+                                                .nameEn
                                                 .resolve(
-                                              widget.product.category.nameBn,
-                                              widget.lang,
-                                            );
+                                                  widget
+                                                      .product
+                                                      .category
+                                                      .nameBn,
+                                                  widget.lang,
+                                                );
                                             widget.onCategoryTap!(catName);
                                           }
                                         : null,
@@ -187,10 +201,11 @@ class _ProductCardState extends State<ProductCard> {
                             if (widget.product.shortDescriptionEn != null &&
                                 widget.product.shortDescriptionEn!.isNotEmpty)
                               HighlightText(
-                                text: widget.product.shortDescriptionEn!.resolve(
-                                  widget.product.shortDescriptionBn,
-                                  widget.lang,
-                                ),
+                                text: widget.product.shortDescriptionEn!
+                                    .resolve(
+                                      widget.product.shortDescriptionBn,
+                                      widget.lang,
+                                    ),
                                 query: widget.searchQuery,
                                 style: TextStyle(
                                   fontSize: 13,

@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 
 /// Pharmaceutical, veterinary, generic, dosage form, and symptom search synonym dictionary.
 const Map<String, List<String>> _searchSynonyms = {
@@ -18,11 +18,29 @@ const Map<String, List<String>> _searchSynonyms = {
   'tylo': ['tylosin'],
   'neomycin': ['neo', 'neomycin sulfate'],
   'gentamicin': ['genta', 'gentamycin'],
-  'antibiotic': ['antimicrobial', 'bactericidal', 'amoxicillin', 'ciprofloxacin', 'enrofloxacin'],
-  
+  'antibiotic': [
+    'antimicrobial',
+    'bactericidal',
+    'amoxicillin',
+    'ciprofloxacin',
+    'enrofloxacin',
+  ],
+
   // Anthelmintics & Dewormers
-  'anthelmintic': ['dewormer', 'wormer', 'albendazole', 'levamisole', 'ivermectin'],
-  'dewormer': ['anthelmintic', 'albendazole', 'wormer', 'ivermectin', 'ডিল ওয়ার্মার'],
+  'anthelmintic': [
+    'dewormer',
+    'wormer',
+    'albendazole',
+    'levamisole',
+    'ivermectin',
+  ],
+  'dewormer': [
+    'anthelmintic',
+    'albendazole',
+    'wormer',
+    'ivermectin',
+    'ডিল ওয়ার্মার',
+  ],
   'wormer': ['anthelmintic', 'dewormer', 'albendazole'],
   'albendazole': ['dewormer', 'anthelmintic', 'alben'],
   'ivermectin': ['iver', 'dewormer', 'ectoparasiticide'],
@@ -33,7 +51,13 @@ const Map<String, List<String>> _searchSynonyms = {
   'vitamin': ['vit', 'multivitamin'],
   'vit c': ['ascorbic acid', 'vitamin c'],
   'vit c+': ['ascorbic acid', 'vitamin c'],
-  'multivitamin': ['vitamin', 'thiamine', 'riboflavin', 'b-complex', 'মাল্টিভিটামিন'],
+  'multivitamin': [
+    'vitamin',
+    'thiamine',
+    'riboflavin',
+    'b-complex',
+    'মাল্টিভিটামিন',
+  ],
   'b-complex': ['vit b', 'thiamine', 'pyridoxine', 'vitamin b'],
   'calcium': ['mineral', 'nutrition', 'calc', 'ক্যালসিয়াম'],
   'electrolyte': ['tonic', 'nutrition', 'saline', 'ইলেক্ট্রোলাইট'],
@@ -82,14 +106,38 @@ List<String> getSynonymExpansions(String token) {
 
 /// Common English and Bangla search stopwords to filter from multi-word queries.
 const Set<String> _searchStopwords = {
-  'a', 'an', 'the', 'for', 'with', 'and', 'or', 'in', 'of', 'to', 'is', 'it', 'by', 'on', 'at',
-  'এবং', 'ও', 'জন্য', 'সাথে', 'দিয়ে', 'দ্বারা', 'সহ'
+  'a',
+  'an',
+  'the',
+  'for',
+  'with',
+  'and',
+  'or',
+  'in',
+  'of',
+  'to',
+  'is',
+  'it',
+  'by',
+  'on',
+  'at',
+  'এবং',
+  'ও',
+  'জন্য',
+  'সাথে',
+  'দিয়ে',
+  'দ্বারা',
+  'সহ',
 };
 
 /// Sanitizes search tokens (preserving alphanumeric and Bengali characters)
 /// to make them safe for SQLite FTS5 matching, joining multiple terms with AND.
 /// Includes optional synonym expansion and stopword filtering for multi-word queries.
-String sanitizeFtsQuery(String query, {bool enableSynonyms = true, bool filterStopwords = true}) {
+String sanitizeFtsQuery(
+  String query, {
+  bool enableSynonyms = true,
+  bool filterStopwords = true,
+}) {
   final trimmed = query.trim();
   if (trimmed.isEmpty) return '';
   var rawTokens = trimmed
@@ -98,12 +146,14 @@ String sanitizeFtsQuery(String query, {bool enableSynonyms = true, bool filterSt
       .split(RegExp(r'\s+'))
       .where((t) => t.isNotEmpty)
       .toList();
-  
+
   if (rawTokens.isEmpty) return '';
 
   // Filter stopwords only if there are multiple tokens present
   if (filterStopwords && rawTokens.length > 1) {
-    final filtered = rawTokens.where((t) => !_searchStopwords.contains(t.toLowerCase())).toList();
+    final filtered = rawTokens
+        .where((t) => !_searchStopwords.contains(t.toLowerCase()))
+        .toList();
     if (filtered.isNotEmpty) {
       rawTokens = filtered;
     }
@@ -130,7 +180,9 @@ String sanitizeFtsQuery(String query, {bool enableSynonyms = true, bool filterSt
 /// Optimizes FTS index segments for maximum query performance post-sync or setup.
 Future<void> optimizeFtsTable(QueryExecutor db, String tableName) async {
   try {
-    await db.runCustom("INSERT INTO $tableName($tableName) VALUES('optimize');");
+    await db.runCustom(
+      "INSERT INTO $tableName($tableName) VALUES('optimize');",
+    );
   } catch (e, st) {
     debugPrint('FTS optimization error for $tableName: $e\n$st');
   }
@@ -172,7 +224,7 @@ int levenshteinDistance(String s1, String s2) {
   if (b.isEmpty) return a.length;
 
   List<int> v0 = List<int>.generate(b.length + 1, (i) => i);
-  List<int> v1 = List<int>.filled(b.length + 1, 0);
+  final List<int> v1 = List<int>.filled(b.length + 1, 0);
 
   for (int i = 0; i < a.length; i++) {
     v1[0] = i + 1;
@@ -211,7 +263,11 @@ double calculatePhoneticSimilarity(String s1, String s2) {
 }
 
 /// Checks whether any word in target matches queryToken within similarity threshold or substring.
-bool matchesFuzzyToken(String target, String queryToken, {double threshold = 0.65}) {
+bool matchesFuzzyToken(
+  String target,
+  String queryToken, {
+  double threshold = 0.65,
+}) {
   final cleanTarget = target.trim().toLowerCase();
   final cleanQuery = queryToken.trim().toLowerCase();
   if (cleanTarget.isEmpty || cleanQuery.isEmpty) return false;
@@ -219,9 +275,15 @@ bool matchesFuzzyToken(String target, String queryToken, {double threshold = 0.6
 
   final words = cleanTarget.split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
   for (final word in words) {
-    if (word.contains(cleanQuery) || cleanQuery.contains(word)) return true;
-    if (calculateSimilarity(word, cleanQuery) >= threshold) return true;
-    if (calculatePhoneticSimilarity(word, cleanQuery) >= threshold + 0.05) return true;
+    if (word.contains(cleanQuery) || cleanQuery.contains(word)) {
+      return true;
+    }
+    if (calculateSimilarity(word, cleanQuery) >= threshold) {
+      return true;
+    }
+    if (calculatePhoneticSimilarity(word, cleanQuery) >= threshold + 0.05) {
+      return true;
+    }
   }
   return calculateSimilarity(cleanTarget, cleanQuery) >= threshold;
 }
@@ -235,7 +297,9 @@ class FuzzyCandidateInput {
 }
 
 /// Top-level isolate function for compute() / Isolate.run() to process alike / fuzzy scoring off the main UI thread.
-List<Map<String, dynamic>> computeFuzzyFallbackScores(FuzzyCandidateInput input) {
+List<Map<String, dynamic>> computeFuzzyFallbackScores(
+  FuzzyCandidateInput input,
+) {
   final trimmed = input.query.trim().toLowerCase();
   if (trimmed.length < 2) return [];
   final phoneticQuery = getPhoneticKey(trimmed);
@@ -244,8 +308,12 @@ List<Map<String, dynamic>> computeFuzzyFallbackScores(FuzzyCandidateInput input)
   for (final row in input.candidates) {
     final titleEn = (row['title_en'] as String? ?? '').toLowerCase();
     final titleBn = (row['title_bn'] as String? ?? '').toLowerCase();
-    final catEn = (row['cat_en'] as String? ?? row['cat_name_en'] as String? ?? '').toLowerCase();
-    final catBn = (row['cat_bn'] as String? ?? row['cat_name_bn'] as String? ?? '').toLowerCase();
+    final catEn =
+        (row['cat_en'] as String? ?? row['cat_name_en'] as String? ?? '')
+            .toLowerCase();
+    final catBn =
+        (row['cat_bn'] as String? ?? row['cat_name_bn'] as String? ?? '')
+            .toLowerCase();
     final comp = (row['comp_ingredients'] as String? ?? '').toLowerCase();
     final ind = (row['ind_text'] as String? ?? '').toLowerCase();
 
@@ -264,7 +332,8 @@ List<Map<String, dynamic>> computeFuzzyFallbackScores(FuzzyCandidateInput input)
         if (phoneticQuery.isNotEmpty) {
           final wordPhonetic = getPhoneticKey(word);
           if (wordPhonetic.isNotEmpty) {
-            final pDist = levenshteinDistance(phoneticQuery, wordPhonetic) + penalty;
+            final pDist =
+                levenshteinDistance(phoneticQuery, wordPhonetic) + penalty;
             if (pDist < minDistance) minDistance = pDist;
           }
         }
@@ -305,43 +374,43 @@ String getPhoneticKey(String text) {
 
   // 2. English consonant simplification & homophone mapping (Soundex / Double Metaphone rules)
   s = s
-      .replaceAll(RegExp(r'ph'), 'f')
-      .replaceAll(RegExp(r'gh'), 'g')
-      .replaceAll(RegExp(r'ck'), 'k')
-      .replaceAll(RegExp(r'c([eiy])'), 's\$1')
-      .replaceAll(RegExp(r'c'), 'k')
-      .replaceAll(RegExp(r'q'), 'k')
-      .replaceAll(RegExp(r'x'), 'ks')
-      .replaceAll(RegExp(r'z'), 's')
-      .replaceAll(RegExp(r'v'), 'b')
-      .replaceAll(RegExp(r'w'), 'b')
-      .replaceAll(RegExp(r'th'), 't')
-      .replaceAll(RegExp(r'ee'), 'i')
-      .replaceAll(RegExp(r'oo'), 'u')
-      .replaceAll(RegExp(r'ae'), 'e')
-      .replaceAll(RegExp(r'y'), 'i');
+      .replaceAll(RegExp('ph'), 'f')
+      .replaceAll(RegExp('gh'), 'g')
+      .replaceAll(RegExp('ck'), 'k')
+      .replaceAll(RegExp('c([eiy])'), r's$1')
+      .replaceAll(RegExp('c'), 'k')
+      .replaceAll(RegExp('q'), 'k')
+      .replaceAll(RegExp('x'), 'ks')
+      .replaceAll(RegExp('z'), 's')
+      .replaceAll(RegExp('v'), 'b')
+      .replaceAll(RegExp('w'), 'b')
+      .replaceAll(RegExp('th'), 't')
+      .replaceAll(RegExp('ee'), 'i')
+      .replaceAll(RegExp('oo'), 'u')
+      .replaceAll(RegExp('ae'), 'e')
+      .replaceAll(RegExp('y'), 'i');
 
   // 3. Bengali vowel & consonant normalization
   s = s
-      .replaceAll(RegExp(r'[আঅঅা]'), 'a')
-      .replaceAll(RegExp(r'[ইঈিী]'), 'i')
-      .replaceAll(RegExp(r'[উঊুূ]'), 'u')
-      .replaceAll(RegExp(r'[এে]'), 'e')
-      .replaceAll(RegExp(r'[ওো]'), 'o')
-      .replaceAll(RegExp(r'[কখ]'), 'k')
-      .replaceAll(RegExp(r'[গঘ]'), 'g')
-      .replaceAll(RegExp(r'[চছ]'), 's')
-      .replaceAll(RegExp(r'[জঝযয্‌]'), 'j')
-      .replaceAll(RegExp(r'[টঠতথদ্বধ]'), 't')
-      .replaceAll(RegExp(r'[ডঢদধ]'), 'd')
-      .replaceAll(RegExp(r'[পফ]'), 'f')
-      .replaceAll(RegExp(r'[বভ]'), 'b')
-      .replaceAll(RegExp(r'[ম]'), 'm')
-      .replaceAll(RegExp(r'[রড়ঢ়]'), 'r')
-      .replaceAll(RegExp(r'[ল]'), 'l')
-      .replaceAll(RegExp(r'[শষস]'), 's')
-      .replaceAll(RegExp(r'[হ]'), 'h')
-      .replaceAll(RegExp(r'[নণ]'), 'n');
+      .replaceAll(RegExp('[আঅঅা]'), 'a')
+      .replaceAll(RegExp('[ইঈিী]'), 'i')
+      .replaceAll(RegExp('[উঊুূ]'), 'u')
+      .replaceAll(RegExp('[এে]'), 'e')
+      .replaceAll(RegExp('[ওো]'), 'o')
+      .replaceAll(RegExp('[কখ]'), 'k')
+      .replaceAll(RegExp('[গঘ]'), 'g')
+      .replaceAll(RegExp('[চছ]'), 's')
+      .replaceAll(RegExp('[জঝযয্‌]'), 'j')
+      .replaceAll(RegExp('[টঠতথদ্বধ]'), 't')
+      .replaceAll(RegExp('[ডঢদধ]'), 'd')
+      .replaceAll(RegExp('[পফ]'), 'f')
+      .replaceAll(RegExp('[বভ]'), 'b')
+      .replaceAll(RegExp('[ম]'), 'm')
+      .replaceAll(RegExp('[রড়ঢ়]'), 'r')
+      .replaceAll(RegExp('[ল]'), 'l')
+      .replaceAll(RegExp('[শষস]'), 's')
+      .replaceAll(RegExp('[হ]'), 'h')
+      .replaceAll(RegExp('[নণ]'), 'n');
 
   // 4. Collapse adjacent identical characters
   final buffer = StringBuffer();
@@ -377,7 +446,7 @@ class AutocompleteTrie {
     var current = root;
     for (final char in trimmed.toLowerCase().codeUnits) {
       final key = String.fromCharCode(char);
-      current = current.children.putIfAbsent(key, () => TrieNode());
+      current = current.children.putIfAbsent(key, TrieNode.new);
     }
     current.isEndOfWord = true;
     current.frequency++;
@@ -490,10 +559,9 @@ Map<String, List<FacetCount>> calculateFacets<T>({
       }
     }
 
-    final facetList = counts.entries
-        .map((e) => FacetCount(e.key, e.value))
-        .toList()
-      ..sort((a, b) => b.count.compareTo(a.count));
+    final facetList =
+        counts.entries.map((e) => FacetCount(e.key, e.value)).toList()
+          ..sort((a, b) => b.count.compareTo(a.count));
 
     result[facetName] = facetList;
   }
@@ -532,8 +600,3 @@ List<T> reciprocalRankFusion<T>({
 
   return sortedIds.map((id) => itemMap[id]!).toList();
 }
-
-
-
-
-

@@ -1,0 +1,54 @@
+#!/usr/bin/env sh
+# ==============================================================================
+# Impulse DEX - Pre-Push Git Hook
+# Mandatory gate: Executes database integrity, asset verification, compliance,
+# strict static analysis, and full test suite before allowing any push to remote.
+# ==============================================================================
+
+set -e
+
+echo "================================================================"
+echo " 🛡️ [Pre-Push Gate] Running Preflight Quality & Test Suite..."
+echo "================================================================"
+
+echo "1️⃣ Checking SQLite Database Assets Integrity..."
+dart run bin/validate_db.dart || {
+  echo "❌ [Pre-Push Error] Database validation failed! Aborting push."
+  exit 1
+}
+
+echo "2️⃣ Checking Asset Inventory & Image Cross-References..."
+dart run bin/audit_assets.dart || {
+  echo "❌ [Pre-Push Error] Asset audit failed! Aborting push."
+  exit 1
+}
+
+echo "3️⃣ Checking Android App Links Deep Linking..."
+dart run bin/audit_app_links.dart || {
+  echo "❌ [Pre-Push Error] App Links audit failed! Aborting push."
+  exit 1
+}
+
+echo "4️⃣ Running Google Play Store Policy & Compliance Audit (36/36)..."
+dart run bin/audit_playstore_compliance.dart || {
+  echo "❌ [Pre-Push Error] Google Play compliance audit failed! Aborting push."
+  exit 1
+}
+
+echo "5️⃣ Enforcing Strict Static Analysis (Zero Warnings/Errors)..."
+flutter analyze --fatal-infos --fatal-warnings || {
+  echo "❌ [Pre-Push Error] Static analysis failed! Aborting push."
+  exit 1
+}
+
+echo "6️⃣ Running Automated Unit & Widget Test Suite..."
+flutter test || {
+  echo "❌ [Pre-Push Error] Flutter tests failed! Aborting push."
+  exit 1
+}
+
+echo "================================================================"
+echo "🎉 [Pre-Push Gate] All 6 quality gates and test suites PASSED!"
+echo "🚀 Push permitted."
+echo "================================================================"
+exit 0

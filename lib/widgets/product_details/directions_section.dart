@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/utils/bilingual_string.dart';
 import 'package:impulse_app/widgets/product_details/section_card.dart';
@@ -59,9 +59,12 @@ class DirectionsSection extends StatelessWidget {
             for (final d in dirs) {
               final spec = speciesList.firstWhere(
                 (s) => s.id == d.speciesId,
-                orElse: () => const Species(id: 0, targetGroupId: 0, nameEn: ''),
+                orElse: () =>
+                    const Species(id: 0, targetGroupId: 0, nameEn: ''),
               );
-              final specName = spec.id != 0 ? spec.nameEn.resolve(spec.nameBn, lang) : '';
+              final specName = spec.id != 0
+                  ? spec.nameEn.resolve(spec.nameBn, lang)
+                  : '';
               final dosageText = d.dosageEn.resolve(d.dosageBn, lang);
 
               if (dosageText.isNotEmpty) {
@@ -69,14 +72,19 @@ class DirectionsSection extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Text(
-                      specName.isNotEmpty ? '$specName: $dosageText' : dosageText,
+                      specName.isNotEmpty
+                          ? '$specName: $dosageText'
+                          : dosageText,
                       style: const TextStyle(fontSize: 14),
                     ),
                   ),
                 );
               }
 
-              final adminText = d.administrationEn.resolve(d.administrationBn, lang);
+              final adminText = d.administrationEn.resolve(
+                d.administrationBn,
+                lang,
+              );
               if (adminText.isNotEmpty) {
                 directionWidgets.add(
                   Padding(
@@ -106,7 +114,10 @@ class DirectionsSection extends StatelessWidget {
                   ),
                 );
               }
-              final adminText = d.administrationEn.resolve(d.administrationBn, lang);
+              final adminText = d.administrationEn.resolve(
+                d.administrationBn,
+                lang,
+              );
               if (adminText.isNotEmpty) {
                 directionWidgets.add(
                   Padding(
@@ -137,11 +148,11 @@ class DirectionsSection extends StatelessWidget {
           final String staticLineEn = isAquaProduct
               ? 'Or, as directed by Veterinarians or Aquaculturists.'
               : 'Or, as directed by Veterinarians.';
-          
+
           final String staticLineBn = isAquaProduct
               ? 'অথবা, ভেটেরিনারি চিকিৎসক বা মৎস্য বিশেষজ্ঞের পরামর্শ অনুযায়ী।'
               : 'অথবা, ভেটেরিনারি চিকিৎসকের পরামর্শ অনুযায়ী।';
-          
+
           final String staticLine = lang == 'bn' ? staticLineBn : staticLineEn;
 
           directionWidgets.add(

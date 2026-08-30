@@ -5,16 +5,25 @@ class NoOpUser extends QueryExecutorUser {
   @override
   int get schemaVersion => 1;
   @override
-  Future<void> beforeOpen(QueryExecutor executor, OpeningDetails details) async {}
+  Future<void> beforeOpen(
+    QueryExecutor executor,
+    OpeningDetails details,
+  ) async {}
 }
 
 extension QueryExecutorX on QueryExecutor {
-  Future<List<Map<String, dynamic>>> customQuery(String sql, [List<Object?> args = const []]) async {
+  Future<List<Map<String, dynamic>>> customQuery(
+    String sql, [
+    List<Object?> args = const [],
+  ]) async {
     await ensureOpen(NoOpUser());
     return runSelect(sql, args);
   }
 
-  Future<void> customExecute(String sql, [List<Object?> args = const []]) async {
+  Future<void> customExecute(
+    String sql, [
+    List<Object?> args = const [],
+  ]) async {
     await ensureOpen(NoOpUser());
     await runCustom(sql, args);
   }
@@ -28,7 +37,7 @@ extension QueryExecutorX on QueryExecutor {
     int? limit,
     int? offset,
   }) async {
-    String cols = columns != null ? columns.join(', ') : '*';
+    final String cols = columns != null ? columns.join(', ') : '*';
     String sql = 'SELECT $cols FROM $table';
     if (where != null) sql += ' WHERE $where';
     if (orderBy != null) sql += ' ORDER BY $orderBy';
@@ -44,7 +53,7 @@ extension QueryExecutorX on QueryExecutor {
     int chunkSize = 500,
   }) async {
     if (ids.isEmpty) return [];
-    
+
     final results = <Map<String, dynamic>>[];
     for (var i = 0; i < ids.length; i += chunkSize) {
       final end = (i + chunkSize > ids.length) ? ids.length : i + chunkSize;

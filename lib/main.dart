@@ -1,14 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:impulse_app/core/errors/app_error_handler.dart';
 import 'package:impulse_app/core/errors/app_provider_observer.dart';
-import 'package:impulse_app/widgets/app_error_boundary.dart';
-import 'package:impulse_app/theme/app_theme.dart';
 import 'package:impulse_app/screens/main_screen.dart';
-
-import 'package:flutter/services.dart';
+import 'package:impulse_app/theme/app_theme.dart';
+import 'package:impulse_app/widgets/app_error_boundary.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -21,9 +20,7 @@ void main() async {
   runApp(
     const ProviderScope(
       observers: [AppProviderObserver()],
-      child: AppErrorBoundary(
-        child: ImpulseProductsApp(),
-      ),
+      child: AppErrorBoundary(child: ImpulseProductsApp()),
     ),
   );
 }
@@ -49,4 +46,3 @@ class ImpulseProductsApp extends StatelessWidget {
     );
   }
 }
-

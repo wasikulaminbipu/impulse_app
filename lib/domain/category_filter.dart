@@ -1,6 +1,6 @@
-﻿import 'package:impulse_app/models/product.dart';
-import 'package:impulse_app/utils/app_constants.dart';
 import 'package:collection/collection.dart';
+import 'package:impulse_app/models/product.dart';
+import 'package:impulse_app/utils/app_constants.dart';
 
 class CategoryFilterCriteria {
   final bool isFeedAdditive;
@@ -22,15 +22,16 @@ CategoryFilterCriteria resolveCategoryFilter(
   if (category == AppConstants.categoryAll) return CategoryFilterCriteria();
 
   final catLower = category.toLowerCase().trim();
-  
-  if (catLower == AppConstants.categoryFeedAdditives.toLowerCase() || 
+
+  if (catLower == AppConstants.categoryFeedAdditives.toLowerCase() ||
       catLower == AppConstants.categoryFeedAdditive.toLowerCase()) {
     return CategoryFilterCriteria(isFeedAdditive: true);
-  } else if (catLower == AppConstants.categoryVaccine.toLowerCase() || 
-             catLower == AppConstants.categoryVaccines.toLowerCase()) {
+  } else if (catLower == AppConstants.categoryVaccine.toLowerCase() ||
+      catLower == AppConstants.categoryVaccines.toLowerCase()) {
     final matchedCategory = categories.firstWhereOrNull(
       (c) =>
-          c.nameEn.toLowerCase() == AppConstants.categoryVaccine.toLowerCase() ||
+          c.nameEn.toLowerCase() ==
+              AppConstants.categoryVaccine.toLowerCase() ||
           c.nameEn.toLowerCase() == AppConstants.categoryVaccines.toLowerCase(),
     );
     return CategoryFilterCriteria(categoryId: matchedCategory?.id ?? -1);

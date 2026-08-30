@@ -4,17 +4,14 @@ class AnimatedListItem extends StatefulWidget {
   final int index;
   final Widget child;
 
-  const AnimatedListItem({
-    super.key,
-    required this.index,
-    required this.child,
-  });
+  const AnimatedListItem({super.key, required this.index, required this.child});
 
   @override
   State<AnimatedListItem> createState() => _AnimatedListItemState();
 }
 
-class _AnimatedListItemState extends State<AnimatedListItem> with SingleTickerProviderStateMixin {
+class _AnimatedListItemState extends State<AnimatedListItem>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
 
@@ -27,7 +24,10 @@ class _AnimatedListItemState extends State<AnimatedListItem> with SingleTickerPr
         milliseconds: 200 + ((widget.index % 20) * 50).clamp(0, 300),
       ),
     );
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
     _controller.forward();
   }
 

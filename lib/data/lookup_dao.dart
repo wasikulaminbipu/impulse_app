@@ -1,6 +1,6 @@
-﻿import 'package:drift/drift.dart';
-import 'package:impulse_app/models/product.dart';
+import 'package:drift/drift.dart';
 import 'package:impulse_app/data/app_databases.dart';
+import 'package:impulse_app/models/product.dart';
 
 class LookupDao {
   final ProductsDb db;
@@ -31,9 +31,20 @@ class LookupDao {
 
   Future<List<Category>> getCategories({bool forceRefresh = false}) async {
     if (_categories != null && !forceRefresh) return _categories!;
-    final rows = await (db.select(db.categories)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
-    _categories = rows.map((e) => Category(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn, iconName: e.iconName)).toList();
-    _categoryMap = { for (var c in _categories!) c.id : c };
+    final rows = await (db.select(
+      db.categories,
+    )..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
+    _categories = rows
+        .map(
+          (e) => Category(
+            id: e.id,
+            nameEn: e.nameEn,
+            nameBn: e.nameBn,
+            iconName: e.iconName,
+          ),
+        )
+        .toList();
+    _categoryMap = {for (final c in _categories!) c.id: c};
     return _categories!;
   }
 
@@ -45,16 +56,27 @@ class LookupDao {
 
   Future<List<TargetGroup>> getTargetGroups({bool forceRefresh = false}) async {
     if (_targetGroups != null && !forceRefresh) return _targetGroups!;
-    final rows = await (db.select(db.targetGroups)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
+    final rows = await (db.select(
+      db.targetGroups,
+    )..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
     _targetGroups = rows.map((e) {
-      final icon = e.iconName == 'feed_additive' ? 'feed_additives' : e.iconName;
-      return TargetGroup(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn, iconName: icon);
+      final icon = e.iconName == 'feed_additive'
+          ? 'feed_additives'
+          : e.iconName;
+      return TargetGroup(
+        id: e.id,
+        nameEn: e.nameEn,
+        nameBn: e.nameBn,
+        iconName: icon,
+      );
     }).toList();
-    _targetGroupMap = { for (var tg in _targetGroups!) tg.id : tg };
+    _targetGroupMap = {for (final tg in _targetGroups!) tg.id: tg};
     return _targetGroups!;
   }
 
-  Future<Map<int, TargetGroup>> getTargetGroupMap({bool forceRefresh = false}) async {
+  Future<Map<int, TargetGroup>> getTargetGroupMap({
+    bool forceRefresh = false,
+  }) async {
     if (_targetGroupMap != null && !forceRefresh) return _targetGroupMap!;
     await getTargetGroups(forceRefresh: forceRefresh);
     return _targetGroupMap!;
@@ -62,14 +84,29 @@ class LookupDao {
 
   Future<List<ContentType>> getContentTypes({bool forceRefresh = false}) async {
     if (_contentTypes != null && !forceRefresh) return _contentTypes!;
-    final rows = await (db.select(db.contentTypes)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
-    return _contentTypes = rows.map((e) => ContentType(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn)).toList();
+    final rows = await (db.select(
+      db.contentTypes,
+    )..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
+    return _contentTypes = rows
+        .map((e) => ContentType(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn))
+        .toList();
   }
 
   Future<List<ProductType>> getProductTypes({bool forceRefresh = false}) async {
     if (_productTypes != null && !forceRefresh) return _productTypes!;
-    final rows = await (db.select(db.productTypes)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
-    return _productTypes = rows.map((e) => ProductType(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn, iconName: e.iconName)).toList();
+    final rows = await (db.select(
+      db.productTypes,
+    )..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
+    return _productTypes = rows
+        .map(
+          (e) => ProductType(
+            id: e.id,
+            nameEn: e.nameEn,
+            nameBn: e.nameBn,
+            iconName: e.iconName,
+          ),
+        )
+        .toList();
   }
 
   Future<List<Species>> getSpecies({
@@ -78,8 +115,19 @@ class LookupDao {
   }) async {
     if (targetGroupId == null) {
       if (_species != null && !forceRefresh) return _species!;
-      final rows = await (db.select(db.species)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
-      return _species = rows.map((e) => Species(id: e.id, targetGroupId: e.targetGroupId, nameEn: e.nameEn, nameBn: e.nameBn)).toList();
+      final rows = await (db.select(
+        db.species,
+      )..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
+      return _species = rows
+          .map(
+            (e) => Species(
+              id: e.id,
+              targetGroupId: e.targetGroupId,
+              nameEn: e.nameEn,
+              nameBn: e.nameBn,
+            ),
+          )
+          .toList();
     }
     final all = await getSpecies(forceRefresh: forceRefresh);
     return all.where((s) => s.targetGroupId == targetGroupId).toList();
@@ -87,13 +135,21 @@ class LookupDao {
 
   Future<List<DosageUnit>> getDosageUnits({bool forceRefresh = false}) async {
     if (_dosageUnits != null && !forceRefresh) return _dosageUnits!;
-    final rows = await (db.select(db.dosageUnits)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
-    return _dosageUnits = rows.map((e) => DosageUnit(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn)).toList();
+    final rows = await (db.select(
+      db.dosageUnits,
+    )..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
+    return _dosageUnits = rows
+        .map((e) => DosageUnit(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn))
+        .toList();
   }
 
   Future<List<DosageBasis>> getDosageBases({bool forceRefresh = false}) async {
     if (_dosageBases != null && !forceRefresh) return _dosageBases!;
-    final rows = await (db.select(db.dosageBases)..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
-    return _dosageBases = rows.map((e) => DosageBasis(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn)).toList();
+    final rows = await (db.select(
+      db.dosageBases,
+    )..orderBy([(t) => OrderingTerm(expression: t.nameEn)])).get();
+    return _dosageBases = rows
+        .map((e) => DosageBasis(id: e.id, nameEn: e.nameEn, nameBn: e.nameBn))
+        .toList();
   }
 }

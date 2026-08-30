@@ -23,14 +23,17 @@ class SectionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: Theme.of(context).colorScheme.outlineVariant.withValues(
-            alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.65,
+            alpha: Theme.of(context).brightness == Brightness.dark
+                ? 0.45
+                : 0.65,
           ),
-          width: 1,
         ),
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).shadowColor.withValues(
-              alpha: Theme.of(context).brightness == Brightness.dark ? 0.25 : 0.06,
+              alpha: Theme.of(context).brightness == Brightness.dark
+                  ? 0.25
+                  : 0.06,
             ),
             blurRadius: 12,
             offset: const Offset(0, 4),
@@ -42,7 +45,11 @@ class SectionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+              Icon(
+                icon,
+                size: 20,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               const SizedBox(width: 8),
               Text(
                 title,

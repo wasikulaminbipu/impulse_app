@@ -1,4 +1,4 @@
-﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_app/utils/bilingual_string.dart';
 
 void main() {
@@ -10,18 +10,24 @@ void main() {
       expect(enText.resolve(bnText, 'en'), equals('Paracetamol'));
     });
 
-    test('resolve returns Bengali text when language is bn and bnText is present', () {
-      const enText = 'Paracetamol';
-      const bnText = 'প্যারাসিটামল';
+    test(
+      'resolve returns Bengali text when language is bn and bnText is present',
+      () {
+        const enText = 'Paracetamol';
+        const bnText = 'প্যারাসিটামল';
 
-      expect(enText.resolve(bnText, 'bn'), equals('প্যারাসিটামল'));
-    });
+        expect(enText.resolve(bnText, 'bn'), equals('প্যারাসিটামল'));
+      },
+    );
 
-    test('resolve falls back to English text when language is bn but bnText is empty or null', () {
-      const enText = 'Paracetamol';
-      expect(enText.resolve('', 'bn'), equals('Paracetamol'));
-      expect(enText.resolve(null, 'bn'), equals('Paracetamol'));
-    });
+    test(
+      'resolve falls back to English text when language is bn but bnText is empty or null',
+      () {
+        const enText = 'Paracetamol';
+        expect(enText.resolve('', 'bn'), equals('Paracetamol'));
+        expect(enText.resolve(null, 'bn'), equals('Paracetamol'));
+      },
+    );
   });
 
   group('BilingualStringNullable Extension Tests', () {

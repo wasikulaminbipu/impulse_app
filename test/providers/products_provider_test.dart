@@ -1,7 +1,7 @@
-﻿import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_app/providers/products_provider.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_app/data/fts_utils.dart';
+import 'package:impulse_app/providers/products_provider.dart';
 import 'package:impulse_app/utils/search_analytics.dart';
 
 void main() {
@@ -30,13 +30,16 @@ void main() {
   });
 
   group('Search Engine Expert Utilities & Telemetry Tests', () {
-    test('sanitizeFtsQuery expands terms and filters stopwords for multi-word queries', () {
-      final query = sanitizeFtsQuery('vit c for cattle');
-      expect(query, contains('"vit"*'));
-      expect(query, contains('"vitamin"*'));
-      expect(query, isNot(contains('"for"*')));
-      expect(query, contains('"cattle"*'));
-    });
+    test(
+      'sanitizeFtsQuery expands terms and filters stopwords for multi-word queries',
+      () {
+        final query = sanitizeFtsQuery('vit c for cattle');
+        expect(query, contains('"vit"*'));
+        expect(query, contains('"vitamin"*'));
+        expect(query, isNot(contains('"for"*')));
+        expect(query, contains('"cattle"*'));
+      },
+    );
 
     test('sanitizeFtsQuery preserves single-word stopwords', () {
       final query = sanitizeFtsQuery('for');
@@ -45,8 +48,16 @@ void main() {
 
     test('SearchAnalyticsTracker logs zero-result events properly', () {
       SearchAnalyticsTracker.clearListeners();
-      SearchAnalyticsTracker.logSearch(query: 'unknown medicine xyz', resultCount: 0, executionTimeMs: 12);
-      SearchAnalyticsTracker.logSearch(query: 'amoxicillin', resultCount: 5, executionTimeMs: 8);
+      SearchAnalyticsTracker.logSearch(
+        query: 'unknown medicine xyz',
+        resultCount: 0,
+        executionTimeMs: 12,
+      );
+      SearchAnalyticsTracker.logSearch(
+        query: 'amoxicillin',
+        resultCount: 5,
+        executionTimeMs: 8,
+      );
 
       final logs = SearchAnalyticsTracker.getRecentLogs();
       expect(logs.length, equals(2));
@@ -60,7 +71,6 @@ void main() {
       final fused = reciprocalRankFusion<String>(
         rankedResultLists: [list1, list2],
         getId: (id) => id,
-        k: 60,
       );
 
       // doc2 is rank 2 in list1 and rank 1 in list2 -> highest RRF score
@@ -79,15 +89,24 @@ void main() {
       expect(poultryExpansions, containsAll(['chicken', 'broiler', 'layer']));
     });
 
-    test('calculatePhoneticSimilarity handles sound-alike terms and transliterations', () {
-      final sim1 = calculatePhoneticSimilarity('amoxilin', 'Amoxicillin');
-      expect(sim1, greaterThan(0.7));
+    test(
+      'calculatePhoneticSimilarity handles sound-alike terms and transliterations',
+      () {
+        final sim1 = calculatePhoneticSimilarity('amoxilin', 'Amoxicillin');
+        expect(sim1, greaterThan(0.7));
 
-      final sim2 = calculatePhoneticSimilarity('ciproflxacin', 'Ciprofloxacin');
-      expect(sim2, greaterThan(0.7));
+        final sim2 = calculatePhoneticSimilarity(
+          'ciproflxacin',
+          'Ciprofloxacin',
+        );
+        expect(sim2, greaterThan(0.7));
 
-      final matchesPhonetic = matchesFuzzyToken('Amoxicillin Trihydrate', 'amoxilin');
-      expect(matchesPhonetic, isTrue);
-    });
+        final matchesPhonetic = matchesFuzzyToken(
+          'Amoxicillin Trihydrate',
+          'amoxilin',
+        );
+        expect(matchesPhonetic, isTrue);
+      },
+    );
   });
 }

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
@@ -10,7 +10,9 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('ProductsScreen Title Responsive Tests', () {
-    testWidgets('renders Impulse Agriscience Ltd. on normal width', (WidgetTester tester) async {
+    testWidgets('renders Impulse Agriscience Ltd. on normal width', (
+      WidgetTester tester,
+    ) async {
       tester.view.physicalSize = const Size(800, 1200);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -18,14 +20,16 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            availableCategoriesProvider.overrideWith((ref) => Future.value(['All'])),
-            searchHistoryProvider.overrideWith(() => SearchHistoryMock()),
-            productSearchTrieSuggestionsProvider.overrideWith((ref) => Future.value([])),
-            languageSettingProvider.overrideWith(() => LanguageSettingMock()),
+            availableCategoriesProvider.overrideWith(
+              (ref) => Future.value(['All']),
+            ),
+            searchHistoryProvider.overrideWith(SearchHistoryMock.new),
+            productSearchTrieSuggestionsProvider.overrideWith(
+              (ref) => Future.value([]),
+            ),
+            languageSettingProvider.overrideWith(LanguageSettingMock.new),
           ],
-          child: const MaterialApp(
-            home: ProductsScreen(),
-          ),
+          child: const MaterialApp(home: ProductsScreen()),
         ),
       );
 
@@ -34,29 +38,34 @@ void main() {
       expect(find.text('Impulse Agriscience Ltd.'), findsOneWidget);
     });
 
-    testWidgets('falls back to Impulse Agriscience on narrow title constraint', (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(300, 800);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
+    testWidgets(
+      'falls back to Impulse Agriscience on narrow title constraint',
+      (WidgetTester tester) async {
+        tester.view.physicalSize = const Size(300, 800);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            availableCategoriesProvider.overrideWith((ref) => Future.value(['All'])),
-            searchHistoryProvider.overrideWith(() => SearchHistoryMock()),
-            productSearchTrieSuggestionsProvider.overrideWith((ref) => Future.value([])),
-            languageSettingProvider.overrideWith(() => LanguageSettingMock()),
-          ],
-          child: const MaterialApp(
-            home: ProductsScreen(),
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              availableCategoriesProvider.overrideWith(
+                (ref) => Future.value(['All']),
+              ),
+              searchHistoryProvider.overrideWith(SearchHistoryMock.new),
+              productSearchTrieSuggestionsProvider.overrideWith(
+                (ref) => Future.value([]),
+              ),
+              languageSettingProvider.overrideWith(LanguageSettingMock.new),
+            ],
+            child: const MaterialApp(home: ProductsScreen()),
           ),
-        ),
-      );
+        );
 
-      await tester.pump();
+        await tester.pump();
 
-      expect(find.text('Impulse Agriscience'), findsOneWidget);
-    });
+        expect(find.text('Impulse Agriscience'), findsOneWidget);
+      },
+    );
   });
 }
 

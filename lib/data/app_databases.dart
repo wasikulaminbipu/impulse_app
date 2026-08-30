@@ -1,17 +1,17 @@
-﻿import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
-
 import 'package:impulse_app/data/db_extensions.dart';
-import 'package:impulse_app/data/maintenance_tables.dart';
-import 'package:impulse_app/data/products_tables.dart';
 import 'package:impulse_app/data/distributors_tables.dart';
 import 'package:impulse_app/data/fts_utils.dart';
+import 'package:impulse_app/data/maintenance_tables.dart';
+import 'package:impulse_app/data/products_tables.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 part 'app_databases.g.dart';
 
@@ -33,67 +33,73 @@ part 'app_databases.g.dart';
 // ---------------------------------------------------------------------------
 
 /// Thin Drift wrapper around products.db.
-@DriftDatabase(tables: [
-  Categories,
-  TargetGroups,
-  ContentTypes,
-  ProductTypes,
-  Species,
-  DosageUnits,
-  DosageBases,
-  Manufacturers,
-  Products,
-  ProductTargetGroups,
-  Compositions,
-  Indications,
-  Directions,
-  Precautions,
-  Presentations,
-])
+@DriftDatabase(
+  tables: [
+    Categories,
+    TargetGroups,
+    ContentTypes,
+    ProductTypes,
+    Species,
+    DosageUnits,
+    DosageBases,
+    Manufacturers,
+    Products,
+    ProductTargetGroups,
+    Compositions,
+    Indications,
+    Directions,
+    Precautions,
+    Presentations,
+  ],
+)
 class ProductsDb extends _$ProductsDb {
-  ProductsDb(super.executor);
+  ProductsDb(super.e);
 
   @override
   int get schemaVersion => 1;
 }
 
 /// Thin Drift wrapper around distributors.db.
-@DriftDatabase(tables: [
-  Divisions,
-  Districts,
-  Upazilas,
-  Regions,
-  Areas,
-  Bases,
-  BaseUpazilas,
-  Distributors,
-  SalesPersonnel,
-  SalesPersonnelRegions,
-  SalesPersonnelAreas,
-  SalesPersonnelBases,
-  SalesPersonnelUpazilas,
-  VetDoctors,
-  VetDoctorsRegions,
-  VetDoctorsAreas,
-  VetDoctorsBases,
-  VetDoctorsUpazilas,
-])
+@DriftDatabase(
+  tables: [
+    Divisions,
+    Districts,
+    Upazilas,
+    Regions,
+    Areas,
+    Bases,
+    BaseUpazilas,
+    Distributors,
+    SalesPersonnel,
+    SalesPersonnelRegions,
+    SalesPersonnelAreas,
+    SalesPersonnelBases,
+    SalesPersonnelUpazilas,
+    VetDoctors,
+    VetDoctorsRegions,
+    VetDoctorsAreas,
+    VetDoctorsBases,
+    VetDoctorsUpazilas,
+  ],
+)
 class DistributorsDb extends _$DistributorsDb {
-  DistributorsDb(super.executor);
+  DistributorsDb(super.e);
 
   @override
   int get schemaVersion => 1;
 }
 
 /// Proper Drift database for app_maintenance.db
-@DriftDatabase(tables: [
-  FavoriteProducts,
-  FavoriteDistributors,
-  FavoriteSalesPersonnel,
-  FavoriteVetDoctors,
-  AppSettings,
-  DbMeta,
-])
+@DriftDatabase(
+  tables: [
+    FavoriteProducts,
+    FavoriteDistributors,
+    FavoriteSalesPersonnel,
+    FavoriteVetDoctors,
+    AppSettings,
+    DbMeta,
+  ],
+)
 class AppMaintenanceDb extends _$AppMaintenanceDb {
   AppMaintenanceDb(super.e);
 
@@ -102,13 +108,13 @@ class AppMaintenanceDb extends _$AppMaintenanceDb {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (Migrator m) async {
-          await m.createAll();
-        },
-        onUpgrade: (Migrator m, int from, int to) async {
-          // Future schema migrations go here
-        },
-      );
+    onCreate: (Migrator m) async {
+      await m.createAll();
+    },
+    onUpgrade: (Migrator m, int from, int to) async {
+      // Future schema migrations go here
+    },
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -121,12 +127,19 @@ Future<String> getAppDbPath(String dbName) async {
 }
 
 void _deleteDbFiles(String dbPath) {
-  for (final path in [dbPath, '$dbPath-journal', '$dbPath-wal', '$dbPath-shm']) {
+  for (final path in [
+    dbPath,
+    '$dbPath-journal',
+    '$dbPath-wal',
+    '$dbPath-shm',
+  ]) {
     final f = File(path);
     if (f.existsSync()) {
       try {
         f.deleteSync();
-      } catch (e, st) { debugPrint('DB delete error: $e\n$st'); }
+      } catch (e, st) {
+        debugPrint('DB delete error: $e\n$st');
+      }
     }
   }
 }
@@ -177,13 +190,16 @@ Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
     byteData.offsetInBytes,
     byteData.lengthInBytes,
   );
-  String assetSig = '${assetBytes.length}_${assetBytes.first}_${assetBytes.last}';
+  String assetSig =
+      '${assetBytes.length}_${assetBytes.first}_${assetBytes.last}';
   if (assetBytes.length >= 100) {
     // Include the SQLite file change counter (bytes 24-27) which increments on every transaction
-    assetSig += '_${assetBytes[24]}_${assetBytes[25]}_${assetBytes[26]}_${assetBytes[27]}';
+    assetSig +=
+        '_${assetBytes[24]}_${assetBytes[25]}_${assetBytes[26]}_${assetBytes[27]}';
   }
 
-  final needsCopy = !await file.exists() ||
+  final needsCopy =
+      !await file.exists() ||
       !await versionFile.exists() ||
       (await versionFile.readAsString()).trim() != assetSig;
 
@@ -200,7 +216,9 @@ Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
       try {
         rawDb.execute('PRAGMA journal_mode=OFF;');
         rawDb.execute('PRAGMA foreign_keys=ON;');
-      } catch (e, st) { debugPrint('DB setup error: $e\n$st'); }
+      } catch (e, st) {
+        debugPrint('DB setup error: $e\n$st');
+      }
     },
   );
 
@@ -252,7 +270,9 @@ Future<void> _setFtsTableReady(
         "DELETE FROM db_meta WHERE key = 'fts_ready_$tableName'",
       ]);
     }
-  } catch (e, st) { debugPrint('FTS mark ready error: $e\n$st'); }
+  } catch (e, st) {
+    debugPrint('FTS mark ready error: $e\n$st');
+  }
 }
 
 Future<void> _buildSingleFtsTable({
@@ -264,7 +284,9 @@ Future<void> _buildSingleFtsTable({
 }) async {
   if (await _isFtsTableReady(executor, tableName)) {
     try {
-      await _runRaw(executor, ["INSERT INTO $tableName($tableName) VALUES('optimize');"]);
+      await _runRaw(executor, [
+        "INSERT INTO $tableName($tableName) VALUES('optimize');",
+      ]);
     } catch (e, st) {
       debugPrint('FTS periodic optimize error ($tableName): $e\n$st');
     }
@@ -293,7 +315,9 @@ Future<void> _buildSingleFtsTable({
 
   // Consolidate & optimize FTS index segments post-creation
   try {
-    await _runRaw(executor, ["INSERT INTO $tableName($tableName) VALUES('optimize');"]);
+    await _runRaw(executor, [
+      "INSERT INTO $tableName($tableName) VALUES('optimize');",
+    ]);
   } catch (e, st) {
     debugPrint('FTS post-build optimize error ($tableName): $e\n$st');
   }

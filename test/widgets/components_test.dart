@@ -1,15 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_app/widgets/custom_badge.dart';
-import 'package:impulse_app/widgets/tactile_button.dart';
-import 'package:impulse_app/widgets/glass_container.dart';
 import 'package:impulse_app/widgets/feedback_banner.dart';
+import 'package:impulse_app/widgets/glass_container.dart';
+import 'package:impulse_app/widgets/tactile_button.dart';
 
 Widget createTestHarness(Widget child) {
   return MaterialApp(
-    home: Scaffold(
-      body: Center(child: child),
-    ),
+    home: Scaffold(body: Center(child: child)),
   );
 }
 
@@ -18,10 +16,7 @@ void main() {
     testWidgets('Renders badge text and color correctly', (tester) async {
       await tester.pumpWidget(
         createTestHarness(
-          const CustomBadge(
-            color: Colors.red,
-            text: 'VACCINE',
-          ),
+          const CustomBadge(color: Colors.red, text: 'VACCINE'),
         ),
       );
 
@@ -62,13 +57,12 @@ void main() {
       expect(pressed, isTrue);
     });
 
-    testWidgets('Does not execute onPressed callback when disabled', (tester) async {
+    testWidgets('Does not execute onPressed callback when disabled', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         createTestHarness(
-          const TactileButton(
-            onPressed: null,
-            child: Text('Disabled'),
-          ),
+          const TactileButton(onPressed: null, child: Text('Disabled')),
         ),
       );
 
@@ -79,13 +73,11 @@ void main() {
   });
 
   group('GlassContainer Widget Tests', () {
-    testWidgets('Renders child inside backdrop filter container', (tester) async {
+    testWidgets('Renders child inside backdrop filter container', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        createTestHarness(
-          const GlassContainer(
-            child: Text('Glass Content'),
-          ),
-        ),
+        createTestHarness(const GlassContainer(child: Text('Glass Content'))),
       );
 
       expect(find.text('Glass Content'), findsOneWidget);
@@ -97,10 +89,7 @@ void main() {
     testWidgets('Renders success feedback message', (tester) async {
       await tester.pumpWidget(
         createTestHarness(
-          const FeedbackBanner(
-            message: 'Operation Successful',
-            isError: false,
-          ),
+          const FeedbackBanner(message: 'Operation Successful'),
         ),
       );
 
@@ -111,10 +100,7 @@ void main() {
     testWidgets('Renders error feedback message', (tester) async {
       await tester.pumpWidget(
         createTestHarness(
-          const FeedbackBanner(
-            message: 'An error occurred',
-            isError: true,
-          ),
+          const FeedbackBanner(message: 'An error occurred', isError: true),
         ),
       );
 

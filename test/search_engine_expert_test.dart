@@ -1,11 +1,11 @@
-﻿import 'package:drift/drift.dart' hide isNull, isNotNull;
+import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/data/app_databases.dart';
-import 'package:impulse_app/data/product_dao.dart';
-import 'package:impulse_app/data/lookup_dao.dart';
 import 'package:impulse_app/data/fts_utils.dart';
+import 'package:impulse_app/data/lookup_dao.dart';
+import 'package:impulse_app/data/product_dao.dart';
+import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/utils/search_analytics.dart';
 
 void main() {
@@ -61,37 +61,43 @@ void main() {
       );
 
       // Insert dummy category
-      await db.into(db.categories).insert(
-        CategoriesCompanion.insert(
-          id: const Value(1),
-          nameEn: 'Veterinary Antibiotics',
-          nameBn: 'ভেটেরিনারি অ্যান্টিবায়োটিক',
-        ),
-      );
+      await db
+          .into(db.categories)
+          .insert(
+            CategoriesCompanion.insert(
+              id: const Value(1),
+              nameEn: 'Veterinary Antibiotics',
+              nameBn: 'ভেটেরিনারি অ্যান্টিবায়োটিক',
+            ),
+          );
 
       // Product 1: Title "Amoxivet 500", Category 1
-      await db.into(db.products).insert(
-        ProductsCompanion.insert(
-          id: const Value(100),
-          titleEn: 'Amoxivet 500',
-          titleBn: const Value('অ্যামোক্সিভেট ৫০০'),
-          slug: 'amoxivet-500',
-          categoryId: 1,
-          isActive: const Value(1),
-        ),
-      );
+      await db
+          .into(db.products)
+          .insert(
+            ProductsCompanion.insert(
+              id: const Value(100),
+              titleEn: 'Amoxivet 500',
+              titleBn: const Value('অ্যামোক্সিভেট ৫০০'),
+              slug: 'amoxivet-500',
+              categoryId: 1,
+              isActive: const Value(1),
+            ),
+          );
 
       // Product 2: Title "Ciprovet Injection", Category 1
-      await db.into(db.products).insert(
-        ProductsCompanion.insert(
-          id: const Value(101),
-          titleEn: 'Ciprovet Injection',
-          titleBn: const Value('সিপ্রোভেট ইনজেকশন'),
-          slug: 'ciprovet-injection',
-          categoryId: 1,
-          isActive: const Value(1),
-        ),
-      );
+      await db
+          .into(db.products)
+          .insert(
+            ProductsCompanion.insert(
+              id: const Value(101),
+              titleEn: 'Ciprovet Injection',
+              titleBn: const Value('সিপ্রোভেট ইনজেকশন'),
+              slug: 'ciprovet-injection',
+              categoryId: 1,
+              isActive: const Value(1),
+            ),
+          );
 
       // Populate FTS tables
       await db.executor.runCustom('''
@@ -114,75 +120,87 @@ void main() {
       await db.close();
     });
 
-    test('1. FTS5 BM25 native relevance query succeeds without errors', () async {
-      final results = await productDao.getFilteredLabels(
-        query: 'Amoxivet',
-        limit: 10,
-        offset: 0,
-      );
-      expect(results, isNotEmpty);
-      expect(results.first.titleEn, equals('Amoxivet 500'));
-    });
+    test(
+      '1. FTS5 BM25 native relevance query succeeds without errors',
+      () async {
+        final results = await productDao.getFilteredLabels(
+          query: 'Amoxivet',
+          limit: 10,
+          offset: 0,
+        );
+        expect(results, isNotEmpty);
+        expect(results.first.titleEn, equals('Amoxivet 500'));
+      },
+    );
 
-    test('2. Top-level computeFuzzyFallbackScores calculates distances correctly', () {
-      final candidates = [
-        {
-          'id': 100,
-          'title_en': 'Amoxivet 500',
-          'title_bn': 'অ্যামোক্সিভেট ৫০০',
-          'cat_en': 'Veterinary Antibiotics',
-          'cat_bn': 'ভেটেরিনারি অ্যান্টিবায়োটিক',
-        },
-        {
-          'id': 101,
-          'title_en': 'Ciprovet Injection',
-          'title_bn': 'সিপ্রোভেট ইনজেকশন',
-          'cat_en': 'Veterinary Antibiotics',
-          'cat_bn': 'ভেটেরিনারি অ্যান্টিবায়োটিক',
-        },
-      ];
+    test(
+      '2. Top-level computeFuzzyFallbackScores calculates distances correctly',
+      () {
+        final candidates = [
+          {
+            'id': 100,
+            'title_en': 'Amoxivet 500',
+            'title_bn': 'অ্যামোক্সিভেট ৫০০',
+            'cat_en': 'Veterinary Antibiotics',
+            'cat_bn': 'ভেটেরিনারি অ্যান্টিবায়োটিক',
+          },
+          {
+            'id': 101,
+            'title_en': 'Ciprovet Injection',
+            'title_bn': 'সিপ্রোভেট ইনজেকশন',
+            'cat_en': 'Veterinary Antibiotics',
+            'cat_bn': 'ভেটেরিনারি অ্যান্টিবায়োটিক',
+          },
+        ];
 
-      final input = FuzzyCandidateInput(query: 'Amoxvet', candidates: candidates);
-      final scored = computeFuzzyFallbackScores(input);
+        final input = FuzzyCandidateInput(
+          query: 'Amoxvet',
+          candidates: candidates,
+        );
+        final scored = computeFuzzyFallbackScores(input);
 
-      expect(scored, isNotEmpty);
-      expect(scored.first['title_en'], equals('Amoxivet 500'));
-    });
+        expect(scored, isNotEmpty);
+        expect(scored.first['title_en'], equals('Amoxivet 500'));
+      },
+    );
 
-    test('3. SearchAnalyticsTracker notifies registered telemetry listeners', () {
-      SearchAnalyticsEvent? executedEvent;
-      SearchAnalyticsEvent? zeroResultEvent;
+    test(
+      '3. SearchAnalyticsTracker notifies registered telemetry listeners',
+      () {
+        SearchAnalyticsEvent? executedEvent;
+        SearchAnalyticsEvent? zeroResultEvent;
 
-      SearchAnalyticsTracker.registerListeners(
-        onSearchExecuted: (event) => executedEvent = event,
-        onZeroResultQuery: (event) => zeroResultEvent = event,
-      );
+        SearchAnalyticsTracker.registerListeners(
+          onSearchExecuted: (event) => executedEvent = event,
+          onZeroResultQuery: (event) => zeroResultEvent = event,
+        );
 
-      // Non-zero result search
-      SearchAnalyticsTracker.logSearch(
-        query: 'Amoxivet',
-        resultCount: 5,
-        executionTimeMs: 12,
-        categoryOrScope: 'all',
-      );
+        // Non-zero result search
+        SearchAnalyticsTracker.logSearch(
+          query: 'Amoxivet',
+          resultCount: 5,
+          executionTimeMs: 12,
+          categoryOrScope: 'all',
+        );
 
-      expect(executedEvent, isNotNull);
-      expect(executedEvent!.query, equals('amoxivet'));
-      expect(executedEvent!.resultCount, equals(5));
-      expect(zeroResultEvent, isNull);
+        expect(executedEvent, isNotNull);
+        expect(executedEvent!.query, equals('amoxivet'));
+        expect(executedEvent!.resultCount, equals(5));
+        expect(zeroResultEvent, isNull);
 
-      // Zero-result search
-      SearchAnalyticsTracker.logSearch(
-        query: 'NonExistentProduct123',
-        resultCount: 0,
-        executionTimeMs: 8,
-        categoryOrScope: 'all',
-      );
+        // Zero-result search
+        SearchAnalyticsTracker.logSearch(
+          query: 'NonExistentProduct123',
+          resultCount: 0,
+          executionTimeMs: 8,
+          categoryOrScope: 'all',
+        );
 
-      expect(zeroResultEvent, isNotNull);
-      expect(zeroResultEvent!.query, equals('nonexistentproduct123'));
-      expect(zeroResultEvent!.resultCount, equals(0));
-    });
+        expect(zeroResultEvent, isNotNull);
+        expect(zeroResultEvent!.query, equals('nonexistentproduct123'));
+        expect(zeroResultEvent!.resultCount, equals(0));
+      },
+    );
 
     test('4. optimizeFtsTable runs without throwing error', () async {
       await expectLater(
@@ -191,38 +209,45 @@ void main() {
       );
     });
 
-    test('5. Expanded synonym dictionary resolves pharmaceutical terms correctly', () {
-      final dewormerSynonyms = getSynonymExpansions('dewormer');
-      expect(dewormerSynonyms, contains('albendazole'));
+    test(
+      '5. Expanded synonym dictionary resolves pharmaceutical terms correctly',
+      () {
+        final dewormerSynonyms = getSynonymExpansions('dewormer');
+        expect(dewormerSynonyms, contains('albendazole'));
 
-      final feverSynonyms = getSynonymExpansions('fever');
-      expect(feverSynonyms, contains('paracetamol'));
-    });
+        final feverSynonyms = getSynonymExpansions('fever');
+        expect(feverSynonyms, contains('paracetamol'));
+      },
+    );
 
-    test('6. calculateFacets dynamically aggregates result counts by category', () async {
-      final labels = await productDao.getAllLabels();
-      final facets = calculateFacets<ProductLabel>(
-        items: labels,
-        facetExtractors: {
-          'category': (item) => item.category.nameEn,
-        },
-      );
+    test(
+      '6. calculateFacets dynamically aggregates result counts by category',
+      () async {
+        final labels = await productDao.getAllLabels();
+        final facets = calculateFacets<ProductLabel>(
+          items: labels,
+          facetExtractors: {'category': (item) => item.category.nameEn},
+        );
 
-      final categoryFacet = facets['category'];
-      expect(categoryFacet, isNotNull);
-      expect(categoryFacet, isNotEmpty);
-      expect(categoryFacet!.first.value, equals('Veterinary Antibiotics'));
-      expect(categoryFacet.first.count, equals(2));
-    });
+        final categoryFacet = facets['category'];
+        expect(categoryFacet, isNotNull);
+        expect(categoryFacet, isNotEmpty);
+        expect(categoryFacet!.first.value, equals('Veterinary Antibiotics'));
+        expect(categoryFacet.first.count, equals(2));
+      },
+    );
 
-    test('7. products_trigram_fts performs mid-word and slug substring matching', () async {
-      final results = await productDao.getFilteredLabels(
-        query: 'vet-500',
-        limit: 10,
-        offset: 0,
-      );
-      expect(results, isNotEmpty);
-      expect(results.first.titleEn, equals('Amoxivet 500'));
-    });
+    test(
+      '7. products_trigram_fts performs mid-word and slug substring matching',
+      () async {
+        final results = await productDao.getFilteredLabels(
+          query: 'vet-500',
+          limit: 10,
+          offset: 0,
+        );
+        expect(results, isNotEmpty);
+        expect(results.first.titleEn, equals('Amoxivet 500'));
+      },
+    );
   });
 }

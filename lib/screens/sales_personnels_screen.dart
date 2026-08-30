@@ -1,19 +1,19 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_app/models/distributor.dart';
 import 'package:impulse_app/models/app_maintenance.dart';
+import 'package:impulse_app/models/distributor.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/search_history_provider.dart';
 import 'package:impulse_app/providers/stakeholder_provider.dart';
-import 'package:impulse_app/widgets/skeleton_loader.dart';
-import 'package:impulse_app/widgets/favorite_button.dart';
 import 'package:impulse_app/utils/bilingual_string.dart';
 import 'package:impulse_app/widgets/animated_list_item.dart';
 import 'package:impulse_app/widgets/app_drawer.dart';
-import 'package:impulse_app/providers/search_history_provider.dart';
-import 'package:impulse_app/widgets/highlight_text.dart';
 import 'package:impulse_app/widgets/asset_fallback_image.dart';
+import 'package:impulse_app/widgets/favorite_button.dart';
+import 'package:impulse_app/widgets/highlight_text.dart';
+import 'package:impulse_app/widgets/skeleton_loader.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 
 Future<void> _saveContactToPhone({
   required String fullName,
@@ -128,7 +128,10 @@ class _SalesPersonnelsScreenState extends ConsumerState<SalesPersonnelsScreen>
                     ),
                     label: Text(
                       term,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     onPressed: () {
                       _searchController.text = term;
@@ -162,10 +165,7 @@ class _SalesPersonnelsScreenState extends ConsumerState<SalesPersonnelsScreen>
                 padding: const EdgeInsets.only(right: 6),
                 child: ActionChip(
                   avatar: const Icon(Icons.history, size: 14),
-                  label: Text(
-                    term,
-                    style: const TextStyle(fontSize: 12),
-                  ),
+                  label: Text(term, style: const TextStyle(fontSize: 12)),
                   onPressed: () {
                     _searchController.text = term;
                     _syncSearchQuery();
@@ -180,8 +180,6 @@ class _SalesPersonnelsScreenState extends ConsumerState<SalesPersonnelsScreen>
       error: (e, s) => const SizedBox.shrink(),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -246,8 +244,12 @@ class _SalesPersonnelsScreenState extends ConsumerState<SalesPersonnelsScreen>
                   focusNode: _searchFocusNode,
                   decoration: InputDecoration(
                     hintText: _tabController.index == 0
-                        ? (lang == 'bn' ? 'প্রতিনিধি খুঁজুন...' : 'Search representatives...')
-                        : (lang == 'bn' ? 'ভেটেরিনারিয়ান খুঁজুন...' : 'Search veterinarians...'),
+                        ? (lang == 'bn'
+                              ? 'প্রতিনিধি খুঁজুন...'
+                              : 'Search representatives...')
+                        : (lang == 'bn'
+                              ? 'ভেটেরিনারিয়ান খুঁজুন...'
+                              : 'Search veterinarians...'),
                     isDense: true,
                     prefixIcon: Icon(
                       Icons.search_rounded,
@@ -265,8 +267,9 @@ class _SalesPersonnelsScreenState extends ConsumerState<SalesPersonnelsScreen>
                           )
                         : null,
                     filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest
-                        .withValues(alpha: 0.4),
+                    fillColor: colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 0.4,
+                    ),
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 11,
                       horizontal: 16,
@@ -274,17 +277,17 @@ class _SalesPersonnelsScreenState extends ConsumerState<SalesPersonnelsScreen>
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
                       borderSide: BorderSide(
-                        color:
-                            colorScheme.outlineVariant.withValues(alpha: 0.4),
-                        width: 1,
+                        color: colorScheme.outlineVariant.withValues(
+                          alpha: 0.4,
+                        ),
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
                       borderSide: BorderSide(
-                        color:
-                            colorScheme.outlineVariant.withValues(alpha: 0.4),
-                        width: 1,
+                        color: colorScheme.outlineVariant.withValues(
+                          alpha: 0.4,
+                        ),
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -303,8 +306,9 @@ class _SalesPersonnelsScreenState extends ConsumerState<SalesPersonnelsScreen>
                 child: TabBar(
                   controller: _tabController,
                   labelColor: colorScheme.primary,
-                  unselectedLabelColor:
-                      colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                  unselectedLabelColor: colorScheme.onSurfaceVariant.withValues(
+                    alpha: 0.8,
+                  ),
                   indicatorColor: colorScheme.primary,
                   indicatorWeight: 3,
                   indicatorSize: TabBarIndicatorSize.tab,
@@ -348,14 +352,19 @@ class _RepresentativesTab extends ConsumerWidget {
         if (data.items.isEmpty) {
           return Center(
             child: Text(
-              lang == 'bn' ? 'কোনো প্রতিনিধি পাওয়া যায়নি' : 'No representatives found',
+              lang == 'bn'
+                  ? 'কোনো প্রতিনিধি পাওয়া যায়নি'
+                  : 'No representatives found',
             ),
           );
         }
         return NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
-            if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
-              ref.read(paginatedSalesPersonnelProvider.notifier).fetchNextPage();
+            if (scrollInfo.metrics.pixels >=
+                scrollInfo.metrics.maxScrollExtent - 200) {
+              ref
+                  .read(paginatedSalesPersonnelProvider.notifier)
+                  .fetchNextPage();
             }
             return false;
           },
@@ -401,13 +410,16 @@ class _VeterinariansTab extends ConsumerWidget {
         if (data.items.isEmpty) {
           return Center(
             child: Text(
-              lang == 'bn' ? 'কোনো ভেটেরিনারিয়ান পাওয়া যায়নি' : 'No veterinarians found',
+              lang == 'bn'
+                  ? 'কোনো ভেটেরিনারিয়ান পাওয়া যায়নি'
+                  : 'No veterinarians found',
             ),
           );
         }
         return NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
-            if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+            if (scrollInfo.metrics.pixels >=
+                scrollInfo.metrics.maxScrollExtent - 200) {
               ref.read(paginatedVetDoctorsProvider.notifier).fetchNextPage();
             }
             return false;
@@ -444,7 +456,10 @@ class _VeterinariansTab extends ConsumerWidget {
 class _SalesPersonnelCard extends ConsumerWidget {
   final SalesPersonnelWithAreas personnelWithAreas;
   final String lang;
-  const _SalesPersonnelCard({required this.personnelWithAreas, required this.lang});
+  const _SalesPersonnelCard({
+    required this.personnelWithAreas,
+    required this.lang,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -459,9 +474,10 @@ class _SalesPersonnelCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: colorScheme.outlineVariant.withValues(
-            alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.65,
+            alpha: Theme.of(context).brightness == Brightness.dark
+                ? 0.45
+                : 0.65,
           ),
-          width: 1,
         ),
       ),
       child: Column(
@@ -471,7 +487,8 @@ class _SalesPersonnelCard extends ConsumerWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (personnel.photoUrl != null && personnel.photoUrl!.isNotEmpty)
+                if (personnel.photoUrl != null &&
+                    personnel.photoUrl!.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
                     child: ClipOval(
@@ -502,12 +519,16 @@ class _SalesPersonnelCard extends ConsumerWidget {
                           text: designation,
                           query: query,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
                             fontSize: 13,
                           ),
                         ),
                       const SizedBox(height: 8),
-                      if (personnelWithAreas.regions.isNotEmpty || personnelWithAreas.areas.isNotEmpty || personnelWithAreas.bases.isNotEmpty)
+                      if (personnelWithAreas.regions.isNotEmpty ||
+                          personnelWithAreas.areas.isNotEmpty ||
+                          personnelWithAreas.bases.isNotEmpty)
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -516,7 +537,10 @@ class _SalesPersonnelCard extends ConsumerWidget {
                               child: Icon(
                                 Icons.location_on,
                                 size: 14,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant
+                                    .withValues(alpha: 0.6),
                               ),
                             ),
                             const SizedBox(width: 4),
@@ -536,7 +560,8 @@ class _SalesPersonnelCard extends ConsumerWidget {
                             ),
                           ],
                         ),
-                      if (personnel.mobile case final mobile? when mobile.isNotEmpty) ...[
+                      if (personnel.mobile case final mobile?
+                          when mobile.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         HighlightText(
                           text: mobile,
@@ -565,7 +590,10 @@ class _SalesPersonnelCard extends ConsumerWidget {
                   onPressed: () async {
                     final rawMobile = personnel.mobile;
                     if (rawMobile != null && rawMobile.trim().isNotEmpty) {
-                      final cleanMobile = rawMobile.replaceAll(RegExp(r'[^\d+]'), '');
+                      final cleanMobile = rawMobile.replaceAll(
+                        RegExp(r'[^\d+]'),
+                        '',
+                      );
                       final Uri uri = Uri.parse('tel:$cleanMobile');
                       try {
                         if (await canLaunchUrl(uri)) {
@@ -621,7 +649,10 @@ class _SalesPersonnelCard extends ConsumerWidget {
                 child: TextButton.icon(
                   onPressed: () async {
                     try {
-                      final fullName = personnel.nameEn.resolve(personnel.nameBn, lang);
+                      final fullName = personnel.nameEn.resolve(
+                        personnel.nameBn,
+                        lang,
+                      );
                       await _saveContactToPhone(
                         fullName: fullName,
                         mobile: personnel.mobile,
@@ -630,9 +661,9 @@ class _SalesPersonnelCard extends ConsumerWidget {
                       );
                     } catch (e) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error: $e')),
-                        );
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text('Error: $e')));
                       }
                     }
                   },
@@ -674,9 +705,10 @@ class _VetDoctorCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: colorScheme.outlineVariant.withValues(
-            alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.65,
+            alpha: Theme.of(context).brightness == Brightness.dark
+                ? 0.45
+                : 0.65,
           ),
-          width: 1,
         ),
       ),
       child: Column(
@@ -712,26 +744,34 @@ class _VetDoctorCard extends ConsumerWidget {
                           fontSize: 17,
                         ),
                       ),
-                      if (doctor.qualification case final qualification? when qualification.isNotEmpty)
+                      if (doctor.qualification case final qualification?
+                          when qualification.isNotEmpty)
                         HighlightText(
                           text: qualification,
                           query: query,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
                             fontSize: 13,
                           ),
                         ),
-                      if (doctor.specialization case final specialization? when specialization.isNotEmpty)
+                      if (doctor.specialization case final specialization?
+                          when specialization.isNotEmpty)
                         HighlightText(
                           text: specialization,
                           query: query,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
                             fontSize: 13,
                           ),
                         ),
                       const SizedBox(height: 8),
-                      if (doctorWithAreas.regions.isNotEmpty || doctorWithAreas.areas.isNotEmpty || doctorWithAreas.bases.isNotEmpty)
+                      if (doctorWithAreas.regions.isNotEmpty ||
+                          doctorWithAreas.areas.isNotEmpty ||
+                          doctorWithAreas.bases.isNotEmpty)
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -763,7 +803,8 @@ class _VetDoctorCard extends ConsumerWidget {
                             ),
                           ],
                         ),
-                      if (doctor.mobile case final mobile? when mobile.isNotEmpty) ...[
+                      if (doctor.mobile case final mobile?
+                          when mobile.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         HighlightText(
                           text: mobile,
@@ -777,10 +818,7 @@ class _VetDoctorCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-                FavoriteButton(
-                  refId: doctor.id,
-                  type: FavoriteType.vetDoctor,
-                ),
+                FavoriteButton(refId: doctor.id, type: FavoriteType.vetDoctor),
               ],
             ),
           ),
@@ -792,8 +830,10 @@ class _VetDoctorCard extends ConsumerWidget {
                   onPressed: () async {
                     final rawMobile = doctor.mobile;
                     if (rawMobile != null && rawMobile.trim().isNotEmpty) {
-                      final cleanMobile =
-                          rawMobile.replaceAll(RegExp(r'[^\d+]'), '');
+                      final cleanMobile = rawMobile.replaceAll(
+                        RegExp(r'[^\d+]'),
+                        '',
+                      );
                       final Uri uri = Uri.parse('tel:$cleanMobile');
                       try {
                         if (await canLaunchUrl(uri)) {
@@ -849,7 +889,10 @@ class _VetDoctorCard extends ConsumerWidget {
                 child: TextButton.icon(
                   onPressed: () async {
                     try {
-                      final fullName = doctor.nameEn.resolve(doctor.nameBn, lang);
+                      final fullName = doctor.nameEn.resolve(
+                        doctor.nameBn,
+                        lang,
+                      );
                       await _saveContactToPhone(
                         fullName: fullName,
                         mobile: doctor.mobile,
@@ -858,9 +901,9 @@ class _VetDoctorCard extends ConsumerWidget {
                       );
                     } catch (e) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error: $e')),
-                        );
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text('Error: $e')));
                       }
                     }
                   },

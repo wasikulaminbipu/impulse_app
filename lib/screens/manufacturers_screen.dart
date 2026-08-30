@@ -1,15 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/products_provider.dart';
-
-
 import 'package:impulse_app/screens/manufacturer_details_screen.dart';
-import 'package:impulse_app/widgets/paginated_list_scaffold.dart';
 import 'package:impulse_app/widgets/animated_list_item.dart';
 import 'package:impulse_app/widgets/app_drawer.dart';
 import 'package:impulse_app/widgets/asset_fallback_image.dart';
+import 'package:impulse_app/widgets/paginated_list_scaffold.dart';
 
 class ManufacturersScreen extends ConsumerWidget {
   const ManufacturersScreen({super.key});
@@ -26,9 +24,8 @@ class ManufacturersScreen extends ConsumerWidget {
           ? 'প্রস্তুতকারক খুঁজুন...'
           : 'Search manufacturers...',
       provider: paginatedManufacturersProvider,
-      onSearchChanged: (val) => ref
-          .read(manufacturersSearchQueryProvider.notifier)
-          .updateQuery(val),
+      onSearchChanged: (val) =>
+          ref.read(manufacturersSearchQueryProvider.notifier).updateQuery(val),
       fetchNextPage: () =>
           ref.read(paginatedManufacturersProvider.notifier).fetchNextPage(),
       emptyWidget: Center(
@@ -79,10 +76,7 @@ class _ManufacturerCard extends StatelessWidget {
   final Manufacturer manufacturer;
   final String lang;
 
-  const _ManufacturerCard({
-    required this.manufacturer,
-    required this.lang,
-  });
+  const _ManufacturerCard({required this.manufacturer, required this.lang});
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -104,14 +98,17 @@ class _ManufacturerCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: colorScheme.outlineVariant.withValues(
-            alpha: Theme.of(context).brightness == Brightness.dark ? 0.45 : 0.65,
+            alpha: Theme.of(context).brightness == Brightness.dark
+                ? 0.45
+                : 0.65,
           ),
-          width: 1,
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(
-              alpha: Theme.of(context).brightness == Brightness.dark ? 0.25 : 0.06,
+              alpha: Theme.of(context).brightness == Brightness.dark
+                  ? 0.25
+                  : 0.06,
             ),
             blurRadius: 12,
             offset: const Offset(0, 4),
@@ -161,7 +158,9 @@ class _ManufacturerCard extends StatelessWidget {
                               Icon(
                                 Icons.location_on_outlined,
                                 size: 15,
-                                color: colorScheme.primary.withValues(alpha: 0.8),
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.8,
+                                ),
                               ),
                               const SizedBox(width: 5),
                               Expanded(
@@ -169,7 +168,9 @@ class _ManufacturerCard extends StatelessWidget {
                                   address,
                                   style: TextStyle(
                                     fontSize: 12.5,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -186,7 +187,9 @@ class _ManufacturerCard extends StatelessWidget {
                               Icon(
                                 Icons.public,
                                 size: 15,
-                                color: colorScheme.primary.withValues(alpha: 0.8),
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.8,
+                                ),
                               ),
                               const SizedBox(width: 5),
                               Expanded(
@@ -194,7 +197,9 @@ class _ManufacturerCard extends StatelessWidget {
                                   '${lang == 'bn' ? 'উৎপত্তি দেশ' : 'Origin'}: $country',
                                   style: TextStyle(
                                     fontSize: 12.5,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -217,7 +222,7 @@ class _ManufacturerCard extends StatelessWidget {
 
   Widget _buildLogoImage(ColorScheme colorScheme) {
     return AssetFallbackImage(
-      imagePath: manufacturer.logoUrl?.isNotEmpty == true
+      imagePath: manufacturer.logoUrl?.isNotEmpty ?? false
           ? 'assets/manufacturers_logo/${manufacturer.logoUrl}'
           : null,
       width: 100,

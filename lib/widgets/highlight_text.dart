@@ -23,11 +23,16 @@ class HighlightText extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final defaultTextStyle = DefaultTextStyle.of(context).style;
-    final effectiveStyle = defaultTextStyle.merge(style ?? theme.textTheme.bodyMedium);
+    final effectiveStyle = defaultTextStyle.merge(
+      style ?? theme.textTheme.bodyMedium,
+    );
 
-    final defaultHighlightStyle = highlightStyle ??
+    final defaultHighlightStyle =
+        highlightStyle ??
         effectiveStyle.copyWith(
-          backgroundColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.7),
+          backgroundColor: theme.colorScheme.primaryContainer.withValues(
+            alpha: 0.7,
+          ),
           color: theme.colorScheme.onPrimaryContainer,
           fontWeight: FontWeight.bold,
         );
@@ -58,7 +63,7 @@ class HighlightText extends StatelessWidget {
       );
     }
 
-    final patternString = queryTokens.map((t) => RegExp.escape(t)).join('|');
+    final patternString = queryTokens.map(RegExp.escape).join('|');
     if (patternString.isEmpty) {
       return Text(
         rawText,
@@ -68,40 +73,37 @@ class HighlightText extends StatelessWidget {
       );
     }
 
-    final pattern = RegExp(
-      patternString,
-      caseSensitive: false,
-    );
+    final pattern = RegExp(patternString, caseSensitive: false);
 
     final spans = <TextSpan>[];
     int start = 0;
 
     for (final match in pattern.allMatches(rawText)) {
       if (match.start > start) {
-        spans.add(TextSpan(
-          text: rawText.substring(start, match.start),
-          style: effectiveStyle,
-        ));
+        spans.add(
+          TextSpan(
+            text: rawText.substring(start, match.start),
+            style: effectiveStyle,
+          ),
+        );
       }
-      spans.add(TextSpan(
-        text: rawText.substring(match.start, match.end),
-        style: defaultHighlightStyle,
-      ));
+      spans.add(
+        TextSpan(
+          text: rawText.substring(match.start, match.end),
+          style: defaultHighlightStyle,
+        ),
+      );
       start = match.end;
     }
 
     if (start < rawText.length) {
-      spans.add(TextSpan(
-        text: rawText.substring(start),
-        style: effectiveStyle,
-      ));
+      spans.add(
+        TextSpan(text: rawText.substring(start), style: effectiveStyle),
+      );
     }
 
     return Text.rich(
-      TextSpan(
-        style: effectiveStyle,
-        children: spans,
-      ),
+      TextSpan(style: effectiveStyle, children: spans),
       maxLines: maxLines,
       overflow: overflow,
     );

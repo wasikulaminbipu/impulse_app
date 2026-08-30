@@ -1,13 +1,13 @@
-﻿import 'dart:io';
+import 'dart:io';
+
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:impulse_app/data/app_databases.dart';
 import 'package:impulse_app/data/app_maintenance_dao.dart';
 import 'package:impulse_app/data/distributor_dao.dart';
-import 'package:impulse_app/data/product_dao.dart';
 import 'package:impulse_app/data/lookup_dao.dart';
+import 'package:impulse_app/data/product_dao.dart';
 import 'package:impulse_app/models/app_maintenance.dart';
-
-import 'package:impulse_app/data/app_databases.dart';
 
 void main() {
   group('Database Tests', () {
@@ -20,11 +20,13 @@ void main() {
 
       try {
         await db.customSelect('SELECT 1').getSingle();
-        final products = await dao.getAllLight(activeOnly: true);
+        final products = await dao.getAllLight();
         final tgs = await LookupDao(db).getTargetGroups();
         for (final tg in tgs) {
           // ignore: avoid_print
-          print('TargetGroup id=${tg.id}, nameEn=${tg.nameEn}, iconName=${tg.iconName}');
+          print(
+            'TargetGroup id=${tg.id}, nameEn=${tg.nameEn}, iconName=${tg.iconName}',
+          );
         }
 
         final product = await dao.getById(products.first.id);
@@ -59,9 +61,11 @@ void main() {
         await setupProductsFts(db.executor);
 
         // Verify db_meta flag
-        final metaRows = await db.customSelect(
-          "SELECT value FROM db_meta WHERE key = 'fts_ready_products_fts'",
-        ).get();
+        final metaRows = await db
+            .customSelect(
+              "SELECT value FROM db_meta WHERE key = 'fts_ready_products_fts'",
+            )
+            .get();
         expect(metaRows.first.read<String>('value'), equals('1'));
 
         // Search with special characters (should not crash FTS5)
@@ -81,7 +85,8 @@ void main() {
 
           // 4. Test category update trigger propagation to products_fts
           final catId = categories.first.id;
-          final updatedCatName = 'TestCat_${DateTime.now().millisecondsSinceEpoch}';
+          final updatedCatName =
+              'TestCat_${DateTime.now().millisecondsSinceEpoch}';
           await db.customStatement(
             'UPDATE categories SET name_en = ? WHERE id = ?',
             [updatedCatName, catId],
@@ -116,9 +121,11 @@ void main() {
         await setupDistributorsFts(db.executor);
 
         // Verify db_meta flags
-        final metaRows = await db.customSelect(
-          "SELECT value FROM db_meta WHERE key = 'fts_ready_distributors_fts'",
-        ).get();
+        final metaRows = await db
+            .customSelect(
+              "SELECT value FROM db_meta WHERE key = 'fts_ready_distributors_fts'",
+            )
+            .get();
         expect(metaRows.first.read<String>('value'), equals('1'));
 
         final distResults = await distDao.searchDistributors('dhaka: (test)');

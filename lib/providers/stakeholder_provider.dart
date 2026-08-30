@@ -1,14 +1,14 @@
-﻿import 'dart:async';
-import 'package:impulse_app/models/distributor.dart';
-import 'package:impulse_app/providers/database_provider.dart';
+import 'dart:async';
 
-import 'package:impulse_app/providers/app_maintenance_provider.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:impulse_app/data/distributor_dao.dart';
-import 'package:impulse_app/providers/paginated_state.dart';
-import 'package:impulse_app/providers/debounced_query.dart';
 import 'package:impulse_app/data/fts_utils.dart';
+import 'package:impulse_app/models/distributor.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/database_provider.dart';
+import 'package:impulse_app/providers/debounced_query.dart';
+import 'package:impulse_app/providers/paginated_state.dart';
 import 'package:impulse_app/utils/search_analytics.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'stakeholder_provider.g.dart';
 
@@ -49,7 +49,8 @@ Future<List<Upazila>> upazilasList(Ref ref, {int? districtId}) async {
 }
 
 @riverpod
-class DistributorSearchQuery extends _$DistributorSearchQuery with DebouncedQuery {
+class DistributorSearchQuery extends _$DistributorSearchQuery
+    with DebouncedQuery {
   @override
   String build() {
     ref.onDispose(cancelDebounce);
@@ -90,14 +91,14 @@ class PaginatedDistributors extends _$PaginatedDistributors {
     final dao = await ref.watch(distributorDaoProvider.future);
     final query = ref.watch(distributorSearchQueryProvider);
     final favs = await ref.read(distributorFavoritesProvider.future);
-    
+
     final items = await dao.getFilteredDistributors(
       query: query,
       limit: _pageSize,
       offset: 0,
       favoriteIds: favs.toSet(),
     );
-    
+
     return PaginatedState<DistributorWithLocation>(
       items: items,
       hasMore: items.length == _pageSize,
@@ -106,7 +107,9 @@ class PaginatedDistributors extends _$PaginatedDistributors {
 
   Future<void> fetchNextPage() async {
     final currentState = state.value;
-    if (currentState == null || !currentState.hasMore || currentState.isLoadingMore) {
+    if (currentState == null ||
+        !currentState.hasMore ||
+        currentState.isLoadingMore) {
       return;
     }
 
@@ -115,21 +118,20 @@ class PaginatedDistributors extends _$PaginatedDistributors {
     final dao = await ref.read(distributorDaoProvider.future);
     final query = ref.read(distributorSearchQueryProvider);
     final favs = await ref.read(distributorFavoritesProvider.future);
-    
+
     final nextChunk = await dao.getFilteredDistributors(
       query: query,
       limit: _pageSize,
       offset: currentState.items.length,
       favoriteIds: favs.toSet(),
     );
-    
+
     final newItems = [...currentState.items, ...nextChunk];
 
     state = AsyncValue.data(
       PaginatedState<DistributorWithLocation>(
         items: newItems,
         hasMore: nextChunk.length == _pageSize,
-        isLoadingMore: false,
       ),
     );
   }
@@ -147,7 +149,7 @@ class PaginatedVetDoctors extends _$PaginatedVetDoctors {
     final regionFilter = ref.watch(selectedContactRegionFilterProvider);
     final areaFilter = ref.watch(selectedContactAreaFilterProvider);
     final favs = await ref.read(vetDoctorFavoritesProvider.future);
-    
+
     final combinedTokens = [
       if (textQuery.trim().isNotEmpty) textQuery.trim(),
       if (regionFilter != null && regionFilter.isNotEmpty) regionFilter,
@@ -169,7 +171,7 @@ class PaginatedVetDoctors extends _$PaginatedVetDoctors {
       executionTimeMs: stopwatch.elapsedMilliseconds,
       categoryOrScope: 'Veterinarians',
     );
-    
+
     return PaginatedState<VetDoctorWithAreas>(
       items: items,
       hasMore: items.length == _pageSize,
@@ -178,7 +180,9 @@ class PaginatedVetDoctors extends _$PaginatedVetDoctors {
 
   Future<void> fetchNextPage() async {
     final currentState = state.value;
-    if (currentState == null || !currentState.hasMore || currentState.isLoadingMore) {
+    if (currentState == null ||
+        !currentState.hasMore ||
+        currentState.isLoadingMore) {
       return;
     }
 
@@ -187,28 +191,28 @@ class PaginatedVetDoctors extends _$PaginatedVetDoctors {
     final dao = await ref.read(vetDoctorDaoProvider.future);
     final query = ref.read(vetDoctorsSearchQueryProvider);
     final favs = await ref.read(vetDoctorFavoritesProvider.future);
-    
+
     final nextChunk = await dao.getFilteredVetDoctors(
       query: query,
       limit: _pageSize,
       offset: currentState.items.length,
       favoriteIds: favs.toSet(),
     );
-    
+
     final newItems = [...currentState.items, ...nextChunk];
 
     state = AsyncValue.data(
       PaginatedState<VetDoctorWithAreas>(
         items: newItems,
         hasMore: nextChunk.length == _pageSize,
-        isLoadingMore: false,
       ),
     );
   }
 }
 
 @riverpod
-class VetDoctorsSearchQuery extends _$VetDoctorsSearchQuery with DebouncedQuery {
+class VetDoctorsSearchQuery extends _$VetDoctorsSearchQuery
+    with DebouncedQuery {
   @override
   String build() {
     ref.onDispose(cancelDebounce);
@@ -239,7 +243,7 @@ class PaginatedSalesPersonnel extends _$PaginatedSalesPersonnel {
       if (areaFilter != null && areaFilter.isNotEmpty) areaFilter,
     ];
     final effectiveQuery = combinedTokens.join(' ');
-    
+
     final items = await dao.getFilteredSalesPersonnel(
       query: effectiveQuery,
       limit: _pageSize,
@@ -254,7 +258,7 @@ class PaginatedSalesPersonnel extends _$PaginatedSalesPersonnel {
       executionTimeMs: stopwatch.elapsedMilliseconds,
       categoryOrScope: 'Representatives',
     );
-    
+
     return PaginatedState<SalesPersonnelWithAreas>(
       items: items,
       hasMore: items.length == _pageSize,
@@ -263,7 +267,9 @@ class PaginatedSalesPersonnel extends _$PaginatedSalesPersonnel {
 
   Future<void> fetchNextPage() async {
     final currentState = state.value;
-    if (currentState == null || !currentState.hasMore || currentState.isLoadingMore) {
+    if (currentState == null ||
+        !currentState.hasMore ||
+        currentState.isLoadingMore) {
       return;
     }
 
@@ -272,28 +278,28 @@ class PaginatedSalesPersonnel extends _$PaginatedSalesPersonnel {
     final dao = await ref.read(salesPersonnelDaoProvider.future);
     final query = ref.read(salesPersonnelSearchQueryProvider);
     final favs = await ref.read(salesPersonnelFavoritesProvider.future);
-    
+
     final nextChunk = await dao.getFilteredSalesPersonnel(
       query: query,
       limit: _pageSize,
       offset: currentState.items.length,
       favoriteIds: favs.toSet(),
     );
-    
+
     final newItems = [...currentState.items, ...nextChunk];
 
     state = AsyncValue.data(
       PaginatedState<SalesPersonnelWithAreas>(
         items: newItems,
         hasMore: nextChunk.length == _pageSize,
-        isLoadingMore: false,
       ),
     );
   }
 }
 
 @riverpod
-class SalesPersonnelSearchQuery extends _$SalesPersonnelSearchQuery with DebouncedQuery {
+class SalesPersonnelSearchQuery extends _$SalesPersonnelSearchQuery
+    with DebouncedQuery {
   @override
   String build() {
     ref.onDispose(cancelDebounce);
@@ -354,11 +360,21 @@ Future<AutocompleteTrie> vetDoctorSearchTrie(Ref ref) async {
 
   for (final d in allDoctors) {
     trie.insert(d.doctor.nameEn);
-    if (d.doctor.nameBn != null) trie.insert(d.doctor.nameBn!);
-    if (d.doctor.qualification != null) trie.insert(d.doctor.qualification!);
-    if (d.doctor.specialization != null) trie.insert(d.doctor.specialization!);
-    if (d.doctor.clinicOrHospitalNameEn != null) trie.insert(d.doctor.clinicOrHospitalNameEn!);
-    if (d.doctor.clinicOrHospitalNameBn != null) trie.insert(d.doctor.clinicOrHospitalNameBn!);
+    if (d.doctor.nameBn != null) {
+      trie.insert(d.doctor.nameBn!);
+    }
+    if (d.doctor.qualification != null) {
+      trie.insert(d.doctor.qualification!);
+    }
+    if (d.doctor.specialization != null) {
+      trie.insert(d.doctor.specialization!);
+    }
+    if (d.doctor.clinicOrHospitalNameEn != null) {
+      trie.insert(d.doctor.clinicOrHospitalNameEn!);
+    }
+    if (d.doctor.clinicOrHospitalNameBn != null) {
+      trie.insert(d.doctor.clinicOrHospitalNameBn!);
+    }
 
     for (final r in d.regions) {
       trie.insert(r.nameEn);
@@ -388,4 +404,3 @@ Future<List<String>> vetDoctorSearchTrieSuggestions(Ref ref) async {
   final trie = await ref.watch(vetDoctorSearchTrieProvider.future);
   return trie.getSuggestions(query, maxResults: 8);
 }
-

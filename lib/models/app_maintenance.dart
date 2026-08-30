@@ -17,10 +17,8 @@ enum FavoriteType {
 
 @freezed
 abstract class FavoriteEntry with _$FavoriteEntry {
-  const factory FavoriteEntry({
-    required int id,
-    required DateTime addedAt,
-  }) = _FavoriteEntry;
+  const factory FavoriteEntry({required int id, required DateTime addedAt}) =
+      _FavoriteEntry;
 
   const FavoriteEntry._();
 
@@ -34,10 +32,7 @@ abstract class FavoriteEntry with _$FavoriteEntry {
 
 @freezed
 abstract class AppSetting with _$AppSetting {
-  const factory AppSetting({
-    required String key,
-    String? value,
-  }) = _AppSetting;
+  const factory AppSetting({required String key, String? value}) = _AppSetting;
 
   const AppSetting._();
 
@@ -50,4 +45,3 @@ abstract class AppSetting with _$AppSetting {
 
   Map<String, dynamic> toMap() => {'key': key, 'value': value};
 }
-

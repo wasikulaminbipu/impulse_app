@@ -1,9 +1,9 @@
-﻿import 'dart:io';
-import 'package:flutter/foundation.dart';
-import 'package:drift/native.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'dart:io';
 
+import 'package:drift/native.dart';
+import 'package:flutter/foundation.dart';
 import 'package:impulse_app/data/app_databases.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'database_provider.g.dart';
 
@@ -17,7 +17,7 @@ Future<ProductsDb> productsDatabase(Ref ref) async {
   final db = await copyAndOpenAssetDb(
     'products.db',
     'products.db',
-    (executor) => ProductsDb(executor),
+    ProductsDb.new,
     setupProductsFts,
   );
   ref.onDispose(db.close);
@@ -29,7 +29,7 @@ Future<DistributorsDb> distributorsDatabase(Ref ref) async {
   final db = await copyAndOpenAssetDb(
     'distributors.db',
     'distributors.db',
-    (executor) => DistributorsDb(executor),
+    DistributorsDb.new,
     setupDistributorsFts,
   );
   ref.onDispose(db.close);
@@ -46,7 +46,9 @@ Future<AppMaintenanceDb> appMaintenanceDatabase(Ref ref) async {
       try {
         rawDb.execute('PRAGMA journal_mode=WAL;');
         rawDb.execute('PRAGMA foreign_keys=ON;');
-      } catch (e, st) { debugPrint('AppMaintenance DB journal setup error: $e\n$st'); }
+      } catch (e, st) {
+        debugPrint('AppMaintenance DB journal setup error: $e\n$st');
+      }
     },
   );
 

@@ -16,8 +16,9 @@ class ProductShareService {
     double pixelRatio = 3.0,
   }) async {
     try {
-      final boundary = repaintBoundaryKey.currentContext?.findRenderObject()
-          as RenderRepaintBoundary?;
+      final boundary =
+          repaintBoundaryKey.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?;
 
       if (boundary == null) {
         throw Exception('Unable to locate render boundary for sharing');
@@ -30,8 +31,9 @@ class ProductShareService {
 
       // Capture image with given pixel ratio (defaults to high resolution 3.0)
       final ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
-      final ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
+      final ByteData? byteData = await image.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
 
       if (byteData == null) {
         throw Exception('Failed to generate image byte data');

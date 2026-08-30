@@ -6,7 +6,8 @@ class PrivacyPolicyDialog extends StatelessWidget {
 
   static const String privacyPolicyUrl =
       'https://github.com/wasikulaminbipu/impulse_app/blob/main/PRIVACY_POLICY.md';
-  static const String dataDeletionUrl = 'https://www.impulseagrisciencelimited.com/delete-account';
+  static const String dataDeletionUrl =
+      'https://www.impulseagrisciencelimited.com/delete-account';
 
   Future<void> _launchUrl(String urlString) async {
     final Uri url = Uri.parse(urlString);
@@ -27,11 +28,7 @@ class PrivacyPolicyDialog extends StatelessWidget {
           Icon(Icons.privacy_tip_outlined, color: colorScheme.primary),
           const SizedBox(width: 10),
           const Expanded(
-            child: Text(
-              'Privacy Policy & Data',
-              softWrap: true,
-              maxLines: 2,
-            ),
+            child: Text('Privacy Policy & Data', softWrap: true, maxLines: 2),
           ),
         ],
       ),
@@ -42,7 +39,9 @@ class PrivacyPolicyDialog extends StatelessWidget {
           children: [
             Text(
               'Impulse respects your privacy.',
-              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             const Text(
@@ -56,8 +55,15 @@ class PrivacyPolicyDialog extends StatelessWidget {
             const SizedBox(height: 8),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: Icon(Icons.description_outlined, color: colorScheme.primary, size: 20),
-              title: const Text('Read Full Privacy Policy', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              leading: Icon(
+                Icons.description_outlined,
+                color: colorScheme.primary,
+                size: 20,
+              ),
+              title: const Text(
+                'Read Full Privacy Policy',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              ),
               trailing: const Icon(Icons.open_in_new_rounded, size: 16),
               onTap: () => _launchUrl(privacyPolicyUrl),
             ),
@@ -65,7 +71,10 @@ class PrivacyPolicyDialog extends StatelessWidget {
               padding: const EdgeInsets.only(top: 4.0),
               child: Text(
                 'Note: Impulse does not require user accounts. Clearing app data or uninstalling removes all local preferences.',
-                style: TextStyle(fontSize: 11, color: colorScheme.onSurfaceVariant),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
           ],

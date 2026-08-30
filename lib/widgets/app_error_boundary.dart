@@ -1,11 +1,16 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:impulse_app/core/errors/app_error_handler.dart';
 
 /// Widget error boundary that catches rendering/build exceptions in its child tree
 /// and presents a safe fallback UI without crashing the rest of the application.
 class AppErrorBoundary extends StatefulWidget {
   final Widget child;
-  final Widget Function(BuildContext context, Object error, StackTrace? stackTrace)? fallbackBuilder;
+  final Widget Function(
+    BuildContext context,
+    Object error,
+    StackTrace? stackTrace,
+  )?
+  fallbackBuilder;
 
   const AppErrorBoundary({
     super.key,
@@ -39,10 +44,7 @@ class _AppErrorBoundaryState extends State<AppErrorBoundary> {
       if (widget.fallbackBuilder != null) {
         return widget.fallbackBuilder!(context, _error!, _stackTrace);
       }
-      return LocalErrorFallbackCard(
-        error: _error!,
-        onRetry: resetError,
-      );
+      return LocalErrorFallbackCard(error: _error!, onRetry: resetError);
     }
 
     return _ErrorBoundaryHandler(
@@ -66,10 +68,7 @@ class _ErrorBoundaryHandler extends StatelessWidget {
   final Widget child;
   final void Function(Object error, StackTrace stackTrace) onError;
 
-  const _ErrorBoundaryHandler({
-    required this.child,
-    required this.onError,
-  });
+  const _ErrorBoundaryHandler({required this.child, required this.onError});
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +76,7 @@ class _ErrorBoundaryHandler extends StatelessWidget {
       return child;
     } catch (error, stackTrace) {
       onError(error, stackTrace);
-      return LocalErrorFallbackCard(
-        error: error,
-      );
+      return LocalErrorFallbackCard(error: error);
     }
   }
 }
@@ -89,11 +86,7 @@ class LocalErrorFallbackCard extends StatelessWidget {
   final Object error;
   final VoidCallback? onRetry;
 
-  const LocalErrorFallbackCard({
-    super.key,
-    required this.error,
-    this.onRetry,
-  });
+  const LocalErrorFallbackCard({super.key, required this.error, this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -137,10 +130,7 @@ class LocalErrorFallbackCard extends StatelessWidget {
           ),
           if (onRetry != null) ...[
             const SizedBox(height: 12),
-            FilledButton.tonal(
-              onPressed: onRetry,
-              child: const Text('Retry'),
-            ),
+            FilledButton.tonal(onPressed: onRetry, child: const Text('Retry')),
           ],
         ],
       ),
@@ -152,10 +142,7 @@ class LocalErrorFallbackCard extends StatelessWidget {
 class GlobalErrorFallbackWidget extends StatelessWidget {
   final FlutterErrorDetails errorDetails;
 
-  const GlobalErrorFallbackWidget({
-    super.key,
-    required this.errorDetails,
-  });
+  const GlobalErrorFallbackWidget({super.key, required this.errorDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +154,6 @@ class GlobalErrorFallbackWidget extends StatelessWidget {
             padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   padding: const EdgeInsets.all(16),
@@ -194,10 +180,7 @@ class GlobalErrorFallbackWidget extends StatelessWidget {
                 const SizedBox(height: 8),
                 const Text(
                   'The application recovered safely and prevented a crash.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white70,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.white70),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),

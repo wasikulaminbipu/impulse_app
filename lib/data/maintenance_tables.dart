@@ -2,7 +2,8 @@ import 'package:drift/drift.dart';
 
 class FavoriteProducts extends Table {
   IntColumn get productId => integer()();
-  TextColumn get addedAt => text().clientDefault(() => DateTime.now().toIso8601String())();
+  TextColumn get addedAt =>
+      text().clientDefault(() => DateTime.now().toIso8601String())();
 
   @override
   Set<Column> get primaryKey => {productId};
@@ -10,7 +11,8 @@ class FavoriteProducts extends Table {
 
 class FavoriteDistributors extends Table {
   IntColumn get distributorId => integer()();
-  TextColumn get addedAt => text().clientDefault(() => DateTime.now().toIso8601String())();
+  TextColumn get addedAt =>
+      text().clientDefault(() => DateTime.now().toIso8601String())();
 
   @override
   Set<Column> get primaryKey => {distributorId};
@@ -18,7 +20,8 @@ class FavoriteDistributors extends Table {
 
 class FavoriteSalesPersonnel extends Table {
   IntColumn get salesPersonnelId => integer()();
-  TextColumn get addedAt => text().clientDefault(() => DateTime.now().toIso8601String())();
+  TextColumn get addedAt =>
+      text().clientDefault(() => DateTime.now().toIso8601String())();
 
   @override
   Set<Column> get primaryKey => {salesPersonnelId};
@@ -26,7 +29,8 @@ class FavoriteSalesPersonnel extends Table {
 
 class FavoriteVetDoctors extends Table {
   IntColumn get vetDoctorId => integer()();
-  TextColumn get addedAt => text().clientDefault(() => DateTime.now().toIso8601String())();
+  TextColumn get addedAt =>
+      text().clientDefault(() => DateTime.now().toIso8601String())();
 
   @override
   Set<Column> get primaryKey => {vetDoctorId};

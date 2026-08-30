@@ -1,9 +1,9 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_app/models/product.dart';
-import 'package:impulse_app/widgets/product_card.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/widgets/product_card.dart';
 
 Widget createProductCardHarness({
   required Widget child,
@@ -11,25 +11,30 @@ Widget createProductCardHarness({
 }) {
   return UncontrolledProviderScope(
     container: container,
-    child: MaterialApp(
-      home: Scaffold(
-        body: child,
-      ),
-    ),
+    child: MaterialApp(home: Scaffold(body: child)),
   );
 }
 
 void main() {
-  final sampleProduct = ProductLabel(
+  const sampleProduct = ProductLabel(
     id: 1,
     titleEn: 'Amoxivet 50%',
     titleBn: 'অ্যামোক্সিভেট ৫০%',
     shortDescriptionEn: 'Broad spectrum antibiotic',
     shortDescriptionBn: 'ব্রড স্পেকট্রাম অ্যান্টিবায়োটিক',
     categoryId: 1,
-    category: const Category(id: 1, nameEn: 'Antibiotics'),
-    targetGroups: const [TargetGroup(id: 1, nameEn: 'Poultry', iconName: 'poultry')],
-    presentations: const [Presentation(id: 1, productId: 1, productTypeId: 1, contentTypeId: 1, size: '100g', mrp: 450.0)],
+    category: Category(id: 1, nameEn: 'Antibiotics'),
+    targetGroups: [TargetGroup(id: 1, nameEn: 'Poultry', iconName: 'poultry')],
+    presentations: [
+      Presentation(
+        id: 1,
+        productId: 1,
+        productTypeId: 1,
+        contentTypeId: 1,
+        size: '100g',
+        mrp: 450.0,
+      ),
+    ],
   );
 
   group('ProductCard Widget Tests', () {
@@ -47,11 +52,13 @@ void main() {
       container.dispose();
     });
 
-    testWidgets('Renders product title, description and presentation badge', (tester) async {
+    testWidgets('Renders product title, description and presentation badge', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         createProductCardHarness(
           container: container,
-          child: ProductCard(product: sampleProduct),
+          child: const ProductCard(product: sampleProduct),
         ),
       );
       await tester.pump();
@@ -65,10 +72,7 @@ void main() {
       await tester.pumpWidget(
         createProductCardHarness(
           container: container,
-          child: ProductCard(
-            product: sampleProduct,
-            lang: 'bn',
-          ),
+          child: const ProductCard(product: sampleProduct, lang: 'bn'),
         ),
       );
       await tester.pump();

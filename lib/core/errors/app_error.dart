@@ -7,11 +7,7 @@ abstract class AppException implements Exception {
   final Object? originalError;
   final StackTrace? stackTrace;
 
-  const AppException(
-    this.message, {
-    this.originalError,
-    this.stackTrace,
-  });
+  const AppException(this.message, {this.originalError, this.stackTrace});
 
   @override
   String toString() => '$runtimeType: $message';
@@ -28,11 +24,7 @@ class DatabaseException extends AppException {
 
 /// Errors occurring during UI rendering or widget tree lifecycle.
 class RenderException extends AppException {
-  const RenderException(
-    super.message, {
-    super.originalError,
-    super.stackTrace,
-  });
+  const RenderException(super.message, {super.originalError, super.stackTrace});
 }
 
 /// Errors arising from network or external I/O requests.

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/utils/bilingual_string.dart';
 import 'package:impulse_app/widgets/product_details/section_card.dart';
@@ -30,7 +30,7 @@ class CompositionSection extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 12.0),
               child: Text(
                 lang == 'bn'
-                    ? 'প্রতি ${basisBn?.isNotEmpty == true ? basisBn : basisEn} এ আছে:'
+                    ? 'প্রতি ${basisBn?.isNotEmpty ?? false ? basisBn : basisEn} এ আছে:'
                     : 'Each $basisEn contains:',
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
@@ -53,7 +53,9 @@ class CompositionSection extends StatelessWidget {
                   if (c.concentration != null)
                     Text(
                       c.concentration!,
-                      style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                 ],
               ),

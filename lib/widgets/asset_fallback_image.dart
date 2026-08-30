@@ -20,7 +20,7 @@ class AssetFallbackImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    Widget fallback = Container(
+    final Widget fallback = Container(
       width: width,
       height: height,
       color: colorScheme.primaryContainer,

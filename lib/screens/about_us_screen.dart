@@ -1,12 +1,12 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:impulse_app/constants/app_assets.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/widgets/glass_container.dart';
 import 'package:impulse_app/widgets/privacy_policy_dialog.dart';
 import 'package:impulse_app/widgets/tactile_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutUsScreen extends ConsumerWidget {
   const AboutUsScreen({super.key});
@@ -165,7 +165,9 @@ class AboutUsScreen extends ConsumerWidget {
                     height: 80,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer.withValues(alpha: 0.5),
+                      color: colorScheme.primaryContainer.withValues(
+                        alpha: 0.5,
+                      ),
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: colorScheme.primary.withValues(alpha: 0.2),
@@ -322,7 +324,7 @@ class AboutUsScreen extends ConsumerWidget {
                   Text(
                     isBn
                         ? 'স্থানীয় খামারিদের প্রকৃত সুফল পৌঁছে দিতে আমরা ইউরোপ ও আমেরিকার শীর্ষস্থানীয় উৎপাদকদের সাথে সরাসরি অংশীদারিত্ব গড়ে তুলেছি এবং পোল্ট্রি, গবাদি পশু ও মৎস্যচাষের জন্য নির্ভরযোগ্য সব সমাধান সরাসরি আমাদের বাজারে নিয়ে আসছি। গ্রাহকদের চাহিদার প্রতি আমরা সর্বদা সজাগ ও মনোযোগী; আর তাই, গবাদি পশুর স্বাস্থ্য সুরক্ষা এবং সারা দেশের খামারিদের জীবিকা নিরাপদ রাখার লক্ষ্যে আমরা সম্প্রতি নির্ভরযোগ্য ও উচ্চমানের টিকা (ভ্যাকসিন) সংগ্রহের কার্যক্রমও শুরু করেছি।'
-                        : 'To bring real value to local growers, we partner directly with top-tier producers across Europe and the Americas, bringing dependable poultry, cattle, and aquaculture solutions straight to our markets. We’re constantly listening to what our customers need, which is why we\'ve recently expanded into sourcing trusted, high-grade vaccines to keep livestock healthy and safeguard farm livelihoods nationwide.',
+                        : "To bring real value to local growers, we partner directly with top-tier producers across Europe and the Americas, bringing dependable poultry, cattle, and aquaculture solutions straight to our markets. We’re constantly listening to what our customers need, which is why we've recently expanded into sourcing trusted, high-grade vaccines to keep livestock healthy and safeguard farm livelihoods nationwide.",
                     textAlign: TextAlign.justify,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       height: 1.6,
@@ -348,7 +350,7 @@ class AboutUsScreen extends ConsumerWidget {
               child: Text(
                 isBn
                     ? 'বিশ্বমানের ওষুধ, নিউট্রিশনাল পণ্য, ফিড অ্যাডিটিভ এবং প্রয়োজনীয় টিকা সরবরাহের মাধ্যমে বাংলাদেশের কৃষি সম্প্রদায়কে ক্ষমতায়িত করা। আপসহীন গুণগতমান, নির্ভরযোগ্য সেবা এবং গবাদি পশুর স্বাস্থ্য ও উৎপাদনশীলতার প্রতি গভীর অঙ্গীকারের মাধ্যমে কৃষক ও ফিড উৎপাদনকারীদের সাথে অটুট আস্থা গড়ে তুলতে আমরা প্রতিশ্রুতিবদ্ধ।'
-                    : 'To empower Bangladesh\'s agricultural community by delivering world-class medicines, nutritional products, feed additives, and essential vaccines. We are dedicated to building absolute trust with farmers and feed producers through uncompromising quality, reliable service, and a deep commitment to the health and productivity of their livestock.',
+                    : "To empower Bangladesh's agricultural community by delivering world-class medicines, nutritional products, feed additives, and essential vaccines. We are dedicated to building absolute trust with farmers and feed producers through uncompromising quality, reliable service, and a deep commitment to the health and productivity of their livestock.",
                 textAlign: TextAlign.justify,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   height: 1.6,
@@ -484,8 +486,12 @@ class AboutUsScreen extends ConsumerWidget {
                   _buildContactListTile(
                     context,
                     icon: Icons.privacy_tip_outlined,
-                    title: isBn ? 'প্রাইভেসি পলিসি ও পলিসি তথ্য' : 'Privacy Policy & Terms',
-                    subtitle: isBn ? 'ডেটা নীতি দেখুন' : 'View Data & Privacy Details',
+                    title: isBn
+                        ? 'প্রাইভেসি পলিসি ও পলিসি তথ্য'
+                        : 'Privacy Policy & Terms',
+                    subtitle: isBn
+                        ? 'ডেটা নীতি দেখুন'
+                        : 'View Data & Privacy Details',
                     onTap: () {
                       HapticFeedback.selectionClick();
                       showDialog<void>(
@@ -519,7 +525,9 @@ class AboutUsScreen extends ConsumerWidget {
                         ? 'সর্বস্বত্ব সংরক্ষিত। সকল অধিকার সংরক্ষিত।'
                         : 'All Rights Reserved. Built with Flutter & Drift.',
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.7,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -556,7 +564,7 @@ class AboutUsScreen extends ConsumerWidget {
   Widget _buildJourneyTimelineItem(
     BuildContext context, {
     required ({String year, String title, String description, IconData icon})
-        item,
+    item,
     required bool isFirst,
     required bool isLast,
   }) {
@@ -578,16 +586,9 @@ class AboutUsScreen extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: colorScheme.primaryContainer.withValues(alpha: 0.7),
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: colorScheme.primary,
-                      width: 2,
-                    ),
+                    border: Border.all(color: colorScheme.primary, width: 2),
                   ),
-                  child: Icon(
-                    item.icon,
-                    size: 14,
-                    color: colorScheme.primary,
-                  ),
+                  child: Icon(item.icon, size: 14, color: colorScheme.primary),
                 ),
                 if (!isLast)
                   Expanded(
@@ -609,8 +610,10 @@ class AboutUsScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: colorScheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
@@ -718,9 +721,7 @@ class AboutUsScreen extends ConsumerWidget {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w600,
-              color: isPrimary
-                  ? colorScheme.primary
-                  : const Color(0xFF64748B),
+              color: isPrimary ? colorScheme.primary : const Color(0xFF64748B),
             ),
           ),
         ],
@@ -738,7 +739,6 @@ class AboutUsScreen extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
 
     return GlassContainer(
-      borderRadius: 16,
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -826,4 +826,3 @@ class AboutUsScreen extends ConsumerWidget {
     );
   }
 }
-

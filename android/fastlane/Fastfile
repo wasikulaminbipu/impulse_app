@@ -42,11 +42,18 @@ platform :android do
     )
   end
 
-  desc "Promote Beta track build to Production Track (100% rollout)"
-  lane :promote_beta do
+  desc "Promote Release Track (e.g. Beta -> Production or Internal -> Beta) with Configurable Rollout"
+  lane :promote do |options|
+    from_track = options[:from_track] || ENV['FROM_TRACK'] || 'beta'
+    to_track = options[:to_track] || ENV['TO_TRACK'] || 'production'
+    rollout = (options[:rollout] || ENV['ROLLOUT_FRACTION'] || '1.0').to_f
+
+    UI.message("Promoting release from #{from_track} to #{to_track} with #{rollout * 100}% rollout...")
+
     upload_to_play_store(
-      track: 'beta',
-      track_promote_to: 'production',
+      track: from_track,
+      track_promote_to: to_track,
+      user_fraction: (to_track == 'production' && rollout < 1.0) ? rollout : nil,
       skip_upload_apk: true,
       skip_upload_aab: true,
       changes_not_sent_for_review: true

@@ -18,23 +18,17 @@ class RollingCounterText extends StatelessWidget {
       duration: duration,
       transitionBuilder: (Widget child, Animation<double> animation) {
         return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0.0, 0.3),
-            end: Offset.zero,
-          ).animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-          ),
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+          position:
+              Tween<Offset>(
+                begin: const Offset(0.0, 0.3),
+                end: Offset.zero,
+              ).animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              ),
+          child: FadeTransition(opacity: animation, child: child),
         );
       },
-      child: Text(
-        value,
-        key: ValueKey<String>(value),
-        style: style,
-      ),
+      child: Text(value, key: ValueKey<String>(value), style: style),
     );
   }
 }

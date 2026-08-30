@@ -103,33 +103,37 @@ class GlassThemeExtension extends ThemeExtension<GlassThemeExtension> {
       blurSigma: blurSigma + (other.blurSigma - blurSigma) * t,
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
       borderColor: Color.lerp(borderColor, other.borderColor, t)!,
-      topSpecularColor: Color.lerp(topSpecularColor, other.topSpecularColor, t)!,
+      topSpecularColor: Color.lerp(
+        topSpecularColor,
+        other.topSpecularColor,
+        t,
+      )!,
     );
   }
 }
 
 class AppTheme {
-  static final _glassLight = const GlassThemeExtension(
+  static const _glassLight = GlassThemeExtension(
     blurSigma: 16.0,
     backgroundColor: Color(0x99FFFFFF),
     borderColor: Color(0x33000000),
     topSpecularColor: Color(0x66FFFFFF),
   );
 
-  static final _glassDark = const GlassThemeExtension(
+  static const _glassDark = GlassThemeExtension(
     blurSigma: 20.0,
     backgroundColor: Color(0x1F2B2930),
     borderColor: Color(0x26FFFFFF),
     topSpecularColor: Color(0x33FFFFFF),
   );
 
-  static final _categoryColors = CategoryColors(
-    feedAdditiveColor: const Color(0xFF00796B), // Premium Teal
-    vaccineColor: const Color(0xFF673AB7), // Premium Deep Purple
-    poultryColor: const Color(0xFFFF8F00), // Premium Amber/Orange
-    cattleColor: const Color(0xFF795548), // Premium Brown
-    aquaColor: const Color(0xFF1976D2), // Premium Blue
-    defaultCategoryColor: const Color(0xFF78909C),
+  static const _categoryColors = CategoryColors(
+    feedAdditiveColor: Color(0xFF00796B), // Premium Teal
+    vaccineColor: Color(0xFF673AB7), // Premium Deep Purple
+    poultryColor: Color(0xFFFF8F00), // Premium Amber/Orange
+    cattleColor: Color(0xFF795548), // Premium Brown
+    aquaColor: Color(0xFF1976D2), // Premium Blue
+    defaultCategoryColor: Color(0xFF78909C),
   );
 
   static final lightTheme = ThemeData(
@@ -138,7 +142,6 @@ class AppTheme {
     splashFactory: InkRipple.splashFactory,
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFF006B5F), // Rich Emerald Teal
-      brightness: Brightness.light,
       surface: const Color(0xFFF8F9FA), // Soft modern light surface
       onSurface: const Color(0xFF191C1C),
       primary: const Color(0xFF006B5F),
@@ -165,10 +168,10 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: Colors.white,
       elevation: 1.5,
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFFD4DAD7), width: 1),
+        side: const BorderSide(color: Color(0xFFD4DAD7)),
       ),
       shadowColor: const Color(0x14000000),
     ),
@@ -191,11 +194,11 @@ class AppTheme {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFBFC9C6), width: 1),
+        borderSide: const BorderSide(color: Color(0xFFBFC9C6)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFBFC9C6), width: 1),
+        borderSide: const BorderSide(color: Color(0xFFBFC9C6)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -203,7 +206,7 @@ class AppTheme {
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFBA1A1A), width: 1),
+        borderSide: const BorderSide(color: Color(0xFFBA1A1A)),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -262,8 +265,16 @@ class AppTheme {
       disabledColor: const Color(0xFFE0E3E2),
       secondarySelectedColor: const Color(0xFFA5F2E6),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      labelStyle: const TextStyle(fontFamily: 'Inter', fontSize: 13, color: Color(0xFF191C1C)),
-      secondaryLabelStyle: const TextStyle(fontFamily: 'Inter', fontSize: 13, color: Color(0xFF00201C)),
+      labelStyle: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 13,
+        color: Color(0xFF191C1C),
+      ),
+      secondaryLabelStyle: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 13,
+        color: Color(0xFF00201C),
+      ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       side: BorderSide.none,
     ),
@@ -273,14 +284,10 @@ class AppTheme {
       space: 1,
     ),
     textTheme: const TextTheme(
-      labelLarge: TextStyle(
-        fontFeatures: [FontFeature.tabularFigures()],
-      ),
-      bodyMedium: TextStyle(
-        fontFeatures: [FontFeature.tabularFigures()],
-      ),
+      labelLarge: TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
+      bodyMedium: TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
     ),
-    extensions: [_categoryColors, _glassLight],
+    extensions: const [_categoryColors, _glassLight],
   );
 
   static final darkTheme = ThemeData(
@@ -316,10 +323,10 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: const Color(0xFF1D2121),
       elevation: 1.5,
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFF333A38), width: 1),
+        side: const BorderSide(color: Color(0xFF333A38)),
       ),
       shadowColor: const Color(0x3D000000),
     ),
@@ -342,11 +349,11 @@ class AppTheme {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF3F4947), width: 1),
+        borderSide: const BorderSide(color: Color(0xFF3F4947)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF3F4947), width: 1),
+        borderSide: const BorderSide(color: Color(0xFF3F4947)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -354,7 +361,7 @@ class AppTheme {
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFFFB4AB), width: 1),
+        borderSide: const BorderSide(color: Color(0xFFFFB4AB)),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -413,17 +420,25 @@ class AppTheme {
       disabledColor: const Color(0xFF1A1C1C),
       secondarySelectedColor: const Color(0xFF005047),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      labelStyle: const TextStyle(fontFamily: 'Inter', fontSize: 13, color: Color(0xFFE1E3E2)),
-      secondaryLabelStyle: const TextStyle(fontFamily: 'Inter', fontSize: 13, color: Color(0xFFA5F2E6)),
+      labelStyle: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 13,
+        color: Color(0xFFE1E3E2),
+      ),
+      secondaryLabelStyle: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 13,
+        color: Color(0xFFA5F2E6),
+      ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      side: const BorderSide(color: Color(0xFF282B2A), width: 1),
+      side: const BorderSide(color: Color(0xFF282B2A)),
     ),
     dividerTheme: const DividerThemeData(
       color: Color(0xFF282B2A),
       thickness: 1,
       space: 1,
     ),
-    extensions: [_categoryColors, _glassDark],
+    extensions: const [_categoryColors, _glassDark],
   );
 }
 
@@ -449,4 +464,3 @@ class AppScrollBehavior extends MaterialScrollBehavior {
     }
   }
 }
-

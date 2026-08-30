@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:impulse_app/providers/paginated_state.dart';
@@ -136,7 +136,6 @@ class _PaginatedListScaffoldState<T>
             controller: _scrollController,
             itemCount: items.length + (state.hasMore ? 1 : 0),
             addAutomaticKeepAlives: false,
-            addRepaintBoundaries: true,
             // ignore: deprecated_member_use
             cacheExtent: 300.0,
             padding: const EdgeInsets.only(

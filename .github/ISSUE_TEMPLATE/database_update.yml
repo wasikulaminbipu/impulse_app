@@ -1,0 +1,25 @@
+name: 🗄️ Database & Catalog Update
+description: Request adding new veterinary medicines, distributors, presentations, or manufacturer data.
+title: "[Data Update]: "
+labels: ["data", "catalog"]
+body:
+  - type: dropdown
+    id: data_type
+    attributes:
+      label: Type of Data Update
+      options:
+        - New Product / Formulation
+        - Price or Presentation Update
+        - Distributor / Sales Personnel Contact Update
+        - Manufacturer Profile Update
+        - Other Catalog Modification
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Update Details
+      description: Provide the complete product composition, indications, pack sizes, MRP, or contact details.
+    validations:
+      required: true

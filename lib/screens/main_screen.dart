@@ -1,11 +1,12 @@
-﻿import 'dart:ui' show ImageFilter;
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/screens/manufacturers_screen.dart';
 import 'package:impulse_app/screens/products_screen.dart';
 import 'package:impulse_app/screens/sales_personnels_screen.dart';
-import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/widgets/app_drawer.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -41,7 +42,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           });
         },
       ),
-      extendBody: true, // Allows the screens to scroll behind the floating glass nav bar
+      extendBody:
+          true, // Allows the screens to scroll behind the floating glass nav bar
       body: SlideIndexedStack(
         index: _currentIndex,
         children: List.generate(_screens.length, (index) {
@@ -73,9 +75,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             }
           }
         },
-        child: Container(
+        child: DecoratedBox(
           decoration: BoxDecoration(
-            color: colorScheme.surface.withValues(alpha: 0.65), // more transparent for glass effect
+            color: colorScheme.surface.withValues(
+              alpha: 0.65,
+            ), // more transparent for glass effect
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             border: Border.all(
               color: colorScheme.outlineVariant.withValues(alpha: 0.2),
@@ -92,7 +96,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           child: ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12), // stronger blur for liquid glass
+              filter: ImageFilter.blur(
+                sigmaX: 12,
+                sigmaY: 12,
+              ), // stronger blur for liquid glass
               child: SafeArea(
                 top: false,
                 child: SizedBox(
@@ -109,26 +116,32 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.fastOutSlowIn,
                           alignment: Alignment(
-                            -1.0 + (_currentIndex * (2.0 / (_screens.length - 1))),
+                            -1.0 +
+                                (_currentIndex * (2.0 / (_screens.length - 1))),
                             0.0,
                           ),
                           child: FractionallySizedBox(
                             widthFactor: 1.0 / _screens.length,
                             child: Align(
-                              alignment: Alignment.center,
                               child: Container(
                                 height: 50,
-                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: colorScheme.primaryContainer.withValues(alpha: 0.6),
+                                  color: colorScheme.primaryContainer
+                                      .withValues(alpha: 0.6),
                                   borderRadius: BorderRadius.circular(25),
                                   border: Border.all(
-                                    color: colorScheme.primary.withValues(alpha: 0.25),
-                                    width: 1,
+                                    color: colorScheme.primary.withValues(
+                                      alpha: 0.25,
+                                    ),
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: colorScheme.primary.withValues(alpha: 0.15),
+                                      color: colorScheme.primary.withValues(
+                                        alpha: 0.15,
+                                      ),
                                       blurRadius: 10,
                                       offset: const Offset(0, 2),
                                     ),
@@ -155,7 +168,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                               1,
                               Icons.factory_outlined,
                               Icons.factory,
-                              lang == 'bn' ? 'ম্যানুফ্যাকচারার' : 'Manufacturers',
+                              lang == 'bn'
+                                  ? 'ম্যানুফ্যাকচারার'
+                                  : 'Manufacturers',
                             ),
                             _buildNavItem(
                               2,
@@ -216,11 +231,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   switchOutCurve: Curves.easeIn,
                   transitionBuilder: (child, animation) {
                     return ScaleTransition(
-                      scale: Tween<double>(begin: 0.8, end: 1.0).animate(animation),
-                      child: FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      ),
+                      scale: Tween<double>(
+                        begin: 0.8,
+                        end: 1.0,
+                      ).animate(animation),
+                      child: FadeTransition(opacity: animation, child: child),
                     );
                   },
                   child: Icon(
@@ -275,7 +290,7 @@ class _SlideIndexedStackState extends State<SlideIndexedStack>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   int _previousIndex = 0;
-  
+
   late Animation<Offset> _slideAnimation;
   late Animation<double> _fadeAnimation;
 
@@ -290,21 +305,16 @@ class _SlideIndexedStackState extends State<SlideIndexedStack>
 
   void _updateAnimations() {
     final bool isSlidingRight = widget.index > _previousIndex;
-    
+
     _slideAnimation = Tween<Offset>(
       begin: Offset(isSlidingRight ? 0.05 : -0.05, 0.0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -329,10 +339,7 @@ class _SlideIndexedStackState extends State<SlideIndexedStack>
       opacity: _fadeAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: IndexedStack(
-          index: widget.index,
-          children: widget.children,
-        ),
+        child: IndexedStack(index: widget.index, children: widget.children),
       ),
     );
   }

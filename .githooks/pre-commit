@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+# ==============================================================================
+# Impulse DEX - Pre-Commit Git Hook
+# Enforces code formatting, codegen sync, static analysis, and Play Store audit.
+# ==============================================================================
+
+set -e
+
+echo "🔍 [Pre-Commit] Validating Dart code formatting..."
+dart format --output=none --set-exit-if-changed . || {
+  echo "❌ [Pre-Commit Error] Code formatting issues detected. Please run 'dart format .' before committing."
+  exit 1
+}
+
+echo "🔍 [Pre-Commit] Running strict Flutter static analysis..."
+flutter analyze --fatal-infos --fatal-warnings || {
+  echo "❌ [Pre-Commit Error] Static analysis reported errors/warnings. Fix all issues before committing."
+  exit 1
+}
+
+echo "📱 [Pre-Commit] Running Google Play Store compliance & metadata audit..."
+dart run bin/audit_playstore_compliance.dart || {
+  echo "❌ [Pre-Commit Error] Google Play Store compliance check failed! Fix metadata/config issues before committing."
+  exit 1
+}
+
+echo "✅ [Pre-Commit] All local checks passed successfully!"
+exit 0

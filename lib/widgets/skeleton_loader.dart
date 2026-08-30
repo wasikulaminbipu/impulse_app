@@ -50,7 +50,8 @@ class _SkeletonLoaderState extends State<SkeletonLoader> {
 }
 
 class SkeletonAnimationGroup extends StatefulWidget {
-  final Widget Function(BuildContext context, Animation<double> animation) builder;
+  final Widget Function(BuildContext context, Animation<double> animation)
+  builder;
 
   const SkeletonAnimationGroup({super.key, required this.builder});
 
@@ -71,9 +72,10 @@ class _SkeletonAnimationGroupState extends State<SkeletonAnimationGroup>
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
-    _animation = Tween<double>(begin: 0.3, end: 0.7).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _animation = Tween<double>(
+      begin: 0.3,
+      end: 0.7,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -103,7 +105,11 @@ class ProductCardSkeleton extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.05),
+                color: Colors.black.withValues(
+                  alpha: Theme.of(context).brightness == Brightness.dark
+                      ? 0.3
+                      : 0.05,
+                ),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -123,19 +129,44 @@ class ProductCardSkeleton extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SkeletonLoader(height: 18, width: 160, borderRadius: 4, animation: animation),
+                    SkeletonLoader(
+                      height: 18,
+                      width: 160,
+                      borderRadius: 4,
+                      animation: animation,
+                    ),
                     const SizedBox(height: 8),
-                    SkeletonLoader(height: 14, width: 100, borderRadius: 4, animation: animation),
+                    SkeletonLoader(
+                      height: 14,
+                      width: 100,
+                      borderRadius: 4,
+                      animation: animation,
+                    ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        SkeletonLoader(height: 22, width: 60, borderRadius: 12, animation: animation),
+                        SkeletonLoader(
+                          height: 22,
+                          width: 60,
+                          borderRadius: 12,
+                          animation: animation,
+                        ),
                         const SizedBox(width: 6),
-                        SkeletonLoader(height: 22, width: 60, borderRadius: 12, animation: animation),
+                        SkeletonLoader(
+                          height: 22,
+                          width: 60,
+                          borderRadius: 12,
+                          animation: animation,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    SkeletonLoader(height: 14, width: 120, borderRadius: 4, animation: animation),
+                    SkeletonLoader(
+                      height: 14,
+                      width: 120,
+                      borderRadius: 4,
+                      animation: animation,
+                    ),
                   ],
                 ),
               ),
@@ -162,7 +193,11 @@ class DistributorCardSkeleton extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.05),
+                color: Colors.black.withValues(
+                  alpha: Theme.of(context).brightness == Brightness.dark
+                      ? 0.3
+                      : 0.05,
+                ),
                 blurRadius: 8,
                 offset: const Offset(0, 3),
               ),
@@ -171,11 +206,26 @@ class DistributorCardSkeleton extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SkeletonLoader(height: 18, width: 200, borderRadius: 4, animation: animation),
+              SkeletonLoader(
+                height: 18,
+                width: 200,
+                borderRadius: 4,
+                animation: animation,
+              ),
               const SizedBox(height: 10),
-              SkeletonLoader(height: 14, width: 150, borderRadius: 4, animation: animation),
+              SkeletonLoader(
+                height: 14,
+                width: 150,
+                borderRadius: 4,
+                animation: animation,
+              ),
               const SizedBox(height: 6),
-              SkeletonLoader(height: 14, width: 180, borderRadius: 4, animation: animation),
+              SkeletonLoader(
+                height: 14,
+                width: 180,
+                borderRadius: 4,
+                animation: animation,
+              ),
             ],
           ),
         );

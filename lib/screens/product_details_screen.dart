@@ -1,24 +1,23 @@
 import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/models/app_maintenance.dart';
+import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/products_provider.dart';
-
-import 'package:impulse_app/widgets/custom_badge.dart';
-import 'package:impulse_app/widgets/group_logo_viewer.dart';
-import 'package:impulse_app/widgets/favorite_button.dart';
 import 'package:impulse_app/screens/sales_personnels_screen.dart';
 import 'package:impulse_app/utils/bilingual_string.dart';
 import 'package:impulse_app/utils/product_share_service.dart';
-
+import 'package:impulse_app/widgets/custom_badge.dart';
+import 'package:impulse_app/widgets/favorite_button.dart';
+import 'package:impulse_app/widgets/group_logo_viewer.dart';
 import 'package:impulse_app/widgets/product_details/composition_section.dart';
-import 'package:impulse_app/widgets/product_details/indications_section.dart';
 import 'package:impulse_app/widgets/product_details/directions_section.dart';
+import 'package:impulse_app/widgets/product_details/indications_section.dart';
+import 'package:impulse_app/widgets/product_details/manufacturer_section.dart';
 import 'package:impulse_app/widgets/product_details/precautions_section.dart';
 import 'package:impulse_app/widgets/product_details/presentations_section.dart';
-import 'package:impulse_app/widgets/product_details/manufacturer_section.dart';
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
   final ProductLabel product;
@@ -68,8 +67,10 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final lang = ref.watch(languageSettingProvider);
-    final productTitle =
-        widget.product.titleEn.resolve(widget.product.titleBn, lang);
+    final productTitle = widget.product.titleEn.resolve(
+      widget.product.titleBn,
+      lang,
+    );
 
     return Scaffold(
       body: Stack(
@@ -84,10 +85,13 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   child: ClipOval(
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                      child: Container(
+                      child: ColoredBox(
                         color: Colors.black.withValues(alpha: 0.2),
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ),
@@ -100,7 +104,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     child: ClipOval(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
+                        child: ColoredBox(
                           color: Colors.black.withValues(alpha: 0.2),
                           child: IconButton(
                             icon: Text(
@@ -112,8 +116,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                               ),
                             ),
                             tooltip: lang == 'bn' ? 'English' : 'বাংলা',
-                            onPressed: () =>
-                                ref.read(languageSettingProvider.notifier).toggle(),
+                            onPressed: () => ref
+                                .read(languageSettingProvider.notifier)
+                                .toggle(),
                           ),
                         ),
                       ),
@@ -124,7 +129,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     child: ClipOval(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
+                        child: ColoredBox(
                           color: Colors.black.withValues(alpha: 0.2),
                           child: IconButton(
                             icon: _isSharing
@@ -147,11 +152,15 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0),
+                    padding: const EdgeInsets.only(
+                      top: 8.0,
+                      bottom: 8.0,
+                      right: 8.0,
+                    ),
                     child: ClipOval(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
+                        child: ColoredBox(
                           color: Colors.black.withValues(alpha: 0.2),
                           child: FavoriteButton(
                             refId: widget.product.id,
@@ -204,8 +213,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             ),
                             text: widget.product.categoryId != 0
                                 ? widget.product.category.nameEn
-                                    .resolve(widget.product.category.nameBn, lang)
-                                    .toUpperCase()
+                                      .resolve(
+                                        widget.product.category.nameBn,
+                                        lang,
+                                      )
+                                      .toUpperCase()
                                 : '',
                           ),
                           GroupLogoViewer(
@@ -230,8 +242,10 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                           : widget.product.mottoEn != null) ...[
                         const SizedBox(height: 6),
                         Text(
-                          widget.product.mottoEn
-                              .resolve(widget.product.mottoBn, lang),
+                          widget.product.mottoEn.resolve(
+                            widget.product.mottoBn,
+                            lang,
+                          ),
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w500,
@@ -245,7 +259,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                         const SizedBox(height: 16),
                         Text(
                           widget.product.shortDescriptionEn.resolve(
-                              widget.product.shortDescriptionBn, lang),
+                            widget.product.shortDescriptionBn,
+                            lang,
+                          ),
                           style: TextStyle(
                             fontSize: 15,
                             height: 1.5,
@@ -254,7 +270,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                         ),
                       ],
                       const SizedBox(height: 24),
-                      ref.watch(productDetailProvider(widget.product.id)).when(
+                      ref
+                          .watch(productDetailProvider(widget.product.id))
+                          .when(
                             data: (fullProduct) => Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -267,8 +285,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                   ),
                                 if (fullProduct.indications.isNotEmpty)
                                   IndicationsSection(
-                                      indications: fullProduct.indications,
-                                      lang: lang),
+                                    indications: fullProduct.indications,
+                                    lang: lang,
+                                  ),
                                 if (fullProduct.directions.isNotEmpty)
                                   DirectionsSection(
                                     directions: fullProduct.directions,
@@ -277,20 +296,23 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                         ref.watch(speciesProvider).value ?? [],
                                     targetGroupsList:
                                         ref.watch(targetGroupsProvider).value ??
-                                            [],
+                                        [],
                                   ),
                                 if (fullProduct.precautions.isNotEmpty)
                                   PrecautionsSection(
-                                      precautions: fullProduct.precautions,
-                                      lang: lang),
+                                    precautions: fullProduct.precautions,
+                                    lang: lang,
+                                  ),
                                 if (fullProduct.presentations.isNotEmpty)
                                   PresentationsSection(
-                                      presentations: fullProduct.presentations,
-                                      lang: lang),
+                                    presentations: fullProduct.presentations,
+                                    lang: lang,
+                                  ),
                                 if (fullProduct.manufacturer.nameEn.isNotEmpty)
                                   ManufacturerSection(
-                                      manufacturer: fullProduct.manufacturer,
-                                      lang: lang),
+                                    manufacturer: fullProduct.manufacturer,
+                                    lang: lang,
+                                  ),
                               ],
                             ),
                             loading: () => const Padding(
@@ -322,7 +344,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                           },
                           icon: const Icon(Icons.people),
                           label: Text(
-                            lang == 'bn' ? 'ফিল্ড টিম খুঁজুন' : 'Find Field Team',
+                            lang == 'bn'
+                                ? 'ফিল্ড টিম খুঁজুন'
+                                : 'Find Field Team',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -408,8 +432,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                         child: Container(
                           height: 250,
                           width: double.infinity,
-                          color: colorScheme.surfaceContainerHighest
-                              .withValues(alpha: 0.3),
+                          color: colorScheme.surfaceContainerHighest.withValues(
+                            alpha: 0.3,
+                          ),
                           padding: const EdgeInsets.all(12),
                           child: _buildProductImage(context, colorScheme),
                         ),
@@ -427,8 +452,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             ),
                             text: widget.product.categoryId != 0
                                 ? widget.product.category.nameEn
-                                    .resolve(widget.product.category.nameBn, lang)
-                                    .toUpperCase()
+                                      .resolve(
+                                        widget.product.category.nameBn,
+                                        lang,
+                                      )
+                                      .toUpperCase()
                                 : '',
                           ),
                           GroupLogoViewer(
@@ -453,8 +481,10 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                           : widget.product.mottoEn != null) ...[
                         const SizedBox(height: 6),
                         Text(
-                          widget.product.mottoEn
-                              .resolve(widget.product.mottoBn, lang),
+                          widget.product.mottoEn.resolve(
+                            widget.product.mottoBn,
+                            lang,
+                          ),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -468,7 +498,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                         const SizedBox(height: 12),
                         Text(
                           widget.product.shortDescriptionEn.resolve(
-                              widget.product.shortDescriptionBn, lang),
+                            widget.product.shortDescriptionBn,
+                            lang,
+                          ),
                           style: TextStyle(
                             fontSize: 14,
                             height: 1.4,
@@ -478,7 +510,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       ],
                       const SizedBox(height: 20),
                       // Details Sections
-                      ref.watch(productDetailProvider(widget.product.id)).maybeWhen(
+                      ref
+                          .watch(productDetailProvider(widget.product.id))
+                          .maybeWhen(
                             data: (fullProduct) => Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -491,8 +525,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                   ),
                                 if (fullProduct.indications.isNotEmpty)
                                   IndicationsSection(
-                                      indications: fullProduct.indications,
-                                      lang: lang),
+                                    indications: fullProduct.indications,
+                                    lang: lang,
+                                  ),
                                 if (fullProduct.directions.isNotEmpty)
                                   DirectionsSection(
                                     directions: fullProduct.directions,
@@ -501,20 +536,23 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                         ref.watch(speciesProvider).value ?? [],
                                     targetGroupsList:
                                         ref.watch(targetGroupsProvider).value ??
-                                            [],
+                                        [],
                                   ),
                                 if (fullProduct.precautions.isNotEmpty)
                                   PrecautionsSection(
-                                      precautions: fullProduct.precautions,
-                                      lang: lang),
+                                    precautions: fullProduct.precautions,
+                                    lang: lang,
+                                  ),
                                 if (fullProduct.presentations.isNotEmpty)
                                   PresentationsSection(
-                                      presentations: fullProduct.presentations,
-                                      lang: lang),
+                                    presentations: fullProduct.presentations,
+                                    lang: lang,
+                                  ),
                                 if (fullProduct.manufacturer.nameEn.isNotEmpty)
                                   ManufacturerSection(
-                                      manufacturer: fullProduct.manufacturer,
-                                      lang: lang),
+                                    manufacturer: fullProduct.manufacturer,
+                                    lang: lang,
+                                  ),
                               ],
                             ),
                             orElse: () => const SizedBox.shrink(),
@@ -523,16 +561,23 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       // Footer watermark
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 14),
+                          vertical: 10,
+                          horizontal: 14,
+                        ),
                         decoration: BoxDecoration(
-                          color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                          color: colorScheme.primaryContainer.withValues(
+                            alpha: 0.3,
+                          ),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.shield_outlined,
-                                size: 16, color: colorScheme.primary),
+                            Icon(
+                              Icons.shield_outlined,
+                              size: 16,
+                              color: colorScheme.primary,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               'Shared from Impulse Mobile App',
@@ -559,7 +604,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
   Widget _buildProductImage(BuildContext context, ColorScheme colorScheme) {
     final imagePath = widget.product.fullImageUrl;
     if (imagePath == null) {
-      return Container(
+      return ColoredBox(
         color: colorScheme.primaryContainer,
         child: Icon(
           Icons.medication,
@@ -575,7 +620,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
       child: Image.asset(
         imagePath,
         fit: BoxFit.contain,
-        errorBuilder: (ctx, err, stackTrace) => Container(
+        errorBuilder: (ctx, err, stackTrace) => ColoredBox(
           color: colorScheme.primaryContainer,
           child: Icon(
             Icons.medication,
@@ -587,4 +632,3 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     );
   }
 }
-
