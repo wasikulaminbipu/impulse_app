@@ -246,15 +246,17 @@ jobs:
             exit 1
           fi
 
-          printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 --decode > android/app/key.p12 2>/dev/null || printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 -d > android/app/key.p12 2>/dev/null || true
+          printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 --decode > android/app/upload-keystore.jks 2>/dev/null || printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 -d > android/app/upload-keystore.jks 2>/dev/null || true
 
-          if [ ! -s android/app/key.p12 ]; then
+          if [ ! -s android/app/upload-keystore.jks ]; then
             echo "::error::PLAYSTORE_UPLOAD_KEYSTORE_BASE64 secret failed base64 decoding or resulted in an empty file!"
             exit 1
           fi
 
-          cp android/app/key.p12 android/key.p12 2>/dev/null || true
-          echo "Production signing keystore (key.p12) decoded and validated successfully."
+          cp android/app/upload-keystore.jks android/upload-keystore.jks 2>/dev/null || true
+          cp android/app/upload-keystore.jks android/app/key.p12 2>/dev/null || true
+          cp android/app/upload-keystore.jks android/key.p12 2>/dev/null || true
+          echo "Production signing keystore (upload-keystore.jks) decoded and validated successfully."
 
           if [ -z "$KEY_PROPERTIES" ]; then
             echo "::error::PLAYSTORE_KEY_PROPERTIES secret is missing! Keystore alias and passwords are required."
@@ -321,6 +323,8 @@ jobs:
       - name: "Securely wipe release signing secrets from build runner"
         if: always()
         run: |
+          rm -f android/app/upload-keystore.jks
+          rm -f android/upload-keystore.jks
           rm -f android/app/key.p12
           rm -f android/key.p12
           rm -f android/key.properties
