@@ -226,8 +226,7 @@ class _ProductCardState extends State<ProductCard> {
                                 presentation,
                               ) {
                                 return CustomBadge(
-                                  text:
-                                      '${presentation.size ?? ''} : ৳ ${presentation.mrp?.toStringAsFixed(2) ?? ''}',
+                                  text: presentation.size ?? '',
                                   color: colorScheme.surfaceContainerHighest,
                                   textStyle: TextStyle(
                                     fontSize: 11,

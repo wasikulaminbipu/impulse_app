@@ -65,7 +65,7 @@ void main() {
 
       expect(find.text('Amoxivet 50%'), findsOneWidget);
       expect(find.text('Broad spectrum antibiotic'), findsOneWidget);
-      expect(find.text('100g : ৳ 450.00'), findsOneWidget);
+      expect(find.text('100g'), findsOneWidget);
     });
 
     testWidgets('Renders Bengali title when lang is bn', (tester) async {
