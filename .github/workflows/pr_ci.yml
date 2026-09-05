@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v5
@@ -107,7 +107,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v5
@@ -215,7 +215,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v5
