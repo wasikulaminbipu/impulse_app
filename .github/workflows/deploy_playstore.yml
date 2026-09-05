@@ -140,7 +140,7 @@ jobs:
         run: dart run bin/generate_coverage_badge.dart
 
       - name: "Upload test coverage report and SVG badge artifacts"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-coverage-report
           path: |
@@ -296,7 +296,7 @@ jobs:
         run: dart run bin/audit_playstore_compliance.dart
 
       - name: "Upload compiled release artifacts and symbols"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-artifacts
           path: |
