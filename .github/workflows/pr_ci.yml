@@ -132,7 +132,7 @@ jobs:
 
       - name: "Upload Golden Test Failure Diffs"
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: golden-test-failures
           path: test/**/failures/
