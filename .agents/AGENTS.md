@@ -22,8 +22,12 @@ This file contains project-scoped rules, architecture guidelines, and workflow c
 - **Mandatory Hot Reload / Hot Restart & DTD Connection**: You MUST check and connect to the Dart Tooling Daemon (`dtd` tool: `listDtdUris` then `connect`) prior to performing hot reload or hot restart. You MUST execute at least a hot reload (or hot restart when required) after making any change in the codebase, or after completing each prompt/turn.
 - **Asset Management**: Follow `asset-management` when referencing icons, images, or custom fonts.
 - **Bundle Size Optimization**: Follow `flutter-size-reduction` when analyzing app bloat, R8 shrinking, and Dart AOT profiling.
+- **CI/CD Pipeline & Automation**: Follow `ci-cd-pipeline` for GitHub Actions workflows, PR quality gates, Fastlane deployment lanes, secrets management, and automated release promotion.
+- **GitHub & Version Control**: Follow `github` for branch strategies, conventional commits, PR standards, and `gh` CLI commands.
+- **Play Store Release & Policy Compliance**: Follow `playstore-release` when releasing Flutter applications to Google Play Store.
 
 ## Release & CI/CD Workflow Rules
+- **Zero-Cache Policy in GitHub CI/CD Workflows**: You MUST NEVER enable or configure runner caching in this repository's GitHub Actions workflows (`pr_ci.yml`, `deploy_playstore.yml`, `weekly_maintenance.yml`, `promote_release.yml`). Always omit or set `cache: false` / `bundler-cache: false` on `actions/setup-java`, `subosito/flutter-action`, `ruby/setup-ruby`, and `actions/cache`. All CI/CD jobs must perform fresh, clean dependency resolution and compilation from scratch to prevent cache poisoning, stale artifact conflicts, and build discrepancies. Note: General caching concepts and documentation remain intact in the skill reference library for knowledge purposes, but caching is strictly forbidden from being activated in the project's actual CI/CD workflows.
 - **Release Trigger Standard**: Whenever a release is initiated (by the user asking AI to "release", "publish", "deploy", "release the app" or running `dart run bin/release.dart` in terminal), the following criteria MUST be executed sequentially and without shortcuts:
   0. **Branch & Secrets Pre-Flight**:
      - Ensure current branch is `main` and execute `git pull --rebase origin main`.

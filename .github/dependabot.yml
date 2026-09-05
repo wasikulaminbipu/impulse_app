@@ -18,3 +18,14 @@ updates:
       prefix: "chore(deps)"
       include: "scope"
     open-pull-requests-limit: 5
+
+  # Maintain Android Gradle dependencies
+  - package-ecosystem: "gradle"
+    directory: "/android"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(gradle)"
+      include: "scope"
+    open-pull-requests-limit: 5
+

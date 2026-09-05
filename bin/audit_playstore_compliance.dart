@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 void main(List<String> args) {
   stdout.writeln(
@@ -634,6 +635,80 @@ void main(List<String> args) {
         'Missing full_description.txt',
       );
     }
+
+    // Fastlane Graphic Assets & Screenshots
+    final iconFile = File(
+      'android/fastlane/metadata/android/$locale/images/icon.png',
+    );
+    if (iconFile.existsSync()) {
+      final dim = _getImageDimensions(iconFile);
+      final sizeKb = iconFile.lengthSync() / 1024;
+      final valid = dim.width == 512 && dim.height == 512 && sizeKb <= 1024;
+      addAudit(
+        'Store Listing',
+        '[$locale] High-Res App Icon (icon.png)',
+        valid,
+        valid
+            ? '512x512 PNG (${sizeKb.toStringAsFixed(1)} KB)'
+            : 'Invalid icon: ${dim.width}x${dim.height} (${sizeKb.toStringAsFixed(1)} KB), expected 512x512 <= 1024 KB',
+      );
+    } else {
+      addAudit(
+        'Store Listing',
+        '[$locale] High-Res App Icon (icon.png)',
+        false,
+        'Missing icon.png (512x512 required for store listing)',
+      );
+    }
+
+    final featureFile = File(
+      'android/fastlane/metadata/android/$locale/images/featureGraphic.png',
+    );
+    if (featureFile.existsSync()) {
+      final dim = _getImageDimensions(featureFile);
+      final sizeKb = featureFile.lengthSync() / 1024;
+      final valid = dim.width == 1024 && dim.height == 500 && sizeKb <= 1024;
+      addAudit(
+        'Store Listing',
+        '[$locale] Feature Graphic (featureGraphic.png)',
+        valid,
+        valid
+            ? '1024x500 PNG/JPEG (${sizeKb.toStringAsFixed(1)} KB)'
+            : 'Invalid feature graphic: ${dim.width}x${dim.height} (${sizeKb.toStringAsFixed(1)} KB), expected 1024x500 <= 1024 KB',
+      );
+    } else {
+      addAudit(
+        'Store Listing',
+        '[$locale] Feature Graphic (featureGraphic.png)',
+        false,
+        'Missing featureGraphic.png (1024x500 required for store listing)',
+      );
+    }
+
+    final phoneDir = Directory(
+      'android/fastlane/metadata/android/$locale/images/phoneScreenshots',
+    );
+    final screenshots = phoneDir.existsSync()
+        ? phoneDir
+              .listSync()
+              .whereType<File>()
+              .where((f) => !f.path.endsWith('.gitkeep'))
+              .toList()
+        : <File>[];
+    final validCount = screenshots.length >= 2 && screenshots.length <= 8;
+    final validNaming = screenshots.every(
+      (f) => RegExp(
+        r'^[0-9]+_[a-zA-Z0-9_\-]+\.(png|jpg|jpeg)$',
+      ).hasMatch(f.uri.pathSegments.last),
+    );
+    addAudit(
+      'Store Listing',
+      '[$locale] Phone Screenshots (2-8 images, conventional naming)',
+      validCount && validNaming,
+      validCount && validNaming
+          ? '${screenshots.length} screenshots matching sequential naming (e.g. 1_home.png)'
+          : 'Invalid screenshots: count=${screenshots.length} (must be 2-8), naming compliant=$validNaming',
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -777,4 +852,44 @@ void main(List<String> args) {
     );
     exit(1);
   }
+}
+
+class _ImageDimensions {
+  final int width;
+  final int height;
+  _ImageDimensions(this.width, this.height);
+}
+
+_ImageDimensions _getImageDimensions(File file) {
+  final bytes = file.readAsBytesSync();
+  if (bytes.length < 24) return _ImageDimensions(0, 0);
+
+  // PNG
+  if (bytes[0] == 0x89 &&
+      bytes[1] == 0x50 &&
+      bytes[2] == 0x4E &&
+      bytes[3] == 0x47) {
+    final bd = ByteData.sublistView(bytes);
+    final w = bd.getUint32(16);
+    final h = bd.getUint32(20);
+    return _ImageDimensions(w, h);
+  }
+
+  // JPEG
+  if (bytes[0] == 0xFF && bytes[1] == 0xD8) {
+    var offset = 2;
+    while (offset < bytes.length - 8) {
+      if (bytes[offset] != 0xFF) break;
+      final marker = bytes[offset + 1];
+      if (marker == 0xC0 || marker == 0xC2) {
+        final h = (bytes[offset + 5] << 8) + bytes[offset + 6];
+        final w = (bytes[offset + 7] << 8) + bytes[offset + 8];
+        return _ImageDimensions(w, h);
+      }
+      final len = (bytes[offset + 2] << 8) + bytes[offset + 3];
+      offset += 2 + len;
+    }
+  }
+
+  return _ImageDimensions(0, 0);
 }

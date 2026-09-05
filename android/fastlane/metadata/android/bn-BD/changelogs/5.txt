@@ -1,0 +1,1 @@
+- Release v1.0.4 (Build 5): General performance improvements, updated asset catalog, and database optimizations.

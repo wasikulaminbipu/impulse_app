@@ -6,9 +6,10 @@ on:
       from_track:
         description: 'Source Google Play Track'
         required: true
-        default: 'beta'
+        default: 'alpha'
         type: choice
         options:
+          - alpha
           - beta
           - internal
       to_track:
@@ -19,6 +20,7 @@ on:
         options:
           - production
           - beta
+          - alpha
       rollout_fraction:
         description: 'Staged Rollout Fraction for Production'
         required: true
@@ -51,7 +53,12 @@ jobs:
         with:
           ruby-version: '3.2'
           working-directory: 'android'
-          bundler-cache: true
+          bundler-cache: false
+
+      - name: "Install Fastlane Gem Dependencies"
+        run: |
+          cd android
+          bundle install
 
       - name: "Strictly validate Google Play service account API credentials"
         env:

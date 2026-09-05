@@ -33,29 +33,44 @@ android {
         versionName = flutter.versionName
     }
 
+    val storeFileProp = keystoreProperties["storeFile"] as String?
+    val sFile = if (storeFileProp != null) file(storeFileProp) else null
+    val hasReleaseSigning = keystorePropertiesFile.exists() &&
+        sFile != null && sFile.exists() &&
+        keystoreProperties.containsKey("keyAlias") &&
+        keystoreProperties.containsKey("keyPassword") &&
+        keystoreProperties.containsKey("storePassword")
+
     signingConfigs {
-        create("release") {
-            val sFile = keystoreProperties["storeFile"]?.let { file(it) }
-            if (sFile == null || !sFile.exists()) {
-                throw GradleException("Release signing keystore file '${keystoreProperties["storeFile"]}' is missing or invalid! Build aborted.")
+        if (hasReleaseSigning) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = sFile
+                storePassword = keystoreProperties["storePassword"] as String
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
+                enableV4Signing = true
             }
-            keyAlias = keystoreProperties["keyAlias"] as String? ?: throw GradleException("keyAlias missing in key.properties")
-            keyPassword = keystoreProperties["keyPassword"] as String? ?: throw GradleException("keyPassword missing in key.properties")
-            storeFile = sFile
-            storePassword = keystoreProperties["storePassword"] as String? ?: throw GradleException("storePassword missing in key.properties")
-            enableV1Signing = true
-            enableV2Signing = true
-            enableV3Signing = true
-            enableV4Signing = true
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+        jniLibs {
+            useLegacyPackaging = false
         }
     }
 }

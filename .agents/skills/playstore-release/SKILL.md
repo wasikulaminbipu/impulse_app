@@ -353,57 +353,119 @@ android/fastlane/metadata/android/
 │   ├── title.txt
 │   ├── short_description.txt
 │   ├── full_description.txt
+│   ├── changelogs/
+│   │   └── <version_code>.txt
 │   └── images/
-│       ├── icon.png
-│       └── phoneScreenshots/
+│       ├── icon.png                 # 512x512 PNG app icon
+│       ├── featureGraphic.png       # 1024x500 PNG/JPEG
+│       ├── phoneScreenshots/        # 1_home.png, 2_directory.png, etc. (2-8 images)
+│       ├── sevenInchScreenshots/
+│       └── tenInchScreenshots/
 └── bn-BD/
     ├── title.txt
     ├── short_description.txt
-    └── full_description.txt
+    ├── full_description.txt
+    ├── changelogs/
+    │   └── <version_code>.txt
+    └── images/
+        ├── icon.png
+        ├── featureGraphic.png
+        ├── phoneScreenshots/
+        ├── sevenInchScreenshots/
+        └── tenInchScreenshots/
 ```
 
 ### B. Fastlane `Fastfile` (`android/fastlane/Fastfile`)
 ```ruby
+fastlane_version "2.220.0"
 default_platform(:android)
 
 platform :android do
-  desc "Deploy Internal QA Build to Firebase App Distribution"
-  lane :firebase_qa do
-    firebase_app_distribution(
-      app: ENV["FIREBASE_APP_ID"],
-      groups: "internal-qa",
-      release_notes: "Internal build from CLI"
-    )
-  end
-
-  desc "Deploy to Google Play Internal Testing Track"
+  desc "Deploy Internal QA / Testing Build to Google Play Internal Track"
   lane :internal do
     upload_to_play_store(
       track: 'internal',
-      aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
-      mapping_paths: ['../build/app/outputs/mapping/prodRelease/mapping.txt'],
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
       skip_upload_apk: true,
-      skip_upload_metadata: false,
-      skip_upload_images: true
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: false,
+      changes_not_sent_for_review: true
     )
   end
 
-  desc "Deploy to Production with 10% Staged Rollout"
+  desc "Deploy to Google Play Closed Testing / Beta Track"
+  lane :beta do
+    upload_to_play_store(
+      track: 'beta',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: false,
+      changes_not_sent_for_review: true
+    )
+  end
+
+  desc "Deploy to Google Play Production Track with 10% Staged Rollout"
   lane :production do
     upload_to_play_store(
       track: 'production',
-      aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
-      mapping_paths: ['../build/app/outputs/mapping/prodRelease/mapping.txt'],
-      user_fraction: 0.10
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
+      user_fraction: 0.10,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: false,
+      changes_not_sent_for_review: true
+    )
+  end
+
+  desc "Promote Release Track with Configurable Rollout"
+  lane :promote do |options|
+    from_track = options[:from_track] || ENV['FROM_TRACK'] || 'beta'
+    to_track = options[:to_track] || ENV['TO_TRACK'] || 'production'
+    rollout = (options[:rollout] || ENV['ROLLOUT_FRACTION'] || '1.0').to_f
+
+    upload_to_play_store(
+      track: from_track,
+      track_promote_to: to_track,
+      user_fraction: (to_track == 'production' && rollout < 1.0) ? rollout : nil,
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      changes_not_sent_for_review: true
+    )
+  end
+
+  desc "Upload Store Text Metadata and Localized Descriptions Only"
+  lane :metadata do
+    upload_to_play_store(
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      changes_not_sent_for_review: true
     )
   end
 end
 ```
 
-### C. GitHub Actions CI/CD Pipeline (`.github/workflows/deploy_playstore.yml`)
+### C. GitHub Actions CI/CD Pipeline Architecture (`.github/workflows/deploy_playstore.yml`)
+
+The production release workflow runs a strict 5-job sequential pipeline:
 
 ```yaml
-name: Build & Deploy to Play Store
+name: Build & Deploy to Google Play Store
 
 on:
   push:
@@ -412,152 +474,147 @@ on:
   workflow_dispatch:
     inputs:
       track:
-        description: 'Play Store Track'
+        description: 'Google Play Store Track (internal / beta / production)'
         required: true
-        default: 'internal'
+        default: 'beta'
         type: choice
         options:
           - internal
           - beta
           - production
       create_github_release:
-        description: 'Create GitHub Release'
+        description: 'Create Official GitHub Release'
         required: false
         default: true
         type: boolean
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: deploy-playstore-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: write
 
 jobs:
+  # Job 1: Quality, Compliance & Audit Gate
   quality-gate:
-    name: Lint & Unit Testing
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
-
-      - name: Set up Java JDK (Temurin 17)
-        uses: actions/setup-java@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
           cache: 'gradle'
-
-      - name: Set up Flutter SDK
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: true
+      - run: flutter pub get
+      - run: dart run bin/validate_db.dart
+      - run: dart run bin/audit_assets.dart
+      - run: dart run bin/audit_app_links.dart
+      - run: dart run bin/audit_playstore_compliance.dart
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: flutter analyze --fatal-infos --fatal-warnings
 
-      - name: Install Dependencies
-        run: flutter pub get
-
-      - name: Run Code Generator Check (Drift & Freezed)
-        run: |
-          dart run build_runner build --delete-conflicting-outputs
-          git diff --exit-code lib/ || (echo "::error::Generated code is out of sync! Please run build_runner locally and commit changes." && exit 1)
-
-      - name: Run Strict Static Analysis (Fatal Warnings)
-        run: flutter analyze --fatal-infos --fatal-warnings
-
-      - name: Run Unit & Widget Tests with Coverage
-        run: flutter test --coverage
-
-  build-and-deploy:
-    name: Build AAB & Deploy via Fastlane
+  # Job 2: Test Suite & Coverage
+  test-suite:
     needs: quality-gate
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: Set up Java JDK (Temurin 17)
-        uses: actions/setup-java@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
           cache: 'gradle'
-
-      - name: Set up Flutter SDK
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: true
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: flutter test --coverage
 
-      - name: Set up Ruby & Fastlane
-        uses: ruby/setup-ruby@v1
+  # Job 3: Build Signed AAB & Universal APK
+  build-release-artifacts:
+    needs: test-suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
         with:
-          ruby-version: '3.2'
-          working-directory: 'android'
-          bundler-cache: true
-
-      - name: Validate & Decode Secrets
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - name: Decode Signing Secrets
         env:
           KEYSTORE_BASE64: ${{ secrets.PLAYSTORE_UPLOAD_KEYSTORE_BASE64 }}
           KEY_PROPERTIES: ${{ secrets.PLAYSTORE_KEY_PROPERTIES }}
-          PLAYSTORE_JSON_KEY: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
         run: |
-          set -e
-          if [ -z "$KEYSTORE_BASE64" ]; then
-            echo "::error::PLAYSTORE_UPLOAD_KEYSTORE_BASE64 secret is missing!"
-            exit 1
-          fi
           printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 --decode > android/app/key.p12
           cp android/app/key.p12 android/key.p12 2>/dev/null || true
-          if [ -n "$KEY_PROPERTIES" ]; then
-            echo "$KEY_PROPERTIES" > android/key.properties
-          fi
-          if [ -n "$PLAYSTORE_JSON_KEY" ]; then
-            echo "$PLAYSTORE_JSON_KEY" > android/pc-api-key.json
-          fi
-
-      - name: Install Flutter Dependencies & Run Code Generator
-        run: |
-          flutter pub get
-          dart run build_runner build --delete-conflicting-outputs
-
-      - name: Build Android App Bundle (AAB) & APKs
-        run: |
-          flutter build appbundle --release --obfuscate --split-debug-info=build/app/outputs/symbols
-          flutter build apk --release --obfuscate --split-debug-info=build/app/outputs/symbols
-
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v6
+          printf '%s\n' "$KEY_PROPERTIES" > android/key.properties
+      - run: flutter pub get && dart run build_runner build --delete-conflicting-outputs
+      - run: flutter build appbundle --release --obfuscate --split-debug-info=build/app/outputs/symbols
+      - run: flutter build apk --release --obfuscate --split-debug-info=build/app/outputs/symbols
+      - uses: actions/upload-artifact@v4
         with:
-          name: app-release-${{ github.ref_name }}
+          name: release-bundle-${{ github.ref_name }}
           path: |
             build/app/outputs/bundle/release/app-release.aab
             build/app/outputs/flutter-apk/*.apk
             build/app/outputs/mapping/release/mapping.txt
             build/app/outputs/symbols/
 
-      - name: Deploy to Play Store via Fastlane
+  # Job 4: Fastlane Deployment
+  deploy-google-play:
+    needs: build-release-artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          working-directory: 'android'
+          bundler-cache: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-bundle-${{ github.ref_name }}
+          path: build/app/outputs
+      - name: Deploy via Fastlane
         env:
-          TRACK: ${{ github.event.inputs.track || 'internal' }}
+          TRACK: ${{ github.event.inputs.track || 'beta' }}
+          PLAYSTORE_JSON_KEY: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
         run: |
-          if [ ! -s android/pc-api-key.json ]; then
-            echo "Skipping Play Store deployment because android/pc-api-key.json is missing or empty."
+          if [ -n "$PLAYSTORE_JSON_KEY" ]; then
+            printf '%s\n' "$PLAYSTORE_JSON_KEY" > android/pc-api-key.json
+            cd android && bundle exec fastlane $TRACK
           else
-            cd android
-            bundle exec fastlane $TRACK
+            echo "Skipping Play Store upload: PLAYSTORE_SERVICE_ACCOUNT_JSON secret not set."
           fi
 
-      - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/') && (github.event.inputs.create_github_release == 'true' || github.event_name == 'push')
-        uses: softprops/action-gh-release@v3
+  # Job 5: GitHub Release
+  publish-github-release:
+    needs: [build-release-artifacts, deploy-google-play]
+    if: always() && (needs.build-release-artifacts.result == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-bundle-${{ github.ref_name }}
+          path: release-assets
+      - uses: softprops/action-gh-release@v2
         with:
           files: |
-            build/app/outputs/bundle/release/app-release.aab
-            build/app/outputs/flutter-apk/app-release.apk
+            release-assets/bundle/release/app-release.aab
+            release-assets/flutter-apk/app-release.apk
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

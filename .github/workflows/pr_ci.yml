@@ -27,18 +27,17 @@ jobs:
       - name: "Check out source code repository"
         uses: actions/checkout@v4
 
-      - name: "Set up Java 17 JDK (Temurin) with Gradle caching"
+      - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: "Install Flutter SDK (Stable Channel)"
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: true
+          cache: false
 
       - name: "Fetch Flutter project dependencies"
         run: flutter pub get
@@ -54,6 +53,9 @@ jobs:
 
       - name: "Execute Google Play Store Requirement & Publishing Audit"
         run: dart run bin/audit_playstore_compliance.dart
+
+      - name: "Validate Fastlane Store Graphic Assets & Screenshots"
+        run: dart run bin/sync_fastlane_assets.dart
 
       - name: "Audit package dependencies for deprecations & outdated packages"
         run: |
@@ -88,6 +90,7 @@ jobs:
           echo "| Check | Status | Details |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- | :--- |" >> $GITHUB_STEP_SUMMARY
           echo "| **Play Store Compliance Audit** | ✅ 100% Passed | Target SDK 35, Privacy, Metadata character limits verified |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Fastlane Store Assets** | ✅ Compliant | Icons, Feature Graphics & Screenshots verified |" >> $GITHUB_STEP_SUMMARY
           echo "| **Asset Health & Images** | ✅ Verified | 100% DB images exist on disk |" >> $GITHUB_STEP_SUMMARY
           echo "| **App Links Deep Linking** | ✅ Verified | Auto-verify HTTPS intent filters & assetlinks.json |" >> $GITHUB_STEP_SUMMARY
           echo "| **SQLite Assets Check** | ✅ Verified | `products.db` & `distributors.db` healthy |" >> $GITHUB_STEP_SUMMARY
@@ -106,18 +109,17 @@ jobs:
       - name: "Check out source code repository"
         uses: actions/checkout@v4
 
-      - name: "Set up Java 17 JDK (Temurin) with Gradle caching"
+      - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: "Install Flutter SDK (Stable Channel)"
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: true
+          cache: false
 
       - name: "Fetch Flutter project dependencies"
         run: flutter pub get
@@ -127,6 +129,14 @@ jobs:
 
       - name: "Execute Flutter test suite with code coverage"
         run: flutter test --coverage
+
+      - name: "Upload Golden Test Failure Diffs"
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-test-failures
+          path: test/**/failures/
+          retention-days: 7
 
       - name: "Calculate coverage metrics and generate SVG badge"
         id: coverage_badge
@@ -207,18 +217,17 @@ jobs:
       - name: "Check out source code repository"
         uses: actions/checkout@v4
 
-      - name: "Set up Java 17 JDK (Temurin) with Gradle caching"
+      - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: "Install Flutter SDK (Stable Channel)"
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: true
+          cache: false
 
       - name: "Fetch Flutter project dependencies"
         run: flutter pub get

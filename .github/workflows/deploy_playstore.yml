@@ -7,12 +7,13 @@ on:
   workflow_dispatch:
     inputs:
       track:
-        description: 'Google Play Store Track (internal / beta / production)'
+        description: 'Google Play Store Track (internal / alpha / beta / production)'
         required: true
-        default: 'beta'
+        default: 'alpha'
         type: choice
         options:
           - internal
+          - alpha
           - beta
           - production
       create_github_release:
@@ -45,18 +46,17 @@ jobs:
       - name: "Check out source code repository"
         uses: actions/checkout@v4
 
-      - name: "Set up Java 17 JDK (Temurin) with Gradle caching"
+      - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: "Install Flutter SDK (Stable Channel)"
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: true
+          cache: false
 
       - name: "Fetch Flutter project dependencies"
         run: flutter pub get
@@ -72,6 +72,9 @@ jobs:
 
       - name: "Execute Google Play Store Requirement & Publishing Audit"
         run: dart run bin/audit_playstore_compliance.dart
+
+      - name: "Validate Fastlane Store Graphic Assets & Screenshots"
+        run: dart run bin/sync_fastlane_assets.dart
 
       - name: "Verify code generation synchronization (Drift & Freezed)"
         run: |
@@ -92,6 +95,7 @@ jobs:
           echo "| Check | Status | Details |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- | :--- |" >> $GITHUB_STEP_SUMMARY
           echo "| **Play Store Compliance Audit** | ✅ 100% Passed | Target SDK 35, Privacy, Metadata character limits verified |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Fastlane Store Assets** | ✅ Compliant | Icons, Feature Graphics & Screenshots verified |" >> $GITHUB_STEP_SUMMARY
           echo "| **Asset Health & Images** | ✅ Verified | 100% DB images exist on disk |" >> $GITHUB_STEP_SUMMARY
           echo "| **App Links Deep Linking** | ✅ Verified | Auto-verify HTTPS intent filters & assetlinks.json |" >> $GITHUB_STEP_SUMMARY
           echo "| **SQLite Assets Check** | ✅ Verified | `products.db` & `distributors.db` healthy |" >> $GITHUB_STEP_SUMMARY
@@ -110,18 +114,17 @@ jobs:
       - name: "Check out source code repository"
         uses: actions/checkout@v4
 
-      - name: "Set up Java 17 JDK (Temurin) with Gradle caching"
+      - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: "Install Flutter SDK (Stable Channel)"
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: true
+          cache: false
 
       - name: "Fetch Flutter project dependencies"
         run: flutter pub get
@@ -171,18 +174,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: "Set up Java 17 JDK (Temurin) with Gradle caching"
+      - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: "Install Flutter SDK (Stable Channel)"
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: true
+          cache: false
 
       - name: "Validate Flutter and Android development environment"
         run: flutter doctor -v
@@ -349,7 +351,12 @@ jobs:
         with:
           ruby-version: '3.2'
           working-directory: 'android'
-          bundler-cache: true
+          bundler-cache: false
+
+      - name: "Install Fastlane Gem Dependencies"
+        run: |
+          cd android
+          bundle install
 
       - name: "Download compiled release artifacts"
         uses: actions/download-artifact@v4
@@ -386,7 +393,7 @@ jobs:
 
       - name: "Execute Fastlane deployment to Google Play Store"
         env:
-          TRACK: ${{ github.event.inputs.track || 'beta' }}
+          TRACK: ${{ github.event.inputs.track || 'alpha' }}
         run: |
           set -e
           cd android
@@ -399,7 +406,7 @@ jobs:
           echo "## 🚀 Google Play Deployment Status" >> $GITHUB_STEP_SUMMARY
           echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Target Track** | `${{ github.event.inputs.track || 'beta' }}` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target Track** | `${{ github.event.inputs.track || 'alpha' }}` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Deployment Status** | ✅ Successfully Uploaded |" >> $GITHUB_STEP_SUMMARY
           echo "| **Timestamp** | `$(date -u)` |" >> $GITHUB_STEP_SUMMARY
 

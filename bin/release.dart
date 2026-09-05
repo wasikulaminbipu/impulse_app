@@ -188,6 +188,11 @@ void main(List<String> args) async {
       cmd: 'dart',
       args: ['run', 'bin/audit_app_links.dart'],
     ),
+    (
+      name: 'Fastlane Store Graphic Assets & Screenshots',
+      cmd: 'dart',
+      args: ['run', 'bin/sync_fastlane_assets.dart'],
+    ),
     (name: 'Dart Source Code Formatting', cmd: 'dart', args: ['format', '.']),
   ];
 
@@ -206,13 +211,14 @@ void main(List<String> args) async {
     }
   }
 
-  // Check Font Assets & Offline Database Assets
   verifyFontAssets();
   verifyOfflineDatabaseAssets();
   verifyAndroidGradleConfiguration();
   verifyFastlaneMetadataLimits();
+  verifyFastlaneGraphicAssets();
   auditReport['Fonts & Assets'] = 'Verified on disk';
-  auditReport['Fastlane Metadata'] = 'Complies with 30/80/4000 char limits';
+  auditReport['Fastlane Metadata'] =
+      'Complies with 30/80/4000 char limits & graphic asset conventions';
 
   // ===========================================================================
   // STAGE 2: Quality Gate, Hygiene, Coverage & Automated Tests
@@ -593,6 +599,75 @@ void verifyFastlaneMetadataLimits() {
     }
   }
   stdout.writeln('✅ 100% METADATA LIMITS COMPLIANT');
+}
+
+void verifyFastlaneGraphicAssets() {
+  stdout.write(
+    '  ⏳ Auditing Google Play graphic assets & screenshot conventions... ',
+  );
+  final metaRoot = Directory('android/fastlane/metadata/android');
+  if (!metaRoot.existsSync()) {
+    stdout.writeln('ℹ️ metadata directory not present');
+    return;
+  }
+
+  final locales = ['en-US', 'bn-BD'];
+  for (final loc in locales) {
+    final imgDir = Directory('${metaRoot.path}/$loc/images');
+    if (!imgDir.existsSync()) {
+      stdout.writeln('❌ FAILED');
+      stderr.writeln('  💥 [$loc] Missing images directory: ${imgDir.path}');
+      exit(1);
+    }
+
+    final icon = File('${imgDir.path}/icon.png');
+    if (!icon.existsSync()) {
+      stdout.writeln('❌ FAILED');
+      stderr.writeln(
+        '  💥 [$loc] Missing required store icon: ${icon.path} (512x512 PNG)',
+      );
+      exit(1);
+    }
+
+    final feature = File('${imgDir.path}/featureGraphic.png');
+    if (!feature.existsSync()) {
+      stdout.writeln('❌ FAILED');
+      stderr.writeln(
+        '  💥 [$loc] Missing required feature graphic: ${feature.path} (1024x500 PNG/JPEG)',
+      );
+      exit(1);
+    }
+
+    final phoneDir = Directory('${imgDir.path}/phoneScreenshots');
+    final screenshots = phoneDir.existsSync()
+        ? phoneDir
+              .listSync()
+              .whereType<File>()
+              .where((f) => !f.path.endsWith('.gitkeep'))
+              .toList()
+        : <File>[];
+
+    if (screenshots.length < 2 || screenshots.length > 8) {
+      stdout.writeln('❌ FAILED');
+      stderr.writeln(
+        '  💥 [$loc] Invalid phone screenshots count: ${screenshots.length} (Google Play requires 2-8)',
+      );
+      exit(1);
+    }
+
+    final validPattern = RegExp(r'^[0-9]+_[a-zA-Z0-9_\-]+\.(png|jpg|jpeg)$');
+    for (final s in screenshots) {
+      final name = s.uri.pathSegments.last;
+      if (!validPattern.hasMatch(name)) {
+        stdout.writeln('❌ FAILED');
+        stderr.writeln(
+          '  💥 [$loc] Screenshot non-conventional filename "$name". Expected format: 1_home.png',
+        );
+        exit(1);
+      }
+    }
+  }
+  stdout.writeln('✅ 100% GRAPHIC ASSETS & SCREENSHOTS COMPLIANT');
 }
 
 void verifyVersionCodeMonotonicity(String newTag, int newVersionCode) {

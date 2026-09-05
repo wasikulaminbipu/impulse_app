@@ -175,6 +175,40 @@
   },
   "tasks": [
     {
+      "id": 33,
+      "desc": "Implement comprehensive CI/CD pipeline enhancements: Bundler dependency installation in Fastlane jobs, Gradle graceful release signing fallback, 16KB page alignment packaging, Fastlane asset validation, coverage threshold gating, setup_hooks.dart CLI tool, and native PowerShell/Bash pre-flight verification scripts",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        ".github/workflows/deploy_playstore.yml",
+        ".github/workflows/pr_ci.yml",
+        ".github/workflows/promote_release.yml",
+        ".github/workflows/weekly_maintenance.yml",
+        ".github/dependabot.yml",
+        "android/app/build.gradle.kts",
+        ".githooks/pre-push",
+        "bin/generate_coverage_badge.dart",
+        "bin/release.dart",
+        "bin/setup_hooks.dart",
+        "scripts/verify_ci_prerequisites.ps1",
+        "scripts/verify_ci_prerequisites.sh",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 32,
+      "desc": "Establish dedicated ci-cd-pipeline skill, upgrade github skill with advanced GitHub Actions operational commands and PR standards, synchronize playstore-release skill with multi-lane Fastlane workflows and 5-job release pipeline, and update AGENTS.md",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        ".agents/skills/ci-cd-pipeline/SKILL.md",
+        ".agents/skills/github/SKILL.md",
+        ".agents/skills/playstore-release/SKILL.md",
+        ".agents/AGENTS.md",
+        ".agents/project_map.json"
+      ]
+    },
+    {
       "id": 31,
       "desc": "Implement Automated Version Bumper & Release Trigger CLI (bin/bump_version.dart), Smart High-Signal Coverage Badge Generator, In-App Database Freshness & Health Checker (lib/core/database/database_freshness_checker.dart), and Codebase Hygiene & Orphaned Code Auditor (bin/audit_unused_code.dart)",
       "status": "completed",
@@ -511,6 +545,33 @@
         ".agents/skills/project-architecture/SKILL.md",
         ".agents/skills/riverpod-state-management/SKILL.md",
         ".agents/skills/searchengine-expert/SKILL.md",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 24,
+      "desc": "Standardize Fastlane screenshot & graphic asset conventions (icon.png 512x512, featureGraphic.png 1024x500, sequential 1_*.png phone screenshots, tablet folders, bin/sync_fastlane_assets.dart tool, and playstore compliance audit integration)",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "android/fastlane/Fastfile",
+        "android/fastlane/README.md",
+        "android/fastlane/metadata/android/en-US/images/icon.png",
+        "android/fastlane/metadata/android/en-US/images/phoneScreenshots/1_home.png",
+        "android/fastlane/metadata/android/en-US/images/phoneScreenshots/2_directory.png",
+        "android/fastlane/metadata/android/en-US/images/phoneScreenshots/3_product_details.png",
+        "android/fastlane/metadata/android/en-US/images/phoneScreenshots/4_contacts.png",
+        "android/fastlane/metadata/android/en-US/images/phoneScreenshots/5_about.png",
+        "android/fastlane/metadata/android/bn-BD/images/icon.png",
+        "android/fastlane/metadata/android/bn-BD/images/phoneScreenshots/1_home.png",
+        "android/fastlane/metadata/android/bn-BD/images/phoneScreenshots/2_directory.png",
+        "android/fastlane/metadata/android/bn-BD/images/phoneScreenshots/3_product_details.png",
+        "android/fastlane/metadata/android/bn-BD/images/phoneScreenshots/4_contacts.png",
+        "android/fastlane/metadata/android/bn-BD/images/phoneScreenshots/5_about.png",
+        "bin/sync_fastlane_assets.dart",
+        "bin/audit_playstore_compliance.dart",
+        "bin/release.dart",
+        ".agents/skills/playstore-release/SKILL.md",
         ".agents/project_map.json"
       ]
     }

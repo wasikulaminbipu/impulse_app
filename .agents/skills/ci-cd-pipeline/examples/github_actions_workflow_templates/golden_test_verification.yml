@@ -1,0 +1,37 @@
+name: Golden UI Visual Regression Test
+
+on:
+  pull_request:
+    paths:
+      - 'lib/widgets/**'
+      - 'lib/screens/**'
+      - 'lib/theme/**'
+      - 'test/goldens/**'
+
+jobs:
+  golden-tests:
+    name: Run Golden Tests & Upload Visual Diffs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run Golden Tests
+        run: flutter test test/goldens/ui_components_golden_test.dart
+
+      - name: Upload Golden Test Failures / Diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-diffs
+          path: test/goldens/failures/

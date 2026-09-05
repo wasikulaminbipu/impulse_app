@@ -35,20 +35,26 @@ dart run bin/audit_playstore_compliance.dart || {
   exit 1
 }
 
-echo "5️⃣ Enforcing Strict Static Analysis (Zero Warnings/Errors)..."
+echo "5️⃣ Validating Fastlane Store Graphic Assets & Screenshots..."
+dart run bin/sync_fastlane_assets.dart || {
+  echo "❌ [Pre-Push Error] Fastlane store graphic assets or screenshots audit failed! Aborting push."
+  exit 1
+}
+
+echo "6️⃣ Enforcing Strict Static Analysis (Zero Warnings/Errors)..."
 flutter analyze --fatal-infos --fatal-warnings || {
   echo "❌ [Pre-Push Error] Static analysis failed! Aborting push."
   exit 1
 }
 
-echo "6️⃣ Running Automated Unit & Widget Test Suite..."
+echo "7️⃣ Running Automated Unit & Widget Test Suite..."
 flutter test || {
   echo "❌ [Pre-Push Error] Flutter tests failed! Aborting push."
   exit 1
 }
 
 echo "================================================================"
-echo "🎉 [Pre-Push Gate] All 6 quality gates and test suites PASSED!"
+echo "🎉 [Pre-Push Gate] All 7 quality gates and test suites PASSED!"
 echo "🚀 Push permitted."
 echo "================================================================"
 exit 0

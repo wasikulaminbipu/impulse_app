@@ -1,6 +1,13 @@
 import 'dart:io';
 
 void main(List<String> args) {
+  double? minCoverage;
+  for (final arg in args) {
+    if (arg.startsWith('--min-coverage=')) {
+      minCoverage = double.tryParse(arg.substring('--min-coverage='.length));
+    }
+  }
+
   stdout.writeln(
     '================================================================',
   );
@@ -130,4 +137,17 @@ void main(List<String> args) {
   stdout.writeln(
     '================================================================\n',
   );
+
+  if (minCoverage != null) {
+    if (percentage < minCoverage) {
+      stderr.writeln(
+        '❌ Coverage Quality Gate Failure: Current coverage $pctFormatted% is below required minimum threshold $minCoverage%!\n',
+      );
+      exit(1);
+    } else {
+      stdout.writeln(
+        '✅ Coverage Quality Gate Passed: $pctFormatted% >= required minimum $minCoverage%\n',
+      );
+    }
+  }
 }

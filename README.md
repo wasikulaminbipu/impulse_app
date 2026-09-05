@@ -78,11 +78,24 @@ assets/
 └── db/                    # Pre-populated SQLite database assets (.db)
 
 bin/
-├── validate_db.dart       # Automated SQLite integrity validator
-└── seed_employee_list.dart # Directory database seeding script
+├── release.dart                   # Enterprise 8-stage interactive/automated release engine
+├── bump_version.dart              # SemVer version bump and changelog synchronization
+├── validate_db.dart               # Automated SQLite integrity & schema validator
+├── audit_assets.dart              # Asset inventory, bloat & DB image cross-reference auditor
+├── audit_app_links.dart           # Android App Links & Digital Asset Links validator
+├── audit_playstore_compliance.dart # Google Play Store 42-check compliance & SDK auditor
+├── audit_unused_code.dart         # Codebase hygiene & dead code auditor
+├── sync_fastlane_assets.dart      # Fastlane icon, feature graphic & screenshot validator
+├── generate_coverage_badge.dart   # High-signal coverage calculator & SVG badge generator
+├── setup_hooks.dart               # Cross-platform Git hooks configuration utility
+└── seed_employee_list.dart        # Directory database seeding script
+
+scripts/
+├── verify_ci_prerequisites.ps1    # One-command pre-flight verification (PowerShell)
+└── verify_ci_prerequisites.sh     # One-command pre-flight verification (Bash)
 
 tools/
-└── impulse-data-entry.html # Offline Web Data Entry Tool for sqlite database generation
+└── impulse-data-entry.html        # Offline Web Data Entry Tool for sqlite database generation
 ```
 
 ---
@@ -102,28 +115,38 @@ tools/
    cd impulse_app
    ```
 
-2. **Fetch Dependencies**
+2. **Configure Git Hooks**
+   ```bash
+   dart run bin/setup_hooks.dart
+   ```
+
+3. **Fetch Dependencies**
    ```bash
    flutter pub get
    ```
 
-3. **Validate Database Assets**
+4. **Validate Database Assets**
    ```bash
    dart run bin/validate_db.dart
    ```
 
-4. **Run Code Generation**
+5. **Run Code Generation**
    Generate Drift DAOs and Riverpod provider code:
    ```bash
    dart run build_runner build --delete-conflicting-outputs
    ```
 
-5. **Run the Automated Test Suite**
-   ```bash
-   flutter test --coverage
+6. **Run Local Pre-Flight CI Verification**
+   Run all 8 quality gates locally with one command:
+   ```powershell
+   # Windows (PowerShell)
+   powershell -ExecutionPolicy Bypass -File scripts/verify_ci_prerequisites.ps1
+
+   # macOS / Linux (Bash)
+   ./scripts/verify_ci_prerequisites.sh
    ```
 
-6. **Launch the Application**
+7. **Launch the Application**
    ```bash
    flutter run
    ```

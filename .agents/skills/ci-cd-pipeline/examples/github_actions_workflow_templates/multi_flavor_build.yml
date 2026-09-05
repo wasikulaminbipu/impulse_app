@@ -1,0 +1,61 @@
+name: Multi-Flavor Build Matrix
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build Type (apk / appbundle)'
+        required: true
+        default: 'appbundle'
+        type: choice
+        options:
+          - apk
+          - appbundle
+
+jobs:
+  build-matrix:
+    name: Build Flavor (${{ matrix.flavor }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flavor: [dev, prod]
+        include:
+          - flavor: dev
+            target: lib/main.dart
+          - flavor: prod
+            target: lib/main.dart
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17 JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies & Run Codegen
+        run: |
+          flutter pub get
+          dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build Artifact
+        run: |
+          flutter build ${{ github.event.inputs.build_type || 'appbundle' }} \
+            --flavor ${{ matrix.flavor }} \
+            --target ${{ matrix.target }} \
+            --release
+
+      - name: Upload Flavor Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.flavor }}-${{ github.ref_name }}
+          path: build/app/outputs/
