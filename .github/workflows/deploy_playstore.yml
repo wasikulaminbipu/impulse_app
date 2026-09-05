@@ -248,18 +248,8 @@ jobs:
             exit 1
           fi
 
-          python3 -c '
-import os, base64, sys
-raw = os.environ.get("KEYSTORE_BASE64", "").strip()
-try:
-    decoded = base64.b64decode(raw)
-    with open("android/app/upload-keystore.jks", "wb") as f:
-        f.write(decoded)
-    print("Keystore successfully decoded via python3 (bytes: " + str(len(decoded)) + ")")
-except Exception as e:
-    print("::error::Failed to decode KEYSTORE_BASE64: " + str(e), file=sys.stderr)
-    sys.exit(1)
-'
+          python3 -c "import os, base64; open('android/app/upload-keystore.jks', 'wb').write(base64.b64decode(os.environ['KEYSTORE_BASE64'].strip()))" 2>/dev/null || printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 -d > android/app/upload-keystore.jks 2>/dev/null || true
+
 
           if [ ! -s android/app/upload-keystore.jks ]; then
             echo "::error::PLAYSTORE_UPLOAD_KEYSTORE_BASE64 secret resulted in an empty file!"
