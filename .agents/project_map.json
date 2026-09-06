@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-08-30T11:40:00Z",
+  "last_updated": "2026-09-06T12:48:00Z",
   "project_info": {
     "name": "impulse_dex",
     "architecture_pattern": "Clean Architecture / Feature-based with Riverpod, Drift, Freezed",
@@ -27,8 +27,9 @@
   },
   "conventions_and_commands": {
     "build_command": "dart run build_runner build --delete-conflicting-outputs",
-    "test_command": "flutter test",
-    "lint_command": "flutter analyze",
+    "test_command": "flutter test --coverage && dart run bin/generate_coverage_badge.dart --min-coverage=70.0",
+    "test_coverage_threshold": "70% minimum (preferred > 90%)",
+    "lint_command": "flutter analyze --fatal-infos --fatal-warnings",
     "styling_rules": "Follow standard Flutter/Dart best practices, Material 3, and token-efficient engineering"
   },
   "modules": [

@@ -18,7 +18,7 @@ This file contains project-scoped rules, architecture guidelines, and workflow c
 - **Native Device Integrations**: Follow `native-device-integrations` for contact management (`flutter_contacts`), vCard generation, URL schemes (`tel:`, WhatsApp `https://wa.me/`), and sharing (`share_plus`).
 - **Code Generation Pipeline**: Follow `code-generation-pipeline` for running `build_runner`, configuring `build.yaml`, and managing multi-generator builds.
 - **UI & Mobile Design System**: Follow `mobile-design-system` for consistent Material 3 styling, cohesive dark/light palettes, high-craft typography, and smooth micro-animations.
-- **Testing Standard**: Follow `flutter-testing` guidelines to write unit, provider, and widget tests for key features.
+- **Testing Standard & Mandatory Coverage Gate**: Follow `flutter-testing` guidelines to write unit, provider, database, and widget tests. High-signal test coverage (measured on non-generated codebase files, excluding `*.g.dart`, `*.freezed.dart`, etc.) must maintain a **minimum of 70%**. If coverage is below 70%, developers and agents MUST cover more and more code by adding new tests until the minimum threshold is satisfied. The **preferred target test coverage is above 90%**.
 - **Mandatory Hot Reload / Hot Restart & DTD Connection**: You MUST check and connect to the Dart Tooling Daemon (`dtd` tool: `listDtdUris` then `connect`) prior to performing hot reload or hot restart. You MUST execute at least a hot reload (or hot restart when required) after making any change in the codebase, or after completing each prompt/turn.
 - **Asset Management**: Follow `asset-management` when referencing icons, images, or custom fonts.
 - **Bundle Size Optimization**: Follow `flutter-size-reduction` when analyzing app bloat, R8 shrinking, and Dart AOT profiling.
@@ -42,7 +42,8 @@ This file contains project-scoped rules, architecture guidelines, and workflow c
   2. **Comprehensive Quality & Compliance Gate**:
      - Run strict static analysis: `flutter analyze --fatal-infos --fatal-warnings`
      - Run Google Play Store publishing & policy compliance audit: `dart run bin/audit_playstore_compliance.dart` (all checks must pass)
-     - Run full automated unit, widget, and golden test suite: `flutter test`
+     - Run full automated unit, widget, and golden test suite with code coverage: `flutter test --coverage`
+     - Enforce minimum test coverage quality gate (>= 70%, preferred > 90%): `dart run bin/generate_coverage_badge.dart --min-coverage=70.0`
   3. **Privacy Policy & Data Safety Verification**:
      - Automatically verify privacy policy URL accessibility and audit permissions/SDK dependencies against Google Play Data Safety declarations without interactive terminal prompts.
   4. **Versioning & Localized Fastlane Changelogs**:

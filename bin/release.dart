@@ -249,9 +249,9 @@ void main(List<String> args) async {
       args: ['test', '--coverage'],
     ),
     (
-      name: 'Coverage Metric & Badge Generator',
+      name: 'Coverage Metric & Badge Generator (Min 70% Quality Gate)',
       cmd: 'dart',
-      args: ['run', 'bin/generate_coverage_badge.dart'],
+      args: ['run', 'bin/generate_coverage_badge.dart', '--min-coverage=70.0'],
     ),
   ];
 

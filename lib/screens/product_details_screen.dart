@@ -402,26 +402,28 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'IMPULSE',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.2,
-                                  color: colorScheme.primary,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'IMPULSE',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.2,
+                                    color: colorScheme.primary,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                'AgriScience Products Directory',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: colorScheme.onSurfaceVariant,
+                                Text(
+                                  'AgriScience Products Directory',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -579,12 +581,14 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                               color: colorScheme.primary,
                             ),
                             const SizedBox(width: 6),
-                            Text(
-                              'Shared from Impulse Mobile App',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: colorScheme.primary,
+                            Flexible(
+                              child: Text(
+                                'Shared from Impulse Mobile App',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: colorScheme.primary,
+                                ),
                               ),
                             ),
                           ],
