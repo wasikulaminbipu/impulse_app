@@ -15,6 +15,9 @@ permissions:
   contents: read
   pull-requests: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   # =========================================================================
   # Job 1: Strict Code Quality, Database Integrity & Play Store Audit Gate

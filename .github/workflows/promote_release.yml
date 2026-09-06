@@ -39,6 +39,9 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   promote-release:
     name: "Promote: Google Play Track & Staged Rollout"
@@ -48,10 +51,10 @@ jobs:
       - name: "Check out source code repository"
         uses: actions/checkout@v4
 
-      - name: "Set up Ruby 3.2 & Bundler for Fastlane"
+      - name: "Set up Ruby 3.3 & Bundler for Fastlane"
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.3'
           working-directory: 'android'
           bundler-cache: false
 

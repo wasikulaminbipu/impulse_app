@@ -34,6 +34,9 @@ concurrency:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   # =========================================================================
   # Job 1: Strict Code Quality, Database Integrity, Assets & Play Store Audit
@@ -347,10 +350,10 @@ jobs:
       - name: "Check out source code repository"
         uses: actions/checkout@v4
 
-      - name: "Set up Ruby 3.2 & Bundler for Fastlane"
+      - name: "Set up Ruby 3.3 & Bundler for Fastlane"
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.3'
           working-directory: 'android'
           bundler-cache: false
 
@@ -407,9 +410,9 @@ jobs:
           echo "## 🚀 Google Play Deployment Status" >> $GITHUB_STEP_SUMMARY
           echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Target Track** | `${{ github.event.inputs.track || 'alpha' }}` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target Track** | \`${{ github.event.inputs.track || 'alpha' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Deployment Status** | ✅ Successfully Uploaded |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Timestamp** | `$(date -u)` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Timestamp** | \`$(date -u)\` |" >> $GITHUB_STEP_SUMMARY
 
       - name: "Securely wipe Google Play API credentials from runner"
         if: always()
