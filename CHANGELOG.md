@@ -1,5 +1,5 @@
 # Changelog
-## [1.0.4] - 2026-09-05
+## [1.0.4] - 2026-09-06
 ### What's Changed
 - Release build 5 (Version 1.0.4).
 - 100% verified: Regenerated models, native splash screen, launcher icons, asset audits, and test suite.
