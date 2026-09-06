@@ -253,7 +253,6 @@ jobs:
 
           python3 -c "import os, base64; open('android/app/upload-keystore.jks', 'wb').write(base64.b64decode(os.environ['KEYSTORE_BASE64'].strip()))" 2>/dev/null || printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 -d > android/app/upload-keystore.jks 2>/dev/null || true
 
-
           if [ ! -s android/app/upload-keystore.jks ]; then
             echo "::error::PLAYSTORE_UPLOAD_KEYSTORE_BASE64 secret resulted in an empty file!"
             exit 1
@@ -269,8 +268,16 @@ jobs:
             exit 1
           fi
 
-          printf '%s\n' "$KEY_PROPERTIES" > android/key.properties
+          printf '%s\n' "$KEY_PROPERTIES" | tr -d '\r' > android/key.properties
+          cp android/key.properties android/app/key.properties 2>/dev/null || true
           echo "Signing configuration (key.properties) written successfully."
+
+          # Verify keystore password and alias with keytool
+          STORE_PASS=$(grep '^storePassword=' android/key.properties | head -n 1 | cut -d'=' -f2- | tr -d '\r\n')
+          KEY_ALIAS=$(grep '^keyAlias=' android/key.properties | head -n 1 | cut -d'=' -f2- | tr -d '\r\n')
+          echo "Validating keystore entry with keytool..."
+          keytool -list -keystore android/app/upload-keystore.jks -storepass "$STORE_PASS" -alias "$KEY_ALIAS"
+          echo "✅ Keystore and alias verified successfully with keytool."
 
       - name: "Fetch Flutter project dependencies"
         run: flutter pub get
@@ -289,6 +296,18 @@ jobs:
 
       - name: "Compile Production Android App Bundle (AAB) with Obfuscation"
         run: flutter build appbundle --release --obfuscate --split-debug-info=build/app/outputs/symbols
+
+      - name: "Verify Production AAB Certificate Fingerprint"
+        run: |
+          set -e
+          echo "Auditing release AAB signing certificate..."
+          CERT_OUTPUT=$(keytool -printcert -jarfile build/app/outputs/bundle/release/app-release.aab)
+          echo "$CERT_OUTPUT" | grep -E "Owner|Issuer|SHA1|SHA256"
+          if ! echo "$CERT_OUTPUT" | grep -q "6D:74:FB:34:88:D0:87:C1:E8:08:69:63:60:AC:02:1C:6E:F0:95:DC"; then
+            echo "::error::Compiled AAB signature mismatch! Expected SHA1: 6D:74:FB:34:88:D0:87:C1:E8:08:69:63:60:AC:02:1C:6E:F0:95:DC"
+            exit 1
+          fi
+          echo "✅ Release AAB is verified signed with Google Play Upload Key."
 
       - name: "Compile Production Universal APK"
         run: flutter build apk --release --obfuscate --split-debug-info=build/app/outputs/symbols
@@ -334,6 +353,7 @@ jobs:
           rm -f android/app/key.p12
           rm -f android/key.p12
           rm -f android/key.properties
+          rm -f android/app/key.properties
 
   # =========================================================================
   # Job 4: Strict Deployment to Google Play Store via Fastlane
