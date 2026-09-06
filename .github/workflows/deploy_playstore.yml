@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v6
@@ -115,7 +115,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v6
@@ -173,7 +173,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -348,7 +348,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "Set up Ruby 3.3 & Bundler for Fastlane"
         uses: ruby/setup-ruby@v1
@@ -432,7 +432,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "Download compiled release artifacts"
         uses: actions/download-artifact@v8
