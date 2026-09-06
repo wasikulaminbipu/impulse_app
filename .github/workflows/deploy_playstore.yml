@@ -251,7 +251,67 @@ jobs:
             exit 1
           fi
 
-          python3 -c "import os, base64; open('android/app/upload-keystore.jks', 'wb').write(base64.b64decode(os.environ['KEYSTORE_BASE64'].strip()))" 2>/dev/null || printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 -d > android/app/upload-keystore.jks 2>/dev/null || true
+          python3 - << 'EOF'
+          import os, base64, subprocess, sys
+
+          keystore_b64 = os.environ.get('KEYSTORE_BASE64', '').strip()
+          try:
+              raw_bytes = base64.b64decode(keystore_b64)
+              with open('android/app/upload-keystore.jks', 'wb') as f:
+                  f.write(raw_bytes)
+          except Exception as e:
+              print(f"::error::Error decoding keystore base64: {e}", file=sys.stderr)
+              sys.exit(1)
+
+          raw_props = os.environ.get('KEY_PROPERTIES', '').strip()
+          try:
+              decoded = base64.b64decode(raw_props).decode('utf-8')
+              if any(k in decoded for k in ['password', 'alias', 'store', 'key', '=']):
+                  raw_props = decoded
+          except Exception:
+              pass
+
+          props = {}
+          for line in raw_props.splitlines():
+              line = line.strip()
+              if not line or line.startswith('#'):
+                  continue
+              if '=' in line:
+                  k, v = line.split('=', 1)
+                  props[k.strip()] = v.strip()
+              elif ':' in line:
+                  k, v = line.split(':', 1)
+                  props[k.strip()] = v.strip()
+
+          print(f"Discovered key properties: {list(props.keys())}")
+
+          store_pass = props.get('storePassword') or props.get('store_password') or props.get('storepass') or ''
+          key_pass = props.get('keyPassword') or props.get('key_password') or props.get('keypass') or store_pass
+          alias = props.get('keyAlias') or props.get('key_alias') or props.get('alias')
+
+          if not alias and store_pass:
+              try:
+                  res = subprocess.run(
+                      ['keytool', '-list', '-keystore', 'android/app/upload-keystore.jks', '-storepass', store_pass],
+                      capture_output=True, text=True, check=True
+                  )
+                  for line in res.stdout.splitlines():
+                      if 'PrivateKeyEntry' in line:
+                          alias = line.split(',')[0].strip()
+                          print(f"Auto-resolved keystore alias: {alias}")
+                          break
+              except Exception as e:
+                  print(f"Keytool auto-discovery note: {e}")
+
+          if not alias:
+              alias = 'impulse'
+
+          with open('android/key.properties', 'w') as f:
+              f.write(f"storePassword={store_pass}\nkeyPassword={key_pass}\nkeyAlias={alias}\nstoreFile=upload-keystore.jks\n")
+          with open('android/app/key.properties', 'w') as f:
+              f.write(f"storePassword={store_pass}\nkeyPassword={key_pass}\nkeyAlias={alias}\nstoreFile=upload-keystore.jks\n")
+          print("Signing configuration (key.properties) written successfully.")
+          EOF
 
           if [ ! -s android/app/upload-keystore.jks ]; then
             echo "::error::PLAYSTORE_UPLOAD_KEYSTORE_BASE64 secret resulted in an empty file!"
@@ -263,19 +323,10 @@ jobs:
           cp android/app/upload-keystore.jks android/key.p12 2>/dev/null || true
           echo "Production signing keystore (upload-keystore.jks) decoded and validated successfully."
 
-          if [ -z "$KEY_PROPERTIES" ]; then
-            echo "::error::PLAYSTORE_KEY_PROPERTIES secret is missing! Keystore alias and passwords are required."
-            exit 1
-          fi
-
-          printf '%s\n' "$KEY_PROPERTIES" | tr -d '\r' > android/key.properties
-          cp android/key.properties android/app/key.properties 2>/dev/null || true
-          echo "Signing configuration (key.properties) written successfully."
-
           # Verify keystore password and alias with keytool
-          STORE_PASS=$(grep '^storePassword=' android/key.properties | head -n 1 | cut -d'=' -f2- | tr -d '\r\n')
-          KEY_ALIAS=$(grep '^keyAlias=' android/key.properties | head -n 1 | cut -d'=' -f2- | tr -d '\r\n')
-          echo "Validating keystore entry with keytool..."
+          STORE_PASS=$(grep '^storePassword=' android/key.properties | head -n 1 | cut -d'=' -f2-)
+          KEY_ALIAS=$(grep '^keyAlias=' android/key.properties | head -n 1 | cut -d'=' -f2-)
+          echo "Validating keystore entry with keytool for alias: $KEY_ALIAS..."
           keytool -list -keystore android/app/upload-keystore.jks -storepass "$STORE_PASS" -alias "$KEY_ALIAS"
           echo "✅ Keystore and alias verified successfully with keytool."
 
