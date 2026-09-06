@@ -345,6 +345,11 @@ jobs:
           cd ..
           flutter pub get
 
+      - name: "Accept Android SDK licenses and ensure Android 36 SDK"
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0" || true
+
       - name: "Compile Production Android App Bundle (AAB) with Obfuscation"
         run: flutter build appbundle --release --obfuscate --split-debug-info=build/app/outputs/symbols
 

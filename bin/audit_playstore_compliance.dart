@@ -186,11 +186,11 @@ void main(List<String> args) {
       final targetSdk = int.parse(targetSdkMatch.group(1)!);
       addAudit(
         'Android API',
-        'Target SDK 35 (Android 15)',
+        'Target SDK 35+ (Android 15/16)',
         targetSdk >= 35,
-        targetSdk >= 35
-            ? 'Target SDK $targetSdk (Mandatory Android 15 Google Play Standard)'
-            : 'Target SDK $targetSdk is below required 35',
+        targetSdk >= 36
+            ? 'Target SDK $targetSdk (Mandatory Android 16 Google Play Standard)'
+            : 'Target SDK $targetSdk (Mandatory Android 15 Google Play Standard)',
       );
     } else {
       addAudit(

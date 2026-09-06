@@ -528,9 +528,13 @@ void verifyAndroidGradleConfiguration() {
   }
 
   final content = gradleFile.readAsStringSync();
-  final hasTargetSdk35 =
-      content.contains('targetSdk = 35') ||
-      content.contains('targetSdkVersion = 35');
+  final targetSdkMatch = RegExp(
+    r'targetSdk(?:Version)?\s*=\s*(\d+)',
+  ).firstMatch(content);
+  final targetSdkVal = targetSdkMatch != null
+      ? int.tryParse(targetSdkMatch.group(1)!) ?? 0
+      : 0;
+  final hasTargetSdkCompliant = targetSdkVal >= 35;
   final hasMinify =
       content.contains('isMinifyEnabled = true') ||
       content.contains('minifyEnabled true');
@@ -538,8 +542,8 @@ void verifyAndroidGradleConfiguration() {
       content.contains('isShrinkResources = true') ||
       content.contains('shrinkResources true');
 
-  if (hasTargetSdk35 && hasMinify && hasShrink) {
-    stdout.writeln('✅ TARGET SDK 35 & R8 OBFUSCATION CONFIGURED');
+  if (hasTargetSdkCompliant && hasMinify && hasShrink) {
+    stdout.writeln('✅ TARGET SDK $targetSdkVal & R8 OBFUSCATION CONFIGURED');
   } else {
     stdout.writeln(
       '⚠️ WARNING: Review Android 15 & ProGuard settings in build.gradle.kts',
