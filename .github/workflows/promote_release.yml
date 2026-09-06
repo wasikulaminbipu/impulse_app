@@ -49,7 +49,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: "Set up Ruby 3.3 & Bundler for Fastlane"
         uses: ruby/setup-ruby@v1
