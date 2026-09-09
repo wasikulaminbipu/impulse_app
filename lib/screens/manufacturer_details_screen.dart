@@ -4,6 +4,7 @@ import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/products_provider.dart';
 import 'package:impulse_app/widgets/product_card.dart';
+import 'package:impulse_app/widgets/rolling_counter.dart';
 
 class ManufacturerDetailsScreen extends ConsumerStatefulWidget {
   final Manufacturer manufacturer;
@@ -127,12 +128,40 @@ class _ManufacturerDetailsScreenState
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverToBoxAdapter(
-              child: Text(
-                lang == 'bn' ? 'প্রডাক্ট তালিকা' : 'Product List',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    lang == 'bn' ? 'প্রডাক্ট তালিকা' : 'Product List',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  productsAsync.maybeWhen(
+                    data: (products) => Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: RollingCounterText(
+                        value: '${products.length}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onPrimaryContainer,
+                        ),
+                      ),
+                    ),
+                    orElse: () => const SizedBox.shrink(),
+                  ),
+                ],
               ),
             ),
           ),

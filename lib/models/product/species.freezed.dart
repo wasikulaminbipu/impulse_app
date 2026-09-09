@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'species.dart';
@@ -9,6 +9,7 @@ part of 'species.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SpeciesCopyWith<Species> get copyWith => _$SpeciesCopyWithImpl<Species>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Species&&(identical(other.id, id) || other.id == id)&&(identical(other.targetGroupId, targetGroupId) || other.targetGroupId == targetGroupId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+  final _this = this as Species;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Species&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.targetGroupId, _this.targetGroupId) || other.targetGroupId == _this.targetGroupId)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,targetGroupId,nameEn,nameBn);
+int get hashCode {
+  final _this = this as Species;
+  return Object.hash(runtimeType,_this.id,_this.targetGroupId,_this.nameEn,_this.nameBn);
+}
 
 @override
 String toString() {
-  return 'Species(id: $id, targetGroupId: $targetGroupId, nameEn: $nameEn, nameBn: $nameBn)';
+  final _this = this as Species;
+  return 'Species(id: ${_this.id}, targetGroupId: ${_this.targetGroupId}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SpeciesCopyWithImpl<$Res>
 /// Create a copy of Species
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? targetGroupId = null,Object? nameEn = null,Object? nameBn = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(Species(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,targetGroupId: null == targetGroupId ? _self.targetGroupId : targetGroupId // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$SpeciesCopyWith<_Species> get copyWith => __$SpeciesCopyWithImpl<_Species>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Species&&(identical(other.id, id) || other.id == id)&&(identical(other.targetGroupId, targetGroupId) || other.targetGroupId == targetGroupId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Species&&(identical(other.id, id) || other.id == id)&&(identical(other.targetGroupId, targetGroupId) || other.targetGroupId == targetGroupId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,targetGroupId,nameEn,nameBn);
+int get hashCode {
+    return Object.hash(runtimeType,id,targetGroupId,nameEn,nameBn);
+}
 
 @override
 String toString() {
-  return 'Species(id: $id, targetGroupId: $targetGroupId, nameEn: $nameEn, nameBn: $nameBn)';
+    return 'Species(id: $id, targetGroupId: $targetGroupId, nameEn: $nameEn, nameBn: $nameBn)';
 }
 
 

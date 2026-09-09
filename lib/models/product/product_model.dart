@@ -24,6 +24,7 @@ abstract class Product with _$Product {
     required String createdAt,
     required String updatedAt,
     @Default([]) List<Composition> compositions,
+    @Default([]) List<Benefit> benefits,
     @Default([]) List<Indication> indications,
     @Default([]) List<Direction> directions,
     @Default([]) List<Precaution> precautions,

@@ -4257,6 +4257,359 @@ class CompositionsCompanion extends UpdateCompanion<CompositionEntity> {
   }
 }
 
+class $BenefitsTable extends Benefits
+    with TableInfo<$BenefitsTable, BenefitEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BenefitsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _productIdMeta = const VerificationMeta(
+    'productId',
+  );
+  @override
+  late final GeneratedColumn<int> productId = GeneratedColumn<int>(
+    'product_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES products(id) ON DELETE CASCADE',
+  );
+  static const VerificationMeta _textEnMeta = const VerificationMeta('textEn');
+  @override
+  late final GeneratedColumn<String> textEn = GeneratedColumn<String>(
+    'text_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _textBnMeta = const VerificationMeta('textBn');
+  @override
+  late final GeneratedColumn<String> textBn = GeneratedColumn<String>(
+    'text_bn',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _displayOrderMeta = const VerificationMeta(
+    'displayOrder',
+  );
+  @override
+  late final GeneratedColumn<int> displayOrder = GeneratedColumn<int>(
+    'display_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    productId,
+    textEn,
+    textBn,
+    displayOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'benefits';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BenefitEntity> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('product_id')) {
+      context.handle(
+        _productIdMeta,
+        productId.isAcceptableOrUnknown(data['product_id']!, _productIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_productIdMeta);
+    }
+    if (data.containsKey('text_en')) {
+      context.handle(
+        _textEnMeta,
+        textEn.isAcceptableOrUnknown(data['text_en']!, _textEnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_textEnMeta);
+    }
+    if (data.containsKey('text_bn')) {
+      context.handle(
+        _textBnMeta,
+        textBn.isAcceptableOrUnknown(data['text_bn']!, _textBnMeta),
+      );
+    }
+    if (data.containsKey('display_order')) {
+      context.handle(
+        _displayOrderMeta,
+        displayOrder.isAcceptableOrUnknown(
+          data['display_order']!,
+          _displayOrderMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BenefitEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BenefitEntity(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      productId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}product_id'],
+      )!,
+      textEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}text_en'],
+      )!,
+      textBn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}text_bn'],
+      ),
+      displayOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}display_order'],
+      )!,
+    );
+  }
+
+  @override
+  $BenefitsTable createAlias(String alias) {
+    return $BenefitsTable(attachedDatabase, alias);
+  }
+}
+
+class BenefitEntity extends DataClass implements Insertable<BenefitEntity> {
+  final int id;
+  final int productId;
+  final String textEn;
+  final String? textBn;
+  final int displayOrder;
+  const BenefitEntity({
+    required this.id,
+    required this.productId,
+    required this.textEn,
+    this.textBn,
+    required this.displayOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['product_id'] = Variable<int>(productId);
+    map['text_en'] = Variable<String>(textEn);
+    if (!nullToAbsent || textBn != null) {
+      map['text_bn'] = Variable<String>(textBn);
+    }
+    map['display_order'] = Variable<int>(displayOrder);
+    return map;
+  }
+
+  BenefitsCompanion toCompanion(bool nullToAbsent) {
+    return BenefitsCompanion(
+      id: Value(id),
+      productId: Value(productId),
+      textEn: Value(textEn),
+      textBn: textBn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(textBn),
+      displayOrder: Value(displayOrder),
+    );
+  }
+
+  factory BenefitEntity.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BenefitEntity(
+      id: serializer.fromJson<int>(json['id']),
+      productId: serializer.fromJson<int>(json['productId']),
+      textEn: serializer.fromJson<String>(json['textEn']),
+      textBn: serializer.fromJson<String?>(json['textBn']),
+      displayOrder: serializer.fromJson<int>(json['displayOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'productId': serializer.toJson<int>(productId),
+      'textEn': serializer.toJson<String>(textEn),
+      'textBn': serializer.toJson<String?>(textBn),
+      'displayOrder': serializer.toJson<int>(displayOrder),
+    };
+  }
+
+  BenefitEntity copyWith({
+    int? id,
+    int? productId,
+    String? textEn,
+    Value<String?> textBn = const Value.absent(),
+    int? displayOrder,
+  }) => BenefitEntity(
+    id: id ?? this.id,
+    productId: productId ?? this.productId,
+    textEn: textEn ?? this.textEn,
+    textBn: textBn.present ? textBn.value : this.textBn,
+    displayOrder: displayOrder ?? this.displayOrder,
+  );
+  BenefitEntity copyWithCompanion(BenefitsCompanion data) {
+    return BenefitEntity(
+      id: data.id.present ? data.id.value : this.id,
+      productId: data.productId.present ? data.productId.value : this.productId,
+      textEn: data.textEn.present ? data.textEn.value : this.textEn,
+      textBn: data.textBn.present ? data.textBn.value : this.textBn,
+      displayOrder: data.displayOrder.present
+          ? data.displayOrder.value
+          : this.displayOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BenefitEntity(')
+          ..write('id: $id, ')
+          ..write('productId: $productId, ')
+          ..write('textEn: $textEn, ')
+          ..write('textBn: $textBn, ')
+          ..write('displayOrder: $displayOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, productId, textEn, textBn, displayOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BenefitEntity &&
+          other.id == this.id &&
+          other.productId == this.productId &&
+          other.textEn == this.textEn &&
+          other.textBn == this.textBn &&
+          other.displayOrder == this.displayOrder);
+}
+
+class BenefitsCompanion extends UpdateCompanion<BenefitEntity> {
+  final Value<int> id;
+  final Value<int> productId;
+  final Value<String> textEn;
+  final Value<String?> textBn;
+  final Value<int> displayOrder;
+  const BenefitsCompanion({
+    this.id = const Value.absent(),
+    this.productId = const Value.absent(),
+    this.textEn = const Value.absent(),
+    this.textBn = const Value.absent(),
+    this.displayOrder = const Value.absent(),
+  });
+  BenefitsCompanion.insert({
+    this.id = const Value.absent(),
+    required int productId,
+    required String textEn,
+    this.textBn = const Value.absent(),
+    this.displayOrder = const Value.absent(),
+  }) : productId = Value(productId),
+       textEn = Value(textEn);
+  static Insertable<BenefitEntity> custom({
+    Expression<int>? id,
+    Expression<int>? productId,
+    Expression<String>? textEn,
+    Expression<String>? textBn,
+    Expression<int>? displayOrder,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (productId != null) 'product_id': productId,
+      if (textEn != null) 'text_en': textEn,
+      if (textBn != null) 'text_bn': textBn,
+      if (displayOrder != null) 'display_order': displayOrder,
+    });
+  }
+
+  BenefitsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? productId,
+    Value<String>? textEn,
+    Value<String?>? textBn,
+    Value<int>? displayOrder,
+  }) {
+    return BenefitsCompanion(
+      id: id ?? this.id,
+      productId: productId ?? this.productId,
+      textEn: textEn ?? this.textEn,
+      textBn: textBn ?? this.textBn,
+      displayOrder: displayOrder ?? this.displayOrder,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (productId.present) {
+      map['product_id'] = Variable<int>(productId.value);
+    }
+    if (textEn.present) {
+      map['text_en'] = Variable<String>(textEn.value);
+    }
+    if (textBn.present) {
+      map['text_bn'] = Variable<String>(textBn.value);
+    }
+    if (displayOrder.present) {
+      map['display_order'] = Variable<int>(displayOrder.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BenefitsCompanion(')
+          ..write('id: $id, ')
+          ..write('productId: $productId, ')
+          ..write('textEn: $textEn, ')
+          ..write('textBn: $textBn, ')
+          ..write('displayOrder: $displayOrder')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $IndicationsTable extends Indications
     with TableInfo<$IndicationsTable, IndicationEntity> {
   @override
@@ -6446,6 +6799,7 @@ abstract class _$ProductsDb extends GeneratedDatabase {
   late final $ProductTargetGroupsTable productTargetGroups =
       $ProductTargetGroupsTable(this);
   late final $CompositionsTable compositions = $CompositionsTable(this);
+  late final $BenefitsTable benefits = $BenefitsTable(this);
   late final $IndicationsTable indications = $IndicationsTable(this);
   late final $DirectionsTable directions = $DirectionsTable(this);
   late final $PrecautionsTable precautions = $PrecautionsTable(this);
@@ -6466,6 +6820,7 @@ abstract class _$ProductsDb extends GeneratedDatabase {
     products,
     productTargetGroups,
     compositions,
+    benefits,
     indications,
     directions,
     precautions,
@@ -6486,6 +6841,13 @@ abstract class _$ProductsDb extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('compositions', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'products',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('benefits', kind: UpdateKind.delete)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
@@ -6518,22 +6880,20 @@ abstract class _$ProductsDb extends GeneratedDatabase {
   ]);
 }
 
-typedef $$CategoriesTableCreateCompanionBuilder =
-    CategoriesCompanion Function({
-      Value<int> id,
-      required String nameEn,
-      required String nameBn,
-      Value<String?> iconName,
-      Value<String?> slug,
-    });
-typedef $$CategoriesTableUpdateCompanionBuilder =
-    CategoriesCompanion Function({
-      Value<int> id,
-      Value<String> nameEn,
-      Value<String> nameBn,
-      Value<String?> iconName,
-      Value<String?> slug,
-    });
+typedef $$CategoriesTableCreateCompanionBuilder = CategoriesCompanion Function({
+  Value<int> id,
+  required String nameEn,
+  required String nameBn,
+  Value<String?> iconName,
+  Value<String?> slug,
+});
+typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
+  Value<int> id,
+  Value<String> nameEn,
+  Value<String> nameBn,
+  Value<String?> iconName,
+  Value<String?> slug,
+});
 
 final class $$CategoriesTableReferences
     extends BaseReferences<_$ProductsDb, $CategoriesTable, CategoryEntity> {
@@ -6760,7 +7120,7 @@ class $$CategoriesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$CategoriesTable, CategoryEntity>(table),
                   $$CategoriesTableReferences(db, table, e),
                 ),
               )
@@ -7115,7 +7475,7 @@ class $$TargetGroupsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$TargetGroupsTable, TargetGroupEntity>(table),
                   $$TargetGroupsTableReferences(db, table, e),
                 ),
               )
@@ -7445,13 +7805,11 @@ class $$ContentTypesTableTableManager
               $$ContentTypesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$ContentTypesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> nameEn = const Value.absent(),
-                Value<String> nameBn = const Value.absent(),
-              }) =>
-                  ContentTypesCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> nameEn = const Value.absent(),
+            Value<String> nameBn = const Value.absent(),
+          }) => ContentTypesCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -7465,7 +7823,7 @@ class $$ContentTypesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ContentTypesTable, ContentTypeEntity>(table),
                   $$ContentTypesTableReferences(db, table, e),
                 ),
               )
@@ -7769,7 +8127,7 @@ class $$ProductTypesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ProductTypesTable, ProductTypeEntity>(table),
                   $$ProductTypesTableReferences(db, table, e),
                 ),
               )
@@ -7826,20 +8184,18 @@ typedef $$ProductTypesTableProcessedTableManager =
       ProductTypeEntity,
       PrefetchHooks Function({bool presentationsRefs})
     >;
-typedef $$SpeciesTableCreateCompanionBuilder =
-    SpeciesCompanion Function({
-      Value<int> id,
-      required int targetGroupId,
-      required String nameEn,
-      required String nameBn,
-    });
-typedef $$SpeciesTableUpdateCompanionBuilder =
-    SpeciesCompanion Function({
-      Value<int> id,
-      Value<int> targetGroupId,
-      Value<String> nameEn,
-      Value<String> nameBn,
-    });
+typedef $$SpeciesTableCreateCompanionBuilder = SpeciesCompanion Function({
+  Value<int> id,
+  required int targetGroupId,
+  required String nameEn,
+  required String nameBn,
+});
+typedef $$SpeciesTableUpdateCompanionBuilder = SpeciesCompanion Function({
+  Value<int> id,
+  Value<int> targetGroupId,
+  Value<String> nameEn,
+  Value<String> nameBn,
+});
 
 final class $$SpeciesTableReferences
     extends BaseReferences<_$ProductsDb, $SpeciesTable, SpeciesEntity> {
@@ -8123,7 +8479,7 @@ class $$SpeciesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$SpeciesTable, SpeciesEntity>(table),
                   $$SpeciesTableReferences(db, table, e),
                 ),
               )
@@ -8150,17 +8506,15 @@ class $$SpeciesTableTableManager
                         >
                       >(state) {
                         if (targetGroupId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.targetGroupId,
-                                    referencedTable: $$SpeciesTableReferences
-                                        ._targetGroupIdTable(db),
-                                    referencedColumn: $$SpeciesTableReferences
-                                        ._targetGroupIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.targetGroupId,
+                            referencedTable: $$SpeciesTableReferences
+                                ._targetGroupIdTable(db),
+                            referencedColumn: $$SpeciesTableReferences
+                                ._targetGroupIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -8391,13 +8745,11 @@ class $$DosageUnitsTableTableManager
               $$DosageUnitsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$DosageUnitsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> nameEn = const Value.absent(),
-                Value<String> nameBn = const Value.absent(),
-              }) =>
-                  DosageUnitsCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> nameEn = const Value.absent(),
+            Value<String> nameBn = const Value.absent(),
+          }) => DosageUnitsCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -8411,7 +8763,7 @@ class $$DosageUnitsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$DosageUnitsTable, DosageUnitEntity>(table),
                   $$DosageUnitsTableReferences(db, table, e),
                 ),
               )
@@ -8645,13 +8997,11 @@ class $$DosageBasesTableTableManager
               $$DosageBasesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$DosageBasesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> nameEn = const Value.absent(),
-                Value<String> nameBn = const Value.absent(),
-              }) =>
-                  DosageBasesCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> nameEn = const Value.absent(),
+            Value<String> nameBn = const Value.absent(),
+          }) => DosageBasesCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -8665,7 +9015,7 @@ class $$DosageBasesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$DosageBasesTable, DosageBaseEntity>(table),
                   $$DosageBasesTableReferences(db, table, e),
                 ),
               )
@@ -9085,7 +9435,7 @@ class $$ManufacturersTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ManufacturersTable, ManufacturerEntity>(table),
                   $$ManufacturersTableReferences(db, table, e),
                 ),
               )
@@ -9140,44 +9490,42 @@ typedef $$ManufacturersTableProcessedTableManager =
       ManufacturerEntity,
       PrefetchHooks Function({bool productsRefs})
     >;
-typedef $$ProductsTableCreateCompanionBuilder =
-    ProductsCompanion Function({
-      Value<int> id,
-      Value<int?> manufacturerId,
-      required int categoryId,
-      required String titleEn,
-      Value<String?> titleBn,
-      required String slug,
-      Value<String?> mottoEn,
-      Value<String?> mottoBn,
-      Value<String?> shortDescriptionEn,
-      Value<String?> shortDescriptionBn,
-      Value<String?> imageUrl,
-      Value<int> isActive,
-      Value<String> createdAt,
-      Value<String> updatedAt,
-      Value<String?> compositionBasisEn,
-      Value<String?> compositionBasisBn,
-    });
-typedef $$ProductsTableUpdateCompanionBuilder =
-    ProductsCompanion Function({
-      Value<int> id,
-      Value<int?> manufacturerId,
-      Value<int> categoryId,
-      Value<String> titleEn,
-      Value<String?> titleBn,
-      Value<String> slug,
-      Value<String?> mottoEn,
-      Value<String?> mottoBn,
-      Value<String?> shortDescriptionEn,
-      Value<String?> shortDescriptionBn,
-      Value<String?> imageUrl,
-      Value<int> isActive,
-      Value<String> createdAt,
-      Value<String> updatedAt,
-      Value<String?> compositionBasisEn,
-      Value<String?> compositionBasisBn,
-    });
+typedef $$ProductsTableCreateCompanionBuilder = ProductsCompanion Function({
+  Value<int> id,
+  Value<int?> manufacturerId,
+  required int categoryId,
+  required String titleEn,
+  Value<String?> titleBn,
+  required String slug,
+  Value<String?> mottoEn,
+  Value<String?> mottoBn,
+  Value<String?> shortDescriptionEn,
+  Value<String?> shortDescriptionBn,
+  Value<String?> imageUrl,
+  Value<int> isActive,
+  Value<String> createdAt,
+  Value<String> updatedAt,
+  Value<String?> compositionBasisEn,
+  Value<String?> compositionBasisBn,
+});
+typedef $$ProductsTableUpdateCompanionBuilder = ProductsCompanion Function({
+  Value<int> id,
+  Value<int?> manufacturerId,
+  Value<int> categoryId,
+  Value<String> titleEn,
+  Value<String?> titleBn,
+  Value<String> slug,
+  Value<String?> mottoEn,
+  Value<String?> mottoBn,
+  Value<String?> shortDescriptionEn,
+  Value<String?> shortDescriptionBn,
+  Value<String?> imageUrl,
+  Value<int> isActive,
+  Value<String> createdAt,
+  Value<String> updatedAt,
+  Value<String?> compositionBasisEn,
+  Value<String?> compositionBasisBn,
+});
 
 final class $$ProductsTableReferences
     extends BaseReferences<_$ProductsDb, $ProductsTable, ProductEntity> {
@@ -9255,6 +9603,24 @@ final class $$ProductsTableReferences
     ).filter((f) => f.productId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_compositionsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$BenefitsTable, List<BenefitEntity>>
+  _benefitsRefsTable(_$ProductsDb db) => MultiTypedResultKey.fromTable(
+    db.benefits,
+    aliasName: 'products__id__benefits__product_id',
+  );
+
+  $$BenefitsTableProcessedTableManager get benefitsRefs {
+    final manager = $$BenefitsTableTableManager(
+      $_db,
+      $_db.benefits,
+    ).filter((f) => f.productId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_benefitsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -9499,6 +9865,31 @@ class $$ProductsTableFilterComposer
           }) => $$CompositionsTableFilterComposer(
             $db: $db,
             $table: $db.compositions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> benefitsRefs(
+    Expression<bool> Function($$BenefitsTableFilterComposer f) f,
+  ) {
+    final $$BenefitsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.benefits,
+      getReferencedColumn: (t) => t.productId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BenefitsTableFilterComposer(
+            $db: $db,
+            $table: $db.benefits,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -9891,6 +10282,31 @@ class $$ProductsTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> benefitsRefs<T extends Object>(
+    Expression<T> Function($$BenefitsTableAnnotationComposer a) f,
+  ) {
+    final $$BenefitsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.benefits,
+      getReferencedColumn: (t) => t.productId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BenefitsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.benefits,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> indicationsRefs<T extends Object>(
     Expression<T> Function($$IndicationsTableAnnotationComposer a) f,
   ) {
@@ -10010,6 +10426,7 @@ class $$ProductsTableTableManager
             bool categoryId,
             bool productTargetGroupsRefs,
             bool compositionsRefs,
+            bool benefitsRefs,
             bool indicationsRefs,
             bool directionsRefs,
             bool precautionsRefs,
@@ -10102,7 +10519,7 @@ class $$ProductsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ProductsTable, ProductEntity>(table),
                   $$ProductsTableReferences(db, table, e),
                 ),
               )
@@ -10113,6 +10530,7 @@ class $$ProductsTableTableManager
                 categoryId = false,
                 productTargetGroupsRefs = false,
                 compositionsRefs = false,
+                benefitsRefs = false,
                 indicationsRefs = false,
                 directionsRefs = false,
                 precautionsRefs = false,
@@ -10123,6 +10541,7 @@ class $$ProductsTableTableManager
                   explicitlyWatchedTables: [
                     if (productTargetGroupsRefs) db.productTargetGroups,
                     if (compositionsRefs) db.compositions,
+                    if (benefitsRefs) db.benefits,
                     if (indicationsRefs) db.indications,
                     if (directionsRefs) db.directions,
                     if (precautionsRefs) db.precautions,
@@ -10145,30 +10564,26 @@ class $$ProductsTableTableManager
                         >
                       >(state) {
                         if (manufacturerId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.manufacturerId,
-                                    referencedTable: $$ProductsTableReferences
-                                        ._manufacturerIdTable(db),
-                                    referencedColumn: $$ProductsTableReferences
-                                        ._manufacturerIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.manufacturerId,
+                            referencedTable: $$ProductsTableReferences
+                                ._manufacturerIdTable(db),
+                            referencedColumn: $$ProductsTableReferences
+                                ._manufacturerIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (categoryId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.categoryId,
-                                    referencedTable: $$ProductsTableReferences
-                                        ._categoryIdTable(db),
-                                    referencedColumn: $$ProductsTableReferences
-                                        ._categoryIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.categoryId,
+                            referencedTable: $$ProductsTableReferences
+                                ._categoryIdTable(db),
+                            referencedColumn: $$ProductsTableReferences
+                                ._categoryIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -10211,6 +10626,27 @@ class $$ProductsTableTableManager
                                 table,
                                 p0,
                               ).compositionsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.productId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (benefitsRefs)
+                        await $_getPrefetchedData<
+                          ProductEntity,
+                          $ProductsTable,
+                          BenefitEntity
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProductsTableReferences
+                              ._benefitsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProductsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).benefitsRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.productId == item.id,
@@ -10326,6 +10762,7 @@ typedef $$ProductsTableProcessedTableManager =
         bool categoryId,
         bool productTargetGroupsRefs,
         bool compositionsRefs,
+        bool benefitsRefs,
         bool indicationsRefs,
         bool directionsRefs,
         bool precautionsRefs,
@@ -10619,7 +11056,9 @@ class $$ProductTargetGroupsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ProductTargetGroupsTable, ProductTargetGroup>(
+                    table,
+                  ),
                   $$ProductTargetGroupsTableReferences(db, table, e),
                 ),
               )
@@ -10645,34 +11084,26 @@ class $$ProductTargetGroupsTableTableManager
                     >
                   >(state) {
                     if (productId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.productId,
-                                referencedTable:
-                                    $$ProductTargetGroupsTableReferences
-                                        ._productIdTable(db),
-                                referencedColumn:
-                                    $$ProductTargetGroupsTableReferences
-                                        ._productIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.productId,
+                        referencedTable: $$ProductTargetGroupsTableReferences
+                            ._productIdTable(db),
+                        referencedColumn: $$ProductTargetGroupsTableReferences
+                            ._productIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (targetGroupId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.targetGroupId,
-                                referencedTable:
-                                    $$ProductTargetGroupsTableReferences
-                                        ._targetGroupIdTable(db),
-                                referencedColumn:
-                                    $$ProductTargetGroupsTableReferences
-                                        ._targetGroupIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.targetGroupId,
+                        referencedTable: $$ProductTargetGroupsTableReferences
+                            ._targetGroupIdTable(db),
+                        referencedColumn: $$ProductTargetGroupsTableReferences
+                            ._targetGroupIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -10975,7 +11406,7 @@ class $$CompositionsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$CompositionsTable, CompositionEntity>(table),
                   $$CompositionsTableReferences(db, table, e),
                 ),
               )
@@ -11001,17 +11432,15 @@ class $$CompositionsTableTableManager
                     >
                   >(state) {
                     if (productId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.productId,
-                                referencedTable: $$CompositionsTableReferences
-                                    ._productIdTable(db),
-                                referencedColumn: $$CompositionsTableReferences
-                                    ._productIdTable(db)
-                                    .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.productId,
+                        referencedTable: $$CompositionsTableReferences
+                            ._productIdTable(db),
+                        referencedColumn: $$CompositionsTableReferences
+                            ._productIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -11037,6 +11466,315 @@ typedef $$CompositionsTableProcessedTableManager =
       $$CompositionsTableUpdateCompanionBuilder,
       (CompositionEntity, $$CompositionsTableReferences),
       CompositionEntity,
+      PrefetchHooks Function({bool productId})
+    >;
+typedef $$BenefitsTableCreateCompanionBuilder = BenefitsCompanion Function({
+  Value<int> id,
+  required int productId,
+  required String textEn,
+  Value<String?> textBn,
+  Value<int> displayOrder,
+});
+typedef $$BenefitsTableUpdateCompanionBuilder = BenefitsCompanion Function({
+  Value<int> id,
+  Value<int> productId,
+  Value<String> textEn,
+  Value<String?> textBn,
+  Value<int> displayOrder,
+});
+
+final class $$BenefitsTableReferences
+    extends BaseReferences<_$ProductsDb, $BenefitsTable, BenefitEntity> {
+  $$BenefitsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ProductsTable _productIdTable(_$ProductsDb db) =>
+      db.products.createAlias('benefits__product_id__products__id');
+
+  $$ProductsTableProcessedTableManager get productId {
+    final $_column = $_itemColumn<int>('product_id')!;
+
+    final manager = $$ProductsTableTableManager(
+      $_db,
+      $_db.products,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_productIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$BenefitsTableFilterComposer
+    extends Composer<_$ProductsDb, $BenefitsTable> {
+  $$BenefitsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get textEn => $composableBuilder(
+    column: $table.textEn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get textBn => $composableBuilder(
+    column: $table.textBn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ProductsTableFilterComposer get productId {
+    final $$ProductsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.productId,
+      referencedTable: $db.products,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProductsTableFilterComposer(
+            $db: $db,
+            $table: $db.products,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BenefitsTableOrderingComposer
+    extends Composer<_$ProductsDb, $BenefitsTable> {
+  $$BenefitsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get textEn => $composableBuilder(
+    column: $table.textEn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get textBn => $composableBuilder(
+    column: $table.textBn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ProductsTableOrderingComposer get productId {
+    final $$ProductsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.productId,
+      referencedTable: $db.products,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProductsTableOrderingComposer(
+            $db: $db,
+            $table: $db.products,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BenefitsTableAnnotationComposer
+    extends Composer<_$ProductsDb, $BenefitsTable> {
+  $$BenefitsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get textEn =>
+      $composableBuilder(column: $table.textEn, builder: (column) => column);
+
+  GeneratedColumn<String> get textBn =>
+      $composableBuilder(column: $table.textBn, builder: (column) => column);
+
+  GeneratedColumn<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => column,
+  );
+
+  $$ProductsTableAnnotationComposer get productId {
+    final $$ProductsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.productId,
+      referencedTable: $db.products,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProductsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.products,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BenefitsTableTableManager
+    extends
+        RootTableManager<
+          _$ProductsDb,
+          $BenefitsTable,
+          BenefitEntity,
+          $$BenefitsTableFilterComposer,
+          $$BenefitsTableOrderingComposer,
+          $$BenefitsTableAnnotationComposer,
+          $$BenefitsTableCreateCompanionBuilder,
+          $$BenefitsTableUpdateCompanionBuilder,
+          (BenefitEntity, $$BenefitsTableReferences),
+          BenefitEntity,
+          PrefetchHooks Function({bool productId})
+        > {
+  $$BenefitsTableTableManager(_$ProductsDb db, $BenefitsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BenefitsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BenefitsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BenefitsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> productId = const Value.absent(),
+                Value<String> textEn = const Value.absent(),
+                Value<String?> textBn = const Value.absent(),
+                Value<int> displayOrder = const Value.absent(),
+              }) => BenefitsCompanion(
+                id: id,
+                productId: productId,
+                textEn: textEn,
+                textBn: textBn,
+                displayOrder: displayOrder,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int productId,
+                required String textEn,
+                Value<String?> textBn = const Value.absent(),
+                Value<int> displayOrder = const Value.absent(),
+              }) => BenefitsCompanion.insert(
+                id: id,
+                productId: productId,
+                textEn: textEn,
+                textBn: textBn,
+                displayOrder: displayOrder,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BenefitsTable, BenefitEntity>(table),
+                  $$BenefitsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({productId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (productId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.productId,
+                        referencedTable: $$BenefitsTableReferences
+                            ._productIdTable(db),
+                        referencedColumn: $$BenefitsTableReferences
+                            ._productIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$BenefitsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProductsDb,
+      $BenefitsTable,
+      BenefitEntity,
+      $$BenefitsTableFilterComposer,
+      $$BenefitsTableOrderingComposer,
+      $$BenefitsTableAnnotationComposer,
+      $$BenefitsTableCreateCompanionBuilder,
+      $$BenefitsTableUpdateCompanionBuilder,
+      (BenefitEntity, $$BenefitsTableReferences),
+      BenefitEntity,
       PrefetchHooks Function({bool productId})
     >;
 typedef $$IndicationsTableCreateCompanionBuilder =
@@ -11288,7 +12026,7 @@ class $$IndicationsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$IndicationsTable, IndicationEntity>(table),
                   $$IndicationsTableReferences(db, table, e),
                 ),
               )
@@ -11314,17 +12052,15 @@ class $$IndicationsTableTableManager
                     >
                   >(state) {
                     if (productId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.productId,
-                                referencedTable: $$IndicationsTableReferences
-                                    ._productIdTable(db),
-                                referencedColumn: $$IndicationsTableReferences
-                                    ._productIdTable(db)
-                                    .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.productId,
+                        referencedTable: $$IndicationsTableReferences
+                            ._productIdTable(db),
+                        referencedColumn: $$IndicationsTableReferences
+                            ._productIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -11352,42 +12088,40 @@ typedef $$IndicationsTableProcessedTableManager =
       IndicationEntity,
       PrefetchHooks Function({bool productId})
     >;
-typedef $$DirectionsTableCreateCompanionBuilder =
-    DirectionsCompanion Function({
-      Value<int> id,
-      required int productId,
-      required int contentTypeId,
-      required int speciesId,
-      required double doseValueMin,
-      Value<double?> doseValueMax,
-      required int doseUnitId,
-      required int doseBasisId,
-      Value<int?> durationDaysMin,
-      Value<int?> durationDaysMax,
-      Value<String?> administrationEn,
-      Value<String?> administrationBn,
-      Value<String?> dosageEn,
-      Value<String?> dosageBn,
-      Value<int> displayOrder,
-    });
-typedef $$DirectionsTableUpdateCompanionBuilder =
-    DirectionsCompanion Function({
-      Value<int> id,
-      Value<int> productId,
-      Value<int> contentTypeId,
-      Value<int> speciesId,
-      Value<double> doseValueMin,
-      Value<double?> doseValueMax,
-      Value<int> doseUnitId,
-      Value<int> doseBasisId,
-      Value<int?> durationDaysMin,
-      Value<int?> durationDaysMax,
-      Value<String?> administrationEn,
-      Value<String?> administrationBn,
-      Value<String?> dosageEn,
-      Value<String?> dosageBn,
-      Value<int> displayOrder,
-    });
+typedef $$DirectionsTableCreateCompanionBuilder = DirectionsCompanion Function({
+  Value<int> id,
+  required int productId,
+  required int contentTypeId,
+  required int speciesId,
+  required double doseValueMin,
+  Value<double?> doseValueMax,
+  required int doseUnitId,
+  required int doseBasisId,
+  Value<int?> durationDaysMin,
+  Value<int?> durationDaysMax,
+  Value<String?> administrationEn,
+  Value<String?> administrationBn,
+  Value<String?> dosageEn,
+  Value<String?> dosageBn,
+  Value<int> displayOrder,
+});
+typedef $$DirectionsTableUpdateCompanionBuilder = DirectionsCompanion Function({
+  Value<int> id,
+  Value<int> productId,
+  Value<int> contentTypeId,
+  Value<int> speciesId,
+  Value<double> doseValueMin,
+  Value<double?> doseValueMax,
+  Value<int> doseUnitId,
+  Value<int> doseBasisId,
+  Value<int?> durationDaysMin,
+  Value<int?> durationDaysMax,
+  Value<String?> administrationEn,
+  Value<String?> administrationBn,
+  Value<String?> dosageEn,
+  Value<String?> dosageBn,
+  Value<int> displayOrder,
+});
 
 final class $$DirectionsTableReferences
     extends BaseReferences<_$ProductsDb, $DirectionsTable, DirectionEntity> {
@@ -12102,7 +12836,7 @@ class $$DirectionsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$DirectionsTable, DirectionEntity>(table),
                   $$DirectionsTableReferences(db, table, e),
                 ),
               )
@@ -12135,74 +12869,59 @@ class $$DirectionsTableTableManager
                         >
                       >(state) {
                         if (productId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.productId,
-                                    referencedTable: $$DirectionsTableReferences
-                                        ._productIdTable(db),
-                                    referencedColumn:
-                                        $$DirectionsTableReferences
-                                            ._productIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.productId,
+                            referencedTable: $$DirectionsTableReferences
+                                ._productIdTable(db),
+                            referencedColumn: $$DirectionsTableReferences
+                                ._productIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (contentTypeId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.contentTypeId,
-                                    referencedTable: $$DirectionsTableReferences
-                                        ._contentTypeIdTable(db),
-                                    referencedColumn:
-                                        $$DirectionsTableReferences
-                                            ._contentTypeIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.contentTypeId,
+                            referencedTable: $$DirectionsTableReferences
+                                ._contentTypeIdTable(db),
+                            referencedColumn: $$DirectionsTableReferences
+                                ._contentTypeIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (speciesId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.speciesId,
-                                    referencedTable: $$DirectionsTableReferences
-                                        ._speciesIdTable(db),
-                                    referencedColumn:
-                                        $$DirectionsTableReferences
-                                            ._speciesIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.speciesId,
+                            referencedTable: $$DirectionsTableReferences
+                                ._speciesIdTable(db),
+                            referencedColumn: $$DirectionsTableReferences
+                                ._speciesIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (doseUnitId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.doseUnitId,
-                                    referencedTable: $$DirectionsTableReferences
-                                        ._doseUnitIdTable(db),
-                                    referencedColumn:
-                                        $$DirectionsTableReferences
-                                            ._doseUnitIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.doseUnitId,
+                            referencedTable: $$DirectionsTableReferences
+                                ._doseUnitIdTable(db),
+                            referencedColumn: $$DirectionsTableReferences
+                                ._doseUnitIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (doseBasisId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.doseBasisId,
-                                    referencedTable: $$DirectionsTableReferences
-                                        ._doseBasisIdTable(db),
-                                    referencedColumn:
-                                        $$DirectionsTableReferences
-                                            ._doseBasisIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.doseBasisId,
+                            referencedTable: $$DirectionsTableReferences
+                                ._doseBasisIdTable(db),
+                            referencedColumn: $$DirectionsTableReferences
+                                ._doseBasisIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -12485,7 +13204,7 @@ class $$PrecautionsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PrecautionsTable, PrecautionEntity>(table),
                   $$PrecautionsTableReferences(db, table, e),
                 ),
               )
@@ -12511,17 +13230,15 @@ class $$PrecautionsTableTableManager
                     >
                   >(state) {
                     if (productId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.productId,
-                                referencedTable: $$PrecautionsTableReferences
-                                    ._productIdTable(db),
-                                referencedColumn: $$PrecautionsTableReferences
-                                    ._productIdTable(db)
-                                    .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.productId,
+                        referencedTable: $$PrecautionsTableReferences
+                            ._productIdTable(db),
+                        referencedColumn: $$PrecautionsTableReferences
+                            ._productIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -13031,7 +13748,7 @@ class $$PresentationsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PresentationsTable, PresentationEntity>(table),
                   $$PresentationsTableReferences(db, table, e),
                 ),
               )
@@ -13062,49 +13779,37 @@ class $$PresentationsTableTableManager
                         >
                       >(state) {
                         if (productId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.productId,
-                                    referencedTable:
-                                        $$PresentationsTableReferences
-                                            ._productIdTable(db),
-                                    referencedColumn:
-                                        $$PresentationsTableReferences
-                                            ._productIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.productId,
+                            referencedTable: $$PresentationsTableReferences
+                                ._productIdTable(db),
+                            referencedColumn: $$PresentationsTableReferences
+                                ._productIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (productTypeId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.productTypeId,
-                                    referencedTable:
-                                        $$PresentationsTableReferences
-                                            ._productTypeIdTable(db),
-                                    referencedColumn:
-                                        $$PresentationsTableReferences
-                                            ._productTypeIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.productTypeId,
+                            referencedTable: $$PresentationsTableReferences
+                                ._productTypeIdTable(db),
+                            referencedColumn: $$PresentationsTableReferences
+                                ._productTypeIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (contentTypeId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.contentTypeId,
-                                    referencedTable:
-                                        $$PresentationsTableReferences
-                                            ._contentTypeIdTable(db),
-                                    referencedColumn:
-                                        $$PresentationsTableReferences
-                                            ._contentTypeIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.contentTypeId,
+                            referencedTable: $$PresentationsTableReferences
+                                ._contentTypeIdTable(db),
+                            referencedColumn: $$PresentationsTableReferences
+                                ._contentTypeIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -13162,6 +13867,8 @@ class $ProductsDbManager {
       $$ProductTargetGroupsTableTableManager(_db, _db.productTargetGroups);
   $$CompositionsTableTableManager get compositions =>
       $$CompositionsTableTableManager(_db, _db.compositions);
+  $$BenefitsTableTableManager get benefits =>
+      $$BenefitsTableTableManager(_db, _db.benefits);
   $$IndicationsTableTableManager get indications =>
       $$IndicationsTableTableManager(_db, _db.indications);
   $$DirectionsTableTableManager get directions =>
@@ -19429,18 +20136,16 @@ abstract class _$DistributorsDb extends GeneratedDatabase {
   ]);
 }
 
-typedef $$DivisionsTableCreateCompanionBuilder =
-    DivisionsCompanion Function({
-      Value<int> id,
-      required String nameEn,
-      required String nameBn,
-    });
-typedef $$DivisionsTableUpdateCompanionBuilder =
-    DivisionsCompanion Function({
-      Value<int> id,
-      Value<String> nameEn,
-      Value<String> nameBn,
-    });
+typedef $$DivisionsTableCreateCompanionBuilder = DivisionsCompanion Function({
+  Value<int> id,
+  required String nameEn,
+  required String nameBn,
+});
+typedef $$DivisionsTableUpdateCompanionBuilder = DivisionsCompanion Function({
+  Value<int> id,
+  Value<String> nameEn,
+  Value<String> nameBn,
+});
 
 final class $$DivisionsTableReferences
     extends BaseReferences<_$DistributorsDb, $DivisionsTable, DivisionEntity> {
@@ -19610,12 +20315,11 @@ class $$DivisionsTableTableManager
               $$DivisionsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$DivisionsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> nameEn = const Value.absent(),
-                Value<String> nameBn = const Value.absent(),
-              }) => DivisionsCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> nameEn = const Value.absent(),
+            Value<String> nameBn = const Value.absent(),
+          }) => DivisionsCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -19629,7 +20333,7 @@ class $$DivisionsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$DivisionsTable, DivisionEntity>(table),
                   $$DivisionsTableReferences(db, table, e),
                 ),
               )
@@ -19682,20 +20386,18 @@ typedef $$DivisionsTableProcessedTableManager =
       DivisionEntity,
       PrefetchHooks Function({bool districtsRefs})
     >;
-typedef $$DistrictsTableCreateCompanionBuilder =
-    DistrictsCompanion Function({
-      Value<int> id,
-      required int divisionId,
-      required String nameEn,
-      required String nameBn,
-    });
-typedef $$DistrictsTableUpdateCompanionBuilder =
-    DistrictsCompanion Function({
-      Value<int> id,
-      Value<int> divisionId,
-      Value<String> nameEn,
-      Value<String> nameBn,
-    });
+typedef $$DistrictsTableCreateCompanionBuilder = DistrictsCompanion Function({
+  Value<int> id,
+  required int divisionId,
+  required String nameEn,
+  required String nameBn,
+});
+typedef $$DistrictsTableUpdateCompanionBuilder = DistrictsCompanion Function({
+  Value<int> id,
+  Value<int> divisionId,
+  Value<String> nameEn,
+  Value<String> nameBn,
+});
 
 final class $$DistrictsTableReferences
     extends BaseReferences<_$DistributorsDb, $DistrictsTable, DistrictEntity> {
@@ -19978,7 +20680,7 @@ class $$DistrictsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$DistrictsTable, DistrictEntity>(table),
                   $$DistrictsTableReferences(db, table, e),
                 ),
               )
@@ -20004,17 +20706,15 @@ class $$DistrictsTableTableManager
                     >
                   >(state) {
                     if (divisionId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.divisionId,
-                                referencedTable: $$DistrictsTableReferences
-                                    ._divisionIdTable(db),
-                                referencedColumn: $$DistrictsTableReferences
-                                    ._divisionIdTable(db)
-                                    .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.divisionId,
+                        referencedTable: $$DistrictsTableReferences
+                            ._divisionIdTable(db),
+                        referencedColumn: $$DistrictsTableReferences
+                            ._divisionIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -20062,20 +20762,18 @@ typedef $$DistrictsTableProcessedTableManager =
       DistrictEntity,
       PrefetchHooks Function({bool divisionId, bool upazilasRefs})
     >;
-typedef $$UpazilasTableCreateCompanionBuilder =
-    UpazilasCompanion Function({
-      Value<int> id,
-      required int districtId,
-      required String nameEn,
-      required String nameBn,
-    });
-typedef $$UpazilasTableUpdateCompanionBuilder =
-    UpazilasCompanion Function({
-      Value<int> id,
-      Value<int> districtId,
-      Value<String> nameEn,
-      Value<String> nameBn,
-    });
+typedef $$UpazilasTableCreateCompanionBuilder = UpazilasCompanion Function({
+  Value<int> id,
+  required int districtId,
+  required String nameEn,
+  required String nameBn,
+});
+typedef $$UpazilasTableUpdateCompanionBuilder = UpazilasCompanion Function({
+  Value<int> id,
+  Value<int> districtId,
+  Value<String> nameEn,
+  Value<String> nameBn,
+});
 
 final class $$UpazilasTableReferences
     extends BaseReferences<_$DistributorsDb, $UpazilasTable, UpazilaEntity> {
@@ -20581,7 +21279,7 @@ class $$UpazilasTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$UpazilasTable, UpazilaEntity>(table),
                   $$UpazilasTableReferences(db, table, e),
                 ),
               )
@@ -20619,17 +21317,15 @@ class $$UpazilasTableTableManager
                         >
                       >(state) {
                         if (districtId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.districtId,
-                                    referencedTable: $$UpazilasTableReferences
-                                        ._districtIdTable(db),
-                                    referencedColumn: $$UpazilasTableReferences
-                                        ._districtIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.districtId,
+                            referencedTable: $$UpazilasTableReferences
+                                ._districtIdTable(db),
+                            referencedColumn: $$UpazilasTableReferences
+                                ._districtIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -20748,18 +21444,16 @@ typedef $$UpazilasTableProcessedTableManager =
         bool vetDoctorsUpazilasRefs,
       })
     >;
-typedef $$RegionsTableCreateCompanionBuilder =
-    RegionsCompanion Function({
-      Value<int> id,
-      required String nameEn,
-      required String nameBn,
-    });
-typedef $$RegionsTableUpdateCompanionBuilder =
-    RegionsCompanion Function({
-      Value<int> id,
-      Value<String> nameEn,
-      Value<String> nameBn,
-    });
+typedef $$RegionsTableCreateCompanionBuilder = RegionsCompanion Function({
+  Value<int> id,
+  required String nameEn,
+  required String nameBn,
+});
+typedef $$RegionsTableUpdateCompanionBuilder = RegionsCompanion Function({
+  Value<int> id,
+  Value<String> nameEn,
+  Value<String> nameBn,
+});
 
 final class $$RegionsTableReferences
     extends BaseReferences<_$DistributorsDb, $RegionsTable, RegionEntity> {
@@ -21083,26 +21777,20 @@ class $$RegionsTableTableManager
               $$RegionsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$RegionsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> nameEn = const Value.absent(),
-                Value<String> nameBn = const Value.absent(),
-              }) => RegionsCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String nameEn,
-                required String nameBn,
-              }) => RegionsCompanion.insert(
-                id: id,
-                nameEn: nameEn,
-                nameBn: nameBn,
-              ),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> nameEn = const Value.absent(),
+            Value<String> nameBn = const Value.absent(),
+          }) => RegionsCompanion(id: id, nameEn: nameEn, nameBn: nameBn),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String nameEn,
+            required String nameBn,
+          }) => RegionsCompanion.insert(id: id, nameEn: nameEn, nameBn: nameBn),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$RegionsTable, RegionEntity>(table),
                   $$RegionsTableReferences(db, table, e),
                 ),
               )
@@ -21208,20 +21896,18 @@ typedef $$RegionsTableProcessedTableManager =
         bool vetDoctorsRegionsRefs,
       })
     >;
-typedef $$AreasTableCreateCompanionBuilder =
-    AreasCompanion Function({
-      Value<int> id,
-      required int regionId,
-      required String nameEn,
-      required String nameBn,
-    });
-typedef $$AreasTableUpdateCompanionBuilder =
-    AreasCompanion Function({
-      Value<int> id,
-      Value<int> regionId,
-      Value<String> nameEn,
-      Value<String> nameBn,
-    });
+typedef $$AreasTableCreateCompanionBuilder = AreasCompanion Function({
+  Value<int> id,
+  required int regionId,
+  required String nameEn,
+  required String nameBn,
+});
+typedef $$AreasTableUpdateCompanionBuilder = AreasCompanion Function({
+  Value<int> id,
+  Value<int> regionId,
+  Value<String> nameEn,
+  Value<String> nameBn,
+});
 
 final class $$AreasTableReferences
     extends BaseReferences<_$DistributorsDb, $AreasTable, AreaEntity> {
@@ -21724,8 +22410,10 @@ class $$AreasTableTableManager
               ),
           withReferenceMapper: (p0) => p0
               .map(
-                (e) =>
-                    (e.readTable(table), $$AreasTableReferences(db, table, e)),
+                (e) => (
+                  e.readTable<$AreasTable, AreaEntity>(table),
+                  $$AreasTableReferences(db, table, e),
+                ),
               )
               .toList(),
           prefetchHooksCallback:
@@ -21761,17 +22449,15 @@ class $$AreasTableTableManager
                         >
                       >(state) {
                         if (regionId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.regionId,
-                                    referencedTable: $$AreasTableReferences
-                                        ._regionIdTable(db),
-                                    referencedColumn: $$AreasTableReferences
-                                        ._regionIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.regionId,
+                            referencedTable: $$AreasTableReferences
+                                ._regionIdTable(db),
+                            referencedColumn: $$AreasTableReferences
+                                ._regionIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -21886,20 +22572,18 @@ typedef $$AreasTableProcessedTableManager =
         bool vetDoctorsAreasRefs,
       })
     >;
-typedef $$BasesTableCreateCompanionBuilder =
-    BasesCompanion Function({
-      Value<int> id,
-      required int areaId,
-      required String nameEn,
-      required String nameBn,
-    });
-typedef $$BasesTableUpdateCompanionBuilder =
-    BasesCompanion Function({
-      Value<int> id,
-      Value<int> areaId,
-      Value<String> nameEn,
-      Value<String> nameBn,
-    });
+typedef $$BasesTableCreateCompanionBuilder = BasesCompanion Function({
+  Value<int> id,
+  required int areaId,
+  required String nameEn,
+  required String nameBn,
+});
+typedef $$BasesTableUpdateCompanionBuilder = BasesCompanion Function({
+  Value<int> id,
+  Value<int> areaId,
+  Value<String> nameEn,
+  Value<String> nameBn,
+});
 
 final class $$BasesTableReferences
     extends BaseReferences<_$DistributorsDb, $BasesTable, BaseEntity> {
@@ -22401,8 +23085,10 @@ class $$BasesTableTableManager
               ),
           withReferenceMapper: (p0) => p0
               .map(
-                (e) =>
-                    (e.readTable(table), $$BasesTableReferences(db, table, e)),
+                (e) => (
+                  e.readTable<$BasesTable, BaseEntity>(table),
+                  $$BasesTableReferences(db, table, e),
+                ),
               )
               .toList(),
           prefetchHooksCallback:
@@ -22438,17 +23124,15 @@ class $$BasesTableTableManager
                         >
                       >(state) {
                         if (areaId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.areaId,
-                                    referencedTable: $$BasesTableReferences
-                                        ._areaIdTable(db),
-                                    referencedColumn: $$BasesTableReferences
-                                        ._areaIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.areaId,
+                            referencedTable: $$BasesTableReferences
+                                ._areaIdTable(db),
+                            referencedColumn: $$BasesTableReferences
+                                ._areaIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -22841,7 +23525,7 @@ class $$BaseUpazilasTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$BaseUpazilasTable, BaseUpazilaEntity>(table),
                   $$BaseUpazilasTableReferences(db, table, e),
                 ),
               )
@@ -22867,30 +23551,26 @@ class $$BaseUpazilasTableTableManager
                     >
                   >(state) {
                     if (baseId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.baseId,
-                                referencedTable: $$BaseUpazilasTableReferences
-                                    ._baseIdTable(db),
-                                referencedColumn: $$BaseUpazilasTableReferences
-                                    ._baseIdTable(db)
-                                    .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.baseId,
+                        referencedTable: $$BaseUpazilasTableReferences
+                            ._baseIdTable(db),
+                        referencedColumn: $$BaseUpazilasTableReferences
+                            ._baseIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (upazilaId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.upazilaId,
-                                referencedTable: $$BaseUpazilasTableReferences
-                                    ._upazilaIdTable(db),
-                                referencedColumn: $$BaseUpazilasTableReferences
-                                    ._upazilaIdTable(db)
-                                    .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.upazilaId,
+                        referencedTable: $$BaseUpazilasTableReferences
+                            ._upazilaIdTable(db),
+                        referencedColumn: $$BaseUpazilasTableReferences
+                            ._upazilaIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -23470,7 +24150,7 @@ class $$DistributorsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$DistributorsTable, DistributorEntity>(table),
                   $$DistributorsTableReferences(db, table, e),
                 ),
               )
@@ -23497,49 +24177,37 @@ class $$DistributorsTableTableManager
                         >
                       >(state) {
                         if (upazilaId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.upazilaId,
-                                    referencedTable:
-                                        $$DistributorsTableReferences
-                                            ._upazilaIdTable(db),
-                                    referencedColumn:
-                                        $$DistributorsTableReferences
-                                            ._upazilaIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.upazilaId,
+                            referencedTable: $$DistributorsTableReferences
+                                ._upazilaIdTable(db),
+                            referencedColumn: $$DistributorsTableReferences
+                                ._upazilaIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (baseId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.baseId,
-                                    referencedTable:
-                                        $$DistributorsTableReferences
-                                            ._baseIdTable(db),
-                                    referencedColumn:
-                                        $$DistributorsTableReferences
-                                            ._baseIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.baseId,
+                            referencedTable: $$DistributorsTableReferences
+                                ._baseIdTable(db),
+                            referencedColumn: $$DistributorsTableReferences
+                                ._baseIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (areaId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.areaId,
-                                    referencedTable:
-                                        $$DistributorsTableReferences
-                                            ._areaIdTable(db),
-                                    referencedColumn:
-                                        $$DistributorsTableReferences
-                                            ._areaIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.areaId,
+                            referencedTable: $$DistributorsTableReferences
+                                ._areaIdTable(db),
+                            referencedColumn: $$DistributorsTableReferences
+                                ._areaIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -24183,7 +24851,9 @@ class $$SalesPersonnelTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$SalesPersonnelTable, SalesPersonnelEntity>(
+                    table,
+                  ),
                   $$SalesPersonnelTableReferences(db, table, e),
                 ),
               )
@@ -24608,7 +25278,10 @@ class $$SalesPersonnelRegionsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<
+                    $SalesPersonnelRegionsTable,
+                    SalesPersonnelRegion
+                  >(table),
                   $$SalesPersonnelRegionsTableReferences(db, table, e),
                 ),
               )
@@ -24635,34 +25308,30 @@ class $$SalesPersonnelRegionsTableTableManager
                         >
                       >(state) {
                         if (salesPersonnelId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.salesPersonnelId,
-                                    referencedTable:
-                                        $$SalesPersonnelRegionsTableReferences
-                                            ._salesPersonnelIdTable(db),
-                                    referencedColumn:
-                                        $$SalesPersonnelRegionsTableReferences
-                                            ._salesPersonnelIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.salesPersonnelId,
+                            referencedTable:
+                                $$SalesPersonnelRegionsTableReferences
+                                    ._salesPersonnelIdTable(db),
+                            referencedColumn:
+                                $$SalesPersonnelRegionsTableReferences
+                                    ._salesPersonnelIdTable(db)
+                                    .id,
+                          ) as T;
                         }
                         if (regionId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.regionId,
-                                    referencedTable:
-                                        $$SalesPersonnelRegionsTableReferences
-                                            ._regionIdTable(db),
-                                    referencedColumn:
-                                        $$SalesPersonnelRegionsTableReferences
-                                            ._regionIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.regionId,
+                            referencedTable:
+                                $$SalesPersonnelRegionsTableReferences
+                                    ._regionIdTable(db),
+                            referencedColumn:
+                                $$SalesPersonnelRegionsTableReferences
+                                    ._regionIdTable(db)
+                                    .id,
+                          ) as T;
                         }
 
                         return state;
@@ -24978,7 +25647,9 @@ class $$SalesPersonnelAreasTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$SalesPersonnelAreasTable, SalesPersonnelArea>(
+                    table,
+                  ),
                   $$SalesPersonnelAreasTableReferences(db, table, e),
                 ),
               )
@@ -25004,34 +25675,26 @@ class $$SalesPersonnelAreasTableTableManager
                     >
                   >(state) {
                     if (salesPersonnelId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.salesPersonnelId,
-                                referencedTable:
-                                    $$SalesPersonnelAreasTableReferences
-                                        ._salesPersonnelIdTable(db),
-                                referencedColumn:
-                                    $$SalesPersonnelAreasTableReferences
-                                        ._salesPersonnelIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.salesPersonnelId,
+                        referencedTable: $$SalesPersonnelAreasTableReferences
+                            ._salesPersonnelIdTable(db),
+                        referencedColumn: $$SalesPersonnelAreasTableReferences
+                            ._salesPersonnelIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (areaId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.areaId,
-                                referencedTable:
-                                    $$SalesPersonnelAreasTableReferences
-                                        ._areaIdTable(db),
-                                referencedColumn:
-                                    $$SalesPersonnelAreasTableReferences
-                                        ._areaIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.areaId,
+                        referencedTable: $$SalesPersonnelAreasTableReferences
+                            ._areaIdTable(db),
+                        referencedColumn: $$SalesPersonnelAreasTableReferences
+                            ._areaIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -25347,7 +26010,9 @@ class $$SalesPersonnelBasesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$SalesPersonnelBasesTable, SalesPersonnelBase>(
+                    table,
+                  ),
                   $$SalesPersonnelBasesTableReferences(db, table, e),
                 ),
               )
@@ -25373,34 +26038,26 @@ class $$SalesPersonnelBasesTableTableManager
                     >
                   >(state) {
                     if (salesPersonnelId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.salesPersonnelId,
-                                referencedTable:
-                                    $$SalesPersonnelBasesTableReferences
-                                        ._salesPersonnelIdTable(db),
-                                referencedColumn:
-                                    $$SalesPersonnelBasesTableReferences
-                                        ._salesPersonnelIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.salesPersonnelId,
+                        referencedTable: $$SalesPersonnelBasesTableReferences
+                            ._salesPersonnelIdTable(db),
+                        referencedColumn: $$SalesPersonnelBasesTableReferences
+                            ._salesPersonnelIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (baseId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.baseId,
-                                referencedTable:
-                                    $$SalesPersonnelBasesTableReferences
-                                        ._baseIdTable(db),
-                                referencedColumn:
-                                    $$SalesPersonnelBasesTableReferences
-                                        ._baseIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.baseId,
+                        referencedTable: $$SalesPersonnelBasesTableReferences
+                            ._baseIdTable(db),
+                        referencedColumn: $$SalesPersonnelBasesTableReferences
+                            ._baseIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -25719,7 +26376,10 @@ class $$SalesPersonnelUpazilasTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<
+                    $SalesPersonnelUpazilasTable,
+                    SalesPersonnelUpazila
+                  >(table),
                   $$SalesPersonnelUpazilasTableReferences(db, table, e),
                 ),
               )
@@ -25746,34 +26406,30 @@ class $$SalesPersonnelUpazilasTableTableManager
                         >
                       >(state) {
                         if (salesPersonnelId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.salesPersonnelId,
-                                    referencedTable:
-                                        $$SalesPersonnelUpazilasTableReferences
-                                            ._salesPersonnelIdTable(db),
-                                    referencedColumn:
-                                        $$SalesPersonnelUpazilasTableReferences
-                                            ._salesPersonnelIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.salesPersonnelId,
+                            referencedTable:
+                                $$SalesPersonnelUpazilasTableReferences
+                                    ._salesPersonnelIdTable(db),
+                            referencedColumn:
+                                $$SalesPersonnelUpazilasTableReferences
+                                    ._salesPersonnelIdTable(db)
+                                    .id,
+                          ) as T;
                         }
                         if (upazilaId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.upazilaId,
-                                    referencedTable:
-                                        $$SalesPersonnelUpazilasTableReferences
-                                            ._upazilaIdTable(db),
-                                    referencedColumn:
-                                        $$SalesPersonnelUpazilasTableReferences
-                                            ._upazilaIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.upazilaId,
+                            referencedTable:
+                                $$SalesPersonnelUpazilasTableReferences
+                                    ._upazilaIdTable(db),
+                            referencedColumn:
+                                $$SalesPersonnelUpazilasTableReferences
+                                    ._upazilaIdTable(db)
+                                    .id,
+                          ) as T;
                         }
 
                         return state;
@@ -25801,44 +26457,42 @@ typedef $$SalesPersonnelUpazilasTableProcessedTableManager =
       SalesPersonnelUpazila,
       PrefetchHooks Function({bool salesPersonnelId, bool upazilaId})
     >;
-typedef $$VetDoctorsTableCreateCompanionBuilder =
-    VetDoctorsCompanion Function({
-      Value<int> id,
-      required String nameEn,
-      required String nameBn,
-      Value<String?> photoUrl,
-      Value<String?> qualification,
-      Value<String?> specialization,
-      Value<String?> bvcRegistrationNo,
-      Value<String?> clinicOrHospitalNameEn,
-      Value<String?> clinicOrHospitalNameBn,
-      Value<String?> addressEn,
-      Value<String?> addressBn,
-      required String mobile,
-      Value<String?> email,
-      Value<int> isActive,
-      Value<String> createdAt,
-      Value<String> updatedAt,
-    });
-typedef $$VetDoctorsTableUpdateCompanionBuilder =
-    VetDoctorsCompanion Function({
-      Value<int> id,
-      Value<String> nameEn,
-      Value<String> nameBn,
-      Value<String?> photoUrl,
-      Value<String?> qualification,
-      Value<String?> specialization,
-      Value<String?> bvcRegistrationNo,
-      Value<String?> clinicOrHospitalNameEn,
-      Value<String?> clinicOrHospitalNameBn,
-      Value<String?> addressEn,
-      Value<String?> addressBn,
-      Value<String> mobile,
-      Value<String?> email,
-      Value<int> isActive,
-      Value<String> createdAt,
-      Value<String> updatedAt,
-    });
+typedef $$VetDoctorsTableCreateCompanionBuilder = VetDoctorsCompanion Function({
+  Value<int> id,
+  required String nameEn,
+  required String nameBn,
+  Value<String?> photoUrl,
+  Value<String?> qualification,
+  Value<String?> specialization,
+  Value<String?> bvcRegistrationNo,
+  Value<String?> clinicOrHospitalNameEn,
+  Value<String?> clinicOrHospitalNameBn,
+  Value<String?> addressEn,
+  Value<String?> addressBn,
+  required String mobile,
+  Value<String?> email,
+  Value<int> isActive,
+  Value<String> createdAt,
+  Value<String> updatedAt,
+});
+typedef $$VetDoctorsTableUpdateCompanionBuilder = VetDoctorsCompanion Function({
+  Value<int> id,
+  Value<String> nameEn,
+  Value<String> nameBn,
+  Value<String?> photoUrl,
+  Value<String?> qualification,
+  Value<String?> specialization,
+  Value<String?> bvcRegistrationNo,
+  Value<String?> clinicOrHospitalNameEn,
+  Value<String?> clinicOrHospitalNameBn,
+  Value<String?> addressEn,
+  Value<String?> addressBn,
+  Value<String> mobile,
+  Value<String?> email,
+  Value<int> isActive,
+  Value<String> createdAt,
+  Value<String> updatedAt,
+});
 
 final class $$VetDoctorsTableReferences
     extends
@@ -26486,7 +27140,7 @@ class $$VetDoctorsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$VetDoctorsTable, VetDoctorEntity>(table),
                   $$VetDoctorsTableReferences(db, table, e),
                 ),
               )
@@ -26904,7 +27558,7 @@ class $$VetDoctorsRegionsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$VetDoctorsRegionsTable, VetDoctorsRegion>(table),
                   $$VetDoctorsRegionsTableReferences(db, table, e),
                 ),
               )
@@ -26930,34 +27584,26 @@ class $$VetDoctorsRegionsTableTableManager
                     >
                   >(state) {
                     if (vetDoctorId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.vetDoctorId,
-                                referencedTable:
-                                    $$VetDoctorsRegionsTableReferences
-                                        ._vetDoctorIdTable(db),
-                                referencedColumn:
-                                    $$VetDoctorsRegionsTableReferences
-                                        ._vetDoctorIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.vetDoctorId,
+                        referencedTable: $$VetDoctorsRegionsTableReferences
+                            ._vetDoctorIdTable(db),
+                        referencedColumn: $$VetDoctorsRegionsTableReferences
+                            ._vetDoctorIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (regionId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.regionId,
-                                referencedTable:
-                                    $$VetDoctorsRegionsTableReferences
-                                        ._regionIdTable(db),
-                                referencedColumn:
-                                    $$VetDoctorsRegionsTableReferences
-                                        ._regionIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.regionId,
+                        referencedTable: $$VetDoctorsRegionsTableReferences
+                            ._regionIdTable(db),
+                        referencedColumn: $$VetDoctorsRegionsTableReferences
+                            ._regionIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -27266,7 +27912,7 @@ class $$VetDoctorsAreasTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$VetDoctorsAreasTable, VetDoctorsArea>(table),
                   $$VetDoctorsAreasTableReferences(db, table, e),
                 ),
               )
@@ -27292,34 +27938,26 @@ class $$VetDoctorsAreasTableTableManager
                     >
                   >(state) {
                     if (vetDoctorId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.vetDoctorId,
-                                referencedTable:
-                                    $$VetDoctorsAreasTableReferences
-                                        ._vetDoctorIdTable(db),
-                                referencedColumn:
-                                    $$VetDoctorsAreasTableReferences
-                                        ._vetDoctorIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.vetDoctorId,
+                        referencedTable: $$VetDoctorsAreasTableReferences
+                            ._vetDoctorIdTable(db),
+                        referencedColumn: $$VetDoctorsAreasTableReferences
+                            ._vetDoctorIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (areaId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.areaId,
-                                referencedTable:
-                                    $$VetDoctorsAreasTableReferences
-                                        ._areaIdTable(db),
-                                referencedColumn:
-                                    $$VetDoctorsAreasTableReferences
-                                        ._areaIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.areaId,
+                        referencedTable: $$VetDoctorsAreasTableReferences
+                            ._areaIdTable(db),
+                        referencedColumn: $$VetDoctorsAreasTableReferences
+                            ._areaIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -27628,7 +28266,7 @@ class $$VetDoctorsBasesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$VetDoctorsBasesTable, VetDoctorsBase>(table),
                   $$VetDoctorsBasesTableReferences(db, table, e),
                 ),
               )
@@ -27654,34 +28292,26 @@ class $$VetDoctorsBasesTableTableManager
                     >
                   >(state) {
                     if (vetDoctorId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.vetDoctorId,
-                                referencedTable:
-                                    $$VetDoctorsBasesTableReferences
-                                        ._vetDoctorIdTable(db),
-                                referencedColumn:
-                                    $$VetDoctorsBasesTableReferences
-                                        ._vetDoctorIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.vetDoctorId,
+                        referencedTable: $$VetDoctorsBasesTableReferences
+                            ._vetDoctorIdTable(db),
+                        referencedColumn: $$VetDoctorsBasesTableReferences
+                            ._vetDoctorIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (baseId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.baseId,
-                                referencedTable:
-                                    $$VetDoctorsBasesTableReferences
-                                        ._baseIdTable(db),
-                                referencedColumn:
-                                    $$VetDoctorsBasesTableReferences
-                                        ._baseIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.baseId,
+                        referencedTable: $$VetDoctorsBasesTableReferences
+                            ._baseIdTable(db),
+                        referencedColumn: $$VetDoctorsBasesTableReferences
+                            ._baseIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -27993,7 +28623,9 @@ class $$VetDoctorsUpazilasTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$VetDoctorsUpazilasTable, VetDoctorsUpazila>(
+                    table,
+                  ),
                   $$VetDoctorsUpazilasTableReferences(db, table, e),
                 ),
               )
@@ -28019,34 +28651,26 @@ class $$VetDoctorsUpazilasTableTableManager
                     >
                   >(state) {
                     if (vetDoctorId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.vetDoctorId,
-                                referencedTable:
-                                    $$VetDoctorsUpazilasTableReferences
-                                        ._vetDoctorIdTable(db),
-                                referencedColumn:
-                                    $$VetDoctorsUpazilasTableReferences
-                                        ._vetDoctorIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.vetDoctorId,
+                        referencedTable: $$VetDoctorsUpazilasTableReferences
+                            ._vetDoctorIdTable(db),
+                        referencedColumn: $$VetDoctorsUpazilasTableReferences
+                            ._vetDoctorIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (upazilaId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.upazilaId,
-                                referencedTable:
-                                    $$VetDoctorsUpazilasTableReferences
-                                        ._upazilaIdTable(db),
-                                referencedColumn:
-                                    $$VetDoctorsUpazilasTableReferences
-                                        ._upazilaIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.upazilaId,
+                        referencedTable: $$VetDoctorsUpazilasTableReferences
+                            ._upazilaIdTable(db),
+                        referencedColumn: $$VetDoctorsUpazilasTableReferences
+                            ._upazilaIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -29544,7 +30168,16 @@ class $$FavoriteProductsTableTableManager
                 addedAt: addedAt,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$FavoriteProductsTable, FavoriteProduct>(table),
+                  BaseReferences<
+                    _$AppMaintenanceDb,
+                    $FavoriteProductsTable,
+                    FavoriteProduct
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -29699,7 +30332,18 @@ class $$FavoriteDistributorsTableTableManager
                 addedAt: addedAt,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$FavoriteDistributorsTable, FavoriteDistributor>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppMaintenanceDb,
+                    $FavoriteDistributorsTable,
+                    FavoriteDistributor
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -29857,7 +30501,19 @@ class $$FavoriteSalesPersonnelTableTableManager
                 addedAt: addedAt,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<
+                    $FavoriteSalesPersonnelTable,
+                    FavoriteSalesPersonnelData
+                  >(table),
+                  BaseReferences<
+                    _$AppMaintenanceDb,
+                    $FavoriteSalesPersonnelTable,
+                    FavoriteSalesPersonnelData
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -30009,7 +30665,18 @@ class $$FavoriteVetDoctorsTableTableManager
                 addedAt: addedAt,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$FavoriteVetDoctorsTable, FavoriteVetDoctor>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppMaintenanceDb,
+                    $FavoriteVetDoctorsTable,
+                    FavoriteVetDoctor
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -30135,12 +30802,11 @@ class $$AppSettingsTableTableManager
               $$AppSettingsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$AppSettingsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<String> key = const Value.absent(),
-                Value<String?> value = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => AppSettingsCompanion(key: key, value: value, rowid: rowid),
+          updateCompanionCallback: ({
+            Value<String> key = const Value.absent(),
+            Value<String?> value = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) => AppSettingsCompanion(key: key, value: value, rowid: rowid),
           createCompanionCallback:
               ({
                 required String key,
@@ -30152,7 +30818,16 @@ class $$AppSettingsTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$AppSettingsTable, AppSetting>(table),
+                  BaseReferences<
+                    _$AppMaintenanceDb,
+                    $AppSettingsTable,
+                    AppSetting
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -30176,18 +30851,16 @@ typedef $$AppSettingsTableProcessedTableManager =
       AppSetting,
       PrefetchHooks Function()
     >;
-typedef $$DbMetaTableCreateCompanionBuilder =
-    DbMetaCompanion Function({
-      required String key,
-      Value<String?> value,
-      Value<int> rowid,
-    });
-typedef $$DbMetaTableUpdateCompanionBuilder =
-    DbMetaCompanion Function({
-      Value<String> key,
-      Value<String?> value,
-      Value<int> rowid,
-    });
+typedef $$DbMetaTableCreateCompanionBuilder = DbMetaCompanion Function({
+  required String key,
+  Value<String?> value,
+  Value<int> rowid,
+});
+typedef $$DbMetaTableUpdateCompanionBuilder = DbMetaCompanion Function({
+  Value<String> key,
+  Value<String?> value,
+  Value<int> rowid,
+});
 
 class $$DbMetaTableFilterComposer
     extends Composer<_$AppMaintenanceDb, $DbMetaTable> {
@@ -30274,21 +30947,27 @@ class $$DbMetaTableTableManager
               $$DbMetaTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$DbMetaTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<String> key = const Value.absent(),
-                Value<String?> value = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => DbMetaCompanion(key: key, value: value, rowid: rowid),
-          createCompanionCallback:
-              ({
-                required String key,
-                Value<String?> value = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) =>
-                  DbMetaCompanion.insert(key: key, value: value, rowid: rowid),
+          updateCompanionCallback: ({
+            Value<String> key = const Value.absent(),
+            Value<String?> value = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) => DbMetaCompanion(key: key, value: value, rowid: rowid),
+          createCompanionCallback: ({
+            required String key,
+            Value<String?> value = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) => DbMetaCompanion.insert(key: key, value: value, rowid: rowid),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$DbMetaTable, DbMetaData>(table),
+                  BaseReferences<_$AppMaintenanceDb, $DbMetaTable, DbMetaData>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),

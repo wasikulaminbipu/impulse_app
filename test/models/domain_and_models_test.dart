@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/domain/category_filter.dart';
 import 'package:impulse_app/domain/search_scope.dart';
 import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/providers/paginated_state.dart';
-import 'package:impulse_app/utils/app_constants.dart';
 
 void main() {
   group('Domain & Models Coverage Tests', () {
@@ -27,87 +27,84 @@ void main() {
       },
     );
 
-    test(
-      'resolveCategoryFilter handles All, Feed Additives, Vaccines, TargetGroups, and fallback',
-      () {
-        final categories = [
-          const Category(id: 1, nameEn: 'Vaccine', nameBn: 'টিকা'),
-          const Category(
-            id: 2,
-            nameEn: 'Antibiotics',
-            nameBn: 'অ্যান্টিবায়োটিক',
-          ),
-        ];
-        final targetGroups = [
-          const TargetGroup(id: 10, nameEn: 'Poultry', nameBn: 'পোল্ট্রি'),
-          const TargetGroup(id: 20, nameEn: 'Cattle', nameBn: 'গবাদি পশু'),
-        ];
+    test('resolveCategoryFilter handles All, Feed Additives, Vaccines, TargetGroups, and fallback', () {
+      final categories = [
+        const Category(id: 1, nameEn: 'Vaccine', nameBn: 'টিকা'),
+        const Category(
+          id: 2,
+          nameEn: 'Antibiotics',
+          nameBn: 'অ্যান্টিবায়োটিক',
+        ),
+      ];
+      final targetGroups = [
+        const TargetGroup(id: 10, nameEn: 'Poultry', nameBn: 'পোল্ট্রি'),
+        const TargetGroup(id: 20, nameEn: 'Cattle', nameBn: 'গবাদি পশু'),
+      ];
 
-        // All category
-        final allCriteria = resolveCategoryFilter(
-          AppConstants.categoryAll,
-          categories,
-          targetGroups,
-        );
-        expect(allCriteria.categoryId, isNull);
-        expect(allCriteria.targetGroupId, isNull);
-        expect(allCriteria.isFeedAdditive, isFalse);
+      // All category
+      final allCriteria = resolveCategoryFilter(
+        AppConstants.categoryAll,
+        categories,
+        targetGroups,
+      );
+      expect(allCriteria.categoryId, isNull);
+      expect(allCriteria.targetGroupId, isNull);
+      expect(allCriteria.isFeedAdditive, isFalse);
 
-        // Feed Additive
-        final feedCriteria = resolveCategoryFilter(
-          AppConstants.categoryFeedAdditives,
-          categories,
-          targetGroups,
-        );
-        expect(feedCriteria.isFeedAdditive, isTrue);
+      // Feed Additive
+      final feedCriteria = resolveCategoryFilter(
+        AppConstants.categoryFeedAdditives,
+        categories,
+        targetGroups,
+      );
+      expect(feedCriteria.isFeedAdditive, isTrue);
 
-        final feedSingularCriteria = resolveCategoryFilter(
-          AppConstants.categoryFeedAdditive,
-          categories,
-          targetGroups,
-        );
-        expect(feedSingularCriteria.isFeedAdditive, isTrue);
+      final feedSingularCriteria = resolveCategoryFilter(
+        AppConstants.categoryFeedAdditive,
+        categories,
+        targetGroups,
+      );
+      expect(feedSingularCriteria.isFeedAdditive, isTrue);
 
-        // Vaccine
-        final vaccineCriteria = resolveCategoryFilter(
-          AppConstants.categoryVaccines,
-          categories,
-          targetGroups,
-        );
-        expect(vaccineCriteria.categoryId, equals(1));
+      // Vaccine
+      final vaccineCriteria = resolveCategoryFilter(
+        AppConstants.categoryVaccines,
+        categories,
+        targetGroups,
+      );
+      expect(vaccineCriteria.categoryId, equals(1));
 
-        // Target group match (singular & plural)
-        final tgCriteria = resolveCategoryFilter(
-          'Poultry',
-          categories,
-          targetGroups,
-        );
-        expect(tgCriteria.targetGroupId, equals(10));
+      // Target group match (singular & plural)
+      final tgCriteria = resolveCategoryFilter(
+        'Poultry',
+        categories,
+        targetGroups,
+      );
+      expect(tgCriteria.targetGroupId, equals(10));
 
-        final tgPluralCriteria = resolveCategoryFilter(
-          'Cattles',
-          categories,
-          targetGroups,
-        );
-        expect(tgPluralCriteria.targetGroupId, equals(20));
+      final tgPluralCriteria = resolveCategoryFilter(
+        'Cattles',
+        categories,
+        targetGroups,
+      );
+      expect(tgPluralCriteria.targetGroupId, equals(20));
 
-        // Category match
-        final catCriteria = resolveCategoryFilter(
-          'Antibiotics',
-          categories,
-          targetGroups,
-        );
-        expect(catCriteria.categoryId, equals(2));
+      // Category match
+      final catCriteria = resolveCategoryFilter(
+        'Antibiotics',
+        categories,
+        targetGroups,
+      );
+      expect(catCriteria.categoryId, equals(2));
 
-        // Unknown category
-        final unknownCriteria = resolveCategoryFilter(
-          'UnknownCategory',
-          categories,
-          targetGroups,
-        );
-        expect(unknownCriteria.categoryId, equals(-1));
-      },
-    );
+      // Unknown category
+      final unknownCriteria = resolveCategoryFilter(
+        'UnknownCategory',
+        categories,
+        targetGroups,
+      );
+      expect(unknownCriteria.categoryId, equals(-1));
+    });
 
     test('PaginatedState properties and copyWith', () {
       const state = PaginatedState<String>(

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'product_model.dart';
@@ -9,12 +9,13 @@ part of 'product_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Product {
 
- int get id; String get titleEn; String? get titleBn; String get slug; int get categoryId; List<int> get targetGroupIds; int? get manufacturerId; String? get imageUrl; String? get mottoEn; String? get mottoBn; String? get compositionBasisEn; String? get compositionBasisBn; String? get shortDescriptionEn; String? get shortDescriptionBn; int get isActive; String get createdAt; String get updatedAt; List<Composition> get compositions; List<Indication> get indications; List<Direction> get directions; List<Precaution> get precautions; List<Presentation> get presentations; Manufacturer get manufacturer; Category get category; List<TargetGroup> get targetGroups;
+ int get id; String get titleEn; String? get titleBn; String get slug; int get categoryId; List<int> get targetGroupIds; int? get manufacturerId; String? get imageUrl; String? get mottoEn; String? get mottoBn; String? get compositionBasisEn; String? get compositionBasisBn; String? get shortDescriptionEn; String? get shortDescriptionBn; int get isActive; String get createdAt; String get updatedAt; List<Composition> get compositions; List<Benefit> get benefits; List<Indication> get indications; List<Direction> get directions; List<Precaution> get precautions; List<Presentation> get presentations; Manufacturer get manufacturer; Category get category; List<TargetGroup> get targetGroups;
 /// Create a copy of Product
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,21 @@ $ProductCopyWith<Product> get copyWith => _$ProductCopyWithImpl<Product>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Product&&(identical(other.id, id) || other.id == id)&&(identical(other.titleEn, titleEn) || other.titleEn == titleEn)&&(identical(other.titleBn, titleBn) || other.titleBn == titleBn)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&const DeepCollectionEquality().equals(other.targetGroupIds, targetGroupIds)&&(identical(other.manufacturerId, manufacturerId) || other.manufacturerId == manufacturerId)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.mottoEn, mottoEn) || other.mottoEn == mottoEn)&&(identical(other.mottoBn, mottoBn) || other.mottoBn == mottoBn)&&(identical(other.compositionBasisEn, compositionBasisEn) || other.compositionBasisEn == compositionBasisEn)&&(identical(other.compositionBasisBn, compositionBasisBn) || other.compositionBasisBn == compositionBasisBn)&&(identical(other.shortDescriptionEn, shortDescriptionEn) || other.shortDescriptionEn == shortDescriptionEn)&&(identical(other.shortDescriptionBn, shortDescriptionBn) || other.shortDescriptionBn == shortDescriptionBn)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.compositions, compositions)&&const DeepCollectionEquality().equals(other.indications, indications)&&const DeepCollectionEquality().equals(other.directions, directions)&&const DeepCollectionEquality().equals(other.precautions, precautions)&&const DeepCollectionEquality().equals(other.presentations, presentations)&&(identical(other.manufacturer, manufacturer) || other.manufacturer == manufacturer)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.targetGroups, targetGroups));
+  final _this = this as Product;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Product&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.titleEn, _this.titleEn) || other.titleEn == _this.titleEn)&&(identical(other.titleBn, _this.titleBn) || other.titleBn == _this.titleBn)&&(identical(other.slug, _this.slug) || other.slug == _this.slug)&&(identical(other.categoryId, _this.categoryId) || other.categoryId == _this.categoryId)&&const DeepCollectionEquality().equals(other.targetGroupIds, _this.targetGroupIds)&&(identical(other.manufacturerId, _this.manufacturerId) || other.manufacturerId == _this.manufacturerId)&&(identical(other.imageUrl, _this.imageUrl) || other.imageUrl == _this.imageUrl)&&(identical(other.mottoEn, _this.mottoEn) || other.mottoEn == _this.mottoEn)&&(identical(other.mottoBn, _this.mottoBn) || other.mottoBn == _this.mottoBn)&&(identical(other.compositionBasisEn, _this.compositionBasisEn) || other.compositionBasisEn == _this.compositionBasisEn)&&(identical(other.compositionBasisBn, _this.compositionBasisBn) || other.compositionBasisBn == _this.compositionBasisBn)&&(identical(other.shortDescriptionEn, _this.shortDescriptionEn) || other.shortDescriptionEn == _this.shortDescriptionEn)&&(identical(other.shortDescriptionBn, _this.shortDescriptionBn) || other.shortDescriptionBn == _this.shortDescriptionBn)&&(identical(other.isActive, _this.isActive) || other.isActive == _this.isActive)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt)&&const DeepCollectionEquality().equals(other.compositions, _this.compositions)&&const DeepCollectionEquality().equals(other.benefits, _this.benefits)&&const DeepCollectionEquality().equals(other.indications, _this.indications)&&const DeepCollectionEquality().equals(other.directions, _this.directions)&&const DeepCollectionEquality().equals(other.precautions, _this.precautions)&&const DeepCollectionEquality().equals(other.presentations, _this.presentations)&&(identical(other.manufacturer, _this.manufacturer) || other.manufacturer == _this.manufacturer)&&(identical(other.category, _this.category) || other.category == _this.category)&&const DeepCollectionEquality().equals(other.targetGroups, _this.targetGroups));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,id,titleEn,titleBn,slug,categoryId,const DeepCollectionEquality().hash(targetGroupIds),manufacturerId,imageUrl,mottoEn,mottoBn,compositionBasisEn,compositionBasisBn,shortDescriptionEn,shortDescriptionBn,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(compositions),const DeepCollectionEquality().hash(indications),const DeepCollectionEquality().hash(directions),const DeepCollectionEquality().hash(precautions),const DeepCollectionEquality().hash(presentations),manufacturer,category,const DeepCollectionEquality().hash(targetGroups)]);
+int get hashCode {
+  final _this = this as Product;
+  return Object.hashAll([runtimeType,_this.id,_this.titleEn,_this.titleBn,_this.slug,_this.categoryId,const DeepCollectionEquality().hash(_this.targetGroupIds),_this.manufacturerId,_this.imageUrl,_this.mottoEn,_this.mottoBn,_this.compositionBasisEn,_this.compositionBasisBn,_this.shortDescriptionEn,_this.shortDescriptionBn,_this.isActive,_this.createdAt,_this.updatedAt,const DeepCollectionEquality().hash(_this.compositions),const DeepCollectionEquality().hash(_this.benefits),const DeepCollectionEquality().hash(_this.indications),const DeepCollectionEquality().hash(_this.directions),const DeepCollectionEquality().hash(_this.precautions),const DeepCollectionEquality().hash(_this.presentations),_this.manufacturer,_this.category,const DeepCollectionEquality().hash(_this.targetGroups)]);
+}
 
 @override
 String toString() {
-  return 'Product(id: $id, titleEn: $titleEn, titleBn: $titleBn, slug: $slug, categoryId: $categoryId, targetGroupIds: $targetGroupIds, manufacturerId: $manufacturerId, imageUrl: $imageUrl, mottoEn: $mottoEn, mottoBn: $mottoBn, compositionBasisEn: $compositionBasisEn, compositionBasisBn: $compositionBasisBn, shortDescriptionEn: $shortDescriptionEn, shortDescriptionBn: $shortDescriptionBn, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, compositions: $compositions, indications: $indications, directions: $directions, precautions: $precautions, presentations: $presentations, manufacturer: $manufacturer, category: $category, targetGroups: $targetGroups)';
+  final _this = this as Product;
+  return 'Product(id: ${_this.id}, titleEn: ${_this.titleEn}, titleBn: ${_this.titleBn}, slug: ${_this.slug}, categoryId: ${_this.categoryId}, targetGroupIds: ${_this.targetGroupIds}, manufacturerId: ${_this.manufacturerId}, imageUrl: ${_this.imageUrl}, mottoEn: ${_this.mottoEn}, mottoBn: ${_this.mottoBn}, compositionBasisEn: ${_this.compositionBasisEn}, compositionBasisBn: ${_this.compositionBasisBn}, shortDescriptionEn: ${_this.shortDescriptionEn}, shortDescriptionBn: ${_this.shortDescriptionBn}, isActive: ${_this.isActive}, createdAt: ${_this.createdAt}, updatedAt: ${_this.updatedAt}, compositions: ${_this.compositions}, benefits: ${_this.benefits}, indications: ${_this.indications}, directions: ${_this.directions}, precautions: ${_this.precautions}, presentations: ${_this.presentations}, manufacturer: ${_this.manufacturer}, category: ${_this.category}, targetGroups: ${_this.targetGroups})';
 }
 
 
@@ -45,7 +51,7 @@ abstract mixin class $ProductCopyWith<$Res>  {
   factory $ProductCopyWith(Product value, $Res Function(Product) _then) = _$ProductCopyWithImpl;
 @useResult
 $Res call({
- int id, String titleEn, String? titleBn, String slug, int categoryId, List<int> targetGroupIds, int? manufacturerId, String? imageUrl, String? mottoEn, String? mottoBn, String? compositionBasisEn, String? compositionBasisBn, String? shortDescriptionEn, String? shortDescriptionBn, int isActive, String createdAt, String updatedAt, List<Composition> compositions, List<Indication> indications, List<Direction> directions, List<Precaution> precautions, List<Presentation> presentations, Manufacturer manufacturer, Category category, List<TargetGroup> targetGroups
+ int id, String titleEn, String? titleBn, String slug, int categoryId, List<int> targetGroupIds, int? manufacturerId, String? imageUrl, String? mottoEn, String? mottoBn, String? compositionBasisEn, String? compositionBasisBn, String? shortDescriptionEn, String? shortDescriptionBn, int isActive, String createdAt, String updatedAt, List<Composition> compositions, List<Benefit> benefits, List<Indication> indications, List<Direction> directions, List<Precaution> precautions, List<Presentation> presentations, Manufacturer manufacturer, Category category, List<TargetGroup> targetGroups
 });
 
 
@@ -62,8 +68,8 @@ class _$ProductCopyWithImpl<$Res>
 
 /// Create a copy of Product
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? titleEn = null,Object? titleBn = freezed,Object? slug = null,Object? categoryId = null,Object? targetGroupIds = null,Object? manufacturerId = freezed,Object? imageUrl = freezed,Object? mottoEn = freezed,Object? mottoBn = freezed,Object? compositionBasisEn = freezed,Object? compositionBasisBn = freezed,Object? shortDescriptionEn = freezed,Object? shortDescriptionBn = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? compositions = null,Object? indications = null,Object? directions = null,Object? precautions = null,Object? presentations = null,Object? manufacturer = null,Object? category = null,Object? targetGroups = null,}) {
-  return _then(_self.copyWith(
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? titleEn = null,Object? titleBn = freezed,Object? slug = null,Object? categoryId = null,Object? targetGroupIds = null,Object? manufacturerId = freezed,Object? imageUrl = freezed,Object? mottoEn = freezed,Object? mottoBn = freezed,Object? compositionBasisEn = freezed,Object? compositionBasisBn = freezed,Object? shortDescriptionEn = freezed,Object? shortDescriptionBn = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? compositions = null,Object? benefits = null,Object? indications = null,Object? directions = null,Object? precautions = null,Object? presentations = null,Object? manufacturer = null,Object? category = null,Object? targetGroups = null,}) {
+  return _then(Product(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,titleEn: null == titleEn ? _self.titleEn : titleEn // ignore: cast_nullable_to_non_nullable
 as String,titleBn: freezed == titleBn ? _self.titleBn : titleBn // ignore: cast_nullable_to_non_nullable
@@ -82,7 +88,8 @@ as String?,isActive: null == isActive ? _self.isActive : isActive // ignore: cas
 as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String,compositions: null == compositions ? _self.compositions : compositions // ignore: cast_nullable_to_non_nullable
-as List<Composition>,indications: null == indications ? _self.indications : indications // ignore: cast_nullable_to_non_nullable
+as List<Composition>,benefits: null == benefits ? _self.benefits : benefits // ignore: cast_nullable_to_non_nullable
+as List<Benefit>,indications: null == indications ? _self.indications : indications // ignore: cast_nullable_to_non_nullable
 as List<Indication>,directions: null == directions ? _self.directions : directions // ignore: cast_nullable_to_non_nullable
 as List<Direction>,precautions: null == precautions ? _self.precautions : precautions // ignore: cast_nullable_to_non_nullable
 as List<Precaution>,presentations: null == presentations ? _self.presentations : presentations // ignore: cast_nullable_to_non_nullable
@@ -192,10 +199,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String titleEn,  String? titleBn,  String slug,  int categoryId,  List<int> targetGroupIds,  int? manufacturerId,  String? imageUrl,  String? mottoEn,  String? mottoBn,  String? compositionBasisEn,  String? compositionBasisBn,  String? shortDescriptionEn,  String? shortDescriptionBn,  int isActive,  String createdAt,  String updatedAt,  List<Composition> compositions,  List<Indication> indications,  List<Direction> directions,  List<Precaution> precautions,  List<Presentation> presentations,  Manufacturer manufacturer,  Category category,  List<TargetGroup> targetGroups)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String titleEn,  String? titleBn,  String slug,  int categoryId,  List<int> targetGroupIds,  int? manufacturerId,  String? imageUrl,  String? mottoEn,  String? mottoBn,  String? compositionBasisEn,  String? compositionBasisBn,  String? shortDescriptionEn,  String? shortDescriptionBn,  int isActive,  String createdAt,  String updatedAt,  List<Composition> compositions,  List<Benefit> benefits,  List<Indication> indications,  List<Direction> directions,  List<Precaution> precautions,  List<Presentation> presentations,  Manufacturer manufacturer,  Category category,  List<TargetGroup> targetGroups)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Product() when $default != null:
-return $default(_that.id,_that.titleEn,_that.titleBn,_that.slug,_that.categoryId,_that.targetGroupIds,_that.manufacturerId,_that.imageUrl,_that.mottoEn,_that.mottoBn,_that.compositionBasisEn,_that.compositionBasisBn,_that.shortDescriptionEn,_that.shortDescriptionBn,_that.isActive,_that.createdAt,_that.updatedAt,_that.compositions,_that.indications,_that.directions,_that.precautions,_that.presentations,_that.manufacturer,_that.category,_that.targetGroups);case _:
+return $default(_that.id,_that.titleEn,_that.titleBn,_that.slug,_that.categoryId,_that.targetGroupIds,_that.manufacturerId,_that.imageUrl,_that.mottoEn,_that.mottoBn,_that.compositionBasisEn,_that.compositionBasisBn,_that.shortDescriptionEn,_that.shortDescriptionBn,_that.isActive,_that.createdAt,_that.updatedAt,_that.compositions,_that.benefits,_that.indications,_that.directions,_that.precautions,_that.presentations,_that.manufacturer,_that.category,_that.targetGroups);case _:
   return orElse();
 
 }
@@ -213,10 +220,10 @@ return $default(_that.id,_that.titleEn,_that.titleBn,_that.slug,_that.categoryId
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String titleEn,  String? titleBn,  String slug,  int categoryId,  List<int> targetGroupIds,  int? manufacturerId,  String? imageUrl,  String? mottoEn,  String? mottoBn,  String? compositionBasisEn,  String? compositionBasisBn,  String? shortDescriptionEn,  String? shortDescriptionBn,  int isActive,  String createdAt,  String updatedAt,  List<Composition> compositions,  List<Indication> indications,  List<Direction> directions,  List<Precaution> precautions,  List<Presentation> presentations,  Manufacturer manufacturer,  Category category,  List<TargetGroup> targetGroups)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String titleEn,  String? titleBn,  String slug,  int categoryId,  List<int> targetGroupIds,  int? manufacturerId,  String? imageUrl,  String? mottoEn,  String? mottoBn,  String? compositionBasisEn,  String? compositionBasisBn,  String? shortDescriptionEn,  String? shortDescriptionBn,  int isActive,  String createdAt,  String updatedAt,  List<Composition> compositions,  List<Benefit> benefits,  List<Indication> indications,  List<Direction> directions,  List<Precaution> precautions,  List<Presentation> presentations,  Manufacturer manufacturer,  Category category,  List<TargetGroup> targetGroups)  $default,) {final _that = this;
 switch (_that) {
 case _Product():
-return $default(_that.id,_that.titleEn,_that.titleBn,_that.slug,_that.categoryId,_that.targetGroupIds,_that.manufacturerId,_that.imageUrl,_that.mottoEn,_that.mottoBn,_that.compositionBasisEn,_that.compositionBasisBn,_that.shortDescriptionEn,_that.shortDescriptionBn,_that.isActive,_that.createdAt,_that.updatedAt,_that.compositions,_that.indications,_that.directions,_that.precautions,_that.presentations,_that.manufacturer,_that.category,_that.targetGroups);case _:
+return $default(_that.id,_that.titleEn,_that.titleBn,_that.slug,_that.categoryId,_that.targetGroupIds,_that.manufacturerId,_that.imageUrl,_that.mottoEn,_that.mottoBn,_that.compositionBasisEn,_that.compositionBasisBn,_that.shortDescriptionEn,_that.shortDescriptionBn,_that.isActive,_that.createdAt,_that.updatedAt,_that.compositions,_that.benefits,_that.indications,_that.directions,_that.precautions,_that.presentations,_that.manufacturer,_that.category,_that.targetGroups);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -233,10 +240,10 @@ return $default(_that.id,_that.titleEn,_that.titleBn,_that.slug,_that.categoryId
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String titleEn,  String? titleBn,  String slug,  int categoryId,  List<int> targetGroupIds,  int? manufacturerId,  String? imageUrl,  String? mottoEn,  String? mottoBn,  String? compositionBasisEn,  String? compositionBasisBn,  String? shortDescriptionEn,  String? shortDescriptionBn,  int isActive,  String createdAt,  String updatedAt,  List<Composition> compositions,  List<Indication> indications,  List<Direction> directions,  List<Precaution> precautions,  List<Presentation> presentations,  Manufacturer manufacturer,  Category category,  List<TargetGroup> targetGroups)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String titleEn,  String? titleBn,  String slug,  int categoryId,  List<int> targetGroupIds,  int? manufacturerId,  String? imageUrl,  String? mottoEn,  String? mottoBn,  String? compositionBasisEn,  String? compositionBasisBn,  String? shortDescriptionEn,  String? shortDescriptionBn,  int isActive,  String createdAt,  String updatedAt,  List<Composition> compositions,  List<Benefit> benefits,  List<Indication> indications,  List<Direction> directions,  List<Precaution> precautions,  List<Presentation> presentations,  Manufacturer manufacturer,  Category category,  List<TargetGroup> targetGroups)?  $default,) {final _that = this;
 switch (_that) {
 case _Product() when $default != null:
-return $default(_that.id,_that.titleEn,_that.titleBn,_that.slug,_that.categoryId,_that.targetGroupIds,_that.manufacturerId,_that.imageUrl,_that.mottoEn,_that.mottoBn,_that.compositionBasisEn,_that.compositionBasisBn,_that.shortDescriptionEn,_that.shortDescriptionBn,_that.isActive,_that.createdAt,_that.updatedAt,_that.compositions,_that.indications,_that.directions,_that.precautions,_that.presentations,_that.manufacturer,_that.category,_that.targetGroups);case _:
+return $default(_that.id,_that.titleEn,_that.titleBn,_that.slug,_that.categoryId,_that.targetGroupIds,_that.manufacturerId,_that.imageUrl,_that.mottoEn,_that.mottoBn,_that.compositionBasisEn,_that.compositionBasisBn,_that.shortDescriptionEn,_that.shortDescriptionBn,_that.isActive,_that.createdAt,_that.updatedAt,_that.compositions,_that.benefits,_that.indications,_that.directions,_that.precautions,_that.presentations,_that.manufacturer,_that.category,_that.targetGroups);case _:
   return null;
 
 }
@@ -248,7 +255,7 @@ return $default(_that.id,_that.titleEn,_that.titleBn,_that.slug,_that.categoryId
 
 
 class _Product extends Product {
-  const _Product({required this.id, required this.titleEn, this.titleBn, required this.slug, required this.categoryId, final  List<int> targetGroupIds = const [], this.manufacturerId, this.imageUrl, this.mottoEn, this.mottoBn, this.compositionBasisEn, this.compositionBasisBn, this.shortDescriptionEn, this.shortDescriptionBn, this.isActive = 1, required this.createdAt, required this.updatedAt, final  List<Composition> compositions = const [], final  List<Indication> indications = const [], final  List<Direction> directions = const [], final  List<Precaution> precautions = const [], final  List<Presentation> presentations = const [], this.manufacturer = const Manufacturer.empty(), this.category = const Category.empty(), final  List<TargetGroup> targetGroups = const []}): _targetGroupIds = targetGroupIds,_compositions = compositions,_indications = indications,_directions = directions,_precautions = precautions,_presentations = presentations,_targetGroups = targetGroups,super._();
+  const _Product({required this.id, required this.titleEn, this.titleBn, required this.slug, required this.categoryId,  List<int> targetGroupIds = const [], this.manufacturerId, this.imageUrl, this.mottoEn, this.mottoBn, this.compositionBasisEn, this.compositionBasisBn, this.shortDescriptionEn, this.shortDescriptionBn, this.isActive = 1, required this.createdAt, required this.updatedAt,  List<Composition> compositions = const [],  List<Benefit> benefits = const [],  List<Indication> indications = const [],  List<Direction> directions = const [],  List<Precaution> precautions = const [],  List<Presentation> presentations = const [], this.manufacturer = const Manufacturer.empty(), this.category = const Category.empty(),  List<TargetGroup> targetGroups = const []}): _targetGroupIds = targetGroupIds,_compositions = compositions,_benefits = benefits,_indications = indications,_directions = directions,_precautions = precautions,_presentations = presentations,_targetGroups = targetGroups,super._();
   
 
 @override final  int id;
@@ -279,6 +286,13 @@ class _Product extends Product {
   if (_compositions is EqualUnmodifiableListView) return _compositions;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_compositions);
+}
+
+ final  List<Benefit> _benefits;
+@override@JsonKey() List<Benefit> get benefits {
+  if (_benefits is EqualUnmodifiableListView) return _benefits;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_benefits);
 }
 
  final  List<Indication> _indications;
@@ -329,16 +343,18 @@ _$ProductCopyWith<_Product> get copyWith => __$ProductCopyWithImpl<_Product>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Product&&(identical(other.id, id) || other.id == id)&&(identical(other.titleEn, titleEn) || other.titleEn == titleEn)&&(identical(other.titleBn, titleBn) || other.titleBn == titleBn)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&const DeepCollectionEquality().equals(other._targetGroupIds, _targetGroupIds)&&(identical(other.manufacturerId, manufacturerId) || other.manufacturerId == manufacturerId)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.mottoEn, mottoEn) || other.mottoEn == mottoEn)&&(identical(other.mottoBn, mottoBn) || other.mottoBn == mottoBn)&&(identical(other.compositionBasisEn, compositionBasisEn) || other.compositionBasisEn == compositionBasisEn)&&(identical(other.compositionBasisBn, compositionBasisBn) || other.compositionBasisBn == compositionBasisBn)&&(identical(other.shortDescriptionEn, shortDescriptionEn) || other.shortDescriptionEn == shortDescriptionEn)&&(identical(other.shortDescriptionBn, shortDescriptionBn) || other.shortDescriptionBn == shortDescriptionBn)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._compositions, _compositions)&&const DeepCollectionEquality().equals(other._indications, _indications)&&const DeepCollectionEquality().equals(other._directions, _directions)&&const DeepCollectionEquality().equals(other._precautions, _precautions)&&const DeepCollectionEquality().equals(other._presentations, _presentations)&&(identical(other.manufacturer, manufacturer) || other.manufacturer == manufacturer)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._targetGroups, _targetGroups));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Product&&(identical(other.id, id) || other.id == id)&&(identical(other.titleEn, titleEn) || other.titleEn == titleEn)&&(identical(other.titleBn, titleBn) || other.titleBn == titleBn)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&const DeepCollectionEquality().equals(other.targetGroupIds, _targetGroupIds)&&(identical(other.manufacturerId, manufacturerId) || other.manufacturerId == manufacturerId)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.mottoEn, mottoEn) || other.mottoEn == mottoEn)&&(identical(other.mottoBn, mottoBn) || other.mottoBn == mottoBn)&&(identical(other.compositionBasisEn, compositionBasisEn) || other.compositionBasisEn == compositionBasisEn)&&(identical(other.compositionBasisBn, compositionBasisBn) || other.compositionBasisBn == compositionBasisBn)&&(identical(other.shortDescriptionEn, shortDescriptionEn) || other.shortDescriptionEn == shortDescriptionEn)&&(identical(other.shortDescriptionBn, shortDescriptionBn) || other.shortDescriptionBn == shortDescriptionBn)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.compositions, _compositions)&&const DeepCollectionEquality().equals(other.benefits, _benefits)&&const DeepCollectionEquality().equals(other.indications, _indications)&&const DeepCollectionEquality().equals(other.directions, _directions)&&const DeepCollectionEquality().equals(other.precautions, _precautions)&&const DeepCollectionEquality().equals(other.presentations, _presentations)&&(identical(other.manufacturer, manufacturer) || other.manufacturer == manufacturer)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.targetGroups, _targetGroups));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,id,titleEn,titleBn,slug,categoryId,const DeepCollectionEquality().hash(_targetGroupIds),manufacturerId,imageUrl,mottoEn,mottoBn,compositionBasisEn,compositionBasisBn,shortDescriptionEn,shortDescriptionBn,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(_compositions),const DeepCollectionEquality().hash(_indications),const DeepCollectionEquality().hash(_directions),const DeepCollectionEquality().hash(_precautions),const DeepCollectionEquality().hash(_presentations),manufacturer,category,const DeepCollectionEquality().hash(_targetGroups)]);
+int get hashCode {
+    return Object.hashAll([runtimeType,id,titleEn,titleBn,slug,categoryId,const DeepCollectionEquality().hash(_targetGroupIds),manufacturerId,imageUrl,mottoEn,mottoBn,compositionBasisEn,compositionBasisBn,shortDescriptionEn,shortDescriptionBn,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(_compositions),const DeepCollectionEquality().hash(_benefits),const DeepCollectionEquality().hash(_indications),const DeepCollectionEquality().hash(_directions),const DeepCollectionEquality().hash(_precautions),const DeepCollectionEquality().hash(_presentations),manufacturer,category,const DeepCollectionEquality().hash(_targetGroups)]);
+}
 
 @override
 String toString() {
-  return 'Product(id: $id, titleEn: $titleEn, titleBn: $titleBn, slug: $slug, categoryId: $categoryId, targetGroupIds: $targetGroupIds, manufacturerId: $manufacturerId, imageUrl: $imageUrl, mottoEn: $mottoEn, mottoBn: $mottoBn, compositionBasisEn: $compositionBasisEn, compositionBasisBn: $compositionBasisBn, shortDescriptionEn: $shortDescriptionEn, shortDescriptionBn: $shortDescriptionBn, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, compositions: $compositions, indications: $indications, directions: $directions, precautions: $precautions, presentations: $presentations, manufacturer: $manufacturer, category: $category, targetGroups: $targetGroups)';
+    return 'Product(id: $id, titleEn: $titleEn, titleBn: $titleBn, slug: $slug, categoryId: $categoryId, targetGroupIds: $targetGroupIds, manufacturerId: $manufacturerId, imageUrl: $imageUrl, mottoEn: $mottoEn, mottoBn: $mottoBn, compositionBasisEn: $compositionBasisEn, compositionBasisBn: $compositionBasisBn, shortDescriptionEn: $shortDescriptionEn, shortDescriptionBn: $shortDescriptionBn, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, compositions: $compositions, benefits: $benefits, indications: $indications, directions: $directions, precautions: $precautions, presentations: $presentations, manufacturer: $manufacturer, category: $category, targetGroups: $targetGroups)';
 }
 
 
@@ -349,7 +365,7 @@ abstract mixin class _$ProductCopyWith<$Res> implements $ProductCopyWith<$Res> {
   factory _$ProductCopyWith(_Product value, $Res Function(_Product) _then) = __$ProductCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String titleEn, String? titleBn, String slug, int categoryId, List<int> targetGroupIds, int? manufacturerId, String? imageUrl, String? mottoEn, String? mottoBn, String? compositionBasisEn, String? compositionBasisBn, String? shortDescriptionEn, String? shortDescriptionBn, int isActive, String createdAt, String updatedAt, List<Composition> compositions, List<Indication> indications, List<Direction> directions, List<Precaution> precautions, List<Presentation> presentations, Manufacturer manufacturer, Category category, List<TargetGroup> targetGroups
+ int id, String titleEn, String? titleBn, String slug, int categoryId, List<int> targetGroupIds, int? manufacturerId, String? imageUrl, String? mottoEn, String? mottoBn, String? compositionBasisEn, String? compositionBasisBn, String? shortDescriptionEn, String? shortDescriptionBn, int isActive, String createdAt, String updatedAt, List<Composition> compositions, List<Benefit> benefits, List<Indication> indications, List<Direction> directions, List<Precaution> precautions, List<Presentation> presentations, Manufacturer manufacturer, Category category, List<TargetGroup> targetGroups
 });
 
 
@@ -366,7 +382,7 @@ class __$ProductCopyWithImpl<$Res>
 
 /// Create a copy of Product
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? titleEn = null,Object? titleBn = freezed,Object? slug = null,Object? categoryId = null,Object? targetGroupIds = null,Object? manufacturerId = freezed,Object? imageUrl = freezed,Object? mottoEn = freezed,Object? mottoBn = freezed,Object? compositionBasisEn = freezed,Object? compositionBasisBn = freezed,Object? shortDescriptionEn = freezed,Object? shortDescriptionBn = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? compositions = null,Object? indications = null,Object? directions = null,Object? precautions = null,Object? presentations = null,Object? manufacturer = null,Object? category = null,Object? targetGroups = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? titleEn = null,Object? titleBn = freezed,Object? slug = null,Object? categoryId = null,Object? targetGroupIds = null,Object? manufacturerId = freezed,Object? imageUrl = freezed,Object? mottoEn = freezed,Object? mottoBn = freezed,Object? compositionBasisEn = freezed,Object? compositionBasisBn = freezed,Object? shortDescriptionEn = freezed,Object? shortDescriptionBn = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? compositions = null,Object? benefits = null,Object? indications = null,Object? directions = null,Object? precautions = null,Object? presentations = null,Object? manufacturer = null,Object? category = null,Object? targetGroups = null,}) {
   return _then(_Product(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,titleEn: null == titleEn ? _self.titleEn : titleEn // ignore: cast_nullable_to_non_nullable
@@ -386,7 +402,8 @@ as String?,isActive: null == isActive ? _self.isActive : isActive // ignore: cas
 as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String,compositions: null == compositions ? _self._compositions : compositions // ignore: cast_nullable_to_non_nullable
-as List<Composition>,indications: null == indications ? _self._indications : indications // ignore: cast_nullable_to_non_nullable
+as List<Composition>,benefits: null == benefits ? _self._benefits : benefits // ignore: cast_nullable_to_non_nullable
+as List<Benefit>,indications: null == indications ? _self._indications : indications // ignore: cast_nullable_to_non_nullable
 as List<Indication>,directions: null == directions ? _self._directions : directions // ignore: cast_nullable_to_non_nullable
 as List<Direction>,precautions: null == precautions ? _self._precautions : precautions // ignore: cast_nullable_to_non_nullable
 as List<Precaution>,presentations: null == presentations ? _self._presentations : presentations // ignore: cast_nullable_to_non_nullable

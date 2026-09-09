@@ -46,6 +46,7 @@ part 'app_databases.g.dart';
     Products,
     ProductTargetGroups,
     Compositions,
+    Benefits,
     Indications,
     Directions,
     Precautions,
@@ -245,6 +246,9 @@ Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
 
 Future<bool> _isFtsTableReady(QueryExecutor executor, String tableName) async {
   try {
+    await _runRaw(executor, [
+      'CREATE TABLE IF NOT EXISTS db_meta (key TEXT PRIMARY KEY, value TEXT);',
+    ]);
     final rows = await _selectRaw(
       executor,
       "SELECT value FROM db_meta WHERE key = 'fts_ready_$tableName'",
@@ -261,6 +265,9 @@ Future<void> _setFtsTableReady(
   bool ready,
 ) async {
   try {
+    await _runRaw(executor, [
+      'CREATE TABLE IF NOT EXISTS db_meta (key TEXT PRIMARY KEY, value TEXT);',
+    ]);
     if (ready) {
       await _runRaw(executor, [
         "INSERT OR REPLACE INTO db_meta (key, value) VALUES ('fts_ready_$tableName', '1')",

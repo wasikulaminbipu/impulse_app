@@ -107,9 +107,8 @@ void main(List<String> args) {
   final appAssetsFile = File('lib/constants/app_assets.dart');
   if (appAssetsFile.existsSync()) {
     final assetContent = appAssetsFile.readAsStringSync();
-    final constMatches = RegExp(
-      r'static const String ([a-zA-Z0-9_]+)\s*=',
-    ).allMatches(assetContent);
+    final constMatches = RegExp(r'static const String ([a-zA-Z0-9_]+)\s*=')
+        .allMatches(assetContent);
     var matchedConsts = 0;
 
     for (final match in constMatches) {

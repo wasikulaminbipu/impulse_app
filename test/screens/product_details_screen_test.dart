@@ -5,6 +5,7 @@ import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/products_provider.dart';
 import 'package:impulse_app/screens/product_details_screen.dart';
+import 'package:impulse_app/widgets/product_details/benefits_section.dart';
 import 'package:impulse_app/widgets/product_details/composition_section.dart';
 import 'package:impulse_app/widgets/product_details/directions_section.dart';
 import 'package:impulse_app/widgets/product_details/indications_section.dart';
@@ -154,11 +155,44 @@ void main() {
 
       // Verify sections exist
       expect(find.byType(CompositionSection), findsWidgets);
+      expect(find.byType(BenefitsSection), findsNothing);
       expect(find.byType(IndicationsSection), findsWidgets);
       expect(find.byType(DirectionsSection), findsWidgets);
       expect(find.byType(PrecautionsSection), findsWidgets);
       expect(find.byType(PresentationsSection), findsWidgets);
       expect(find.byType(ManufacturerSection), findsWidgets);
+    });
+
+    testWidgets('Renders BenefitsSection when product has benefits data', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(800 * 3, 1200 * 3);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final productWithBenefits = mockProduct.copyWith(
+        benefits: const [
+          Benefit(
+            id: 1,
+            productId: 1,
+            textEn: 'Improves vitality and growth',
+            textBn: 'প্রাণশক্তি ও বৃদ্ধি উন্নত করে',
+            displayOrder: 1,
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        createHarness(
+          detailProduct: productWithBenefits,
+          child: const ProductDetailsScreen(product: mockLabel),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(BenefitsSection), findsWidgets);
+      expect(find.text('Improves vitality and growth'), findsWidgets);
     });
 
     testWidgets('Renders ProductDetailsScreen in Bengali', (tester) async {

@@ -12,6 +12,7 @@ import 'package:impulse_app/utils/product_share_service.dart';
 import 'package:impulse_app/widgets/custom_badge.dart';
 import 'package:impulse_app/widgets/favorite_button.dart';
 import 'package:impulse_app/widgets/group_logo_viewer.dart';
+import 'package:impulse_app/widgets/product_details/benefits_section.dart';
 import 'package:impulse_app/widgets/product_details/composition_section.dart';
 import 'package:impulse_app/widgets/product_details/directions_section.dart';
 import 'package:impulse_app/widgets/product_details/indications_section.dart';
@@ -283,6 +284,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                     basisEn: fullProduct.compositionBasisEn,
                                     basisBn: fullProduct.compositionBasisBn,
                                   ),
+                                if (fullProduct.benefits.isNotEmpty)
+                                  BenefitsSection(
+                                    benefits: fullProduct.benefits,
+                                    lang: lang,
+                                  ),
                                 if (fullProduct.indications.isNotEmpty)
                                   IndicationsSection(
                                     indications: fullProduct.indications,
@@ -524,6 +530,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                     lang: lang,
                                     basisEn: fullProduct.compositionBasisEn,
                                     basisBn: fullProduct.compositionBasisBn,
+                                  ),
+                                if (fullProduct.benefits.isNotEmpty)
+                                  BenefitsSection(
+                                    benefits: fullProduct.benefits,
+                                    lang: lang,
                                   ),
                                 if (fullProduct.indications.isNotEmpty)
                                   IndicationsSection(

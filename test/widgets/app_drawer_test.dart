@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/widgets/app_drawer.dart';
 
@@ -45,9 +46,11 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Impulse'), findsOneWidget);
+        expect(find.text('v${AppConstants.appVersion}'), findsOneWidget);
         expect(find.text('Products Directory'), findsOneWidget);
         expect(find.text('Manufacturers'), findsOneWidget);
         expect(find.text('Sales Representatives'), findsOneWidget);
+        expect(find.text('Distributors'), findsOneWidget);
         expect(find.text('About Us'), findsOneWidget);
         expect(find.text('Privacy Policy'), findsOneWidget);
       },
@@ -83,6 +86,7 @@ void main() {
       expect(find.text('প্রোডাক্টস ক্যাটালগ'), findsOneWidget);
       expect(find.text('ম্যানুফ্যাকচারার'), findsOneWidget);
       expect(find.text('প্রতিনিধি কন্টাক্টস'), findsOneWidget);
+      expect(find.text('ডিস্ট্রিবিউটর'), findsOneWidget);
       expect(find.text('আমাদের সম্পর্কে'), findsOneWidget);
     });
   });

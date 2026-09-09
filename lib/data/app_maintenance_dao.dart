@@ -2,12 +2,17 @@ import 'package:drift/drift.dart';
 import 'package:impulse_app/data/app_databases.dart';
 import 'package:impulse_app/models/app_maintenance.dart' as models;
 
+/// Data Access Object for local user maintenance data in [AppMaintenanceDb],
+/// including bookmark favorites, key-value settings, database metadata, search history,
+/// and telemetry logs.
 class AppMaintenanceDao {
   AppMaintenanceDao(this._db);
 
   final AppMaintenanceDb _db;
 
   // ---------------- Favorites (generic, all four tables) ----------------
+
+  /// Adds a target [id] of [type] to the user's favorites bookmarks.
   Future<void> addFavorite(models.FavoriteType type, int id) async {
     switch (type) {
       case models.FavoriteType.product:
@@ -43,6 +48,7 @@ class AppMaintenanceDao {
     }
   }
 
+  /// Removes the favorite bookmark for [id] of [type].
   Future<void> removeFavorite(models.FavoriteType type, int id) async {
     switch (type) {
       case models.FavoriteType.product:
@@ -64,6 +70,7 @@ class AppMaintenanceDao {
     }
   }
 
+  /// Checks whether [id] of [type] is currently bookmarked as favorite.
   Future<bool> isFavorite(models.FavoriteType type, int id) async {
     switch (type) {
       case models.FavoriteType.product:
@@ -89,6 +96,7 @@ class AppMaintenanceDao {
     }
   }
 
+  /// Toggles the bookmark status of [id] of [type].
   Future<void> toggleFavorite(models.FavoriteType type, int id) async {
     if (await isFavorite(type, id)) {
       await removeFavorite(type, id);
@@ -97,6 +105,7 @@ class AppMaintenanceDao {
     }
   }
 
+  /// Retrieves all bookmarked items of [type] ordered with the most recently added first.
   Future<List<models.FavoriteEntry>> getFavorites(
     models.FavoriteType type,
   ) async {
@@ -152,6 +161,7 @@ class AppMaintenanceDao {
     }
   }
 
+  /// Retrieves the list of favorite entity IDs for [type].
   Future<List<int>> getFavoriteIds(models.FavoriteType type) async {
     switch (type) {
       case models.FavoriteType.product:
@@ -171,6 +181,7 @@ class AppMaintenanceDao {
 
   // ---------------- app_settings ----------------
 
+  /// Retrieves a persisted string setting by [key], or `null` if not found.
   Future<String?> getSetting(String key) async {
     final q = _db.select(_db.appSettings)
       ..where((t) => t.key.equals(key))
@@ -180,6 +191,7 @@ class AppMaintenanceDao {
     return rows.first.value;
   }
 
+  /// Sets or updates a persisted string setting [key] to [value].
   Future<void> setSetting(String key, String? value) async {
     await _db
         .into(_db.appSettings)
@@ -189,6 +201,7 @@ class AppMaintenanceDao {
         );
   }
 
+  /// Retrieves all persisted key-value app settings.
   Future<List<models.AppSetting>> getAllSettings() async {
     final rows = await _db.select(_db.appSettings).get();
     return rows
@@ -196,15 +209,22 @@ class AppMaintenanceDao {
         .toList();
   }
 
+  /// Checks whether dark mode is currently active.
   Future<bool> getDarkMode() async => (await getSetting('dark_mode')) == 'true';
+
+  /// Persists dark mode preference.
   Future<void> setDarkMode(bool enabled) =>
       setSetting('dark_mode', enabled.toString());
 
+  /// Retrieves current language code (defaults to `'en'`).
   Future<String> getLanguage() async => (await getSetting('language')) ?? 'en';
+
+  /// Persists user language preference (e.g. `'en'` or `'bn'`).
   Future<void> setLanguage(String code) => setSetting('language', code);
 
   // ---------------- db_meta ----------------
 
+  /// Reads the schema version string from `db_meta`.
   Future<String?> getSchemaVersion() async {
     final q = _db.select(_db.dbMeta)
       ..where((t) => t.key.equals('schema_version'))
@@ -213,17 +233,29 @@ class AppMaintenanceDao {
     return rows.isEmpty ? null : rows.first.value;
   }
 
-  Future<DateTime?> getGeneratedAt() async {
+  /// Reads the integer data version from `db_meta`.
+  Future<int?> getDataVersion() async {
     final q = _db.select(_db.dbMeta)
-      ..where((t) => t.key.equals('schema_version'))
+      ..where((t) => t.key.equals('data_version'))
       ..limit(1);
     final rows = await q.get();
     if (rows.isEmpty || rows.first.value == null) return null;
-    return DateTime.parse(rows.first.value!);
+    return int.tryParse(rows.first.value!);
+  }
+
+  /// Reads the database generation timestamp from `db_meta`.
+  Future<DateTime?> getGeneratedAt() async {
+    final q = _db.select(_db.dbMeta)
+      ..where((t) => t.key.equals('generated_at'))
+      ..limit(1);
+    final rows = await q.get();
+    if (rows.isEmpty || rows.first.value == null) return null;
+    return DateTime.tryParse(rows.first.value!);
   }
 
   // ---------------- search_history ----------------
 
+  /// Retrieves the list of recent search queries (max 15 items).
   Future<List<String>> getSearchHistory() async {
     final raw = await getSetting('search_history');
     if (raw == null || raw.isEmpty) return [];
@@ -235,6 +267,7 @@ class AppMaintenanceDao {
     }
   }
 
+  /// Prepends [query] to the recent search history, capping at 15 items.
   Future<void> addSearchHistory(String query) async {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
@@ -250,6 +283,7 @@ class AppMaintenanceDao {
     );
   }
 
+  /// Removes a specific [query] from recent search history.
   Future<void> removeSearchHistory(String query) async {
     final history = await getSearchHistory();
     history.removeWhere(
@@ -261,6 +295,7 @@ class AppMaintenanceDao {
     );
   }
 
+  /// Clears all recent search queries.
   Future<void> clearSearchHistory() async {
     await setSetting('search_history', '');
   }

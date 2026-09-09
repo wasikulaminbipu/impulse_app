@@ -32,6 +32,8 @@ analyzer:
     - "**/*.freezed.dart"
     - "build/**"
     - ".dart_tool/**"
+    - android/**
+    - ios/**
 
 linter:
   rules:
@@ -154,7 +156,6 @@ linter:
     - sort_unnamed_constructors_first
     - tighten_type_of_initializing_formals
     - type_init_formals
-    - unnecessary_await_in_return
     - unnecessary_brace_in_string_interps
     - unnecessary_breaks
     - unnecessary_const
@@ -185,3 +186,4 @@ linter:
     - use_super_parameters
     - use_to_and_as_if_applicable
     - void_checks
+    - unintended_html_in_doc_comment

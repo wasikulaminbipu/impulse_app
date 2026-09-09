@@ -7,6 +7,10 @@ import 'package:impulse_app/widgets/tactile_button.dart';
 
 Widget createTestHarness(Widget child) {
   return MaterialApp(
+    theme: ThemeData(
+      useMaterial3: true,
+      splashFactory: InkRipple.splashFactory,
+    ),
     home: Scaffold(body: Center(child: child)),
   );
 }
@@ -36,6 +40,7 @@ void main() {
       );
 
       await tester.tap(find.text('CLICK'));
+      await tester.pumpAndSettle();
       expect(tapped, isTrue);
     });
   });

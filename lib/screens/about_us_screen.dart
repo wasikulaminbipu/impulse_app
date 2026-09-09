@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/constants/app_assets.dart';
+import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/widgets/glass_container.dart';
 import 'package:impulse_app/widgets/privacy_policy_dialog.dart';
@@ -11,9 +12,9 @@ import 'package:url_launcher/url_launcher.dart';
 class AboutUsScreen extends ConsumerWidget {
   const AboutUsScreen({super.key});
 
-  static const String websiteUrl = 'https://www.impulseagrisciencelimited.com';
-  static const String supportEmail = 'impulseagriscienceltd@gmail.com';
-  static const String supportPhone = '+880-1629-389015';
+  static const String websiteUrl = AppConstants.websiteUrl;
+  static const String supportEmail = AppConstants.supportEmail;
+  static const String supportPhone = AppConstants.supportPhone;
 
   Future<void> _launchUrl(BuildContext context, String urlString) async {
     final Uri url = Uri.parse(urlString);
@@ -42,43 +43,37 @@ class AboutUsScreen extends ConsumerWidget {
             (
               year: '২০০৯',
               title: 'আদিয়ান এগ্রো লিমিটেড প্রতিষ্ঠা',
-              description:
-                  'আদিয়ান এগ্রো লিমিটেড (Adyan Agro Limited) ২০০৯ সালে প্রতিষ্ঠিত হয়। তখন থেকেই এটি গবাদি পশু, পোল্ট্রি এবং মৎস্য চাষ শিল্পে সেবা প্রদান করে আসছে।',
+              description: 'আদিয়ান এগ্রো লিমিটেড (Adyan Agro Limited) ২০০৯ সালে প্রতিষ্ঠিত হয়। তখন থেকেই এটি গবাদি পশু, পোল্ট্রি এবং মৎস্য চাষ শিল্পে সেবা প্রদান করে আসছে।',
               icon: Icons.foundation_rounded,
             ),
             (
               year: 'আন্তর্জাতিক চুক্তি',
               title: 'বিশ্বমানের অংশীদারিত্ব',
-              description:
-                  'এটি বিশ্বমানের ওষুধ এবং পুষ্টি উপাদান, ফিড-অ্যাডিটিভস ইত্যাদি উৎপাদনকারী বিদেশি কোম্পানিগুলোর সাথে চুক্তি স্বাক্ষর শুরু করে।',
+              description: 'এটি বিশ্বমানের ওষুধ এবং পুষ্টি উপাদান, ফিড-অ্যাডিটিভস ইত্যাদি উৎপাদনকারী বিদেশি কোম্পানিগুলোর সাথে চুক্তি স্বাক্ষর শুরু করে।',
               icon: Icons.handshake_rounded,
             ),
             (
               year: 'শিল্পে বিস্তার',
               title: 'বিস্তৃত সরবরাহ নেটওয়ার্ক',
-              description:
-                  'এটি প্রায় সব নামকরা পশুখাদ্য উৎপাদনকারী প্রতিষ্ঠান ও খামারে মানসম্মত পণ্য সরবরাহ করেছে, কিন্তু গ্রামীণ কৃষকদের কাছে পৌঁছানোর ক্ষেত্রে সমস্যার সম্মুখীন হচ্ছিল।',
+              description: 'এটি প্রায় সব নামকরা পশুখাদ্য উৎপাদনকারী প্রতিষ্ঠান ও খামারে মানসম্মত পণ্য সরবরাহ করেছে, কিন্তু গ্রামীণ কৃষকদের কাছে পৌঁছানোর ক্ষেত্রে সমস্যার সম্মুখীন হচ্ছিল।',
               icon: Icons.local_shipping_rounded,
             ),
             (
               year: '২০২২',
               title: 'ইম্পালস এগ্রিসায়েন্স লিমিটেড প্রতিষ্ঠা',
-              description:
-                  'গ্রামীণ পর্যায়ে নিজেদের পণ্য পৌঁছে দেওয়ার লক্ষ্যে ২০২২ সালে একটি সহযোগী প্রতিষ্ঠান হিসেবে Impulse Agriscience Ltd. প্রতিষ্ঠিত হয়।',
+              description: 'গ্রামীণ পর্যায়ে নিজেদের পণ্য পৌঁছে দেওয়ার লক্ষ্যে ২০২২ সালে একটি সহযোগী প্রতিষ্ঠান হিসেবে Impulse Agriscience Ltd. প্রতিষ্ঠিত হয়।',
               icon: Icons.spa_rounded,
             ),
             (
               year: 'নেটওয়ার্ক সম্প্রসারণ',
               title: 'দেশব্যাপী বিস্তার',
-              description:
-                  'গ্রামীণ গ্রাহকদের কাছে পৌঁছানোর লক্ষ্যে বাংলাদেশের সর্বত্র নতুন নতুন কেন্দ্র স্থাপনের মাধ্যমে ইম্পালস এগ্রিসায়েন্স (Impulse Agriscience) তাদের কার্যক্রম সম্প্রসারণ শুরু করে।',
+              description: 'গ্রামীণ গ্রাহকদের কাছে পৌঁছানোর লক্ষ্যে বাংলাদেশের সর্বত্র নতুন নতুন কেন্দ্র স্থাপনের মাধ্যমে ইম্পালস এগ্রিসায়েন্স (Impulse Agriscience) তাদের কার্যক্রম সম্প্রসারণ শুরু করে।',
               icon: Icons.hub_rounded,
             ),
             (
               year: '২০২৬',
               title: 'জেপি ফার্মা লিমিটেড প্রতিষ্ঠা',
-              description:
-                  '২০২৬ সালে JP Pharma Ltd. নামে আরও একটি সিস্টার কনসার্ন প্রতিষ্ঠিত হয়। শীঘ্রই এটি ওষুধ উৎপাদন শুরু করবে।',
+              description: '২০২৬ সালে JP Pharma Ltd. নামে আরও একটি সিস্টার কনসার্ন প্রতিষ্ঠিত হয়। শীঘ্রই এটি ওষুধ উৎপাদন শুরু করবে।',
               icon: Icons.medication_liquid_rounded,
             ),
           ]
@@ -86,43 +81,37 @@ class AboutUsScreen extends ConsumerWidget {
             (
               year: '2009',
               title: 'Adyan Agro Limited Established',
-              description:
-                  'Adyan Agro Limited was established in 2009. Since then, it has been serving the livestock, poultry, and Aquaculture industry.',
+              description: 'Adyan Agro Limited was established in 2009. Since then, it has been serving the livestock, poultry, and Aquaculture industry.',
               icon: Icons.foundation_rounded,
             ),
             (
               year: 'Partnerships',
               title: 'Global Collaborations',
-              description:
-                  'It started signing agreements with world class pharmaceuticals and nutritional, feed-additives etc. producer foreign companies.',
+              description: 'It started signing agreements with world class pharmaceuticals and nutritional, feed-additives etc. producer foreign companies.',
               icon: Icons.handshake_rounded,
             ),
             (
               year: 'Distribution',
               title: 'Industry Distribution',
-              description:
-                  'It has distributed quality products in almost all the reknown feed producers and farms but was facing issues to reach rural farmers.',
+              description: 'It has distributed quality products in almost all the reknown feed producers and farms but was facing issues to reach rural farmers.',
               icon: Icons.local_shipping_rounded,
             ),
             (
               year: '2022',
               title: 'Impulse Agriscience Ltd. Established',
-              description:
-                  'To distribute its products at the rural level, Impulse Agriscience Ltd. was established as a sister concern in 2022.',
+              description: 'To distribute its products at the rural level, Impulse Agriscience Ltd. was established as a sister concern in 2022.',
               icon: Icons.spa_rounded,
             ),
             (
               year: 'Expansion',
               title: 'Nationwide Expansion',
-              description:
-                  'Impulse agriscience started expanding by creating new bases all over Bangladesh to reach rural customers.',
+              description: 'Impulse agriscience started expanding by creating new bases all over Bangladesh to reach rural customers.',
               icon: Icons.hub_rounded,
             ),
             (
               year: '2026',
               title: 'JP Pharma Ltd. Established',
-              description:
-                  'In 2026, JP Pharma Ltd. was also established as a sister concern. Soon, it will start production of pharmaceutical products.',
+              description: 'In 2026, JP Pharma Ltd. was also established as a sister concern. Soon, it will start production of pharmaceutical products.',
               icon: Icons.medication_liquid_rounded,
             ),
           ];
@@ -234,7 +223,7 @@ class AboutUsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          'v1.0.0 (Build 1)',
+                          'v${AppConstants.appVersion} (Build ${AppConstants.buildNumber})',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,

@@ -7,6 +7,8 @@ import 'package:impulse_app/data/db_extensions.dart';
 import 'package:impulse_app/data/fts_utils.dart';
 import 'package:impulse_app/models/distributor.dart';
 
+/// Data access object for querying distributors, sales personnel, vet doctors,
+/// and associated geographic hierarchies (divisions, districts, upazilas, regions, and areas).
 class DistributorDao {
   final DistributorsDb db;
 

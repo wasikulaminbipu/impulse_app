@@ -2,6 +2,8 @@ import 'package:drift/drift.dart';
 import 'package:impulse_app/data/app_databases.dart';
 import 'package:impulse_app/models/product.dart';
 
+/// Data Access Object for cached lookup metadata such as categories, target groups,
+/// content types, product types, species, and dosage bases/units from [ProductsDb].
 class LookupDao {
   final ProductsDb db;
   LookupDao(this.db);
@@ -17,6 +19,7 @@ class LookupDao {
   Map<int, Category>? _categoryMap;
   Map<int, TargetGroup>? _targetGroupMap;
 
+  /// Preloads and caches all lookup tables concurrently for rapid in-memory queries.
   Future<void> preloadAll() async {
     await Future.wait([
       getCategories(forceRefresh: true),
@@ -29,6 +32,7 @@ class LookupDao {
     ]);
   }
 
+  /// Retrieves all product categories ordered alphabetically by English name.
   Future<List<Category>> getCategories({bool forceRefresh = false}) async {
     if (_categories != null && !forceRefresh) return _categories!;
     final rows = await (db.select(
@@ -48,12 +52,14 @@ class LookupDao {
     return _categories!;
   }
 
+  /// Returns an ID-to-[Category] map, populating the cache if not already loaded.
   Future<Map<int, Category>> getCategoryMap({bool forceRefresh = false}) async {
     if (_categoryMap != null && !forceRefresh) return _categoryMap!;
     await getCategories(forceRefresh: forceRefresh);
     return _categoryMap!;
   }
 
+  /// Retrieves all target groups (e.g., Poultry, Cattle, Aqua) ordered alphabetically.
   Future<List<TargetGroup>> getTargetGroups({bool forceRefresh = false}) async {
     if (_targetGroups != null && !forceRefresh) return _targetGroups!;
     final rows = await (db.select(
@@ -74,6 +80,7 @@ class LookupDao {
     return _targetGroups!;
   }
 
+  /// Returns an ID-to-[TargetGroup] map, populating the cache if not already loaded.
   Future<Map<int, TargetGroup>> getTargetGroupMap({
     bool forceRefresh = false,
   }) async {
@@ -82,6 +89,7 @@ class LookupDao {
     return _targetGroupMap!;
   }
 
+  /// Retrieves all content types (e.g. tablet, liquid, powder) ordered alphabetically.
   Future<List<ContentType>> getContentTypes({bool forceRefresh = false}) async {
     if (_contentTypes != null && !forceRefresh) return _contentTypes!;
     final rows = await (db.select(
@@ -92,6 +100,7 @@ class LookupDao {
         .toList();
   }
 
+  /// Retrieves all product types (e.g. Antibiotic, Vitamin) ordered alphabetically.
   Future<List<ProductType>> getProductTypes({bool forceRefresh = false}) async {
     if (_productTypes != null && !forceRefresh) return _productTypes!;
     final rows = await (db.select(
@@ -109,6 +118,7 @@ class LookupDao {
         .toList();
   }
 
+  /// Retrieves animal species, optionally filtered by [targetGroupId].
   Future<List<Species>> getSpecies({
     int? targetGroupId,
     bool forceRefresh = false,
@@ -133,6 +143,7 @@ class LookupDao {
     return all.where((s) => s.targetGroupId == targetGroupId).toList();
   }
 
+  /// Retrieves all dosage measurement units (e.g., ml, gm, kg) ordered alphabetically.
   Future<List<DosageUnit>> getDosageUnits({bool forceRefresh = false}) async {
     if (_dosageUnits != null && !forceRefresh) return _dosageUnits!;
     final rows = await (db.select(
@@ -143,6 +154,7 @@ class LookupDao {
         .toList();
   }
 
+  /// Retrieves all dosage bases (e.g., per liter of drinking water, per kg feed).
   Future<List<DosageBasis>> getDosageBases({bool forceRefresh = false}) async {
     if (_dosageBases != null && !forceRefresh) return _dosageBases!;
     final rows = await (db.select(

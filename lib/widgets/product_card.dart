@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/models/app_maintenance.dart';
 import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/screens/product_details_screen.dart';
 import 'package:impulse_app/theme/app_theme.dart';
-import 'package:impulse_app/utils/app_constants.dart';
 import 'package:impulse_app/utils/bilingual_string.dart';
 import 'package:impulse_app/widgets/asset_fallback_image.dart';
 import 'package:impulse_app/widgets/custom_badge.dart';
@@ -90,11 +90,11 @@ class _ProductCardState extends State<ProductCard> {
                             reverseTransitionDuration: const Duration(
                               milliseconds: 400,
                             ),
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    ProductDetailsScreen(
-                                      product: widget.product,
-                                    ),
+                            pageBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                            ) => ProductDetailsScreen(product: widget.product),
                             transitionsBuilder:
                                 (
                                   context,
@@ -234,9 +234,9 @@ class _ProductCardState extends State<ProductCard> {
                                     fontFeatures: const [
                                       FontFeature.tabularFigures(),
                                     ],
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurface,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface,
                                   ),
                                 );
                               }).toList(),
@@ -311,19 +311,17 @@ class _ProductCardState extends State<ProductCard> {
       return categoryColors?.aquaColor ?? defaultColor;
     }
 
-    switch (categoryName) {
-      case AppConstants.categoryPoultry:
-        return categoryColors?.poultryColor ?? defaultColor;
-      case AppConstants.categoryCattle:
-        return categoryColors?.cattleColor ?? defaultColor;
-      case AppConstants.categoryAqua:
-        return categoryColors?.aquaColor ?? defaultColor;
-      case AppConstants.categoryFeedAdditives:
-        return categoryColors?.feedAdditiveColor ?? defaultColor;
-      case AppConstants.categoryVaccines:
-        return categoryColors?.vaccineColor ?? defaultColor;
-      default:
-        return defaultColor;
-    }
+    return switch (categoryName) {
+      AppConstants.categoryPoultry =>
+        categoryColors?.poultryColor ?? defaultColor,
+      AppConstants.categoryCattle =>
+        categoryColors?.cattleColor ?? defaultColor,
+      AppConstants.categoryAqua => categoryColors?.aquaColor ?? defaultColor,
+      AppConstants.categoryFeedAdditives =>
+        categoryColors?.feedAdditiveColor ?? defaultColor,
+      AppConstants.categoryVaccines =>
+        categoryColors?.vaccineColor ?? defaultColor,
+      _ => defaultColor,
+    };
   }
 }

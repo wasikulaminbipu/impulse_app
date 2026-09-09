@@ -86,19 +86,16 @@ void main() {
       await db.close();
     });
 
-    test(
-      'Searching "Antibiotic" returns ALL matches (title & category) with title match on top',
-      () async {
-        final results = await productDao.getFilteredLabels(
-          query: 'Antibiotic',
-          limit: 10,
-          offset: 0,
-        );
-        // Both "Antibiotic Bolus" (title match) and "Renapen Powder" (category match) must be returned
-        expect(results.length, equals(2));
-        expect(results[0].titleEn, equals('Antibiotic Bolus'));
-        expect(results[1].titleEn, equals('Renapen Powder'));
-      },
-    );
+    test('Searching "Antibiotic" returns ALL matches (title & category) with title match on top', () async {
+      final results = await productDao.getFilteredLabels(
+        query: 'Antibiotic',
+        limit: 10,
+        offset: 0,
+      );
+      // Both "Antibiotic Bolus" (title match) and "Renapen Powder" (category match) must be returned
+      expect(results.length, equals(2));
+      expect(results[0].titleEn, equals('Antibiotic Bolus'));
+      expect(results[1].titleEn, equals('Renapen Powder'));
+    });
   });
 }

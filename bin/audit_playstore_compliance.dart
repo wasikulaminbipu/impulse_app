@@ -67,9 +67,8 @@ void main(List<String> args) {
 
   if (gradleFile.existsSync()) {
     final gradleContent = gradleFile.readAsStringSync();
-    final match = RegExp(
-      r'applicationId\s*=\s*"([^"]+)"',
-    ).firstMatch(gradleContent);
+    final match = RegExp(r'applicationId\s*=\s*"([^"]+)"')
+        .firstMatch(gradleContent);
     gradleAppId = match?.group(1);
   }
 
@@ -80,9 +79,8 @@ void main(List<String> args) {
   }
 
   if (gradleAppId != null && gradleAppId.isNotEmpty) {
-    final validPkgFormat = RegExp(
-      r'^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$',
-    ).hasMatch(gradleAppId);
+    final validPkgFormat = RegExp(r'^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$')
+        .hasMatch(gradleAppId);
     final segments = gradleAppId.split('.');
     final hasMinSegments = segments.length >= 2;
     final noReservedWords = ![
@@ -220,9 +218,7 @@ void main(List<String> args) {
       'Optimization',
       'R8 Obfuscation & Resource Shrinking',
       minify,
-      minify
-          ? 'Enabled for release buildType'
-          : 'Disabled! Release builds must enable isMinifyEnabled and isShrinkResources',
+      minify ? 'Enabled for release buildType' : 'Disabled! Release builds must enable isMinifyEnabled and isShrinkResources',
     );
 
     final v1ToV4Signing =
@@ -244,9 +240,8 @@ void main(List<String> args) {
   final wrapperFile = File('android/gradle/wrapper/gradle-wrapper.properties');
   if (wrapperFile.existsSync()) {
     final wContent = wrapperFile.readAsStringSync();
-    final gradleVersionMatch = RegExp(
-      r'gradle-([0-9]+\.[0-9]+(\.[0-9]+)?)',
-    ).firstMatch(wContent);
+    final gradleVersionMatch = RegExp(r'gradle-([0-9]+\.[0-9]+(\.[0-9]+)?)')
+        .firstMatch(wContent);
     final gradleVer = gradleVersionMatch?.group(1) ?? 'Unknown';
     addAudit(
       'Toolchain',
@@ -478,9 +473,8 @@ void main(List<String> args) {
           : 'Missing density folders under res/',
     );
 
-    final splashV31 = Directory(
-      'android/app/src/main/res/values-v31',
-    ).existsSync();
+    final splashV31 = Directory('android/app/src/main/res/values-v31')
+        .existsSync();
     final splashNightV31 = Directory(
       'android/app/src/main/res/values-night-v31',
     ).existsSync();
@@ -697,9 +691,9 @@ void main(List<String> args) {
         : <File>[];
     final validCount = screenshots.length >= 2 && screenshots.length <= 8;
     final validNaming = screenshots.every(
-      (f) => RegExp(
-        r'^[0-9]+_[a-zA-Z0-9_\-]+\.(png|jpg|jpeg)$',
-      ).hasMatch(f.uri.pathSegments.last),
+      (f) =>
+          RegExp(r'^[0-9]+_[a-zA-Z0-9_\-]+\.(png|jpg|jpeg)$')
+              .hasMatch(f.uri.pathSegments.last),
     );
     addAudit(
       'Store Listing',

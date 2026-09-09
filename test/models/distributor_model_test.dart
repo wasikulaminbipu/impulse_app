@@ -63,33 +63,30 @@ void main() {
   });
 
   group('Distributor Model Tests', () {
-    test(
-      'Distributor.fromRow and toMap convert active state and null fields accurately',
-      () {
-        final now = DateTime.now();
-        final map = {
-          'id': 1,
-          'name_en': 'Agro Trade',
-          'name_bn': 'এগ্রো ট্রেড',
-          'designation': 'Proprietor',
-          'address_en': 'Dhaka Road',
-          'address_bn': null,
-          'upazila_id': 100,
-          'base_id': 50,
-          'area_id': 10,
-          'mobile': '01700000000',
-          'is_active': 1,
-          'created_at': now.toIso8601String(),
-          'updated_at': now.toIso8601String(),
-        };
+    test('Distributor.fromRow and toMap convert active state and null fields accurately', () {
+      final now = DateTime.now();
+      final map = {
+        'id': 1,
+        'name_en': 'Agro Trade',
+        'name_bn': 'এগ্রো ট্রেড',
+        'designation': 'Proprietor',
+        'address_en': 'Dhaka Road',
+        'address_bn': null,
+        'upazila_id': 100,
+        'base_id': 50,
+        'area_id': 10,
+        'mobile': '01700000000',
+        'is_active': 1,
+        'created_at': now.toIso8601String(),
+        'updated_at': now.toIso8601String(),
+      };
 
-        final dist = Distributor.fromRow(map);
-        expect(dist.id, equals(1));
-        expect(dist.nameEn, equals('Agro Trade'));
-        expect(dist.isActive, isTrue);
-        expect(dist.toMap()['is_active'], equals(1));
-      },
-    );
+      final dist = Distributor.fromRow(map);
+      expect(dist.id, equals(1));
+      expect(dist.nameEn, equals('Agro Trade'));
+      expect(dist.isActive, isTrue);
+      expect(dist.toMap()['is_active'], equals(1));
+    });
   });
 
   group('SalesPersonnel Model Tests', () {

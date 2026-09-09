@@ -151,63 +151,47 @@ void main() {
       },
     );
 
-    test(
-      'paginatedDistributorsProvider builds, loads items, and handles fetchNextPage',
-      () async {
-        final state = await container.read(
-          paginatedDistributorsProvider.future,
-        );
-        expect(state.items.length, equals(1));
-        expect(
-          state.items.first.distributor.nameEn,
-          equals('Impulse Agro Feed'),
-        );
+    test('paginatedDistributorsProvider builds, loads items, and handles fetchNextPage', () async {
+      final state = await container.read(paginatedDistributorsProvider.future);
+      expect(state.items.length, equals(1));
+      expect(state.items.first.distributor.nameEn, equals('Impulse Agro Feed'));
 
-        // Call fetchNextPage
-        await container
-            .read(paginatedDistributorsProvider.notifier)
-            .fetchNextPage();
-        final updated = await container.read(
-          paginatedDistributorsProvider.future,
-        );
-        expect(updated.items.length, equals(1));
-      },
-    );
+      // Call fetchNextPage
+      await container
+          .read(paginatedDistributorsProvider.notifier)
+          .fetchNextPage();
+      final updated = await container.read(
+        paginatedDistributorsProvider.future,
+      );
+      expect(updated.items.length, equals(1));
+    });
 
-    test(
-      'paginatedSalesPersonnelProvider builds, loads items, and handles fetchNextPage',
-      () async {
-        final state = await container.read(
-          paginatedSalesPersonnelProvider.future,
-        );
-        expect(state.items.length, equals(1));
-        expect(state.items.first.personnel.nameEn, equals('Mohammad Ali'));
+    test('paginatedSalesPersonnelProvider builds, loads items, and handles fetchNextPage', () async {
+      final state = await container.read(
+        paginatedSalesPersonnelProvider.future,
+      );
+      expect(state.items.length, equals(1));
+      expect(state.items.first.personnel.nameEn, equals('Mohammad Ali'));
 
-        await container
-            .read(paginatedSalesPersonnelProvider.notifier)
-            .fetchNextPage();
-        final updated = await container.read(
-          paginatedSalesPersonnelProvider.future,
-        );
-        expect(updated.items.length, equals(1));
-      },
-    );
+      await container
+          .read(paginatedSalesPersonnelProvider.notifier)
+          .fetchNextPage();
+      final updated = await container.read(
+        paginatedSalesPersonnelProvider.future,
+      );
+      expect(updated.items.length, equals(1));
+    });
 
-    test(
-      'paginatedVetDoctorsProvider builds, loads items, and handles fetchNextPage',
-      () async {
-        final state = await container.read(paginatedVetDoctorsProvider.future);
-        expect(state.items.length, equals(1));
-        expect(state.items.first.doctor.nameEn, equals('Dr. Tariqul Islam'));
+    test('paginatedVetDoctorsProvider builds, loads items, and handles fetchNextPage', () async {
+      final state = await container.read(paginatedVetDoctorsProvider.future);
+      expect(state.items.length, equals(1));
+      expect(state.items.first.doctor.nameEn, equals('Dr. Tariqul Islam'));
 
-        await container
-            .read(paginatedVetDoctorsProvider.notifier)
-            .fetchNextPage();
-        final updated = await container.read(
-          paginatedVetDoctorsProvider.future,
-        );
-        expect(updated.items.length, equals(1));
-      },
-    );
+      await container
+          .read(paginatedVetDoctorsProvider.notifier)
+          .fetchNextPage();
+      final updated = await container.read(paginatedVetDoctorsProvider.future);
+      expect(updated.items.length, equals(1));
+    });
   });
 }

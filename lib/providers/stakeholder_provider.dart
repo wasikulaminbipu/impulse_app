@@ -116,8 +116,10 @@ class PaginatedDistributors extends _$PaginatedDistributors {
     state = AsyncValue.data(currentState.copyWith(isLoadingMore: true));
 
     final dao = await ref.read(distributorDaoProvider.future);
+    if (!ref.mounted) return;
     final query = ref.read(distributorSearchQueryProvider);
     final favs = await ref.read(distributorFavoritesProvider.future);
+    if (!ref.mounted) return;
 
     final nextChunk = await dao.getFilteredDistributors(
       query: query,
@@ -125,6 +127,7 @@ class PaginatedDistributors extends _$PaginatedDistributors {
       offset: currentState.items.length,
       favoriteIds: favs.toSet(),
     );
+    if (!ref.mounted) return;
 
     final newItems = [...currentState.items, ...nextChunk];
 
@@ -189,8 +192,10 @@ class PaginatedVetDoctors extends _$PaginatedVetDoctors {
     state = AsyncValue.data(currentState.copyWith(isLoadingMore: true));
 
     final dao = await ref.read(vetDoctorDaoProvider.future);
+    if (!ref.mounted) return;
     final query = ref.read(vetDoctorsSearchQueryProvider);
     final favs = await ref.read(vetDoctorFavoritesProvider.future);
+    if (!ref.mounted) return;
 
     final nextChunk = await dao.getFilteredVetDoctors(
       query: query,
@@ -198,6 +203,7 @@ class PaginatedVetDoctors extends _$PaginatedVetDoctors {
       offset: currentState.items.length,
       favoriteIds: favs.toSet(),
     );
+    if (!ref.mounted) return;
 
     final newItems = [...currentState.items, ...nextChunk];
 
@@ -276,8 +282,10 @@ class PaginatedSalesPersonnel extends _$PaginatedSalesPersonnel {
     state = AsyncValue.data(currentState.copyWith(isLoadingMore: true));
 
     final dao = await ref.read(salesPersonnelDaoProvider.future);
+    if (!ref.mounted) return;
     final query = ref.read(salesPersonnelSearchQueryProvider);
     final favs = await ref.read(salesPersonnelFavoritesProvider.future);
+    if (!ref.mounted) return;
 
     final nextChunk = await dao.getFilteredSalesPersonnel(
       query: query,
@@ -285,6 +293,7 @@ class PaginatedSalesPersonnel extends _$PaginatedSalesPersonnel {
       offset: currentState.items.length,
       favoriteIds: favs.toSet(),
     );
+    if (!ref.mounted) return;
 
     final newItems = [...currentState.items, ...nextChunk];
 

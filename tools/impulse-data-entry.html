@@ -104,8 +104,8 @@
   <span class="spacer"></span>
   <span id="status"><span id="dirtyDot"></span><span id="statusText">No database open</span></span>
   <button id="btnOpen">Open database…</button>
-  <button id="btnSave" disabled>Save</button>
-  <button id="btnSaveAs" disabled>Save a copy…</button>
+  <button id="btnSave" disabled title="Save directly to opened database (Ctrl+S)">Save</button>
+  <button id="btnSaveAs" disabled title="Save a copy / Save as…">Save a copy…</button>
 </header>
 
 <div class="layout">
@@ -113,9 +113,26 @@
   <main id="main">
     <div id="welcome">
       <h2>Open a database to begin</h2>
-      <p>This tool edits <code class="mono">products.db</code> or <code class="mono">distributors.db</code> directly — nothing is uploaded anywhere, it all runs in this browser tab. It works fully offline once the page has loaded.</p>
-      <p>In Chrome or Edge, changes save straight back into the original file. In other browsers, use "Save a copy…" to download the edited file.</p>
-      <div class="filepick"><button class="btn" id="btnOpen2">Open database…</button></div>
+      <p>This tool edits <code class="mono">products.db</code> or <code class="mono">distributors.db</code> directly — running fully in this browser tab.</p>
+      
+      <div id="serverQuickSection" style="display:none;background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--radius);padding:16px;margin:20px 0;text-align:center;">
+        <div style="font-weight:600;color:var(--accent-dark);font-size:14px;margin-bottom:6px;">
+          🟢 Local Companion Server Active — Direct Disk Saving Enabled
+        </div>
+        <div style="font-size:12.5px;color:var(--text);margin-bottom:12px;">
+          Directly load and save into <code class="mono">assets/db/</code> with automatic backup:
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn" id="btnServerProducts">Open assets/db/products.db</button>
+          <button class="btn" id="btnServerDistributors">Open assets/db/distributors.db</button>
+        </div>
+      </div>
+
+
+      <div class="filepick">
+        <button class="btn" id="btnOpen2">Browse database file…</button>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted);">(You can also drag and drop a .db file anywhere on this window)</div>
+      </div>
     </div>
   </main>
 </div>
@@ -123,6 +140,8 @@
 <script>
 const CDN_WASM = "https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/";
 let SQLmod = null, db = null, dbType = null, fileHandle = null, dirty = false, currentFileName = "";
+let serverDbName = null, serverConnected = false;
+const LOCAL_SERVER_ORIGIN = (location.origin.startsWith('http://localhost') || location.origin.startsWith('http://127.0.0.1')) ? location.origin : "http://localhost:4040";
 
 function setStatus(text){ document.getElementById('statusText').textContent = text; }
 function setDirty(v){
@@ -136,7 +155,7 @@ function toast(msg, isErr){
   t.className = 'toast' + (isErr ? ' err' : '');
   t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(), 3200);
+  setTimeout(()=>t.remove(), 3400);
 }
 
 // ---------- low-level db helpers ----------
@@ -156,102 +175,226 @@ function run(sql, params=[]){
 
 let syncTimer = null;
 function autoSyncDb(){
-  if(!fileHandle) return;
   if(syncTimer) clearTimeout(syncTimer);
   syncTimer = setTimeout(async ()=>{
+    if(!db || !dirty) return;
     try {
-      const data = db.export();
-      const writable = await fileHandle.createWritable();
-      await writable.write(data);
-      await writable.close();
-      setDirty(false);
+      const targetServerName = serverDbName || (serverConnected ? currentFileName : null);
+      if(targetServerName){
+        const data = db.export();
+        await fetch(`${LOCAL_SERVER_ORIGIN}/api/save?name=${encodeURIComponent(targetServerName)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/octet-stream' },
+          body: data
+        });
+        setDirty(false);
+      } else if(fileHandle && fileHandle.queryPermission){
+        const perm = await fileHandle.queryPermission({ mode: 'readwrite' });
+        if(perm === 'granted'){
+          const data = db.export();
+          const writable = await fileHandle.createWritable({ keepExistingData: false });
+          await writable.write(data);
+          await writable.close();
+          setDirty(false);
+        }
+      }
     } catch(err){
-      console.error('Auto-sync failed:', err);
+      console.debug('Background auto-sync skipped:', err);
     }
-  }, 100);
+  }, 1000);
 }
 function nowIso(){
   return new Date().toISOString().slice(0,19).replace('T',' ');
 }
 
 // ---------- open / save ----------
-async function openDb(){
+async function initDatabaseWithBytes(arrayBuf, name, isServer = false, handle = null){
+  currentFileName = name;
+  fileHandle = handle;
+  serverDbName = isServer ? name : null;
+
+  if(!SQLmod){
+    setStatus('Loading SQLite engine…');
+    SQLmod = await initSqlJs({ locateFile: f => CDN_WASM + f });
+  }
+  db = new SQLmod.Database(new Uint8Array(arrayBuf));
+  detectType();
+  setDirty(false);
+
+  let modeLabel = '';
+  if(serverDbName){
+    modeLabel = ' [Direct Save: Local Server]';
+  } else if(fileHandle){
+    modeLabel = ' [Direct Save: Opened DB]';
+  } else {
+    modeLabel = ' [Download/Copy Mode]';
+  }
+
+  setStatus(`${name} — ${dbType}${modeLabel}`);
+  buildNav();
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('nav').style.display = 'block';
+  const firstBtn = document.querySelector('#nav button');
+  if(firstBtn) firstBtn.click();
+}
+
+async function openServerDb(name){
   try{
-    let arrayBuf, name;
-    if(window.showOpenFilePicker){
-      const [handle] = await window.showOpenFilePicker({
-        types:[{description:'SQLite database', accept:{'application/octet-stream':['.db','.sqlite','.sqlite3']}}]
-      });
-      fileHandle = handle;
-      const file = await handle.getFile();
-      arrayBuf = await file.arrayBuffer();
-      name = file.name;
-    } else {
-      const inp = document.createElement('input');
-      inp.type = 'file'; inp.accept = '.db,.sqlite,.sqlite3';
-      const file = await new Promise(res=>{
-        inp.onchange = ()=>res(inp.files[0]);
-        inp.click();
-      });
-      if(!file) return;
-      fileHandle = null;
-      arrayBuf = await file.arrayBuffer();
-      name = file.name;
-    }
-    currentFileName = name;
-    if(!SQLmod){
-      setStatus('Loading SQLite engine…');
-      SQLmod = await initSqlJs({ locateFile: f => CDN_WASM + f });
-    }
-    db = new SQLmod.Database(new Uint8Array(arrayBuf));
-    detectType();
-    setDirty(false);
-    setStatus(`${name} — ${dbType}`);
-    buildNav();
-    document.getElementById('welcome').style.display = 'none';
-    document.getElementById('nav').style.display = 'block';
-    const firstBtn = document.querySelector('#nav button');
-    if(firstBtn) firstBtn.click();
+    setStatus(`Loading ${name} from local companion server…`);
+    const resp = await fetch(`${LOCAL_SERVER_ORIGIN}/api/load?name=${encodeURIComponent(name)}`);
+    if(!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`);
+    const arrayBuf = await resp.arrayBuffer();
+    await initDatabaseWithBytes(arrayBuf, name, true, null);
+    toast(`Opened ${name} (Direct disk save active)`);
   }catch(err){
-    if(err.name !== 'AbortError') toast('Could not open file: '+err.message, true);
+    toast(`Failed to load ${name}: ${err.message}`, true);
+    setStatus('No database open');
   }
 }
+
+async function openDb(){
+  try{
+    if(window.showOpenFilePicker){
+      const [handle] = await window.showOpenFilePicker({
+        types:[
+          {
+            description: 'SQLite database (*.db, *.sqlite, *.sqlite3)',
+            accept: {
+              'application/x-sqlite3': ['.db', '.sqlite', '.sqlite3'],
+              'application/vnd.sqlite3': ['.db', '.sqlite', '.sqlite3'],
+              'application/octet-stream': ['.db', '.sqlite', '.sqlite3']
+            }
+          }
+        ],
+        excludeAcceptAllOption: false,
+        multiple: false
+      });
+
+      // Request write permission upfront while within user gesture
+      if(handle.requestPermission){
+        const q = await handle.queryPermission({ mode: 'readwrite' });
+        if(q !== 'granted'){
+          await handle.requestPermission({ mode: 'readwrite' });
+        }
+      }
+
+      const file = await handle.getFile();
+      const arrayBuf = await file.arrayBuffer();
+      await initDatabaseWithBytes(arrayBuf, file.name, false, handle);
+    } else {
+      await openDbFallback();
+    }
+  }catch(err){
+    if(err.name !== 'AbortError') {
+      console.warn('showOpenFilePicker failed, falling back to input:', err);
+      await openDbFallback();
+    }
+  }
+}
+
+async function openDbFallback(){
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.db,.sqlite,.sqlite3';
+  const file = await new Promise(res=>{
+    inp.onchange = ()=>res(inp.files ? inp.files[0] : null);
+    inp.click();
+  });
+  if(!file) return;
+  const arrayBuf = await file.arrayBuffer();
+  await initDatabaseWithBytes(arrayBuf, file.name, serverConnected, null);
+}
+
 async function saveDb(forceDialog){
   if(!db) return;
   const data = db.export();
+  setStatus('Saving database…');
+
   try{
+    // PRIORITY 1: Direct Save to local companion server
+    const targetServerName = serverDbName || (serverConnected ? currentFileName : null);
+    if(targetServerName && !forceDialog){
+      const resp = await fetch(`${LOCAL_SERVER_ORIGIN}/api/save?name=${encodeURIComponent(targetServerName)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        body: data
+      });
+      if(resp.ok){
+        serverDbName = targetServerName;
+        setDirty(false);
+        setStatus(`${currentFileName} — ${dbType} [Direct Save: Local Server]`);
+        toast(`Saved directly to assets/db/${targetServerName}`);
+        return;
+      } else {
+        throw new Error(`Server returned HTTP ${resp.status}`);
+      }
+    }
+
+    // PRIORITY 2: Direct Save to opened FileSystemFileHandle
     if(fileHandle && !forceDialog){
-      const writable = await fileHandle.createWritable();
+      if(fileHandle.queryPermission){
+        const perm = await fileHandle.queryPermission({ mode: 'readwrite' });
+        if(perm !== 'granted' && fileHandle.requestPermission){
+          const res = await fileHandle.requestPermission({ mode: 'readwrite' });
+          if(res !== 'granted') throw new Error('Write permission denied by user');
+        }
+      }
+      const writable = await fileHandle.createWritable({ keepExistingData: false });
       await writable.write(data);
       await writable.close();
       setDirty(false);
-      toast('Saved to ' + currentFileName);
+      setStatus(`${currentFileName} — ${dbType} [Direct Save: Opened DB]`);
+      toast(`Saved directly to ${currentFileName}`);
       return;
     }
+
+    // PRIORITY 3: If forceDialog OR no direct fileHandle
     if(window.showSaveFilePicker){
       const handle = await window.showSaveFilePicker({
         suggestedName: currentFileName || 'database.db',
-        types:[{description:'SQLite database', accept:{'application/octet-stream':['.db']}}]
+        types:[
+          {
+            description: 'SQLite database (*.db)',
+            accept: {
+              'application/x-sqlite3': ['.db'],
+              'application/octet-stream': ['.db']
+            }
+          }
+        ]
       });
-      const writable = await handle.createWritable();
+      const writable = await handle.createWritable({ keepExistingData: false });
       await writable.write(data);
       await writable.close();
-      if(!forceDialog) fileHandle = handle;
+
+      // If user saved and didn't force a dialog on future saves, link to this handle!
+      if(!forceDialog){
+        fileHandle = handle;
+        serverDbName = null;
+        currentFileName = handle.name || currentFileName;
+      }
       setDirty(false);
-      toast('Saved.');
+      setStatus(`${currentFileName} — ${dbType} [Direct Save: Opened DB]`);
+      toast(`Saved to ${currentFileName}`);
       return;
     }
-    // fallback: download
+
+    // PRIORITY 4: Fallback - Download copy
     const blob = new Blob([data], {type:'application/octet-stream'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = currentFileName || 'database.db';
+    a.href = url;
+    a.download = currentFileName || 'database.db';
     a.click();
     URL.revokeObjectURL(url);
     setDirty(false);
-    toast('Downloaded ' + (currentFileName||'database.db'));
+    setStatus(`${currentFileName} — ${dbType} [Download/Copy Mode]`);
+    toast(`Saved a copy: downloaded ${currentFileName || 'database.db'}`);
   }catch(err){
-    if(err.name !== 'AbortError') toast('Save failed: '+err.message, true);
+    if(err.name !== 'AbortError'){
+      toast('Save failed: ' + err.message, true);
+      console.error('Save error:', err);
+    }
+    setStatus(`${currentFileName} — ${dbType}`);
   }
 }
 
@@ -323,10 +466,29 @@ function ensureDistributorsSchema(){
   }
 }
 
+function ensureProductsSchema(){
+  const ddl = [
+    `CREATE TABLE IF NOT EXISTS benefits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+      text_en TEXT NOT NULL,
+      text_bn TEXT,
+      display_order INTEGER DEFAULT 0
+    );`,
+    `CREATE INDEX IF NOT EXISTS idx_benefits_product_id ON benefits(product_id);`
+  ];
+  try {
+    ddl.forEach(sql => db.run(sql));
+  } catch(e) {
+    console.error('Products schema auto-creation error:', e);
+  }
+}
+
 function detectType(){
   const tables = q("select name from sqlite_master where type='table'").map(r=>r.name);
   if(tables.includes('products')) {
     dbType = 'products';
+    ensureProductsSchema();
   } else if(tables.includes('distributors')) {
     dbType = 'distributors';
     ensureDistributorsSchema();
@@ -335,14 +497,82 @@ function detectType(){
   }
 }
 
+async function checkLocalServer(){
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 1200);
+    const resp = await fetch(`${LOCAL_SERVER_ORIGIN}/api/status`, { signal: ctrl.signal });
+    clearTimeout(timer);
+    if(resp.ok){
+      const st = await resp.json();
+      if(st.ok){
+        serverConnected = true;
+        const sBox = document.getElementById('serverQuickSection');
+        if(sBox) sBox.style.display = 'block';
+
+        const bProd = document.getElementById('btnServerProducts');
+        if(bProd) bProd.onclick = ()=>openServerDb('products.db');
+        const bDist = document.getElementById('btnServerDistributors');
+        if(bDist) bDist.onclick = ()=>openServerDb('distributors.db');
+      }
+    }
+  } catch(e){
+    serverConnected = false;
+  }
+}
+
 window.addEventListener('beforeunload', e=>{
   if(dirty){ e.preventDefault(); e.returnValue=''; }
+});
+
+window.addEventListener('keydown', e=>{
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's'){
+    e.preventDefault();
+    if(db) saveDb(false);
+  }
+});
+
+window.addEventListener('dragover', e=>{
+  e.preventDefault();
+  e.stopPropagation();
+});
+
+window.addEventListener('drop', async e=>{
+  e.preventDefault();
+  e.stopPropagation();
+  if(!e.dataTransfer) return;
+  const items = e.dataTransfer.items;
+  if(items && items.length > 0 && items[0].getAsFileSystemHandle){
+    try {
+      const handle = await items[0].getAsFileSystemHandle();
+      if(handle && handle.kind === 'file'){
+        if(handle.requestPermission){
+          const q = await handle.queryPermission({ mode: 'readwrite' });
+          if(q !== 'granted') await handle.requestPermission({ mode: 'readwrite' });
+        }
+        const file = await handle.getFile();
+        const arrayBuf = await file.arrayBuffer();
+        await initDatabaseWithBytes(arrayBuf, file.name, false, handle);
+        return;
+      }
+    } catch(err){
+      console.warn('Drag-and-drop FileSystemHandle error:', err);
+    }
+  }
+  const files = e.dataTransfer.files;
+  if(files && files.length > 0){
+    const file = files[0];
+    const arrayBuf = await file.arrayBuffer();
+    await initDatabaseWithBytes(arrayBuf, file.name, serverConnected, null);
+  }
 });
 
 document.getElementById('btnOpen').onclick = openDb;
 document.getElementById('btnOpen2').onclick = openDb;
 document.getElementById('btnSave').onclick = ()=>saveDb(false);
 document.getElementById('btnSaveAs').onclick = ()=>saveDb(true);
+
+checkLocalServer();
 
 // ---------- nav ----------
 const NAV = {
@@ -752,7 +982,7 @@ function productsListPage(){
     document.getElementById('addBtn').onclick = ()=>productDetailPage(null, ()=>render(filter));
     main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>productDetailPage(+b.dataset.edit, ()=>render(filter)));
     main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
-      if(!confirm('Delete this product and all its compositions, indications, directions, precautions and presentations? This cannot be undone.')) return;
+      if(!confirm('Delete this product and all its compositions, benefits, indications, directions, precautions and presentations? This cannot be undone.')) return;
       try{ run('delete from products where id=?',[+b.dataset.del]); render(filter); toast('Deleted.'); }
       catch(err){ toast('Delete failed: '+err.message, true); }
     });
@@ -792,7 +1022,7 @@ function productDetailPage(id, onDone){
   if(!isNew){
     html += `<div id="childSections"></div>`;
   } else {
-    html += `<p class="subtle">Save the basic info first — then you can add compositions, indications, dosage directions, precautions and pack presentations.</p>`;
+    html += `<p class="subtle">Save the basic info first — then you can add compositions, benefits, indications, dosage directions, precautions and pack presentations.</p>`;
   }
 
   main.innerHTML = html;
@@ -892,6 +1122,7 @@ function productDetailPage(id, onDone){
         </div>
         <div id="sec_comp"></div>
       </div>
+      <div class="card"><h3>Benefits</h3><div id="sec_ben"></div></div>
       <div class="card"><h3>Indications</h3><div id="sec_ind"></div></div>
       <div class="card"><h3>Dosage &amp; administration (directions)</h3><div id="sec_dir"></div></div>
       <div class="card"><h3>Precautions</h3><div id="sec_prec"></div></div>
@@ -914,6 +1145,14 @@ function productDetailPage(id, onDone){
         {key:'ingredient_en', label:'Ingredient (EN)', required:true},
         {key:'ingredient_bn', label:'Ingredient (BN)'},
         {key:'concentration', label:'Concentration'},
+        {key:'display_order', label:'Order', type:'number', width:'70px'},
+      ]
+    });
+    childRows({
+      mount:'sec_ben', table:'benefits', productId,
+      cols:[
+        {key:'text_en', label:'Text (EN)', required:true, type:'textarea'},
+        {key:'text_bn', label:'Text (BN)', type:'textarea'},
         {key:'display_order', label:'Order', type:'number', width:'70px'},
       ]
     });

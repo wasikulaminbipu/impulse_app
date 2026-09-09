@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/screens/about_us_screen.dart';
 
@@ -32,7 +33,12 @@ void main() {
 
         expect(find.text('About Us'), findsOneWidget);
         expect(find.text('Impulse'), findsOneWidget);
-        expect(find.text('v1.0.0 (Build 1)'), findsOneWidget);
+        expect(
+          find.text(
+            'v${AppConstants.appVersion} (Build ${AppConstants.buildNumber})',
+          ),
+          findsOneWidget,
+        );
         expect(find.text('Our Companies'), findsOneWidget);
         expect(find.text('Adyan Agro'), findsOneWidget);
         expect(find.text('Impulse Agri'), findsOneWidget);

@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+/// Utility service that handles capturing widget boundaries as images
+/// and presenting native platform share dialogs via `share_plus`.
 class ProductShareService {
   /// Captures the widget attached to [repaintBoundaryKey] as a PNG image,
   /// saves it to temp storage asynchronously, and opens the native share sheet.
@@ -50,11 +53,25 @@ class ProductShareService {
 
       // Invoke native share sheet
       final XFile xFile = XFile(imgFile.path, mimeType: 'image/png');
-      // ignore: deprecated_member_use
-      await Share.shareXFiles(
-        [xFile],
-        text: shareTitle,
-        subject: shareSubject ?? shareTitle,
+      Rect? sharePositionOrigin;
+      try {
+        if (boundary.hasSize &&
+            boundary.size.width > 0 &&
+            boundary.size.height > 0) {
+          sharePositionOrigin =
+              boundary.localToGlobal(Offset.zero) & boundary.size;
+        }
+      } catch (_) {
+        // Fall back to null if layout coordinates cannot be computed
+      }
+
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [xFile],
+          text: shareTitle,
+          subject: shareSubject ?? shareTitle,
+          sharePositionOrigin: sharePositionOrigin,
+        ),
       );
     } catch (e) {
       debugPrint('Error sharing product screenshot: $e');

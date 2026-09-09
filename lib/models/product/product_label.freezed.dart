@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'product_label.dart';
@@ -9,6 +9,7 @@ part of 'product_label.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ProductLabelCopyWith<ProductLabel> get copyWith => _$ProductLabelCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductLabel&&(identical(other.id, id) || other.id == id)&&(identical(other.titleEn, titleEn) || other.titleEn == titleEn)&&(identical(other.titleBn, titleBn) || other.titleBn == titleBn)&&(identical(other.shortDescriptionEn, shortDescriptionEn) || other.shortDescriptionEn == shortDescriptionEn)&&(identical(other.shortDescriptionBn, shortDescriptionBn) || other.shortDescriptionBn == shortDescriptionBn)&&(identical(other.mottoEn, mottoEn) || other.mottoEn == mottoEn)&&(identical(other.mottoBn, mottoBn) || other.mottoBn == mottoBn)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.targetGroupIds, targetGroupIds)&&const DeepCollectionEquality().equals(other.targetGroups, targetGroups)&&const DeepCollectionEquality().equals(other.presentations, presentations)&&(identical(other.isFavourite, isFavourite) || other.isFavourite == isFavourite)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl));
+  final _this = this as ProductLabel;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductLabel&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.titleEn, _this.titleEn) || other.titleEn == _this.titleEn)&&(identical(other.titleBn, _this.titleBn) || other.titleBn == _this.titleBn)&&(identical(other.shortDescriptionEn, _this.shortDescriptionEn) || other.shortDescriptionEn == _this.shortDescriptionEn)&&(identical(other.shortDescriptionBn, _this.shortDescriptionBn) || other.shortDescriptionBn == _this.shortDescriptionBn)&&(identical(other.mottoEn, _this.mottoEn) || other.mottoEn == _this.mottoEn)&&(identical(other.mottoBn, _this.mottoBn) || other.mottoBn == _this.mottoBn)&&(identical(other.categoryId, _this.categoryId) || other.categoryId == _this.categoryId)&&(identical(other.category, _this.category) || other.category == _this.category)&&const DeepCollectionEquality().equals(other.targetGroupIds, _this.targetGroupIds)&&const DeepCollectionEquality().equals(other.targetGroups, _this.targetGroups)&&const DeepCollectionEquality().equals(other.presentations, _this.presentations)&&(identical(other.isFavourite, _this.isFavourite) || other.isFavourite == _this.isFavourite)&&(identical(other.imageUrl, _this.imageUrl) || other.imageUrl == _this.imageUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,titleEn,titleBn,shortDescriptionEn,shortDescriptionBn,mottoEn,mottoBn,categoryId,category,const DeepCollectionEquality().hash(targetGroupIds),const DeepCollectionEquality().hash(targetGroups),const DeepCollectionEquality().hash(presentations),isFavourite,imageUrl);
+int get hashCode {
+  final _this = this as ProductLabel;
+  return Object.hash(runtimeType,_this.id,_this.titleEn,_this.titleBn,_this.shortDescriptionEn,_this.shortDescriptionBn,_this.mottoEn,_this.mottoBn,_this.categoryId,_this.category,const DeepCollectionEquality().hash(_this.targetGroupIds),const DeepCollectionEquality().hash(_this.targetGroups),const DeepCollectionEquality().hash(_this.presentations),_this.isFavourite,_this.imageUrl);
+}
 
 @override
 String toString() {
-  return 'ProductLabel(id: $id, titleEn: $titleEn, titleBn: $titleBn, shortDescriptionEn: $shortDescriptionEn, shortDescriptionBn: $shortDescriptionBn, mottoEn: $mottoEn, mottoBn: $mottoBn, categoryId: $categoryId, category: $category, targetGroupIds: $targetGroupIds, targetGroups: $targetGroups, presentations: $presentations, isFavourite: $isFavourite, imageUrl: $imageUrl)';
+  final _this = this as ProductLabel;
+  return 'ProductLabel(id: ${_this.id}, titleEn: ${_this.titleEn}, titleBn: ${_this.titleBn}, shortDescriptionEn: ${_this.shortDescriptionEn}, shortDescriptionBn: ${_this.shortDescriptionBn}, mottoEn: ${_this.mottoEn}, mottoBn: ${_this.mottoBn}, categoryId: ${_this.categoryId}, category: ${_this.category}, targetGroupIds: ${_this.targetGroupIds}, targetGroups: ${_this.targetGroups}, presentations: ${_this.presentations}, isFavourite: ${_this.isFavourite}, imageUrl: ${_this.imageUrl})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ProductLabelCopyWithImpl<$Res>
 /// Create a copy of ProductLabel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? titleEn = null,Object? titleBn = freezed,Object? shortDescriptionEn = freezed,Object? shortDescriptionBn = freezed,Object? mottoEn = freezed,Object? mottoBn = freezed,Object? categoryId = null,Object? category = null,Object? targetGroupIds = null,Object? targetGroups = null,Object? presentations = null,Object? isFavourite = null,Object? imageUrl = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProductLabel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,titleEn: null == titleEn ? _self.titleEn : titleEn // ignore: cast_nullable_to_non_nullable
 as String,titleBn: freezed == titleBn ? _self.titleBn : titleBn // ignore: cast_nullable_to_non_nullable
@@ -228,7 +234,7 @@ return $default(_that.id,_that.titleEn,_that.titleBn,_that.shortDescriptionEn,_t
 
 
 class _ProductLabel extends ProductLabel {
-  const _ProductLabel({required this.id, required this.titleEn, this.titleBn, this.shortDescriptionEn, this.shortDescriptionBn, this.mottoEn, this.mottoBn, required this.categoryId, this.category = const Category.empty(), final  List<int> targetGroupIds = const [], final  List<TargetGroup> targetGroups = const [], final  List<Presentation> presentations = const [], this.isFavourite = false, this.imageUrl}): _targetGroupIds = targetGroupIds,_targetGroups = targetGroups,_presentations = presentations,super._();
+  const _ProductLabel({required this.id, required this.titleEn, this.titleBn, this.shortDescriptionEn, this.shortDescriptionBn, this.mottoEn, this.mottoBn, required this.categoryId, this.category = const Category.empty(),  List<int> targetGroupIds = const [],  List<TargetGroup> targetGroups = const [],  List<Presentation> presentations = const [], this.isFavourite = false, this.imageUrl}): _targetGroupIds = targetGroupIds,_targetGroups = targetGroups,_presentations = presentations,super._();
   
 
 @override final  int id;
@@ -274,16 +280,18 @@ _$ProductLabelCopyWith<_ProductLabel> get copyWith => __$ProductLabelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductLabel&&(identical(other.id, id) || other.id == id)&&(identical(other.titleEn, titleEn) || other.titleEn == titleEn)&&(identical(other.titleBn, titleBn) || other.titleBn == titleBn)&&(identical(other.shortDescriptionEn, shortDescriptionEn) || other.shortDescriptionEn == shortDescriptionEn)&&(identical(other.shortDescriptionBn, shortDescriptionBn) || other.shortDescriptionBn == shortDescriptionBn)&&(identical(other.mottoEn, mottoEn) || other.mottoEn == mottoEn)&&(identical(other.mottoBn, mottoBn) || other.mottoBn == mottoBn)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._targetGroupIds, _targetGroupIds)&&const DeepCollectionEquality().equals(other._targetGroups, _targetGroups)&&const DeepCollectionEquality().equals(other._presentations, _presentations)&&(identical(other.isFavourite, isFavourite) || other.isFavourite == isFavourite)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductLabel&&(identical(other.id, id) || other.id == id)&&(identical(other.titleEn, titleEn) || other.titleEn == titleEn)&&(identical(other.titleBn, titleBn) || other.titleBn == titleBn)&&(identical(other.shortDescriptionEn, shortDescriptionEn) || other.shortDescriptionEn == shortDescriptionEn)&&(identical(other.shortDescriptionBn, shortDescriptionBn) || other.shortDescriptionBn == shortDescriptionBn)&&(identical(other.mottoEn, mottoEn) || other.mottoEn == mottoEn)&&(identical(other.mottoBn, mottoBn) || other.mottoBn == mottoBn)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.targetGroupIds, _targetGroupIds)&&const DeepCollectionEquality().equals(other.targetGroups, _targetGroups)&&const DeepCollectionEquality().equals(other.presentations, _presentations)&&(identical(other.isFavourite, isFavourite) || other.isFavourite == isFavourite)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,titleEn,titleBn,shortDescriptionEn,shortDescriptionBn,mottoEn,mottoBn,categoryId,category,const DeepCollectionEquality().hash(_targetGroupIds),const DeepCollectionEquality().hash(_targetGroups),const DeepCollectionEquality().hash(_presentations),isFavourite,imageUrl);
+int get hashCode {
+    return Object.hash(runtimeType,id,titleEn,titleBn,shortDescriptionEn,shortDescriptionBn,mottoEn,mottoBn,categoryId,category,const DeepCollectionEquality().hash(_targetGroupIds),const DeepCollectionEquality().hash(_targetGroups),const DeepCollectionEquality().hash(_presentations),isFavourite,imageUrl);
+}
 
 @override
 String toString() {
-  return 'ProductLabel(id: $id, titleEn: $titleEn, titleBn: $titleBn, shortDescriptionEn: $shortDescriptionEn, shortDescriptionBn: $shortDescriptionBn, mottoEn: $mottoEn, mottoBn: $mottoBn, categoryId: $categoryId, category: $category, targetGroupIds: $targetGroupIds, targetGroups: $targetGroups, presentations: $presentations, isFavourite: $isFavourite, imageUrl: $imageUrl)';
+    return 'ProductLabel(id: $id, titleEn: $titleEn, titleBn: $titleBn, shortDescriptionEn: $shortDescriptionEn, shortDescriptionBn: $shortDescriptionBn, mottoEn: $mottoEn, mottoBn: $mottoBn, categoryId: $categoryId, category: $category, targetGroupIds: $targetGroupIds, targetGroups: $targetGroups, presentations: $presentations, isFavourite: $isFavourite, imageUrl: $imageUrl)';
 }
 
 

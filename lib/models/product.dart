@@ -1,3 +1,4 @@
+export 'product/benefit.dart';
 export 'product/category.dart';
 export 'product/composition.dart';
 export 'product/content_type.dart';

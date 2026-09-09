@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'distributor.dart';
@@ -9,6 +9,7 @@ part of 'distributor.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -24,23 +25,29 @@ $RegionCopyWith<Region> get copyWith => _$RegionCopyWithImpl<Region>(this as Reg
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as Region;
   properties
     ..add(DiagnosticsProperty('type', 'Region'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('nameEn', _this.nameEn))..add(DiagnosticsProperty('nameBn', _this.nameBn));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Region&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+  final _this = this as Region;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Region&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn);
+int get hashCode {
+  final _this = this as Region;
+  return Object.hash(runtimeType,_this.id,_this.nameEn,_this.nameBn);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Region(id: $id, nameEn: $nameEn, nameBn: $nameBn)';
+  final _this = this as Region;
+  return 'Region(id: ${_this.id}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn})';
 }
 
 
@@ -69,7 +76,7 @@ class _$RegionCopyWithImpl<$Res>
 /// Create a copy of Region
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(Region(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
@@ -230,23 +237,25 @@ _$RegionCopyWith<_Region> get copyWith => __$RegionCopyWithImpl<_Region>(this, _
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'Region'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Region&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Region&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn);
+int get hashCode {
+    return Object.hash(runtimeType,id,nameEn,nameBn);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Region(id: $id, nameEn: $nameEn, nameBn: $nameBn)';
+    return 'Region(id: $id, nameEn: $nameEn, nameBn: $nameBn)';
 }
 
 
@@ -299,23 +308,29 @@ $AreaCopyWith<Area> get copyWith => _$AreaCopyWithImpl<Area>(this as Area, _$ide
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as Area;
   properties
     ..add(DiagnosticsProperty('type', 'Area'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('regionId', regionId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('regionId', _this.regionId))..add(DiagnosticsProperty('nameEn', _this.nameEn))..add(DiagnosticsProperty('nameBn', _this.nameBn));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Area&&(identical(other.id, id) || other.id == id)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+  final _this = this as Area;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Area&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.regionId, _this.regionId) || other.regionId == _this.regionId)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,regionId,nameEn,nameBn);
+int get hashCode {
+  final _this = this as Area;
+  return Object.hash(runtimeType,_this.id,_this.regionId,_this.nameEn,_this.nameBn);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Area(id: $id, regionId: $regionId, nameEn: $nameEn, nameBn: $nameBn)';
+  final _this = this as Area;
+  return 'Area(id: ${_this.id}, regionId: ${_this.regionId}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn})';
 }
 
 
@@ -344,7 +359,7 @@ class _$AreaCopyWithImpl<$Res>
 /// Create a copy of Area
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? regionId = null,Object? nameEn = null,Object? nameBn = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(Area(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,regionId: null == regionId ? _self.regionId : regionId // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -507,23 +522,25 @@ _$AreaCopyWith<_Area> get copyWith => __$AreaCopyWithImpl<_Area>(this, _$identit
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'Area'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('regionId', regionId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Area&&(identical(other.id, id) || other.id == id)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Area&&(identical(other.id, id) || other.id == id)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,regionId,nameEn,nameBn);
+int get hashCode {
+    return Object.hash(runtimeType,id,regionId,nameEn,nameBn);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Area(id: $id, regionId: $regionId, nameEn: $nameEn, nameBn: $nameBn)';
+    return 'Area(id: $id, regionId: $regionId, nameEn: $nameEn, nameBn: $nameBn)';
 }
 
 
@@ -577,23 +594,29 @@ $DivisionCopyWith<Division> get copyWith => _$DivisionCopyWithImpl<Division>(thi
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as Division;
   properties
     ..add(DiagnosticsProperty('type', 'Division'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('nameEn', _this.nameEn))..add(DiagnosticsProperty('nameBn', _this.nameBn));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Division&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+  final _this = this as Division;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Division&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn);
+int get hashCode {
+  final _this = this as Division;
+  return Object.hash(runtimeType,_this.id,_this.nameEn,_this.nameBn);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Division(id: $id, nameEn: $nameEn, nameBn: $nameBn)';
+  final _this = this as Division;
+  return 'Division(id: ${_this.id}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn})';
 }
 
 
@@ -622,7 +645,7 @@ class _$DivisionCopyWithImpl<$Res>
 /// Create a copy of Division
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(Division(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
@@ -783,23 +806,25 @@ _$DivisionCopyWith<_Division> get copyWith => __$DivisionCopyWithImpl<_Division>
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'Division'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Division&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Division&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn);
+int get hashCode {
+    return Object.hash(runtimeType,id,nameEn,nameBn);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Division(id: $id, nameEn: $nameEn, nameBn: $nameBn)';
+    return 'Division(id: $id, nameEn: $nameEn, nameBn: $nameBn)';
 }
 
 
@@ -852,23 +877,29 @@ $DistrictCopyWith<District> get copyWith => _$DistrictCopyWithImpl<District>(thi
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as District;
   properties
     ..add(DiagnosticsProperty('type', 'District'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('divisionId', divisionId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('divisionId', _this.divisionId))..add(DiagnosticsProperty('nameEn', _this.nameEn))..add(DiagnosticsProperty('nameBn', _this.nameBn));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is District&&(identical(other.id, id) || other.id == id)&&(identical(other.divisionId, divisionId) || other.divisionId == divisionId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+  final _this = this as District;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is District&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.divisionId, _this.divisionId) || other.divisionId == _this.divisionId)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,divisionId,nameEn,nameBn);
+int get hashCode {
+  final _this = this as District;
+  return Object.hash(runtimeType,_this.id,_this.divisionId,_this.nameEn,_this.nameBn);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'District(id: $id, divisionId: $divisionId, nameEn: $nameEn, nameBn: $nameBn)';
+  final _this = this as District;
+  return 'District(id: ${_this.id}, divisionId: ${_this.divisionId}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn})';
 }
 
 
@@ -897,7 +928,7 @@ class _$DistrictCopyWithImpl<$Res>
 /// Create a copy of District
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? divisionId = null,Object? nameEn = null,Object? nameBn = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(District(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,divisionId: null == divisionId ? _self.divisionId : divisionId // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -1060,23 +1091,25 @@ _$DistrictCopyWith<_District> get copyWith => __$DistrictCopyWithImpl<_District>
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'District'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('divisionId', divisionId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _District&&(identical(other.id, id) || other.id == id)&&(identical(other.divisionId, divisionId) || other.divisionId == divisionId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _District&&(identical(other.id, id) || other.id == id)&&(identical(other.divisionId, divisionId) || other.divisionId == divisionId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,divisionId,nameEn,nameBn);
+int get hashCode {
+    return Object.hash(runtimeType,id,divisionId,nameEn,nameBn);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'District(id: $id, divisionId: $divisionId, nameEn: $nameEn, nameBn: $nameBn)';
+    return 'District(id: $id, divisionId: $divisionId, nameEn: $nameEn, nameBn: $nameBn)';
 }
 
 
@@ -1130,23 +1163,29 @@ $UpazilaCopyWith<Upazila> get copyWith => _$UpazilaCopyWithImpl<Upazila>(this as
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as Upazila;
   properties
     ..add(DiagnosticsProperty('type', 'Upazila'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('districtId', districtId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('districtId', _this.districtId))..add(DiagnosticsProperty('nameEn', _this.nameEn))..add(DiagnosticsProperty('nameBn', _this.nameBn));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Upazila&&(identical(other.id, id) || other.id == id)&&(identical(other.districtId, districtId) || other.districtId == districtId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+  final _this = this as Upazila;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Upazila&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.districtId, _this.districtId) || other.districtId == _this.districtId)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,districtId,nameEn,nameBn);
+int get hashCode {
+  final _this = this as Upazila;
+  return Object.hash(runtimeType,_this.id,_this.districtId,_this.nameEn,_this.nameBn);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Upazila(id: $id, districtId: $districtId, nameEn: $nameEn, nameBn: $nameBn)';
+  final _this = this as Upazila;
+  return 'Upazila(id: ${_this.id}, districtId: ${_this.districtId}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn})';
 }
 
 
@@ -1175,7 +1214,7 @@ class _$UpazilaCopyWithImpl<$Res>
 /// Create a copy of Upazila
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? districtId = null,Object? nameEn = null,Object? nameBn = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(Upazila(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,districtId: null == districtId ? _self.districtId : districtId // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -1338,23 +1377,25 @@ _$UpazilaCopyWith<_Upazila> get copyWith => __$UpazilaCopyWithImpl<_Upazila>(thi
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'Upazila'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('districtId', districtId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Upazila&&(identical(other.id, id) || other.id == id)&&(identical(other.districtId, districtId) || other.districtId == districtId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Upazila&&(identical(other.id, id) || other.id == id)&&(identical(other.districtId, districtId) || other.districtId == districtId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,districtId,nameEn,nameBn);
+int get hashCode {
+    return Object.hash(runtimeType,id,districtId,nameEn,nameBn);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Upazila(id: $id, districtId: $districtId, nameEn: $nameEn, nameBn: $nameBn)';
+    return 'Upazila(id: $id, districtId: $districtId, nameEn: $nameEn, nameBn: $nameBn)';
 }
 
 
@@ -1408,23 +1449,29 @@ $BaseCopyWith<Base> get copyWith => _$BaseCopyWithImpl<Base>(this as Base, _$ide
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as Base;
   properties
     ..add(DiagnosticsProperty('type', 'Base'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('areaId', areaId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('areaId', _this.areaId))..add(DiagnosticsProperty('nameEn', _this.nameEn))..add(DiagnosticsProperty('nameBn', _this.nameBn))..add(DiagnosticsProperty('upazilaIds', _this.upazilaIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Base&&(identical(other.id, id) || other.id == id)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&const DeepCollectionEquality().equals(other.upazilaIds, upazilaIds));
+  final _this = this as Base;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Base&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.areaId, _this.areaId) || other.areaId == _this.areaId)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn)&&const DeepCollectionEquality().equals(other.upazilaIds, _this.upazilaIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,areaId,nameEn,nameBn,const DeepCollectionEquality().hash(upazilaIds));
+int get hashCode {
+  final _this = this as Base;
+  return Object.hash(runtimeType,_this.id,_this.areaId,_this.nameEn,_this.nameBn,const DeepCollectionEquality().hash(_this.upazilaIds));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Base(id: $id, areaId: $areaId, nameEn: $nameEn, nameBn: $nameBn, upazilaIds: $upazilaIds)';
+  final _this = this as Base;
+  return 'Base(id: ${_this.id}, areaId: ${_this.areaId}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn}, upazilaIds: ${_this.upazilaIds})';
 }
 
 
@@ -1453,7 +1500,7 @@ class _$BaseCopyWithImpl<$Res>
 /// Create a copy of Base
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? areaId = null,Object? nameEn = null,Object? nameBn = freezed,Object? upazilaIds = null,}) {
-  return _then(_self.copyWith(
+  return _then(Base(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,areaId: null == areaId ? _self.areaId : areaId // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
@@ -1600,7 +1647,7 @@ return $default(_that.id,_that.areaId,_that.nameEn,_that.nameBn,_that.upazilaIds
 
 
 class _Base extends Base with DiagnosticableTreeMixin {
-  const _Base({required this.id, required this.areaId, required this.nameEn, this.nameBn, final  List<int> upazilaIds = const []}): _upazilaIds = upazilaIds,super._();
+  const _Base({required this.id, required this.areaId, required this.nameEn, this.nameBn,  List<int> upazilaIds = const []}): _upazilaIds = upazilaIds,super._();
   
 
 @override final  int id;
@@ -1624,23 +1671,25 @@ _$BaseCopyWith<_Base> get copyWith => __$BaseCopyWithImpl<_Base>(this, _$identit
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'Base'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('areaId', areaId))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Base&&(identical(other.id, id) || other.id == id)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&const DeepCollectionEquality().equals(other._upazilaIds, _upazilaIds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Base&&(identical(other.id, id) || other.id == id)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&const DeepCollectionEquality().equals(other.upazilaIds, _upazilaIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,areaId,nameEn,nameBn,const DeepCollectionEquality().hash(_upazilaIds));
+int get hashCode {
+    return Object.hash(runtimeType,id,areaId,nameEn,nameBn,const DeepCollectionEquality().hash(_upazilaIds));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Base(id: $id, areaId: $areaId, nameEn: $nameEn, nameBn: $nameBn, upazilaIds: $upazilaIds)';
+    return 'Base(id: $id, areaId: $areaId, nameEn: $nameEn, nameBn: $nameBn, upazilaIds: $upazilaIds)';
 }
 
 
@@ -1695,23 +1744,29 @@ $DistributorCopyWith<Distributor> get copyWith => _$DistributorCopyWithImpl<Dist
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as Distributor;
   properties
     ..add(DiagnosticsProperty('type', 'Distributor'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('upazilaId', upazilaId))..add(DiagnosticsProperty('baseId', baseId))..add(DiagnosticsProperty('areaId', areaId))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('nameEn', _this.nameEn))..add(DiagnosticsProperty('nameBn', _this.nameBn))..add(DiagnosticsProperty('designation', _this.designation))..add(DiagnosticsProperty('addressEn', _this.addressEn))..add(DiagnosticsProperty('addressBn', _this.addressBn))..add(DiagnosticsProperty('upazilaId', _this.upazilaId))..add(DiagnosticsProperty('baseId', _this.baseId))..add(DiagnosticsProperty('areaId', _this.areaId))..add(DiagnosticsProperty('mobile', _this.mobile))..add(DiagnosticsProperty('isActive', _this.isActive))..add(DiagnosticsProperty('createdAt', _this.createdAt))..add(DiagnosticsProperty('updatedAt', _this.updatedAt));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Distributor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.upazilaId, upazilaId) || other.upazilaId == upazilaId)&&(identical(other.baseId, baseId) || other.baseId == baseId)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  final _this = this as Distributor;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Distributor&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn)&&(identical(other.designation, _this.designation) || other.designation == _this.designation)&&(identical(other.addressEn, _this.addressEn) || other.addressEn == _this.addressEn)&&(identical(other.addressBn, _this.addressBn) || other.addressBn == _this.addressBn)&&(identical(other.upazilaId, _this.upazilaId) || other.upazilaId == _this.upazilaId)&&(identical(other.baseId, _this.baseId) || other.baseId == _this.baseId)&&(identical(other.areaId, _this.areaId) || other.areaId == _this.areaId)&&(identical(other.mobile, _this.mobile) || other.mobile == _this.mobile)&&(identical(other.isActive, _this.isActive) || other.isActive == _this.isActive)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,addressEn,addressBn,upazilaId,baseId,areaId,mobile,isActive,createdAt,updatedAt);
+int get hashCode {
+  final _this = this as Distributor;
+  return Object.hash(runtimeType,_this.id,_this.nameEn,_this.nameBn,_this.designation,_this.addressEn,_this.addressBn,_this.upazilaId,_this.baseId,_this.areaId,_this.mobile,_this.isActive,_this.createdAt,_this.updatedAt);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Distributor(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, addressEn: $addressEn, addressBn: $addressBn, upazilaId: $upazilaId, baseId: $baseId, areaId: $areaId, mobile: $mobile, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt)';
+  final _this = this as Distributor;
+  return 'Distributor(id: ${_this.id}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn}, designation: ${_this.designation}, addressEn: ${_this.addressEn}, addressBn: ${_this.addressBn}, upazilaId: ${_this.upazilaId}, baseId: ${_this.baseId}, areaId: ${_this.areaId}, mobile: ${_this.mobile}, isActive: ${_this.isActive}, createdAt: ${_this.createdAt}, updatedAt: ${_this.updatedAt})';
 }
 
 
@@ -1740,7 +1795,7 @@ class _$DistributorCopyWithImpl<$Res>
 /// Create a copy of Distributor
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? designation = freezed,Object? addressEn = freezed,Object? addressBn = freezed,Object? upazilaId = freezed,Object? baseId = freezed,Object? areaId = freezed,Object? mobile = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(Distributor(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
@@ -1921,23 +1976,25 @@ _$DistributorCopyWith<_Distributor> get copyWith => __$DistributorCopyWithImpl<_
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'Distributor'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('upazilaId', upazilaId))..add(DiagnosticsProperty('baseId', baseId))..add(DiagnosticsProperty('areaId', areaId))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Distributor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.upazilaId, upazilaId) || other.upazilaId == upazilaId)&&(identical(other.baseId, baseId) || other.baseId == baseId)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Distributor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.upazilaId, upazilaId) || other.upazilaId == upazilaId)&&(identical(other.baseId, baseId) || other.baseId == baseId)&&(identical(other.areaId, areaId) || other.areaId == areaId)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,addressEn,addressBn,upazilaId,baseId,areaId,mobile,isActive,createdAt,updatedAt);
+int get hashCode {
+    return Object.hash(runtimeType,id,nameEn,nameBn,designation,addressEn,addressBn,upazilaId,baseId,areaId,mobile,isActive,createdAt,updatedAt);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Distributor(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, addressEn: $addressEn, addressBn: $addressBn, upazilaId: $upazilaId, baseId: $baseId, areaId: $areaId, mobile: $mobile, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'Distributor(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, addressEn: $addressEn, addressBn: $addressBn, upazilaId: $upazilaId, baseId: $baseId, areaId: $areaId, mobile: $mobile, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -2000,23 +2057,29 @@ $SalesPersonnelCopyWith<SalesPersonnel> get copyWith => _$SalesPersonnelCopyWith
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SalesPersonnel;
   properties
     ..add(DiagnosticsProperty('type', 'SalesPersonnel'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('employeeId', employeeId))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('regionIds', regionIds))..add(DiagnosticsProperty('areaIds', areaIds))..add(DiagnosticsProperty('baseIds', baseIds))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('nameEn', _this.nameEn))..add(DiagnosticsProperty('nameBn', _this.nameBn))..add(DiagnosticsProperty('designation', _this.designation))..add(DiagnosticsProperty('photoUrl', _this.photoUrl))..add(DiagnosticsProperty('mobile', _this.mobile))..add(DiagnosticsProperty('email', _this.email))..add(DiagnosticsProperty('employeeId', _this.employeeId))..add(DiagnosticsProperty('isActive', _this.isActive))..add(DiagnosticsProperty('createdAt', _this.createdAt))..add(DiagnosticsProperty('updatedAt', _this.updatedAt))..add(DiagnosticsProperty('regionIds', _this.regionIds))..add(DiagnosticsProperty('areaIds', _this.areaIds))..add(DiagnosticsProperty('baseIds', _this.baseIds))..add(DiagnosticsProperty('upazilaIds', _this.upazilaIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SalesPersonnel&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.employeeId, employeeId) || other.employeeId == employeeId)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.regionIds, regionIds)&&const DeepCollectionEquality().equals(other.areaIds, areaIds)&&const DeepCollectionEquality().equals(other.baseIds, baseIds)&&const DeepCollectionEquality().equals(other.upazilaIds, upazilaIds));
+  final _this = this as SalesPersonnel;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SalesPersonnel&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn)&&(identical(other.designation, _this.designation) || other.designation == _this.designation)&&(identical(other.photoUrl, _this.photoUrl) || other.photoUrl == _this.photoUrl)&&(identical(other.mobile, _this.mobile) || other.mobile == _this.mobile)&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.employeeId, _this.employeeId) || other.employeeId == _this.employeeId)&&(identical(other.isActive, _this.isActive) || other.isActive == _this.isActive)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt)&&const DeepCollectionEquality().equals(other.regionIds, _this.regionIds)&&const DeepCollectionEquality().equals(other.areaIds, _this.areaIds)&&const DeepCollectionEquality().equals(other.baseIds, _this.baseIds)&&const DeepCollectionEquality().equals(other.upazilaIds, _this.upazilaIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,photoUrl,mobile,email,employeeId,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(regionIds),const DeepCollectionEquality().hash(areaIds),const DeepCollectionEquality().hash(baseIds),const DeepCollectionEquality().hash(upazilaIds));
+int get hashCode {
+  final _this = this as SalesPersonnel;
+  return Object.hash(runtimeType,_this.id,_this.nameEn,_this.nameBn,_this.designation,_this.photoUrl,_this.mobile,_this.email,_this.employeeId,_this.isActive,_this.createdAt,_this.updatedAt,const DeepCollectionEquality().hash(_this.regionIds),const DeepCollectionEquality().hash(_this.areaIds),const DeepCollectionEquality().hash(_this.baseIds),const DeepCollectionEquality().hash(_this.upazilaIds));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SalesPersonnel(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, photoUrl: $photoUrl, mobile: $mobile, email: $email, employeeId: $employeeId, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, regionIds: $regionIds, areaIds: $areaIds, baseIds: $baseIds, upazilaIds: $upazilaIds)';
+  final _this = this as SalesPersonnel;
+  return 'SalesPersonnel(id: ${_this.id}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn}, designation: ${_this.designation}, photoUrl: ${_this.photoUrl}, mobile: ${_this.mobile}, email: ${_this.email}, employeeId: ${_this.employeeId}, isActive: ${_this.isActive}, createdAt: ${_this.createdAt}, updatedAt: ${_this.updatedAt}, regionIds: ${_this.regionIds}, areaIds: ${_this.areaIds}, baseIds: ${_this.baseIds}, upazilaIds: ${_this.upazilaIds})';
 }
 
 
@@ -2045,7 +2108,7 @@ class _$SalesPersonnelCopyWithImpl<$Res>
 /// Create a copy of SalesPersonnel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? designation = freezed,Object? photoUrl = freezed,Object? mobile = freezed,Object? email = freezed,Object? employeeId = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? regionIds = null,Object? areaIds = null,Object? baseIds = null,Object? upazilaIds = null,}) {
-  return _then(_self.copyWith(
+  return _then(SalesPersonnel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
@@ -2202,7 +2265,7 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.designation,_that.photo
 
 
 class _SalesPersonnel extends SalesPersonnel with DiagnosticableTreeMixin {
-  const _SalesPersonnel({required this.id, required this.nameEn, this.nameBn, this.designation, this.photoUrl, this.mobile, this.email, this.employeeId, this.isActive = true, required this.createdAt, required this.updatedAt, final  List<int> regionIds = const [], final  List<int> areaIds = const [], final  List<int> baseIds = const [], final  List<int> upazilaIds = const []}): _regionIds = regionIds,_areaIds = areaIds,_baseIds = baseIds,_upazilaIds = upazilaIds,super._();
+  const _SalesPersonnel({required this.id, required this.nameEn, this.nameBn, this.designation, this.photoUrl, this.mobile, this.email, this.employeeId, this.isActive = true, required this.createdAt, required this.updatedAt,  List<int> regionIds = const [],  List<int> areaIds = const [],  List<int> baseIds = const [],  List<int> upazilaIds = const []}): _regionIds = regionIds,_areaIds = areaIds,_baseIds = baseIds,_upazilaIds = upazilaIds,super._();
   
 
 @override final  int id;
@@ -2254,23 +2317,25 @@ _$SalesPersonnelCopyWith<_SalesPersonnel> get copyWith => __$SalesPersonnelCopyW
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SalesPersonnel'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('designation', designation))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('employeeId', employeeId))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('regionIds', regionIds))..add(DiagnosticsProperty('areaIds', areaIds))..add(DiagnosticsProperty('baseIds', baseIds))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SalesPersonnel&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.employeeId, employeeId) || other.employeeId == employeeId)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._regionIds, _regionIds)&&const DeepCollectionEquality().equals(other._areaIds, _areaIds)&&const DeepCollectionEquality().equals(other._baseIds, _baseIds)&&const DeepCollectionEquality().equals(other._upazilaIds, _upazilaIds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SalesPersonnel&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.employeeId, employeeId) || other.employeeId == employeeId)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.regionIds, _regionIds)&&const DeepCollectionEquality().equals(other.areaIds, _areaIds)&&const DeepCollectionEquality().equals(other.baseIds, _baseIds)&&const DeepCollectionEquality().equals(other.upazilaIds, _upazilaIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,designation,photoUrl,mobile,email,employeeId,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(_regionIds),const DeepCollectionEquality().hash(_areaIds),const DeepCollectionEquality().hash(_baseIds),const DeepCollectionEquality().hash(_upazilaIds));
+int get hashCode {
+    return Object.hash(runtimeType,id,nameEn,nameBn,designation,photoUrl,mobile,email,employeeId,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(_regionIds),const DeepCollectionEquality().hash(_areaIds),const DeepCollectionEquality().hash(_baseIds),const DeepCollectionEquality().hash(_upazilaIds));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SalesPersonnel(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, photoUrl: $photoUrl, mobile: $mobile, email: $email, employeeId: $employeeId, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, regionIds: $regionIds, areaIds: $areaIds, baseIds: $baseIds, upazilaIds: $upazilaIds)';
+    return 'SalesPersonnel(id: $id, nameEn: $nameEn, nameBn: $nameBn, designation: $designation, photoUrl: $photoUrl, mobile: $mobile, email: $email, employeeId: $employeeId, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, regionIds: $regionIds, areaIds: $areaIds, baseIds: $baseIds, upazilaIds: $upazilaIds)';
 }
 
 
@@ -2335,23 +2400,29 @@ $VetDoctorCopyWith<VetDoctor> get copyWith => _$VetDoctorCopyWithImpl<VetDoctor>
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as VetDoctor;
   properties
     ..add(DiagnosticsProperty('type', 'VetDoctor'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('qualification', qualification))..add(DiagnosticsProperty('specialization', specialization))..add(DiagnosticsProperty('bvcRegistrationNo', bvcRegistrationNo))..add(DiagnosticsProperty('clinicOrHospitalNameEn', clinicOrHospitalNameEn))..add(DiagnosticsProperty('clinicOrHospitalNameBn', clinicOrHospitalNameBn))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('regionIds', regionIds))..add(DiagnosticsProperty('areaIds', areaIds))..add(DiagnosticsProperty('baseIds', baseIds))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('nameEn', _this.nameEn))..add(DiagnosticsProperty('nameBn', _this.nameBn))..add(DiagnosticsProperty('photoUrl', _this.photoUrl))..add(DiagnosticsProperty('qualification', _this.qualification))..add(DiagnosticsProperty('specialization', _this.specialization))..add(DiagnosticsProperty('bvcRegistrationNo', _this.bvcRegistrationNo))..add(DiagnosticsProperty('clinicOrHospitalNameEn', _this.clinicOrHospitalNameEn))..add(DiagnosticsProperty('clinicOrHospitalNameBn', _this.clinicOrHospitalNameBn))..add(DiagnosticsProperty('addressEn', _this.addressEn))..add(DiagnosticsProperty('addressBn', _this.addressBn))..add(DiagnosticsProperty('mobile', _this.mobile))..add(DiagnosticsProperty('email', _this.email))..add(DiagnosticsProperty('isActive', _this.isActive))..add(DiagnosticsProperty('createdAt', _this.createdAt))..add(DiagnosticsProperty('updatedAt', _this.updatedAt))..add(DiagnosticsProperty('regionIds', _this.regionIds))..add(DiagnosticsProperty('areaIds', _this.areaIds))..add(DiagnosticsProperty('baseIds', _this.baseIds))..add(DiagnosticsProperty('upazilaIds', _this.upazilaIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VetDoctor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.qualification, qualification) || other.qualification == qualification)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.bvcRegistrationNo, bvcRegistrationNo) || other.bvcRegistrationNo == bvcRegistrationNo)&&(identical(other.clinicOrHospitalNameEn, clinicOrHospitalNameEn) || other.clinicOrHospitalNameEn == clinicOrHospitalNameEn)&&(identical(other.clinicOrHospitalNameBn, clinicOrHospitalNameBn) || other.clinicOrHospitalNameBn == clinicOrHospitalNameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.regionIds, regionIds)&&const DeepCollectionEquality().equals(other.areaIds, areaIds)&&const DeepCollectionEquality().equals(other.baseIds, baseIds)&&const DeepCollectionEquality().equals(other.upazilaIds, upazilaIds));
+  final _this = this as VetDoctor;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VetDoctor&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn)&&(identical(other.photoUrl, _this.photoUrl) || other.photoUrl == _this.photoUrl)&&(identical(other.qualification, _this.qualification) || other.qualification == _this.qualification)&&(identical(other.specialization, _this.specialization) || other.specialization == _this.specialization)&&(identical(other.bvcRegistrationNo, _this.bvcRegistrationNo) || other.bvcRegistrationNo == _this.bvcRegistrationNo)&&(identical(other.clinicOrHospitalNameEn, _this.clinicOrHospitalNameEn) || other.clinicOrHospitalNameEn == _this.clinicOrHospitalNameEn)&&(identical(other.clinicOrHospitalNameBn, _this.clinicOrHospitalNameBn) || other.clinicOrHospitalNameBn == _this.clinicOrHospitalNameBn)&&(identical(other.addressEn, _this.addressEn) || other.addressEn == _this.addressEn)&&(identical(other.addressBn, _this.addressBn) || other.addressBn == _this.addressBn)&&(identical(other.mobile, _this.mobile) || other.mobile == _this.mobile)&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.isActive, _this.isActive) || other.isActive == _this.isActive)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt)&&const DeepCollectionEquality().equals(other.regionIds, _this.regionIds)&&const DeepCollectionEquality().equals(other.areaIds, _this.areaIds)&&const DeepCollectionEquality().equals(other.baseIds, _this.baseIds)&&const DeepCollectionEquality().equals(other.upazilaIds, _this.upazilaIds));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,id,nameEn,nameBn,photoUrl,qualification,specialization,bvcRegistrationNo,clinicOrHospitalNameEn,clinicOrHospitalNameBn,addressEn,addressBn,mobile,email,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(regionIds),const DeepCollectionEquality().hash(areaIds),const DeepCollectionEquality().hash(baseIds),const DeepCollectionEquality().hash(upazilaIds)]);
+int get hashCode {
+  final _this = this as VetDoctor;
+  return Object.hashAll([runtimeType,_this.id,_this.nameEn,_this.nameBn,_this.photoUrl,_this.qualification,_this.specialization,_this.bvcRegistrationNo,_this.clinicOrHospitalNameEn,_this.clinicOrHospitalNameBn,_this.addressEn,_this.addressBn,_this.mobile,_this.email,_this.isActive,_this.createdAt,_this.updatedAt,const DeepCollectionEquality().hash(_this.regionIds),const DeepCollectionEquality().hash(_this.areaIds),const DeepCollectionEquality().hash(_this.baseIds),const DeepCollectionEquality().hash(_this.upazilaIds)]);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'VetDoctor(id: $id, nameEn: $nameEn, nameBn: $nameBn, photoUrl: $photoUrl, qualification: $qualification, specialization: $specialization, bvcRegistrationNo: $bvcRegistrationNo, clinicOrHospitalNameEn: $clinicOrHospitalNameEn, clinicOrHospitalNameBn: $clinicOrHospitalNameBn, addressEn: $addressEn, addressBn: $addressBn, mobile: $mobile, email: $email, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, regionIds: $regionIds, areaIds: $areaIds, baseIds: $baseIds, upazilaIds: $upazilaIds)';
+  final _this = this as VetDoctor;
+  return 'VetDoctor(id: ${_this.id}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn}, photoUrl: ${_this.photoUrl}, qualification: ${_this.qualification}, specialization: ${_this.specialization}, bvcRegistrationNo: ${_this.bvcRegistrationNo}, clinicOrHospitalNameEn: ${_this.clinicOrHospitalNameEn}, clinicOrHospitalNameBn: ${_this.clinicOrHospitalNameBn}, addressEn: ${_this.addressEn}, addressBn: ${_this.addressBn}, mobile: ${_this.mobile}, email: ${_this.email}, isActive: ${_this.isActive}, createdAt: ${_this.createdAt}, updatedAt: ${_this.updatedAt}, regionIds: ${_this.regionIds}, areaIds: ${_this.areaIds}, baseIds: ${_this.baseIds}, upazilaIds: ${_this.upazilaIds})';
 }
 
 
@@ -2380,7 +2451,7 @@ class _$VetDoctorCopyWithImpl<$Res>
 /// Create a copy of VetDoctor
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nameEn = null,Object? nameBn = freezed,Object? photoUrl = freezed,Object? qualification = freezed,Object? specialization = freezed,Object? bvcRegistrationNo = freezed,Object? clinicOrHospitalNameEn = freezed,Object? clinicOrHospitalNameBn = freezed,Object? addressEn = freezed,Object? addressBn = freezed,Object? mobile = freezed,Object? email = freezed,Object? isActive = null,Object? createdAt = null,Object? updatedAt = null,Object? regionIds = null,Object? areaIds = null,Object? baseIds = null,Object? upazilaIds = null,}) {
-  return _then(_self.copyWith(
+  return _then(VetDoctor(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,nameEn: null == nameEn ? _self.nameEn : nameEn // ignore: cast_nullable_to_non_nullable
 as String,nameBn: freezed == nameBn ? _self.nameBn : nameBn // ignore: cast_nullable_to_non_nullable
@@ -2542,7 +2613,7 @@ return $default(_that.id,_that.nameEn,_that.nameBn,_that.photoUrl,_that.qualific
 
 
 class _VetDoctor extends VetDoctor with DiagnosticableTreeMixin {
-  const _VetDoctor({required this.id, required this.nameEn, this.nameBn, this.photoUrl, this.qualification, this.specialization, this.bvcRegistrationNo, this.clinicOrHospitalNameEn, this.clinicOrHospitalNameBn, this.addressEn, this.addressBn, this.mobile, this.email, this.isActive = true, required this.createdAt, required this.updatedAt, final  List<int> regionIds = const [], final  List<int> areaIds = const [], final  List<int> baseIds = const [], final  List<int> upazilaIds = const []}): _regionIds = regionIds,_areaIds = areaIds,_baseIds = baseIds,_upazilaIds = upazilaIds,super._();
+  const _VetDoctor({required this.id, required this.nameEn, this.nameBn, this.photoUrl, this.qualification, this.specialization, this.bvcRegistrationNo, this.clinicOrHospitalNameEn, this.clinicOrHospitalNameBn, this.addressEn, this.addressBn, this.mobile, this.email, this.isActive = true, required this.createdAt, required this.updatedAt,  List<int> regionIds = const [],  List<int> areaIds = const [],  List<int> baseIds = const [],  List<int> upazilaIds = const []}): _regionIds = regionIds,_areaIds = areaIds,_baseIds = baseIds,_upazilaIds = upazilaIds,super._();
   
 
 @override final  int id;
@@ -2599,23 +2670,25 @@ _$VetDoctorCopyWith<_VetDoctor> get copyWith => __$VetDoctorCopyWithImpl<_VetDoc
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'VetDoctor'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('nameEn', nameEn))..add(DiagnosticsProperty('nameBn', nameBn))..add(DiagnosticsProperty('photoUrl', photoUrl))..add(DiagnosticsProperty('qualification', qualification))..add(DiagnosticsProperty('specialization', specialization))..add(DiagnosticsProperty('bvcRegistrationNo', bvcRegistrationNo))..add(DiagnosticsProperty('clinicOrHospitalNameEn', clinicOrHospitalNameEn))..add(DiagnosticsProperty('clinicOrHospitalNameBn', clinicOrHospitalNameBn))..add(DiagnosticsProperty('addressEn', addressEn))..add(DiagnosticsProperty('addressBn', addressBn))..add(DiagnosticsProperty('mobile', mobile))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('isActive', isActive))..add(DiagnosticsProperty('createdAt', createdAt))..add(DiagnosticsProperty('updatedAt', updatedAt))..add(DiagnosticsProperty('regionIds', regionIds))..add(DiagnosticsProperty('areaIds', areaIds))..add(DiagnosticsProperty('baseIds', baseIds))..add(DiagnosticsProperty('upazilaIds', upazilaIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VetDoctor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.qualification, qualification) || other.qualification == qualification)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.bvcRegistrationNo, bvcRegistrationNo) || other.bvcRegistrationNo == bvcRegistrationNo)&&(identical(other.clinicOrHospitalNameEn, clinicOrHospitalNameEn) || other.clinicOrHospitalNameEn == clinicOrHospitalNameEn)&&(identical(other.clinicOrHospitalNameBn, clinicOrHospitalNameBn) || other.clinicOrHospitalNameBn == clinicOrHospitalNameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._regionIds, _regionIds)&&const DeepCollectionEquality().equals(other._areaIds, _areaIds)&&const DeepCollectionEquality().equals(other._baseIds, _baseIds)&&const DeepCollectionEquality().equals(other._upazilaIds, _upazilaIds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VetDoctor&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.qualification, qualification) || other.qualification == qualification)&&(identical(other.specialization, specialization) || other.specialization == specialization)&&(identical(other.bvcRegistrationNo, bvcRegistrationNo) || other.bvcRegistrationNo == bvcRegistrationNo)&&(identical(other.clinicOrHospitalNameEn, clinicOrHospitalNameEn) || other.clinicOrHospitalNameEn == clinicOrHospitalNameEn)&&(identical(other.clinicOrHospitalNameBn, clinicOrHospitalNameBn) || other.clinicOrHospitalNameBn == clinicOrHospitalNameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.email, email) || other.email == email)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.regionIds, _regionIds)&&const DeepCollectionEquality().equals(other.areaIds, _areaIds)&&const DeepCollectionEquality().equals(other.baseIds, _baseIds)&&const DeepCollectionEquality().equals(other.upazilaIds, _upazilaIds));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,id,nameEn,nameBn,photoUrl,qualification,specialization,bvcRegistrationNo,clinicOrHospitalNameEn,clinicOrHospitalNameBn,addressEn,addressBn,mobile,email,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(_regionIds),const DeepCollectionEquality().hash(_areaIds),const DeepCollectionEquality().hash(_baseIds),const DeepCollectionEquality().hash(_upazilaIds)]);
+int get hashCode {
+    return Object.hashAll([runtimeType,id,nameEn,nameBn,photoUrl,qualification,specialization,bvcRegistrationNo,clinicOrHospitalNameEn,clinicOrHospitalNameBn,addressEn,addressBn,mobile,email,isActive,createdAt,updatedAt,const DeepCollectionEquality().hash(_regionIds),const DeepCollectionEquality().hash(_areaIds),const DeepCollectionEquality().hash(_baseIds),const DeepCollectionEquality().hash(_upazilaIds)]);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'VetDoctor(id: $id, nameEn: $nameEn, nameBn: $nameBn, photoUrl: $photoUrl, qualification: $qualification, specialization: $specialization, bvcRegistrationNo: $bvcRegistrationNo, clinicOrHospitalNameEn: $clinicOrHospitalNameEn, clinicOrHospitalNameBn: $clinicOrHospitalNameBn, addressEn: $addressEn, addressBn: $addressBn, mobile: $mobile, email: $email, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, regionIds: $regionIds, areaIds: $areaIds, baseIds: $baseIds, upazilaIds: $upazilaIds)';
+    return 'VetDoctor(id: $id, nameEn: $nameEn, nameBn: $nameBn, photoUrl: $photoUrl, qualification: $qualification, specialization: $specialization, bvcRegistrationNo: $bvcRegistrationNo, clinicOrHospitalNameEn: $clinicOrHospitalNameEn, clinicOrHospitalNameBn: $clinicOrHospitalNameBn, addressEn: $addressEn, addressBn: $addressBn, mobile: $mobile, email: $email, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, regionIds: $regionIds, areaIds: $areaIds, baseIds: $baseIds, upazilaIds: $upazilaIds)';
 }
 
 
@@ -2685,23 +2758,29 @@ $DistributorWithLocationCopyWith<DistributorWithLocation> get copyWith => _$Dist
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as DistributorWithLocation;
   properties
     ..add(DiagnosticsProperty('type', 'DistributorWithLocation'))
-    ..add(DiagnosticsProperty('distributor', distributor))..add(DiagnosticsProperty('area', area))..add(DiagnosticsProperty('region', region));
+    ..add(DiagnosticsProperty('distributor', _this.distributor))..add(DiagnosticsProperty('area', _this.area))..add(DiagnosticsProperty('region', _this.region));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DistributorWithLocation&&(identical(other.distributor, distributor) || other.distributor == distributor)&&(identical(other.area, area) || other.area == area)&&(identical(other.region, region) || other.region == region));
+  final _this = this as DistributorWithLocation;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DistributorWithLocation&&(identical(other.distributor, _this.distributor) || other.distributor == _this.distributor)&&(identical(other.area, _this.area) || other.area == _this.area)&&(identical(other.region, _this.region) || other.region == _this.region));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,distributor,area,region);
+int get hashCode {
+  final _this = this as DistributorWithLocation;
+  return Object.hash(runtimeType,_this.distributor,_this.area,_this.region);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'DistributorWithLocation(distributor: $distributor, area: $area, region: $region)';
+  final _this = this as DistributorWithLocation;
+  return 'DistributorWithLocation(distributor: ${_this.distributor}, area: ${_this.area}, region: ${_this.region})';
 }
 
 
@@ -2730,7 +2809,7 @@ class _$DistributorWithLocationCopyWithImpl<$Res>
 /// Create a copy of DistributorWithLocation
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? distributor = null,Object? area = null,Object? region = null,}) {
-  return _then(_self.copyWith(
+  return _then(DistributorWithLocation(
 distributor: null == distributor ? _self.distributor : distributor // ignore: cast_nullable_to_non_nullable
 as Distributor,area: null == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
 as Area,region: null == region ? _self.region : region // ignore: cast_nullable_to_non_nullable
@@ -2918,23 +2997,25 @@ _$DistributorWithLocationCopyWith<_DistributorWithLocation> get copyWith => __$D
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'DistributorWithLocation'))
     ..add(DiagnosticsProperty('distributor', distributor))..add(DiagnosticsProperty('area', area))..add(DiagnosticsProperty('region', region));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DistributorWithLocation&&(identical(other.distributor, distributor) || other.distributor == distributor)&&(identical(other.area, area) || other.area == area)&&(identical(other.region, region) || other.region == region));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DistributorWithLocation&&(identical(other.distributor, distributor) || other.distributor == distributor)&&(identical(other.area, area) || other.area == area)&&(identical(other.region, region) || other.region == region));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,distributor,area,region);
+int get hashCode {
+    return Object.hash(runtimeType,distributor,area,region);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'DistributorWithLocation(distributor: $distributor, area: $area, region: $region)';
+    return 'DistributorWithLocation(distributor: $distributor, area: $area, region: $region)';
 }
 
 
@@ -3014,23 +3095,29 @@ $SalesPersonnelWithAreasCopyWith<SalesPersonnelWithAreas> get copyWith => _$Sale
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SalesPersonnelWithAreas;
   properties
     ..add(DiagnosticsProperty('type', 'SalesPersonnelWithAreas'))
-    ..add(DiagnosticsProperty('personnel', personnel))..add(DiagnosticsProperty('areas', areas))..add(DiagnosticsProperty('regions', regions))..add(DiagnosticsProperty('bases', bases))..add(DiagnosticsProperty('upazilas', upazilas));
+    ..add(DiagnosticsProperty('personnel', _this.personnel))..add(DiagnosticsProperty('areas', _this.areas))..add(DiagnosticsProperty('regions', _this.regions))..add(DiagnosticsProperty('bases', _this.bases))..add(DiagnosticsProperty('upazilas', _this.upazilas));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SalesPersonnelWithAreas&&(identical(other.personnel, personnel) || other.personnel == personnel)&&const DeepCollectionEquality().equals(other.areas, areas)&&const DeepCollectionEquality().equals(other.regions, regions)&&const DeepCollectionEquality().equals(other.bases, bases)&&const DeepCollectionEquality().equals(other.upazilas, upazilas));
+  final _this = this as SalesPersonnelWithAreas;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SalesPersonnelWithAreas&&(identical(other.personnel, _this.personnel) || other.personnel == _this.personnel)&&const DeepCollectionEquality().equals(other.areas, _this.areas)&&const DeepCollectionEquality().equals(other.regions, _this.regions)&&const DeepCollectionEquality().equals(other.bases, _this.bases)&&const DeepCollectionEquality().equals(other.upazilas, _this.upazilas));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,personnel,const DeepCollectionEquality().hash(areas),const DeepCollectionEquality().hash(regions),const DeepCollectionEquality().hash(bases),const DeepCollectionEquality().hash(upazilas));
+int get hashCode {
+  final _this = this as SalesPersonnelWithAreas;
+  return Object.hash(runtimeType,_this.personnel,const DeepCollectionEquality().hash(_this.areas),const DeepCollectionEquality().hash(_this.regions),const DeepCollectionEquality().hash(_this.bases),const DeepCollectionEquality().hash(_this.upazilas));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SalesPersonnelWithAreas(personnel: $personnel, areas: $areas, regions: $regions, bases: $bases, upazilas: $upazilas)';
+  final _this = this as SalesPersonnelWithAreas;
+  return 'SalesPersonnelWithAreas(personnel: ${_this.personnel}, areas: ${_this.areas}, regions: ${_this.regions}, bases: ${_this.bases}, upazilas: ${_this.upazilas})';
 }
 
 
@@ -3059,7 +3146,7 @@ class _$SalesPersonnelWithAreasCopyWithImpl<$Res>
 /// Create a copy of SalesPersonnelWithAreas
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? personnel = null,Object? areas = null,Object? regions = null,Object? bases = null,Object? upazilas = null,}) {
-  return _then(_self.copyWith(
+  return _then(SalesPersonnelWithAreas(
 personnel: null == personnel ? _self.personnel : personnel // ignore: cast_nullable_to_non_nullable
 as SalesPersonnel,areas: null == areas ? _self.areas : areas // ignore: cast_nullable_to_non_nullable
 as List<Area>,regions: null == regions ? _self.regions : regions // ignore: cast_nullable_to_non_nullable
@@ -3215,7 +3302,7 @@ return $default(_that.personnel,_that.areas,_that.regions,_that.bases,_that.upaz
 
 
 class _SalesPersonnelWithAreas with DiagnosticableTreeMixin implements SalesPersonnelWithAreas {
-  const _SalesPersonnelWithAreas({required this.personnel, required final  List<Area> areas, final  List<Region> regions = const [], final  List<Base> bases = const [], final  List<Upazila> upazilas = const []}): _areas = areas,_regions = regions,_bases = bases,_upazilas = upazilas;
+  const _SalesPersonnelWithAreas({required this.personnel, required  List<Area> areas,  List<Region> regions = const [],  List<Base> bases = const [],  List<Upazila> upazilas = const []}): _areas = areas,_regions = regions,_bases = bases,_upazilas = upazilas;
   
 
 @override final  SalesPersonnel personnel;
@@ -3257,23 +3344,25 @@ _$SalesPersonnelWithAreasCopyWith<_SalesPersonnelWithAreas> get copyWith => __$S
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SalesPersonnelWithAreas'))
     ..add(DiagnosticsProperty('personnel', personnel))..add(DiagnosticsProperty('areas', areas))..add(DiagnosticsProperty('regions', regions))..add(DiagnosticsProperty('bases', bases))..add(DiagnosticsProperty('upazilas', upazilas));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SalesPersonnelWithAreas&&(identical(other.personnel, personnel) || other.personnel == personnel)&&const DeepCollectionEquality().equals(other._areas, _areas)&&const DeepCollectionEquality().equals(other._regions, _regions)&&const DeepCollectionEquality().equals(other._bases, _bases)&&const DeepCollectionEquality().equals(other._upazilas, _upazilas));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SalesPersonnelWithAreas&&(identical(other.personnel, personnel) || other.personnel == personnel)&&const DeepCollectionEquality().equals(other.areas, _areas)&&const DeepCollectionEquality().equals(other.regions, _regions)&&const DeepCollectionEquality().equals(other.bases, _bases)&&const DeepCollectionEquality().equals(other.upazilas, _upazilas));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,personnel,const DeepCollectionEquality().hash(_areas),const DeepCollectionEquality().hash(_regions),const DeepCollectionEquality().hash(_bases),const DeepCollectionEquality().hash(_upazilas));
+int get hashCode {
+    return Object.hash(runtimeType,personnel,const DeepCollectionEquality().hash(_areas),const DeepCollectionEquality().hash(_regions),const DeepCollectionEquality().hash(_bases),const DeepCollectionEquality().hash(_upazilas));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SalesPersonnelWithAreas(personnel: $personnel, areas: $areas, regions: $regions, bases: $bases, upazilas: $upazilas)';
+    return 'SalesPersonnelWithAreas(personnel: $personnel, areas: $areas, regions: $regions, bases: $bases, upazilas: $upazilas)';
 }
 
 
@@ -3337,23 +3426,29 @@ $VetDoctorWithAreasCopyWith<VetDoctorWithAreas> get copyWith => _$VetDoctorWithA
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as VetDoctorWithAreas;
   properties
     ..add(DiagnosticsProperty('type', 'VetDoctorWithAreas'))
-    ..add(DiagnosticsProperty('doctor', doctor))..add(DiagnosticsProperty('areas', areas))..add(DiagnosticsProperty('regions', regions))..add(DiagnosticsProperty('bases', bases))..add(DiagnosticsProperty('upazilas', upazilas));
+    ..add(DiagnosticsProperty('doctor', _this.doctor))..add(DiagnosticsProperty('areas', _this.areas))..add(DiagnosticsProperty('regions', _this.regions))..add(DiagnosticsProperty('bases', _this.bases))..add(DiagnosticsProperty('upazilas', _this.upazilas));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VetDoctorWithAreas&&(identical(other.doctor, doctor) || other.doctor == doctor)&&const DeepCollectionEquality().equals(other.areas, areas)&&const DeepCollectionEquality().equals(other.regions, regions)&&const DeepCollectionEquality().equals(other.bases, bases)&&const DeepCollectionEquality().equals(other.upazilas, upazilas));
+  final _this = this as VetDoctorWithAreas;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VetDoctorWithAreas&&(identical(other.doctor, _this.doctor) || other.doctor == _this.doctor)&&const DeepCollectionEquality().equals(other.areas, _this.areas)&&const DeepCollectionEquality().equals(other.regions, _this.regions)&&const DeepCollectionEquality().equals(other.bases, _this.bases)&&const DeepCollectionEquality().equals(other.upazilas, _this.upazilas));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,doctor,const DeepCollectionEquality().hash(areas),const DeepCollectionEquality().hash(regions),const DeepCollectionEquality().hash(bases),const DeepCollectionEquality().hash(upazilas));
+int get hashCode {
+  final _this = this as VetDoctorWithAreas;
+  return Object.hash(runtimeType,_this.doctor,const DeepCollectionEquality().hash(_this.areas),const DeepCollectionEquality().hash(_this.regions),const DeepCollectionEquality().hash(_this.bases),const DeepCollectionEquality().hash(_this.upazilas));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'VetDoctorWithAreas(doctor: $doctor, areas: $areas, regions: $regions, bases: $bases, upazilas: $upazilas)';
+  final _this = this as VetDoctorWithAreas;
+  return 'VetDoctorWithAreas(doctor: ${_this.doctor}, areas: ${_this.areas}, regions: ${_this.regions}, bases: ${_this.bases}, upazilas: ${_this.upazilas})';
 }
 
 
@@ -3382,7 +3477,7 @@ class _$VetDoctorWithAreasCopyWithImpl<$Res>
 /// Create a copy of VetDoctorWithAreas
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? doctor = null,Object? areas = null,Object? regions = null,Object? bases = null,Object? upazilas = null,}) {
-  return _then(_self.copyWith(
+  return _then(VetDoctorWithAreas(
 doctor: null == doctor ? _self.doctor : doctor // ignore: cast_nullable_to_non_nullable
 as VetDoctor,areas: null == areas ? _self.areas : areas // ignore: cast_nullable_to_non_nullable
 as List<Area>,regions: null == regions ? _self.regions : regions // ignore: cast_nullable_to_non_nullable
@@ -3538,7 +3633,7 @@ return $default(_that.doctor,_that.areas,_that.regions,_that.bases,_that.upazila
 
 
 class _VetDoctorWithAreas with DiagnosticableTreeMixin implements VetDoctorWithAreas {
-  const _VetDoctorWithAreas({required this.doctor, required final  List<Area> areas, final  List<Region> regions = const [], final  List<Base> bases = const [], final  List<Upazila> upazilas = const []}): _areas = areas,_regions = regions,_bases = bases,_upazilas = upazilas;
+  const _VetDoctorWithAreas({required this.doctor, required  List<Area> areas,  List<Region> regions = const [],  List<Base> bases = const [],  List<Upazila> upazilas = const []}): _areas = areas,_regions = regions,_bases = bases,_upazilas = upazilas;
   
 
 @override final  VetDoctor doctor;
@@ -3580,23 +3675,25 @@ _$VetDoctorWithAreasCopyWith<_VetDoctorWithAreas> get copyWith => __$VetDoctorWi
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'VetDoctorWithAreas'))
     ..add(DiagnosticsProperty('doctor', doctor))..add(DiagnosticsProperty('areas', areas))..add(DiagnosticsProperty('regions', regions))..add(DiagnosticsProperty('bases', bases))..add(DiagnosticsProperty('upazilas', upazilas));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VetDoctorWithAreas&&(identical(other.doctor, doctor) || other.doctor == doctor)&&const DeepCollectionEquality().equals(other._areas, _areas)&&const DeepCollectionEquality().equals(other._regions, _regions)&&const DeepCollectionEquality().equals(other._bases, _bases)&&const DeepCollectionEquality().equals(other._upazilas, _upazilas));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VetDoctorWithAreas&&(identical(other.doctor, doctor) || other.doctor == doctor)&&const DeepCollectionEquality().equals(other.areas, _areas)&&const DeepCollectionEquality().equals(other.regions, _regions)&&const DeepCollectionEquality().equals(other.bases, _bases)&&const DeepCollectionEquality().equals(other.upazilas, _upazilas));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,doctor,const DeepCollectionEquality().hash(_areas),const DeepCollectionEquality().hash(_regions),const DeepCollectionEquality().hash(_bases),const DeepCollectionEquality().hash(_upazilas));
+int get hashCode {
+    return Object.hash(runtimeType,doctor,const DeepCollectionEquality().hash(_areas),const DeepCollectionEquality().hash(_regions),const DeepCollectionEquality().hash(_bases),const DeepCollectionEquality().hash(_upazilas));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'VetDoctorWithAreas(doctor: $doctor, areas: $areas, regions: $regions, bases: $bases, upazilas: $upazilas)';
+    return 'VetDoctorWithAreas(doctor: $doctor, areas: $areas, regions: $regions, bases: $bases, upazilas: $upazilas)';
 }
 
 
@@ -3660,23 +3757,29 @@ $BaseWithUpazilasCopyWith<BaseWithUpazilas> get copyWith => _$BaseWithUpazilasCo
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as BaseWithUpazilas;
   properties
     ..add(DiagnosticsProperty('type', 'BaseWithUpazilas'))
-    ..add(DiagnosticsProperty('base', base))..add(DiagnosticsProperty('area', area))..add(DiagnosticsProperty('region', region))..add(DiagnosticsProperty('upazilas', upazilas));
+    ..add(DiagnosticsProperty('base', _this.base))..add(DiagnosticsProperty('area', _this.area))..add(DiagnosticsProperty('region', _this.region))..add(DiagnosticsProperty('upazilas', _this.upazilas));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BaseWithUpazilas&&(identical(other.base, base) || other.base == base)&&(identical(other.area, area) || other.area == area)&&(identical(other.region, region) || other.region == region)&&const DeepCollectionEquality().equals(other.upazilas, upazilas));
+  final _this = this as BaseWithUpazilas;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BaseWithUpazilas&&(identical(other.base, _this.base) || other.base == _this.base)&&(identical(other.area, _this.area) || other.area == _this.area)&&(identical(other.region, _this.region) || other.region == _this.region)&&const DeepCollectionEquality().equals(other.upazilas, _this.upazilas));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,base,area,region,const DeepCollectionEquality().hash(upazilas));
+int get hashCode {
+  final _this = this as BaseWithUpazilas;
+  return Object.hash(runtimeType,_this.base,_this.area,_this.region,const DeepCollectionEquality().hash(_this.upazilas));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'BaseWithUpazilas(base: $base, area: $area, region: $region, upazilas: $upazilas)';
+  final _this = this as BaseWithUpazilas;
+  return 'BaseWithUpazilas(base: ${_this.base}, area: ${_this.area}, region: ${_this.region}, upazilas: ${_this.upazilas})';
 }
 
 
@@ -3705,7 +3808,7 @@ class _$BaseWithUpazilasCopyWithImpl<$Res>
 /// Create a copy of BaseWithUpazilas
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? base = null,Object? area = null,Object? region = null,Object? upazilas = null,}) {
-  return _then(_self.copyWith(
+  return _then(BaseWithUpazilas(
 base: null == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
 as Base,area: null == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
 as Area,region: null == region ? _self.region : region // ignore: cast_nullable_to_non_nullable
@@ -3878,7 +3981,7 @@ return $default(_that.base,_that.area,_that.region,_that.upazilas);case _:
 
 
 class _BaseWithUpazilas with DiagnosticableTreeMixin implements BaseWithUpazilas {
-  const _BaseWithUpazilas({required this.base, required this.area, required this.region, required final  List<Upazila> upazilas}): _upazilas = upazilas;
+  const _BaseWithUpazilas({required this.base, required this.area, required this.region, required  List<Upazila> upazilas}): _upazilas = upazilas;
   
 
 @override final  Base base;
@@ -3901,23 +4004,25 @@ _$BaseWithUpazilasCopyWith<_BaseWithUpazilas> get copyWith => __$BaseWithUpazila
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'BaseWithUpazilas'))
     ..add(DiagnosticsProperty('base', base))..add(DiagnosticsProperty('area', area))..add(DiagnosticsProperty('region', region))..add(DiagnosticsProperty('upazilas', upazilas));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BaseWithUpazilas&&(identical(other.base, base) || other.base == base)&&(identical(other.area, area) || other.area == area)&&(identical(other.region, region) || other.region == region)&&const DeepCollectionEquality().equals(other._upazilas, _upazilas));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BaseWithUpazilas&&(identical(other.base, base) || other.base == base)&&(identical(other.area, area) || other.area == area)&&(identical(other.region, region) || other.region == region)&&const DeepCollectionEquality().equals(other.upazilas, _upazilas));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,base,area,region,const DeepCollectionEquality().hash(_upazilas));
+int get hashCode {
+    return Object.hash(runtimeType,base,area,region,const DeepCollectionEquality().hash(_upazilas));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'BaseWithUpazilas(base: $base, area: $area, region: $region, upazilas: $upazilas)';
+    return 'BaseWithUpazilas(base: $base, area: $area, region: $region, upazilas: $upazilas)';
 }
 
 

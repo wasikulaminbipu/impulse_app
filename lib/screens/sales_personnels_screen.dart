@@ -519,9 +519,9 @@ class _SalesPersonnelCard extends ConsumerWidget {
                           text: designation,
                           query: query,
                           style: TextStyle(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
                             fontSize: 13,
                           ),
                         ),
@@ -598,8 +598,16 @@ class _SalesPersonnelCard extends ConsumerWidget {
                       try {
                         if (await canLaunchUrl(uri)) {
                           await launchUrl(uri);
-                        } else {
-                          await launchUrl(uri);
+                        } else if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                lang == 'bn'
+                                    ? 'কল করা সম্ভব হচ্ছে না: $cleanMobile'
+                                    : 'Could not make call to $cleanMobile',
+                              ),
+                            ),
+                          );
                         }
                       } catch (e) {
                         if (context.mounted) {
@@ -661,9 +669,8 @@ class _SalesPersonnelCard extends ConsumerWidget {
                       );
                     } catch (e) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text('Error: $e')));
                       }
                     }
                   },
@@ -750,9 +757,9 @@ class _VetDoctorCard extends ConsumerWidget {
                           text: qualification,
                           query: query,
                           style: TextStyle(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
                             fontSize: 13,
                           ),
                         ),
@@ -762,9 +769,9 @@ class _VetDoctorCard extends ConsumerWidget {
                           text: specialization,
                           query: query,
                           style: TextStyle(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
                             fontSize: 13,
                           ),
                         ),
@@ -838,8 +845,16 @@ class _VetDoctorCard extends ConsumerWidget {
                       try {
                         if (await canLaunchUrl(uri)) {
                           await launchUrl(uri);
-                        } else {
-                          await launchUrl(uri);
+                        } else if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                lang == 'bn'
+                                    ? 'কল করা সম্ভব হচ্ছে না: $cleanMobile'
+                                    : 'Could not make call to $cleanMobile',
+                              ),
+                            ),
+                          );
                         }
                       } catch (e) {
                         if (context.mounted) {
@@ -901,9 +916,8 @@ class _VetDoctorCard extends ConsumerWidget {
                       );
                     } catch (e) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text('Error: $e')));
                       }
                     }
                   },

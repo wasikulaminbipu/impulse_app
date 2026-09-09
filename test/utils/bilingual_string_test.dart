@@ -20,14 +20,11 @@ void main() {
       },
     );
 
-    test(
-      'resolve falls back to English text when language is bn but bnText is empty or null',
-      () {
-        const enText = 'Paracetamol';
-        expect(enText.resolve('', 'bn'), equals('Paracetamol'));
-        expect(enText.resolve(null, 'bn'), equals('Paracetamol'));
-      },
-    );
+    test('resolve falls back to English text when language is bn but bnText is empty or null', () {
+      const enText = 'Paracetamol';
+      expect(enText.resolve('', 'bn'), equals('Paracetamol'));
+      expect(enText.resolve(null, 'bn'), equals('Paracetamol'));
+    });
   });
 
   group('BilingualStringNullable Extension Tests', () {

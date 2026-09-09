@@ -428,9 +428,8 @@ class _ProductCategoryTab extends ConsumerWidget {
                 Icon(
                   Icons.inventory_2_outlined,
                   size: 64,
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant
+                      .withValues(alpha: 0.4),
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -440,9 +439,8 @@ class _ProductCategoryTab extends ConsumerWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant
+                        .withValues(alpha: 0.8),
                   ),
                 ),
                 if (searchQuery.isNotEmpty) ...[
@@ -490,9 +488,9 @@ class _ProductCategoryTab extends ConsumerWidget {
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurface,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface,
                                   ),
                                 ),
                                 backgroundColor: Theme.of(context)
@@ -605,9 +603,8 @@ class _ProductCategoryTab extends ConsumerWidget {
               Text(
                 '$err',
                 style: TextStyle(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant
+                      .withValues(alpha: 0.8),
                 ),
                 textAlign: TextAlign.center,
               ),

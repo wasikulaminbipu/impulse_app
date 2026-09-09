@@ -168,9 +168,9 @@ class _ManufacturerCard extends StatelessWidget {
                                   address,
                                   style: TextStyle(
                                     fontSize: 12.5,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -197,9 +197,9 @@ class _ManufacturerCard extends StatelessWidget {
                                   '${lang == 'bn' ? 'উৎপত্তি দেশ' : 'Origin'}: $country',
                                   style: TextStyle(
                                     fontSize: 12.5,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'presentation.dart';
@@ -9,6 +9,7 @@ part of 'presentation.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PresentationCopyWith<Presentation> get copyWith => _$PresentationCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Presentation&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.productTypeId, productTypeId) || other.productTypeId == productTypeId)&&(identical(other.contentTypeId, contentTypeId) || other.contentTypeId == contentTypeId)&&(identical(other.size, size) || other.size == size)&&(identical(other.mrp, mrp) || other.mrp == mrp)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder)&&(identical(other.bulkItem, bulkItem) || other.bulkItem == bulkItem));
+  final _this = this as Presentation;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Presentation&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.productId, _this.productId) || other.productId == _this.productId)&&(identical(other.productTypeId, _this.productTypeId) || other.productTypeId == _this.productTypeId)&&(identical(other.contentTypeId, _this.contentTypeId) || other.contentTypeId == _this.contentTypeId)&&(identical(other.size, _this.size) || other.size == _this.size)&&(identical(other.mrp, _this.mrp) || other.mrp == _this.mrp)&&(identical(other.imageUrl, _this.imageUrl) || other.imageUrl == _this.imageUrl)&&(identical(other.displayOrder, _this.displayOrder) || other.displayOrder == _this.displayOrder)&&(identical(other.bulkItem, _this.bulkItem) || other.bulkItem == _this.bulkItem));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,productId,productTypeId,contentTypeId,size,mrp,imageUrl,displayOrder,bulkItem);
+int get hashCode {
+  final _this = this as Presentation;
+  return Object.hash(runtimeType,_this.id,_this.productId,_this.productTypeId,_this.contentTypeId,_this.size,_this.mrp,_this.imageUrl,_this.displayOrder,_this.bulkItem);
+}
 
 @override
 String toString() {
-  return 'Presentation(id: $id, productId: $productId, productTypeId: $productTypeId, contentTypeId: $contentTypeId, size: $size, mrp: $mrp, imageUrl: $imageUrl, displayOrder: $displayOrder, bulkItem: $bulkItem)';
+  final _this = this as Presentation;
+  return 'Presentation(id: ${_this.id}, productId: ${_this.productId}, productTypeId: ${_this.productTypeId}, contentTypeId: ${_this.contentTypeId}, size: ${_this.size}, mrp: ${_this.mrp}, imageUrl: ${_this.imageUrl}, displayOrder: ${_this.displayOrder}, bulkItem: ${_this.bulkItem})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PresentationCopyWithImpl<$Res>
 /// Create a copy of Presentation
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? productId = null,Object? productTypeId = null,Object? contentTypeId = null,Object? size = freezed,Object? mrp = freezed,Object? imageUrl = freezed,Object? displayOrder = null,Object? bulkItem = null,}) {
-  return _then(_self.copyWith(
+  return _then(Presentation(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
 as int,productTypeId: null == productTypeId ? _self.productTypeId : productTypeId // ignore: cast_nullable_to_non_nullable
@@ -237,16 +243,18 @@ _$PresentationCopyWith<_Presentation> get copyWith => __$PresentationCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Presentation&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.productTypeId, productTypeId) || other.productTypeId == productTypeId)&&(identical(other.contentTypeId, contentTypeId) || other.contentTypeId == contentTypeId)&&(identical(other.size, size) || other.size == size)&&(identical(other.mrp, mrp) || other.mrp == mrp)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder)&&(identical(other.bulkItem, bulkItem) || other.bulkItem == bulkItem));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Presentation&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.productTypeId, productTypeId) || other.productTypeId == productTypeId)&&(identical(other.contentTypeId, contentTypeId) || other.contentTypeId == contentTypeId)&&(identical(other.size, size) || other.size == size)&&(identical(other.mrp, mrp) || other.mrp == mrp)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder)&&(identical(other.bulkItem, bulkItem) || other.bulkItem == bulkItem));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,productId,productTypeId,contentTypeId,size,mrp,imageUrl,displayOrder,bulkItem);
+int get hashCode {
+    return Object.hash(runtimeType,id,productId,productTypeId,contentTypeId,size,mrp,imageUrl,displayOrder,bulkItem);
+}
 
 @override
 String toString() {
-  return 'Presentation(id: $id, productId: $productId, productTypeId: $productTypeId, contentTypeId: $contentTypeId, size: $size, mrp: $mrp, imageUrl: $imageUrl, displayOrder: $displayOrder, bulkItem: $bulkItem)';
+    return 'Presentation(id: $id, productId: $productId, productTypeId: $productTypeId, contentTypeId: $contentTypeId, size: $size, mrp: $mrp, imageUrl: $imageUrl, displayOrder: $displayOrder, bulkItem: $bulkItem)';
 }
 
 

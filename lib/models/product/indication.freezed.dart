@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'indication.dart';
@@ -9,6 +9,7 @@ part of 'indication.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $IndicationCopyWith<Indication> get copyWith => _$IndicationCopyWithImpl<Indicat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Indication&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.textEn, textEn) || other.textEn == textEn)&&(identical(other.textBn, textBn) || other.textBn == textBn)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder));
+  final _this = this as Indication;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Indication&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.productId, _this.productId) || other.productId == _this.productId)&&(identical(other.textEn, _this.textEn) || other.textEn == _this.textEn)&&(identical(other.textBn, _this.textBn) || other.textBn == _this.textBn)&&(identical(other.displayOrder, _this.displayOrder) || other.displayOrder == _this.displayOrder));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,productId,textEn,textBn,displayOrder);
+int get hashCode {
+  final _this = this as Indication;
+  return Object.hash(runtimeType,_this.id,_this.productId,_this.textEn,_this.textBn,_this.displayOrder);
+}
 
 @override
 String toString() {
-  return 'Indication(id: $id, productId: $productId, textEn: $textEn, textBn: $textBn, displayOrder: $displayOrder)';
+  final _this = this as Indication;
+  return 'Indication(id: ${_this.id}, productId: ${_this.productId}, textEn: ${_this.textEn}, textBn: ${_this.textBn}, displayOrder: ${_this.displayOrder})';
 }
 
 
@@ -63,7 +69,7 @@ class _$IndicationCopyWithImpl<$Res>
 /// Create a copy of Indication
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? productId = null,Object? textEn = null,Object? textBn = freezed,Object? displayOrder = null,}) {
-  return _then(_self.copyWith(
+  return _then(Indication(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
 as int,textEn: null == textEn ? _self.textEn : textEn // ignore: cast_nullable_to_non_nullable
@@ -229,16 +235,18 @@ _$IndicationCopyWith<_Indication> get copyWith => __$IndicationCopyWithImpl<_Ind
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Indication&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.textEn, textEn) || other.textEn == textEn)&&(identical(other.textBn, textBn) || other.textBn == textBn)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Indication&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.textEn, textEn) || other.textEn == textEn)&&(identical(other.textBn, textBn) || other.textBn == textBn)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,productId,textEn,textBn,displayOrder);
+int get hashCode {
+    return Object.hash(runtimeType,id,productId,textEn,textBn,displayOrder);
+}
 
 @override
 String toString() {
-  return 'Indication(id: $id, productId: $productId, textEn: $textEn, textBn: $textBn, displayOrder: $displayOrder)';
+    return 'Indication(id: $id, productId: $productId, textEn: $textEn, textBn: $textBn, displayOrder: $displayOrder)';
 }
 
 

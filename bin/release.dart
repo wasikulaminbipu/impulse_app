@@ -462,9 +462,8 @@ void main(List<String> args) async {
 void verifyFontAssets() {
   stdout.write('  ⏳ Verifying custom font asset integrity... ');
   final pubspec = File('pubspec.yaml').readAsStringSync();
-  final fontAssetMatches = RegExp(
-    r'asset:\s*(assets/fonts/[^\s]+)',
-  ).allMatches(pubspec);
+  final fontAssetMatches = RegExp(r'asset:\s*(assets/fonts/[^\s]+)')
+      .allMatches(pubspec);
 
   final missingFonts = <String>[];
   for (final match in fontAssetMatches) {
@@ -528,9 +527,8 @@ void verifyAndroidGradleConfiguration() {
   }
 
   final content = gradleFile.readAsStringSync();
-  final targetSdkMatch = RegExp(
-    r'targetSdk(?:Version)?\s*=\s*(\d+)',
-  ).firstMatch(content);
+  final targetSdkMatch = RegExp(r'targetSdk(?:Version)?\s*=\s*(\d+)')
+      .firstMatch(content);
   final targetSdkVal = targetSdkMatch != null
       ? int.tryParse(targetSdkMatch.group(1)!) ?? 0
       : 0;

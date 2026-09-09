@@ -43,6 +43,7 @@ class CustomBadge extends StatelessWidget {
       return InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(10),
+        splashFactory: InkRipple.splashFactory,
         child: badge,
       );
     }

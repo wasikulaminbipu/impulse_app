@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/data/fts_utils.dart';
 import 'package:impulse_app/data/lookup_dao.dart';
 import 'package:impulse_app/data/manufacturer_dao.dart';
@@ -12,16 +13,15 @@ import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/database_provider.dart';
 import 'package:impulse_app/providers/debounced_query.dart';
 import 'package:impulse_app/providers/paginated_state.dart';
-import 'package:impulse_app/utils/app_constants.dart';
 import 'package:impulse_app/utils/search_analytics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'products_provider.g.dart';
 
 // ------------------------------------------------------------
-// DAO providers — wrap the raw sqflite Database from
-// database_provider.dart with the typed DAO layer so the rest of this
-// file (and the UI) never writes raw SQL directly.
+// DAO providers — wrap typed Drift databases from
+// database_provider.dart with the DAO layer so the rest of this
+// file (and the UI) access products through strongly-typed contracts.
 // ------------------------------------------------------------
 
 @Riverpod(keepAlive: true)
@@ -252,6 +252,7 @@ class PaginatedManufacturers extends _$PaginatedManufacturers {
     state = AsyncValue.data(currentState.copyWith(isLoadingMore: true));
 
     final dao = await ref.read(manufacturerDaoProvider.future);
+    if (!ref.mounted) return;
     final query = ref.read(manufacturersSearchQueryProvider);
 
     final nextChunk = await dao.getFilteredManufacturers(
@@ -259,6 +260,7 @@ class PaginatedManufacturers extends _$PaginatedManufacturers {
       limit: _pageSize + 1,
       offset: currentState.items.length,
     );
+    if (!ref.mounted) return;
 
     final hasMore = nextChunk.length > _pageSize;
     if (hasMore) {
@@ -357,8 +359,11 @@ class PaginatedCategoryProducts extends _$PaginatedCategoryProducts {
     state = AsyncValue.data(currentState.copyWith(isLoadingMore: true));
 
     final dao = await ref.read(productDaoProvider.future);
+    if (!ref.mounted) return;
     final cats = await ref.read(categoriesProvider.future);
+    if (!ref.mounted) return;
     final groups = await ref.read(targetGroupsProvider.future);
+    if (!ref.mounted) return;
     final criteria = _criteria ?? resolveCategoryFilter(category, cats, groups);
     final query = ref.read(productSearchQueryProvider);
     final scope = ref.read(productSearchScopeProvider);
@@ -372,6 +377,7 @@ class PaginatedCategoryProducts extends _$PaginatedCategoryProducts {
       limit: _pageSize + 1,
       offset: currentState.items.length,
     );
+    if (!ref.mounted) return;
 
     final hasMore = nextChunk.length > _pageSize;
     if (hasMore) {

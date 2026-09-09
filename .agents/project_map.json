@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-09-06T12:48:00Z",
+  "last_updated": "2026-09-08T17:55:00Z",
   "project_info": {
     "name": "impulse_dex",
     "architecture_pattern": "Clean Architecture / Feature-based with Riverpod, Drift, Freezed",
@@ -47,8 +47,7 @@
       ],
       "dependencies": [
         "drift",
-        "sqlite3",
-        "sqlite3_flutter_libs"
+        "sqlite3"
       ]
     },
     {
@@ -59,7 +58,8 @@
       "key_files": [
         "lib/models/distributor.dart",
         "lib/models/app_maintenance.dart",
-        "lib/models/product.dart"
+        "lib/models/product.dart",
+        "lib/models/product/benefit.dart"
       ],
       "dependencies": [
         "freezed_annotation",
@@ -112,7 +112,8 @@
         "lib/widgets/paginated_list_scaffold.dart",
         "lib/widgets/skeleton_loader.dart",
         "lib/widgets/favorite_button.dart",
-        "lib/widgets/app_drawer.dart"
+        "lib/widgets/app_drawer.dart",
+        "lib/widgets/product_details/benefits_section.dart"
       ],
       "dependencies": [
         "flutter"
@@ -573,6 +574,73 @@
         "bin/audit_playstore_compliance.dart",
         "bin/release.dart",
         ".agents/skills/playstore-release/SKILL.md",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 25,
+      "desc": "Enhance offline data entry tool (tools/impulse-data-entry.html) to prioritize direct saving to opened database with FileSystemFileHandle, auto-permission elevation, drag-and-drop, and local companion server (bin/data_entry.dart & tools/launch-data-entry.bat)",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "tools/impulse-data-entry.html",
+        "bin/data_entry.dart",
+        "tools/launch-data-entry.bat",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 26,
+      "desc": "Codebase refinement: fix SQLite FTS5 bm25 6-column weight mismatch in ProductDao, fix getGeneratedAt key and format parsing in AppMaintenanceDao, add AppConstants centralized versioning, connect DistributorsScreen to AppDrawer, utilize RollingCounterText in UI, add comprehensive test suite across unreferenced components, and compress demacox asset from 9.4MB to 41KB WebP",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "lib/constants/app_constants.dart",
+        "lib/data/product_dao.dart",
+        "lib/data/app_maintenance_dao.dart",
+        "lib/data/app_databases.dart",
+        "lib/screens/about_us_screen.dart",
+        "lib/screens/manufacturer_details_screen.dart",
+        "lib/widgets/app_drawer.dart",
+        "test/core/database/database_freshness_checker_test.dart",
+        "test/data/db_meta_dao_test.dart",
+        "test/screens/distributors_screen_test.dart",
+        "test/widgets/rolling_counter_test.dart",
+        "assets/product_image/demacox.webp",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 27,
+      "desc": "Implement code quality and standards recommendations: consolidate duplicate AppConstants into lib/constants/app_constants.dart and remove lib/utils/app_constants.dart, modernize share_plus API to SharePlus.instance.share(ShareParams(...)) without ignore comments, convert switches to modern Dart 3 switch expressions, complete comprehensive Dartdoc comments on DAOs and utilities, add advanced sales personnels screen test suite reaching 80.3% coverage, and verify zero lint warnings under strict static analysis.",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "lib/constants/app_constants.dart",
+        "lib/utils/app_constants.dart",
+        "lib/utils/product_share_service.dart",
+        "lib/utils/bilingual_string.dart",
+        "lib/widgets/product_card.dart",
+        "lib/theme/app_theme.dart",
+        "lib/data/lookup_dao.dart",
+        "lib/data/app_maintenance_dao.dart",
+        "lib/domain/category_filter.dart",
+        "lib/providers/products_provider.dart",
+        "test/screens/sales_personnels_screen_advanced_test.dart",
+        "badges/coverage.svg",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 28,
+      "desc": "Audit all dependencies against latest official documentation, provide sharePositionOrigin on ShareParams for share_plus 13.3.0, add ref.mounted async guards across Riverpod 3.x paginated notifiers, clean up redundant url_launcher canLaunchUrl branches in sales_personnels_screen.dart, and verify zero warnings and comprehensive test coverage.",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "lib/utils/product_share_service.dart",
+        "lib/providers/products_provider.dart",
+        "lib/providers/stakeholder_provider.dart",
+        "lib/screens/sales_personnels_screen.dart",
         ".agents/project_map.json"
       ]
     }

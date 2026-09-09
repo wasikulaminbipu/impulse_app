@@ -116,6 +116,17 @@ class Compositions extends Table {
   IntColumn get displayOrder => integer().withDefault(const Constant(0))();
 }
 
+@DataClassName('BenefitEntity')
+class Benefits extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get productId => integer().customConstraint(
+    'NOT NULL REFERENCES products(id) ON DELETE CASCADE',
+  )();
+  TextColumn get textEn => text()();
+  TextColumn get textBn => text().nullable()();
+  IntColumn get displayOrder => integer().withDefault(const Constant(0))();
+}
+
 @DataClassName('IndicationEntity')
 class Indications extends Table {
   IntColumn get id => integer().autoIncrement()();

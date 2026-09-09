@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'manufacturer.dart';
@@ -9,6 +9,7 @@ part of 'manufacturer.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ManufacturerCopyWith<Manufacturer> get copyWith => _$ManufacturerCopyWithImpl<M
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Manufacturer&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.countryOfOriginEn, countryOfOriginEn) || other.countryOfOriginEn == countryOfOriginEn)&&(identical(other.countryOfOriginBn, countryOfOriginBn) || other.countryOfOriginBn == countryOfOriginBn)&&(identical(other.email, email) || other.email == email)&&(identical(other.website, website) || other.website == website)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
+  final _this = this as Manufacturer;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Manufacturer&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.nameEn, _this.nameEn) || other.nameEn == _this.nameEn)&&(identical(other.nameBn, _this.nameBn) || other.nameBn == _this.nameBn)&&(identical(other.addressEn, _this.addressEn) || other.addressEn == _this.addressEn)&&(identical(other.addressBn, _this.addressBn) || other.addressBn == _this.addressBn)&&(identical(other.countryOfOriginEn, _this.countryOfOriginEn) || other.countryOfOriginEn == _this.countryOfOriginEn)&&(identical(other.countryOfOriginBn, _this.countryOfOriginBn) || other.countryOfOriginBn == _this.countryOfOriginBn)&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.website, _this.website) || other.website == _this.website)&&(identical(other.mobile, _this.mobile) || other.mobile == _this.mobile)&&(identical(other.logoUrl, _this.logoUrl) || other.logoUrl == _this.logoUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,addressEn,addressBn,countryOfOriginEn,countryOfOriginBn,email,website,mobile,logoUrl);
+int get hashCode {
+  final _this = this as Manufacturer;
+  return Object.hash(runtimeType,_this.id,_this.nameEn,_this.nameBn,_this.addressEn,_this.addressBn,_this.countryOfOriginEn,_this.countryOfOriginBn,_this.email,_this.website,_this.mobile,_this.logoUrl);
+}
 
 @override
 String toString() {
-  return 'Manufacturer(id: $id, nameEn: $nameEn, nameBn: $nameBn, addressEn: $addressEn, addressBn: $addressBn, countryOfOriginEn: $countryOfOriginEn, countryOfOriginBn: $countryOfOriginBn, email: $email, website: $website, mobile: $mobile, logoUrl: $logoUrl)';
+  final _this = this as Manufacturer;
+  return 'Manufacturer(id: ${_this.id}, nameEn: ${_this.nameEn}, nameBn: ${_this.nameBn}, addressEn: ${_this.addressEn}, addressBn: ${_this.addressBn}, countryOfOriginEn: ${_this.countryOfOriginEn}, countryOfOriginBn: ${_this.countryOfOriginBn}, email: ${_this.email}, website: ${_this.website}, mobile: ${_this.mobile}, logoUrl: ${_this.logoUrl})';
 }
 
 
@@ -247,16 +253,18 @@ _$ManufacturerCopyWith<_Manufacturer> get copyWith => __$ManufacturerCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Manufacturer&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.countryOfOriginEn, countryOfOriginEn) || other.countryOfOriginEn == countryOfOriginEn)&&(identical(other.countryOfOriginBn, countryOfOriginBn) || other.countryOfOriginBn == countryOfOriginBn)&&(identical(other.email, email) || other.email == email)&&(identical(other.website, website) || other.website == website)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Manufacturer&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.countryOfOriginEn, countryOfOriginEn) || other.countryOfOriginEn == countryOfOriginEn)&&(identical(other.countryOfOriginBn, countryOfOriginBn) || other.countryOfOriginBn == countryOfOriginBn)&&(identical(other.email, email) || other.email == email)&&(identical(other.website, website) || other.website == website)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,addressEn,addressBn,countryOfOriginEn,countryOfOriginBn,email,website,mobile,logoUrl);
+int get hashCode {
+    return Object.hash(runtimeType,id,nameEn,nameBn,addressEn,addressBn,countryOfOriginEn,countryOfOriginBn,email,website,mobile,logoUrl);
+}
 
 @override
 String toString() {
-  return 'Manufacturer(id: $id, nameEn: $nameEn, nameBn: $nameBn, addressEn: $addressEn, addressBn: $addressBn, countryOfOriginEn: $countryOfOriginEn, countryOfOriginBn: $countryOfOriginBn, email: $email, website: $website, mobile: $mobile, logoUrl: $logoUrl)';
+    return 'Manufacturer(id: $id, nameEn: $nameEn, nameBn: $nameBn, addressEn: $addressEn, addressBn: $addressBn, countryOfOriginEn: $countryOfOriginEn, countryOfOriginBn: $countryOfOriginBn, email: $email, website: $website, mobile: $mobile, logoUrl: $logoUrl)';
 }
 
 
@@ -333,16 +341,18 @@ _$ManufacturerEmptyCopyWith<_ManufacturerEmpty> get copyWith => __$ManufacturerE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ManufacturerEmpty&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.countryOfOriginEn, countryOfOriginEn) || other.countryOfOriginEn == countryOfOriginEn)&&(identical(other.countryOfOriginBn, countryOfOriginBn) || other.countryOfOriginBn == countryOfOriginBn)&&(identical(other.email, email) || other.email == email)&&(identical(other.website, website) || other.website == website)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ManufacturerEmpty&&(identical(other.id, id) || other.id == id)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.nameBn, nameBn) || other.nameBn == nameBn)&&(identical(other.addressEn, addressEn) || other.addressEn == addressEn)&&(identical(other.addressBn, addressBn) || other.addressBn == addressBn)&&(identical(other.countryOfOriginEn, countryOfOriginEn) || other.countryOfOriginEn == countryOfOriginEn)&&(identical(other.countryOfOriginBn, countryOfOriginBn) || other.countryOfOriginBn == countryOfOriginBn)&&(identical(other.email, email) || other.email == email)&&(identical(other.website, website) || other.website == website)&&(identical(other.mobile, mobile) || other.mobile == mobile)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,nameEn,nameBn,addressEn,addressBn,countryOfOriginEn,countryOfOriginBn,email,website,mobile,logoUrl);
+int get hashCode {
+    return Object.hash(runtimeType,id,nameEn,nameBn,addressEn,addressBn,countryOfOriginEn,countryOfOriginBn,email,website,mobile,logoUrl);
+}
 
 @override
 String toString() {
-  return 'Manufacturer.empty(id: $id, nameEn: $nameEn, nameBn: $nameBn, addressEn: $addressEn, addressBn: $addressBn, countryOfOriginEn: $countryOfOriginEn, countryOfOriginBn: $countryOfOriginBn, email: $email, website: $website, mobile: $mobile, logoUrl: $logoUrl)';
+    return 'Manufacturer.empty(id: $id, nameEn: $nameEn, nameBn: $nameBn, addressEn: $addressEn, addressBn: $addressBn, countryOfOriginEn: $countryOfOriginEn, countryOfOriginBn: $countryOfOriginBn, email: $email, website: $website, mobile: $mobile, logoUrl: $logoUrl)';
 }
 
 

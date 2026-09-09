@@ -5,11 +5,12 @@ import 'package:impulse_app/data/fts_utils.dart';
 import 'package:impulse_app/data/lookup_dao.dart';
 import 'package:impulse_app/data/manufacturer_dao.dart';
 import 'package:impulse_app/domain/search_scope.dart';
-// Data access layer for products.db (schema v2).
-// Built on sqflite. See products_schema.sql and products_db_changes.md.
-
 import 'package:impulse_app/models/product.dart';
 
+/// Data access object for querying and hydrating product catalogs.
+///
+/// Backed by Drift [ProductsDb] and SQLite FTS5 for high-speed indexing,
+/// batch-hydrated relations, and LRU search query caching.
 class ProductDao {
   final ProductsDb db;
   final LookupDao lookupDao;
@@ -20,10 +21,9 @@ class ProductDao {
   ProductDao(this.db, this.lookupDao, {ManufacturerDao? manufacturerDao})
     : manufacturerDao = manufacturerDao ?? ManufacturerDao(db);
 
-  // ------------------------------------------------------------
-  // Single product, fully hydrated (Product Detail Page)
-  // ------------------------------------------------------------
-
+  /// Fetches a single [Product] by its [id] and fully hydrates all associated
+  /// compositions, benefits, indications, directions, precautions, presentations,
+  /// manufacturer, category, and target groups. Returns `null` if not found.
   Future<Product?> getById(int id) async {
     final rows = await db.executor.query(
       'products',
@@ -39,6 +39,7 @@ class ProductDao {
     final results = await Future.wait([
       _getTargetGroupIds(base.id),
       _getCompositions(base.id),
+      _getBenefits(base.id),
       _getIndications(base.id),
       _getDirections(base.id),
       _getPrecautions(base.id),
@@ -51,8 +52,8 @@ class ProductDao {
     ]);
 
     final tgIds = results[0]! as List<int>;
-    final allCategories = results[7]! as List<Category>;
-    final allTargetGroups = results[8]! as List<TargetGroup>;
+    final allCategories = results[8]! as List<Category>;
+    final allTargetGroups = results[9]! as List<TargetGroup>;
 
     final catMap = {for (final c in allCategories) c.id: c};
     final allTgMap = {for (final tg in allTargetGroups) tg.id: tg};
@@ -60,11 +61,12 @@ class ProductDao {
     return base.copyWith(
       targetGroupIds: tgIds,
       compositions: results[1]! as List<Composition>,
-      indications: results[2]! as List<Indication>,
-      directions: results[3]! as List<Direction>,
-      precautions: results[4]! as List<Precaution>,
-      presentations: results[5]! as List<Presentation>,
-      manufacturer: (results[6] as Manufacturer?) ?? const Manufacturer.empty(),
+      benefits: results[2]! as List<Benefit>,
+      indications: results[3]! as List<Indication>,
+      directions: results[4]! as List<Direction>,
+      precautions: results[5]! as List<Precaution>,
+      presentations: results[6]! as List<Presentation>,
+      manufacturer: (results[7] as Manufacturer?) ?? const Manufacturer.empty(),
       category: catMap[base.categoryId] ?? const Category.empty(),
       targetGroups: tgIds
           .map((id) => allTgMap[id])
@@ -255,7 +257,7 @@ class ProductDao {
             final sqlQuery =
                 '''
               SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn,
-                     bm25(fts, 10.0, 5.0, 3.0, 1.0) AS bm25_rank
+                     bm25(fts, 10.0, 10.0, 5.0, 3.0, 2.0, 2.0) AS bm25_rank
               FROM products p
               $ftsJoin
               LEFT JOIN categories c ON c.id = p.category_id
@@ -341,10 +343,13 @@ class ProductDao {
               p.short_description_en LIKE ? OR p.short_description_bn LIKE ? OR 
               c.name_en LIKE ? OR c.name_bn LIKE ? OR
               EXISTS (SELECT 1 FROM compositions comp WHERE comp.product_id = p.id AND (comp.ingredient_en LIKE ? OR comp.ingredient_bn LIKE ?)) OR
+              EXISTS (SELECT 1 FROM benefits ben WHERE ben.product_id = p.id AND (ben.text_en LIKE ? OR ben.text_bn LIKE ?)) OR
               EXISTS (SELECT 1 FROM indications ind WHERE ind.product_id = p.id AND (ind.text_en LIKE ? OR ind.text_bn LIKE ?))
             )
           ''');
           likeArgs.addAll([
+            pattern,
+            pattern,
             pattern,
             pattern,
             pattern,
@@ -629,6 +634,16 @@ class ProductDao {
     return rows.map(Composition.fromRow).toList();
   }
 
+  Future<List<Benefit>> _getBenefits(int productId) async {
+    final rows = await db.executor.query(
+      'benefits',
+      where: 'product_id = ?',
+      whereArgs: [productId],
+      orderBy: 'display_order',
+    );
+    return rows.map(Benefit.fromRow).toList();
+  }
+
   Future<List<Indication>> _getIndications(int productId) async {
     final rows = await db.executor.query(
       'indications',
@@ -736,6 +751,16 @@ class ProductDao {
       for (final r in tgRows) {
         final en = r['name_en'] as String?;
         final bn = r['name_bn'] as String?;
+        if (en != null && en.isNotEmpty) terms.add(en);
+        if (bn != null && bn.isNotEmpty) terms.add(bn);
+      }
+
+      final benRows = await db.executor.customQuery(
+        'SELECT DISTINCT text_en, text_bn FROM benefits',
+      );
+      for (final r in benRows) {
+        final en = r['text_en'] as String?;
+        final bn = r['text_bn'] as String?;
         if (en != null && en.isNotEmpty) terms.add(en);
         if (bn != null && bn.isNotEmpty) terms.add(bn);
       }

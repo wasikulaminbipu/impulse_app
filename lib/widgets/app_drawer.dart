@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/constants/app_assets.dart';
+import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/screens/about_us_screen.dart';
+import 'package:impulse_app/screens/distributors_screen.dart';
 import 'package:impulse_app/widgets/glass_container.dart';
 import 'package:impulse_app/widgets/privacy_policy_dialog.dart';
 
@@ -89,7 +91,7 @@ class AppDrawer extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              'v1.0.0',
+                              'v${AppConstants.appVersion}',
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
@@ -145,6 +147,21 @@ class AppDrawer extends ConsumerWidget {
                     onTap: () {
                       Navigator.of(context).pop();
                       if (onTabSelected != null) onTabSelected!(2);
+                    },
+                  ),
+                  _buildDrawerTile(
+                    context,
+                    icon: Icons.storefront_outlined,
+                    selectedIcon: Icons.storefront,
+                    label: isBn ? 'ডিস্ট্রিবিউটর' : 'Distributors',
+                    isSelected: false,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (context) => const DistributorsScreen(),
+                        ),
+                      );
                     },
                   ),
 

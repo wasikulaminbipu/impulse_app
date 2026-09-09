@@ -104,31 +104,28 @@ void main() {
       },
     );
 
-    test(
-      'AppErrorHandler guard and guardAsync execute successfully or return fallback',
-      () async {
-        final result = AppErrorHandler.guard<int>(() => 42, fallback: 0);
-        expect(result, equals(42));
+    test('AppErrorHandler guard and guardAsync execute successfully or return fallback', () async {
+      final result = AppErrorHandler.guard<int>(() => 42, fallback: 0);
+      expect(result, equals(42));
 
-        final failed = AppErrorHandler.guard<int>(
-          () => throw Exception('Crash'),
-          fallback: 99,
-        );
-        expect(failed, equals(99));
+      final failed = AppErrorHandler.guard<int>(
+        () => throw Exception('Crash'),
+        fallback: 99,
+      );
+      expect(failed, equals(99));
 
-        final asyncResult = await AppErrorHandler.guardAsync<String>(
-          () async => 'success',
-          fallback: 'fail',
-        );
-        expect(asyncResult, equals('success'));
+      final asyncResult = await AppErrorHandler.guardAsync<String>(
+        () async => 'success',
+        fallback: 'fail',
+      );
+      expect(asyncResult, equals('success'));
 
-        final asyncFailed = await AppErrorHandler.guardAsync<String>(
-          () async => throw Exception('Async crash'),
-          fallback: 'fallback_val',
-        );
-        expect(asyncFailed, equals('fallback_val'));
-      },
-    );
+      final asyncFailed = await AppErrorHandler.guardAsync<String>(
+        () async => throw Exception('Async crash'),
+        fallback: 'fallback_val',
+      );
+      expect(asyncFailed, equals('fallback_val'));
+    });
 
     testWidgets('AppErrorHandler showErrorBanner displays error feedback', (
       tester,

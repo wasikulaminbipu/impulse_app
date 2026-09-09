@@ -83,23 +83,39 @@ void main() {
       expect(await dao.getLanguage(), equals('en'));
     });
 
-    test('DbMeta schema version and generated at', () async {
+    test('DbMeta schema version, data version, and generated at', () async {
       expect(await dao.getSchemaVersion(), isNull);
+      expect(await dao.getDataVersion(), isNull);
       expect(await dao.getGeneratedAt(), isNull);
 
       final nowIso = DateTime.now().toIso8601String();
-      await dao.setSetting('schema_version', nowIso);
-      // Insert into db_meta directly
       await db
           .into(db.dbMeta)
           .insert(
-            DbMetaCompanion.insert(
-              key: 'schema_version',
-              value: driftValue(nowIso),
+            const DbMetaCompanion(
+              key: Value('schema_version'),
+              value: Value('2'),
+            ),
+          );
+      await db
+          .into(db.dbMeta)
+          .insert(
+            const DbMetaCompanion(
+              key: Value('data_version'),
+              value: Value('1'),
+            ),
+          );
+      await db
+          .into(db.dbMeta)
+          .insert(
+            DbMetaCompanion(
+              key: const Value('generated_at'),
+              value: Value(nowIso),
             ),
           );
 
-      expect(await dao.getSchemaVersion(), equals(nowIso));
+      expect(await dao.getSchemaVersion(), equals('2'));
+      expect(await dao.getDataVersion(), equals(1));
       expect(await dao.getGeneratedAt(), isNotNull);
     });
 

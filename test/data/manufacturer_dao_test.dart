@@ -48,40 +48,37 @@ void main() {
       expect(list.last.nameEn, equals('Square Pharmaceuticals Ltd.'));
     });
 
-    test(
-      'getFilteredManufacturers filters by English or Bengali query and respects limit/offset',
-      () async {
-        final filteredEn = await dao.getFilteredManufacturers(
-          query: 'Square',
-          limit: 10,
-          offset: 0,
-        );
-        expect(filteredEn.length, equals(1));
-        expect(filteredEn.first.nameEn, equals('Square Pharmaceuticals Ltd.'));
+    test('getFilteredManufacturers filters by English or Bengali query and respects limit/offset', () async {
+      final filteredEn = await dao.getFilteredManufacturers(
+        query: 'Square',
+        limit: 10,
+        offset: 0,
+      );
+      expect(filteredEn.length, equals(1));
+      expect(filteredEn.first.nameEn, equals('Square Pharmaceuticals Ltd.'));
 
-        final filteredBn = await dao.getFilteredManufacturers(
-          query: 'ইমপালস',
-          limit: 10,
-          offset: 0,
-        );
-        expect(filteredBn.length, equals(1));
-        expect(filteredBn.first.nameEn, equals('Impulse Agriscience Ltd.'));
+      final filteredBn = await dao.getFilteredManufacturers(
+        query: 'ইমপালস',
+        limit: 10,
+        offset: 0,
+      );
+      expect(filteredBn.length, equals(1));
+      expect(filteredBn.first.nameEn, equals('Impulse Agriscience Ltd.'));
 
-        final emptyMatch = await dao.getFilteredManufacturers(
-          query: 'NonExistentManufacturer',
-          limit: 10,
-          offset: 0,
-        );
-        expect(emptyMatch, isEmpty);
+      final emptyMatch = await dao.getFilteredManufacturers(
+        query: 'NonExistentManufacturer',
+        limit: 10,
+        offset: 0,
+      );
+      expect(emptyMatch, isEmpty);
 
-        final paginated = await dao.getFilteredManufacturers(
-          query: '',
-          limit: 1,
-          offset: 1,
-        );
-        expect(paginated.length, equals(1));
-        expect(paginated.first.nameEn, equals('Square Pharmaceuticals Ltd.'));
-      },
-    );
+      final paginated = await dao.getFilteredManufacturers(
+        query: '',
+        limit: 1,
+        offset: 1,
+      );
+      expect(paginated.length, equals(1));
+      expect(paginated.first.nameEn, equals('Square Pharmaceuticals Ltd.'));
+    });
   });
 }

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'direction.dart';
@@ -9,6 +9,7 @@ part of 'direction.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $DirectionCopyWith<Direction> get copyWith => _$DirectionCopyWithImpl<Direction>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Direction&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.contentTypeId, contentTypeId) || other.contentTypeId == contentTypeId)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.doseValueMin, doseValueMin) || other.doseValueMin == doseValueMin)&&(identical(other.doseValueMax, doseValueMax) || other.doseValueMax == doseValueMax)&&(identical(other.doseUnitId, doseUnitId) || other.doseUnitId == doseUnitId)&&(identical(other.doseBasisId, doseBasisId) || other.doseBasisId == doseBasisId)&&(identical(other.durationDaysMin, durationDaysMin) || other.durationDaysMin == durationDaysMin)&&(identical(other.durationDaysMax, durationDaysMax) || other.durationDaysMax == durationDaysMax)&&(identical(other.administrationEn, administrationEn) || other.administrationEn == administrationEn)&&(identical(other.administrationBn, administrationBn) || other.administrationBn == administrationBn)&&(identical(other.dosageEn, dosageEn) || other.dosageEn == dosageEn)&&(identical(other.dosageBn, dosageBn) || other.dosageBn == dosageBn)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder));
+  final _this = this as Direction;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Direction&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.productId, _this.productId) || other.productId == _this.productId)&&(identical(other.contentTypeId, _this.contentTypeId) || other.contentTypeId == _this.contentTypeId)&&(identical(other.speciesId, _this.speciesId) || other.speciesId == _this.speciesId)&&(identical(other.doseValueMin, _this.doseValueMin) || other.doseValueMin == _this.doseValueMin)&&(identical(other.doseValueMax, _this.doseValueMax) || other.doseValueMax == _this.doseValueMax)&&(identical(other.doseUnitId, _this.doseUnitId) || other.doseUnitId == _this.doseUnitId)&&(identical(other.doseBasisId, _this.doseBasisId) || other.doseBasisId == _this.doseBasisId)&&(identical(other.durationDaysMin, _this.durationDaysMin) || other.durationDaysMin == _this.durationDaysMin)&&(identical(other.durationDaysMax, _this.durationDaysMax) || other.durationDaysMax == _this.durationDaysMax)&&(identical(other.administrationEn, _this.administrationEn) || other.administrationEn == _this.administrationEn)&&(identical(other.administrationBn, _this.administrationBn) || other.administrationBn == _this.administrationBn)&&(identical(other.dosageEn, _this.dosageEn) || other.dosageEn == _this.dosageEn)&&(identical(other.dosageBn, _this.dosageBn) || other.dosageBn == _this.dosageBn)&&(identical(other.displayOrder, _this.displayOrder) || other.displayOrder == _this.displayOrder));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,productId,contentTypeId,speciesId,doseValueMin,doseValueMax,doseUnitId,doseBasisId,durationDaysMin,durationDaysMax,administrationEn,administrationBn,dosageEn,dosageBn,displayOrder);
+int get hashCode {
+  final _this = this as Direction;
+  return Object.hash(runtimeType,_this.id,_this.productId,_this.contentTypeId,_this.speciesId,_this.doseValueMin,_this.doseValueMax,_this.doseUnitId,_this.doseBasisId,_this.durationDaysMin,_this.durationDaysMax,_this.administrationEn,_this.administrationBn,_this.dosageEn,_this.dosageBn,_this.displayOrder);
+}
 
 @override
 String toString() {
-  return 'Direction(id: $id, productId: $productId, contentTypeId: $contentTypeId, speciesId: $speciesId, doseValueMin: $doseValueMin, doseValueMax: $doseValueMax, doseUnitId: $doseUnitId, doseBasisId: $doseBasisId, durationDaysMin: $durationDaysMin, durationDaysMax: $durationDaysMax, administrationEn: $administrationEn, administrationBn: $administrationBn, dosageEn: $dosageEn, dosageBn: $dosageBn, displayOrder: $displayOrder)';
+  final _this = this as Direction;
+  return 'Direction(id: ${_this.id}, productId: ${_this.productId}, contentTypeId: ${_this.contentTypeId}, speciesId: ${_this.speciesId}, doseValueMin: ${_this.doseValueMin}, doseValueMax: ${_this.doseValueMax}, doseUnitId: ${_this.doseUnitId}, doseBasisId: ${_this.doseBasisId}, durationDaysMin: ${_this.durationDaysMin}, durationDaysMax: ${_this.durationDaysMax}, administrationEn: ${_this.administrationEn}, administrationBn: ${_this.administrationBn}, dosageEn: ${_this.dosageEn}, dosageBn: ${_this.dosageBn}, displayOrder: ${_this.displayOrder})';
 }
 
 
@@ -63,7 +69,7 @@ class _$DirectionCopyWithImpl<$Res>
 /// Create a copy of Direction
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? productId = null,Object? contentTypeId = null,Object? speciesId = null,Object? doseValueMin = null,Object? doseValueMax = freezed,Object? doseUnitId = null,Object? doseBasisId = null,Object? durationDaysMin = freezed,Object? durationDaysMax = freezed,Object? administrationEn = freezed,Object? administrationBn = freezed,Object? dosageEn = freezed,Object? dosageBn = freezed,Object? displayOrder = null,}) {
-  return _then(_self.copyWith(
+  return _then(Direction(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
 as int,contentTypeId: null == contentTypeId ? _self.contentTypeId : contentTypeId // ignore: cast_nullable_to_non_nullable
@@ -249,16 +255,18 @@ _$DirectionCopyWith<_Direction> get copyWith => __$DirectionCopyWithImpl<_Direct
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Direction&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.contentTypeId, contentTypeId) || other.contentTypeId == contentTypeId)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.doseValueMin, doseValueMin) || other.doseValueMin == doseValueMin)&&(identical(other.doseValueMax, doseValueMax) || other.doseValueMax == doseValueMax)&&(identical(other.doseUnitId, doseUnitId) || other.doseUnitId == doseUnitId)&&(identical(other.doseBasisId, doseBasisId) || other.doseBasisId == doseBasisId)&&(identical(other.durationDaysMin, durationDaysMin) || other.durationDaysMin == durationDaysMin)&&(identical(other.durationDaysMax, durationDaysMax) || other.durationDaysMax == durationDaysMax)&&(identical(other.administrationEn, administrationEn) || other.administrationEn == administrationEn)&&(identical(other.administrationBn, administrationBn) || other.administrationBn == administrationBn)&&(identical(other.dosageEn, dosageEn) || other.dosageEn == dosageEn)&&(identical(other.dosageBn, dosageBn) || other.dosageBn == dosageBn)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Direction&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.contentTypeId, contentTypeId) || other.contentTypeId == contentTypeId)&&(identical(other.speciesId, speciesId) || other.speciesId == speciesId)&&(identical(other.doseValueMin, doseValueMin) || other.doseValueMin == doseValueMin)&&(identical(other.doseValueMax, doseValueMax) || other.doseValueMax == doseValueMax)&&(identical(other.doseUnitId, doseUnitId) || other.doseUnitId == doseUnitId)&&(identical(other.doseBasisId, doseBasisId) || other.doseBasisId == doseBasisId)&&(identical(other.durationDaysMin, durationDaysMin) || other.durationDaysMin == durationDaysMin)&&(identical(other.durationDaysMax, durationDaysMax) || other.durationDaysMax == durationDaysMax)&&(identical(other.administrationEn, administrationEn) || other.administrationEn == administrationEn)&&(identical(other.administrationBn, administrationBn) || other.administrationBn == administrationBn)&&(identical(other.dosageEn, dosageEn) || other.dosageEn == dosageEn)&&(identical(other.dosageBn, dosageBn) || other.dosageBn == dosageBn)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,productId,contentTypeId,speciesId,doseValueMin,doseValueMax,doseUnitId,doseBasisId,durationDaysMin,durationDaysMax,administrationEn,administrationBn,dosageEn,dosageBn,displayOrder);
+int get hashCode {
+    return Object.hash(runtimeType,id,productId,contentTypeId,speciesId,doseValueMin,doseValueMax,doseUnitId,doseBasisId,durationDaysMin,durationDaysMax,administrationEn,administrationBn,dosageEn,dosageBn,displayOrder);
+}
 
 @override
 String toString() {
-  return 'Direction(id: $id, productId: $productId, contentTypeId: $contentTypeId, speciesId: $speciesId, doseValueMin: $doseValueMin, doseValueMax: $doseValueMax, doseUnitId: $doseUnitId, doseBasisId: $doseBasisId, durationDaysMin: $durationDaysMin, durationDaysMax: $durationDaysMax, administrationEn: $administrationEn, administrationBn: $administrationBn, dosageEn: $dosageEn, dosageBn: $dosageBn, displayOrder: $displayOrder)';
+    return 'Direction(id: $id, productId: $productId, contentTypeId: $contentTypeId, speciesId: $speciesId, doseValueMin: $doseValueMin, doseValueMax: $doseValueMax, doseUnitId: $doseUnitId, doseBasisId: $doseBasisId, durationDaysMin: $durationDaysMin, durationDaysMax: $durationDaysMax, administrationEn: $administrationEn, administrationBn: $administrationBn, dosageEn: $dosageEn, dosageBn: $dosageBn, displayOrder: $displayOrder)';
 }
 
 

@@ -28,15 +28,12 @@ void main() {
       overrides: [
         languageSettingProvider.overrideWith(() => _MockLanguageSetting(lang)),
         availableCategoriesProvider.overrideWith((ref) async => categories),
-        paginatedCategoryProductsProvider(
-          'All',
-        ).overrideWith(() => _MockPaginatedCategoryProducts(products)),
-        paginatedCategoryProductsProvider(
-          'Antibiotics',
-        ).overrideWith(() => _MockPaginatedCategoryProducts(products)),
-        paginatedCategoryProductsProvider(
-          'Vitamins',
-        ).overrideWith(() => _MockPaginatedCategoryProducts(const [])),
+        paginatedCategoryProductsProvider('All')
+            .overrideWith(() => _MockPaginatedCategoryProducts(products)),
+        paginatedCategoryProductsProvider('Antibiotics')
+            .overrideWith(() => _MockPaginatedCategoryProducts(products)),
+        paginatedCategoryProductsProvider('Vitamins')
+            .overrideWith(() => _MockPaginatedCategoryProducts(const [])),
         productFavoritesProvider.overrideWith((ref) async => [1]),
         searchHistoryProvider.overrideWith(
           () => _MockSearchHistory(['Amoxivet']),

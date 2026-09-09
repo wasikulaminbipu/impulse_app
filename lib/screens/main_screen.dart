@@ -42,8 +42,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           });
         },
       ),
-      extendBody:
-          true, // Allows the screens to scroll behind the floating glass nav bar
+      extendBody: true, // Allows the screens to scroll behind the floating glass nav bar
       body: SlideIndexedStack(
         index: _currentIndex,
         children: List.generate(_screens.length, (index) {

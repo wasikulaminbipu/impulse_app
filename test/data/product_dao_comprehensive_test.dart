@@ -186,5 +186,23 @@ void main() {
         expect(terms, contains('Amoxivet 50% WSP'));
       },
     );
+
+    test(
+      'FTS setup and BM25 ranking search executes without exception',
+      () async {
+        await setupProductsFts(db.executor);
+
+        final ftsSearchResults = await productDao.search('Amoxivet');
+        expect(ftsSearchResults.length, equals(1));
+        expect(ftsSearchResults.first.titleEn, contains('Amoxivet'));
+
+        final labels = await productDao.getFilteredLabels(
+          query: 'Antibiotics',
+          limit: 10,
+          offset: 0,
+        );
+        expect(labels.isNotEmpty, isTrue);
+      },
+    );
   });
 }
