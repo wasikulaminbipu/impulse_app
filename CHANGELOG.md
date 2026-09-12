@@ -1,4 +1,10 @@
 # Changelog
+## [1.0.5] - 2026-09-12
+### What's Changed
+- Release build 6 (Version 1.0.5).
+- 100% verified: Regenerated models, native splash screen, launcher icons, asset audits, and test suite.
+- Google Play Store & Data Safety policy compliance verified.
+
 ## [1.0.4] - 2026-09-06
 ### What's Changed
 - Release build 5 (Version 1.0.4).
