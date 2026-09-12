@@ -85,7 +85,7 @@ final class DistributorsDatabaseProvider
 }
 
 String _$distributorsDatabaseHash() =>
-    r'3f2942afd5eab2c1474886ca751e48f281399ac5';
+    r'bd77b03a227be25b95d483f6c86f612b98d1463b';
 
 @ProviderFor(appMaintenanceDatabase)
 final appMaintenanceDatabaseProvider = AppMaintenanceDatabaseProvider._();

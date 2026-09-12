@@ -101,9 +101,9 @@ void main() {
     });
 
     test('Test Distributors FTS search', () async {
-      final tempDbFile = File('build/test_distributors.db');
+      final tempDbFile = File('build/test_team.db');
       if (tempDbFile.existsSync()) tempDbFile.deleteSync();
-      File('assets/db/distributors.db').copySync(tempDbFile.path);
+      File('assets/db/team.db').copySync(tempDbFile.path);
 
       final db = DistributorsDb(NativeDatabase(tempDbFile));
       final distDao = DistributorDao(db);

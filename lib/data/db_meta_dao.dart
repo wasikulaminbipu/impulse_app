@@ -1,24 +1,24 @@
-﻿import 'package:drift/drift.dart';
-import 'package:impulse_app/data/db_extensions.dart';
+import 'package:drift/drift.dart';
+import 'package:impulse_app/data/app_databases.dart';
 
 class DbMetaDao {
-  final QueryExecutor db;
+  final GeneratedDatabase db;
   DbMetaDao(this.db);
 
+  $DbMetaTable get _metaTable => $DbMetaTable(db);
+
   Future<String?> getValue(String key) async {
-    final rows = await db.query(
-      'db_meta',
-      where: 'key = ?',
-      whereArgs: [key],
-      limit: 1,
-    );
-    if (rows.isEmpty) return null;
-    return rows.first['value'] as String?;
+    final row =
+        await (db.select(_metaTable)
+              ..where((t) => t.key.equals(key))
+              ..limit(1))
+            .getSingleOrNull();
+    return row?.value;
   }
 
   Future<Map<String, String>> getAll() async {
-    final rows = await db.query('db_meta');
-    return {for (final r in rows) r['key'] as String: r['value'] as String};
+    final rows = await db.select(_metaTable).get();
+    return {for (final r in rows) r.key: r.value ?? ''};
   }
 
   Future<int?> getSchemaVersion() async {

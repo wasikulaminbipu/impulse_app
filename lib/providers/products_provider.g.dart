@@ -695,7 +695,7 @@ final class PaginatedManufacturersProvider
 }
 
 String _$paginatedManufacturersHash() =>
-    r'8223eb1fd0248bb099090cb5d2d1e4eca13122f8';
+    r'af350c53abcd3b883ea61bcbed4ca5cc02770e02';
 
 abstract class _$PaginatedManufacturers
     extends $AsyncNotifier<PaginatedState<Manufacturer>> {
@@ -911,7 +911,7 @@ final class PaginatedCategoryProductsProvider
 }
 
 String _$paginatedCategoryProductsHash() =>
-    r'430e015be0be60cb48372cf9c142fad1afaa11dc';
+    r'd5773bdfc63c00d97fc7a99b81a7874b6e562b9a';
 
 final class PaginatedCategoryProductsFamily extends $Family
     with

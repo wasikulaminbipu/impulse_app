@@ -18,9 +18,9 @@ void main() {
       await db.createMigrator().createAll();
 
       await db.executor.customExecute('''
-        INSERT INTO categories (id, name_en, name_bn, icon_name, slug)
-        VALUES (1, 'Vaccines', 'টিকা', 'vaccine.png', 'vaccines'),
-               (2, 'Antibiotics', 'অ্যান্টিবায়োটিক', 'antibiotic.png', 'antibiotics');
+        INSERT INTO categories (id, name_en, name_bn, icon_name)
+        VALUES (1, 'Vaccines', 'টিকা', 'vaccine.png'),
+               (2, 'Antibiotics', 'অ্যান্টিবায়োটিক', 'antibiotic.png');
       ''');
 
       await db.executor.customExecute('''

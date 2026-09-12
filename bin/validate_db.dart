@@ -8,7 +8,7 @@ void main(List<String> args) {
   stdout.writeln('====================================================');
 
   final productsDbFile = File('assets/db/products.db');
-  final distributorsDbFile = File('assets/db/distributors.db');
+  final teamDbFile = File('assets/db/team.db');
 
   var allPassed = true;
 
@@ -17,8 +17,8 @@ void main(List<String> args) {
     exit(1);
   }
 
-  if (!distributorsDbFile.existsSync()) {
-    stderr.writeln('❌ Error: assets/db/distributors.db does not exist!');
+  if (!teamDbFile.existsSync()) {
+    stderr.writeln('❌ Error: assets/db/team.db does not exist!');
     exit(1);
   }
 
@@ -66,11 +66,9 @@ void main(List<String> args) {
     allPassed = false;
   }
 
-  stdout.writeln(
-    '\n📦 Checking distributors.db (${distributorsDbFile.lengthSync()} bytes)...',
-  );
+  stdout.writeln('\n📦 Checking team.db (${teamDbFile.lengthSync()} bytes)...');
   try {
-    final db = sqlite3.open(distributorsDbFile.path);
+    final db = sqlite3.open(teamDbFile.path);
 
     // 1. Integrity Check
     final integrityResult = db.select('PRAGMA integrity_check;');
@@ -106,7 +104,7 @@ void main(List<String> args) {
 
     db.close();
   } catch (e) {
-    stderr.writeln('  ❌ Error reading distributors.db: $e');
+    stderr.writeln('  ❌ Error reading team.db: $e');
     allPassed = false;
   }
 

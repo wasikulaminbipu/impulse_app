@@ -180,6 +180,12 @@ String sanitizeFtsQuery(
 /// Optimizes FTS index segments for maximum query performance post-sync or setup.
 Future<void> optimizeFtsTable(QueryExecutor db, String tableName) async {
   try {
+    final exists = await db.runSelect(
+      "SELECT 1 FROM sqlite_master WHERE type='table' AND name = ? LIMIT 1",
+      [tableName],
+    );
+    if (exists.isEmpty) return;
+
     await db.runCustom(
       "INSERT INTO $tableName($tableName) VALUES('optimize');",
     );

@@ -52,17 +52,8 @@ class $CategoriesTable extends Categories
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _slugMeta = const VerificationMeta('slug');
   @override
-  late final GeneratedColumn<String> slug = GeneratedColumn<String>(
-    'slug',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, nameEn, nameBn, iconName, slug];
+  List<GeneratedColumn> get $columns => [id, nameEn, nameBn, iconName];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -100,12 +91,6 @@ class $CategoriesTable extends Categories
         iconName.isAcceptableOrUnknown(data['icon_name']!, _iconNameMeta),
       );
     }
-    if (data.containsKey('slug')) {
-      context.handle(
-        _slugMeta,
-        slug.isAcceptableOrUnknown(data['slug']!, _slugMeta),
-      );
-    }
     return context;
   }
 
@@ -131,10 +116,6 @@ class $CategoriesTable extends Categories
         DriftSqlType.string,
         data['${effectivePrefix}icon_name'],
       ),
-      slug: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}slug'],
-      ),
     );
   }
 
@@ -149,13 +130,11 @@ class CategoryEntity extends DataClass implements Insertable<CategoryEntity> {
   final String nameEn;
   final String nameBn;
   final String? iconName;
-  final String? slug;
   const CategoryEntity({
     required this.id,
     required this.nameEn,
     required this.nameBn,
     this.iconName,
-    this.slug,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -165,9 +144,6 @@ class CategoryEntity extends DataClass implements Insertable<CategoryEntity> {
     map['name_bn'] = Variable<String>(nameBn);
     if (!nullToAbsent || iconName != null) {
       map['icon_name'] = Variable<String>(iconName);
-    }
-    if (!nullToAbsent || slug != null) {
-      map['slug'] = Variable<String>(slug);
     }
     return map;
   }
@@ -180,7 +156,6 @@ class CategoryEntity extends DataClass implements Insertable<CategoryEntity> {
       iconName: iconName == null && nullToAbsent
           ? const Value.absent()
           : Value(iconName),
-      slug: slug == null && nullToAbsent ? const Value.absent() : Value(slug),
     );
   }
 
@@ -194,7 +169,6 @@ class CategoryEntity extends DataClass implements Insertable<CategoryEntity> {
       nameEn: serializer.fromJson<String>(json['nameEn']),
       nameBn: serializer.fromJson<String>(json['nameBn']),
       iconName: serializer.fromJson<String?>(json['iconName']),
-      slug: serializer.fromJson<String?>(json['slug']),
     );
   }
   @override
@@ -205,7 +179,6 @@ class CategoryEntity extends DataClass implements Insertable<CategoryEntity> {
       'nameEn': serializer.toJson<String>(nameEn),
       'nameBn': serializer.toJson<String>(nameBn),
       'iconName': serializer.toJson<String?>(iconName),
-      'slug': serializer.toJson<String?>(slug),
     };
   }
 
@@ -214,13 +187,11 @@ class CategoryEntity extends DataClass implements Insertable<CategoryEntity> {
     String? nameEn,
     String? nameBn,
     Value<String?> iconName = const Value.absent(),
-    Value<String?> slug = const Value.absent(),
   }) => CategoryEntity(
     id: id ?? this.id,
     nameEn: nameEn ?? this.nameEn,
     nameBn: nameBn ?? this.nameBn,
     iconName: iconName.present ? iconName.value : this.iconName,
-    slug: slug.present ? slug.value : this.slug,
   );
   CategoryEntity copyWithCompanion(CategoriesCompanion data) {
     return CategoryEntity(
@@ -228,7 +199,6 @@ class CategoryEntity extends DataClass implements Insertable<CategoryEntity> {
       nameEn: data.nameEn.present ? data.nameEn.value : this.nameEn,
       nameBn: data.nameBn.present ? data.nameBn.value : this.nameBn,
       iconName: data.iconName.present ? data.iconName.value : this.iconName,
-      slug: data.slug.present ? data.slug.value : this.slug,
     );
   }
 
@@ -238,14 +208,13 @@ class CategoryEntity extends DataClass implements Insertable<CategoryEntity> {
           ..write('id: $id, ')
           ..write('nameEn: $nameEn, ')
           ..write('nameBn: $nameBn, ')
-          ..write('iconName: $iconName, ')
-          ..write('slug: $slug')
+          ..write('iconName: $iconName')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, nameEn, nameBn, iconName, slug);
+  int get hashCode => Object.hash(id, nameEn, nameBn, iconName);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -253,8 +222,7 @@ class CategoryEntity extends DataClass implements Insertable<CategoryEntity> {
           other.id == this.id &&
           other.nameEn == this.nameEn &&
           other.nameBn == this.nameBn &&
-          other.iconName == this.iconName &&
-          other.slug == this.slug);
+          other.iconName == this.iconName);
 }
 
 class CategoriesCompanion extends UpdateCompanion<CategoryEntity> {
@@ -262,20 +230,17 @@ class CategoriesCompanion extends UpdateCompanion<CategoryEntity> {
   final Value<String> nameEn;
   final Value<String> nameBn;
   final Value<String?> iconName;
-  final Value<String?> slug;
   const CategoriesCompanion({
     this.id = const Value.absent(),
     this.nameEn = const Value.absent(),
     this.nameBn = const Value.absent(),
     this.iconName = const Value.absent(),
-    this.slug = const Value.absent(),
   });
   CategoriesCompanion.insert({
     this.id = const Value.absent(),
     required String nameEn,
     required String nameBn,
     this.iconName = const Value.absent(),
-    this.slug = const Value.absent(),
   }) : nameEn = Value(nameEn),
        nameBn = Value(nameBn);
   static Insertable<CategoryEntity> custom({
@@ -283,14 +248,12 @@ class CategoriesCompanion extends UpdateCompanion<CategoryEntity> {
     Expression<String>? nameEn,
     Expression<String>? nameBn,
     Expression<String>? iconName,
-    Expression<String>? slug,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (nameEn != null) 'name_en': nameEn,
       if (nameBn != null) 'name_bn': nameBn,
       if (iconName != null) 'icon_name': iconName,
-      if (slug != null) 'slug': slug,
     });
   }
 
@@ -299,14 +262,12 @@ class CategoriesCompanion extends UpdateCompanion<CategoryEntity> {
     Value<String>? nameEn,
     Value<String>? nameBn,
     Value<String?>? iconName,
-    Value<String?>? slug,
   }) {
     return CategoriesCompanion(
       id: id ?? this.id,
       nameEn: nameEn ?? this.nameEn,
       nameBn: nameBn ?? this.nameBn,
       iconName: iconName ?? this.iconName,
-      slug: slug ?? this.slug,
     );
   }
 
@@ -325,9 +286,6 @@ class CategoriesCompanion extends UpdateCompanion<CategoryEntity> {
     if (iconName.present) {
       map['icon_name'] = Variable<String>(iconName.value);
     }
-    if (slug.present) {
-      map['slug'] = Variable<String>(slug.value);
-    }
     return map;
   }
 
@@ -337,8 +295,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryEntity> {
           ..write('id: $id, ')
           ..write('nameEn: $nameEn, ')
           ..write('nameBn: $nameBn, ')
-          ..write('iconName: $iconName, ')
-          ..write('slug: $slug')
+          ..write('iconName: $iconName')
           ..write(')'))
         .toString();
   }
@@ -6885,14 +6842,12 @@ typedef $$CategoriesTableCreateCompanionBuilder = CategoriesCompanion Function({
   required String nameEn,
   required String nameBn,
   Value<String?> iconName,
-  Value<String?> slug,
 });
 typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
   Value<int> id,
   Value<String> nameEn,
   Value<String> nameBn,
   Value<String?> iconName,
-  Value<String?> slug,
 });
 
 final class $$CategoriesTableReferences
@@ -6944,11 +6899,6 @@ class $$CategoriesTableFilterComposer
 
   ColumnFilters<String> get iconName => $composableBuilder(
     column: $table.iconName,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get slug => $composableBuilder(
-    column: $table.slug,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7006,11 +6956,6 @@ class $$CategoriesTableOrderingComposer
     column: $table.iconName,
     builder: (column) => ColumnOrderings(column),
   );
-
-  ColumnOrderings<String> get slug => $composableBuilder(
-    column: $table.slug,
-    builder: (column) => ColumnOrderings(column),
-  );
 }
 
 class $$CategoriesTableAnnotationComposer
@@ -7033,9 +6978,6 @@ class $$CategoriesTableAnnotationComposer
 
   GeneratedColumn<String> get iconName =>
       $composableBuilder(column: $table.iconName, builder: (column) => column);
-
-  GeneratedColumn<String> get slug =>
-      $composableBuilder(column: $table.slug, builder: (column) => column);
 
   Expression<T> productsRefs<T extends Object>(
     Expression<T> Function($$ProductsTableAnnotationComposer a) f,
@@ -7095,13 +7037,11 @@ class $$CategoriesTableTableManager
                 Value<String> nameEn = const Value.absent(),
                 Value<String> nameBn = const Value.absent(),
                 Value<String?> iconName = const Value.absent(),
-                Value<String?> slug = const Value.absent(),
               }) => CategoriesCompanion(
                 id: id,
                 nameEn: nameEn,
                 nameBn: nameBn,
                 iconName: iconName,
-                slug: slug,
               ),
           createCompanionCallback:
               ({
@@ -7109,13 +7049,11 @@ class $$CategoriesTableTableManager
                 required String nameEn,
                 required String nameBn,
                 Value<String?> iconName = const Value.absent(),
-                Value<String?> slug = const Value.absent(),
               }) => CategoriesCompanion.insert(
                 id: id,
                 nameEn: nameEn,
                 nameBn: nameBn,
                 iconName: iconName,
-                slug: slug,
               ),
           withReferenceMapper: (p0) => p0
               .map(

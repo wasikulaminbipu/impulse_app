@@ -11,7 +11,6 @@ void main() {
         expect(db.categories.nameEn.name, equals('name_en'));
         expect(db.categories.nameBn.name, equals('name_bn'));
         expect(db.categories.iconName.name, equals('icon_name'));
-        expect(db.categories.slug.name, equals('slug'));
 
         expect(db.targetGroups.nameEn.name, equals('name_en'));
         expect(db.targetGroups.nameBn.name, equals('name_bn'));

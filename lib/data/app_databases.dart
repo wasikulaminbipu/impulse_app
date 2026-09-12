@@ -60,7 +60,7 @@ class ProductsDb extends _$ProductsDb {
   int get schemaVersion => 1;
 }
 
-/// Thin Drift wrapper around distributors.db.
+/// Thin Drift wrapper around team.db.
 @DriftDatabase(
   tables: [
     Divisions,
@@ -163,6 +163,17 @@ Future<List<Map<String, dynamic>>> _selectRaw(
   return executor.runSelect(sql, const []);
 }
 
+Future<void> _cleanLegacyDbFiles(String legacyDbName) async {
+  try {
+    final legacyPath = await getAppDbPath(legacyDbName);
+    _deleteDbFiles(legacyPath);
+    final vFile = File('$legacyPath.version');
+    if (vFile.existsSync()) {
+      vFile.deleteSync();
+    }
+  } catch (_) {}
+}
+
 /// Copies the bundled asset DB to the documents directory (if needed or if size differs), then
 /// opens it with [NativeDatabase] and sets up FTS tables outside of beforeOpen.
 Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
@@ -171,6 +182,10 @@ Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
   T Function(QueryExecutor) wrap,
   Future<void> Function(QueryExecutor executor) ftsSetup,
 ) async {
+  if (dbName == 'team.db') {
+    await _cleanLegacyDbFiles('distributors.db');
+  }
+
   final dbPath = await getAppDbPath(dbName);
   final file = File(dbPath);
 

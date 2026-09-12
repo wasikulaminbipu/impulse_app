@@ -16,7 +16,7 @@ void main() {
         'CREATE TABLE db_meta (key TEXT PRIMARY KEY, value TEXT);',
         const [],
       );
-      dao = DbMetaDao(db.executor);
+      dao = DbMetaDao(db);
     });
 
     tearDown(() async {

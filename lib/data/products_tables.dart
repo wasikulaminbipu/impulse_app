@@ -6,7 +6,6 @@ class Categories extends Table {
   TextColumn get nameEn => text().unique()();
   TextColumn get nameBn => text()();
   TextColumn get iconName => text().nullable()();
-  TextColumn get slug => text().nullable()();
 }
 
 @DataClassName('TargetGroupEntity')

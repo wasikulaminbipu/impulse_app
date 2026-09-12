@@ -113,7 +113,7 @@
   <main id="main">
     <div id="welcome">
       <h2>Open a database to begin</h2>
-      <p>This tool edits <code class="mono">products.db</code> or <code class="mono">distributors.db</code> directly — running fully in this browser tab.</p>
+      <p>This tool edits <code class="mono">products.db</code> or <code class="mono">team.db</code> directly — running fully in this browser tab.</p>
       
       <div id="serverQuickSection" style="display:none;background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--radius);padding:16px;margin:20px 0;text-align:center;">
         <div style="font-weight:600;color:var(--accent-dark);font-size:14px;margin-bottom:6px;">
@@ -124,7 +124,7 @@
         </div>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
           <button class="btn" id="btnServerProducts">Open assets/db/products.db</button>
-          <button class="btn" id="btnServerDistributors">Open assets/db/distributors.db</button>
+          <button class="btn" id="btnServerDistributors">Open assets/db/team.db</button>
         </div>
       </div>
 
@@ -513,7 +513,7 @@ async function checkLocalServer(){
         const bProd = document.getElementById('btnServerProducts');
         if(bProd) bProd.onclick = ()=>openServerDb('products.db');
         const bDist = document.getElementById('btnServerDistributors');
-        if(bDist) bDist.onclick = ()=>openServerDb('distributors.db');
+        if(bDist) bDist.onclick = ()=>openServerDb('team.db');
       }
     }
   } catch(e){
@@ -1683,7 +1683,7 @@ const PAGES = {
   product_types: () => simpleLookupPage(LOOKUP_DEFS.product_types),
   dosage_units: () => simpleLookupPage(LOOKUP_DEFS.dosage_units),
   dosage_bases: () => simpleLookupPage(LOOKUP_DEFS.dosage_bases),
-  // distributors.db
+  // team.db
   distributors: distributorsListPage,
   sales_personnel: () => personWithAreasPage({
     table: 'sales_personnel', junctionTable: 'sales_personnel_areas', junctionKey: 'sales_personnel_id', title: 'Sales personnel',

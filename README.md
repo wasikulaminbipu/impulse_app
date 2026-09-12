@@ -54,7 +54,7 @@ UI (Widgets & Screens) ──► Riverpod Notifiers ──► DAOs (Drift ORM) �
 | Database | Access Mode | Description |
 | :--- | :--- | :--- |
 | **`products.db`** | Read-Only | Immutable product catalog: categories, species, compositions, indications, dosages, presentations, precautions, and manufacturers. |
-| **`distributors.db`** | Read-Only | Regional hierarchy and personnel directory: sales personnel, distributors, divisions, districts, upazilas, and area bases. |
+| **`team.db`** | Read-Only | Regional hierarchy and personnel directory: sales personnel, distributors, divisions, districts, upazilas, and area bases. |
 | **`app_maintenance.db`** | Read/Write | Persistent user data: favorites, search history, language selections, and theme preferences. Preserved across updates. |
 
 ---

@@ -8,7 +8,7 @@ import 'package:sqlite3/sqlite3.dart';
 /// Service that verifies offline SQLite database file freshness,
 /// schema integrity, and triggers clean asset refreshes across app updates.
 class DatabaseFreshnessChecker {
-  static const List<String> databaseFiles = ['products.db', 'distributors.db'];
+  static const List<String> databaseFiles = ['products.db', 'team.db'];
 
   /// Checks the integrity and metadata version of all local SQLite databases.
   static Future<Map<String, dynamic>> checkLocalDatabaseHealth() async {

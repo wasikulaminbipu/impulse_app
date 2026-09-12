@@ -1,6 +1,6 @@
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:impulse_app/data/app_databases.dart';
-import 'package:impulse_app/data/db_extensions.dart';
 import 'package:impulse_app/data/fts_utils.dart';
 import 'package:impulse_app/data/lookup_dao.dart';
 import 'package:impulse_app/data/manufacturer_dao.dart';
@@ -21,18 +21,34 @@ class ProductDao {
   ProductDao(this.db, this.lookupDao, {ManufacturerDao? manufacturerDao})
     : manufacturerDao = manufacturerDao ?? ManufacturerDao(db);
 
+  Product _mapProductEntity(ProductEntity e) => Product(
+    id: e.id,
+    manufacturerId: e.manufacturerId,
+    categoryId: e.categoryId,
+    titleEn: e.titleEn,
+    titleBn: e.titleBn,
+    slug: e.slug,
+    mottoEn: e.mottoEn,
+    mottoBn: e.mottoBn,
+    shortDescriptionEn: e.shortDescriptionEn,
+    shortDescriptionBn: e.shortDescriptionBn,
+    imageUrl: e.imageUrl,
+    isActive: e.isActive,
+    createdAt: e.createdAt,
+    updatedAt: e.updatedAt,
+    compositionBasisEn: e.compositionBasisEn,
+    compositionBasisBn: e.compositionBasisBn,
+  );
+
   /// Fetches a single [Product] by its [id] and fully hydrates all associated
   /// compositions, benefits, indications, directions, precautions, presentations,
   /// manufacturer, category, and target groups. Returns `null` if not found.
   Future<Product?> getById(int id) async {
-    final rows = await db.executor.query(
-      'products',
-      where: 'id = ?',
-      whereArgs: [id],
-      limit: 1,
-    );
-    if (rows.isEmpty) return null;
-    return _hydrate(Product.fromRow(rows.first));
+    final row = await (db.select(
+      db.products,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    if (row == null) return null;
+    return _hydrate(_mapProductEntity(row));
   }
 
   Future<Product> _hydrate(Product base) async {
@@ -86,39 +102,45 @@ class ProductDao {
   Future<List<Product>> _hydrateList(List<Product> products) async {
     if (products.isEmpty) return products;
     final productIds = products.map((p) => p.id).toList();
-    // Fetch target groups in batch
-    final tgRows = await db.executor.chunkedInQuery(
-      prefix: '''
-      SELECT product_id, target_group_id 
-      FROM product_target_groups 
-      WHERE product_id IN 
-      ''',
-      ids: productIds,
-    );
 
     final tgMap = <int, List<int>>{};
-    for (final r in tgRows) {
-      final pid = r['product_id'] as int;
-      final tgid = r['target_group_id'] as int;
-      tgMap.putIfAbsent(pid, () => []).add(tgid);
-    }
-
-    // Fetch presentations in batch
-    final presRows = await db.executor.chunkedInQuery(
-      prefix: '''
-      SELECT * FROM presentations 
-      WHERE product_id IN 
-      ''',
-      suffix: '''
-      ORDER BY display_order
-      ''',
-      ids: productIds,
-    );
-
     final presMap = <int, List<Presentation>>{};
-    for (final r in presRows) {
-      final p = Presentation.fromRow(r);
-      presMap.putIfAbsent(p.productId, () => []).add(p);
+    const chunkSize = 500;
+
+    for (var i = 0; i < productIds.length; i += chunkSize) {
+      final end = (i + chunkSize > productIds.length)
+          ? productIds.length
+          : i + chunkSize;
+      final chunk = productIds.sublist(i, end);
+
+      // Fetch target groups in batch
+      final tgRows = await (db.select(
+        db.productTargetGroups,
+      )..where((t) => t.productId.isIn(chunk))).get();
+      for (final r in tgRows) {
+        tgMap.putIfAbsent(r.productId, () => []).add(r.targetGroupId);
+      }
+
+      // Fetch presentations in batch
+      final presRows =
+          await (db.select(db.presentations)
+                ..where((t) => t.productId.isIn(chunk))
+                ..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]))
+              .get();
+      for (final r in presRows) {
+        final p = Presentation(
+          id: r.id,
+          productId: r.productId,
+          productTypeId: r.productTypeId,
+          contentTypeId: r.contentTypeId,
+          size: r.size,
+          mrp: r.mrp,
+          imageUrl: r.imageUrl,
+          displayOrder: r.displayOrder,
+          bulkItem: r.bulkItem == 1,
+        );
+        presMap.putIfAbsent(p.productId, () => []).add(p);
+      }
     }
 
     // Lookup categories and target groups via cached maps
@@ -144,39 +166,48 @@ class ProductDao {
     int? categoryId,
     int? targetGroupId,
   }) async {
+    List<Product> products;
     if (targetGroupId != null) {
-      // Product can belong to multiple target groups (many-to-many), so it
-      // may appear under more than one tab.
-      final where = <String>['ptg.target_group_id = ?'];
-      final args = <Object?>[targetGroupId];
-      if (activeOnly) where.add('p.is_active = 1');
-      if (categoryId != null) {
-        where.add('p.category_id = ?');
-        args.add(categoryId);
+      final q = db.select(db.products).join([
+        innerJoin(
+          db.productTargetGroups,
+          db.productTargetGroups.productId.equalsExp(db.products.id),
+        ),
+      ]);
+      Expression<bool> predicate = db.productTargetGroups.targetGroupId.equals(
+        targetGroupId,
+      );
+      if (activeOnly) {
+        predicate = predicate & db.products.isActive.equals(1);
       }
-      final rows = await db.executor.customQuery('''
-        SELECT p.* FROM products p
-        JOIN product_target_groups ptg ON ptg.product_id = p.id
-        WHERE ${where.join(' AND ')}
-        ORDER BY p.title_en
-      ''', args);
-      return _hydrateList(rows.map(Product.fromRow).toList());
+      if (categoryId != null) {
+        predicate = predicate & db.products.categoryId.equals(categoryId);
+      }
+      q.where(predicate);
+      q.orderBy([OrderingTerm.asc(db.products.titleEn)]);
+      final rows = await q.get();
+      products = rows
+          .map((r) => _mapProductEntity(r.readTable(db.products)))
+          .toList();
+    } else {
+      final q = db.select(db.products);
+      Expression<bool>? predicate;
+      if (activeOnly) {
+        predicate = db.products.isActive.equals(1);
+      }
+      if (categoryId != null) {
+        predicate = (predicate != null)
+            ? (predicate & db.products.categoryId.equals(categoryId))
+            : db.products.categoryId.equals(categoryId);
+      }
+      if (predicate != null) {
+        q.where((_) => predicate!);
+      }
+      q.orderBy([(t) => OrderingTerm.asc(t.titleEn)]);
+      final rows = await q.get();
+      products = rows.map(_mapProductEntity).toList();
     }
-
-    final where = <String>[];
-    final args = <Object?>[];
-    if (activeOnly) where.add('is_active = 1');
-    if (categoryId != null) {
-      where.add('category_id = ?');
-      args.add(categoryId);
-    }
-    final rows = await db.executor.query(
-      'products',
-      where: where.isEmpty ? null : where.join(' AND '),
-      whereArgs: args.isEmpty ? null : args,
-      orderBy: 'title_en',
-    );
-    return _hydrateList(rows.map(Product.fromRow).toList());
+    return _hydrateList(products);
   }
 
   Future<List<ProductLabel>> getAllLabels({bool activeOnly = true}) async {
@@ -193,38 +224,6 @@ class ProductDao {
     required int limit,
     required int offset,
   }) async {
-    final args = <dynamic>[];
-    final List<String> where = ['p.is_active = 1'];
-    String join = '';
-    const String orderBy = 'ORDER BY p.title_en';
-
-    if (targetGroupId != null) {
-      join +=
-          'JOIN product_target_groups ptg ON ptg.product_id = p.id\n        ';
-      where.add('ptg.target_group_id = ?');
-      args.add(targetGroupId);
-    }
-
-    if (isFeedAdditive) {
-      where.add('''
-        (
-          EXISTS (SELECT 1 FROM presentations pr WHERE pr.product_id = p.id AND pr.bulk_item = 1)
-          OR
-          EXISTS (
-            SELECT 1 FROM directions d 
-            JOIN species s ON s.id = d.species_id 
-            JOIN target_groups tg ON tg.id = s.target_group_id 
-            WHERE d.product_id = p.id AND tg.name_en IN ('Feed Additives', 'Feed Additive')
-          )
-        )
-      ''');
-    }
-
-    if (categoryId != null) {
-      where.add('p.category_id = ?');
-      args.add(categoryId);
-    }
-
     final trimmed = query.trim();
     final cacheKey =
         '$categoryId:$targetGroupId:$isFeedAdditive:$scope:$trimmed:$limit:$offset';
@@ -234,9 +233,60 @@ class ProductDao {
       if (cached != null) return cached;
     }
 
-    List<Map<String, dynamic>> rows = [];
+    Expression<bool> buildBasePredicate() {
+      Expression<bool> predicate = db.products.isActive.equals(1);
+
+      if (targetGroupId != null) {
+        final hasTg = existsQuery(
+          db.selectOnly(db.productTargetGroups)
+            ..addColumns([const Constant(1)])
+            ..where(
+              db.productTargetGroups.productId.equalsExp(db.products.id) &
+                  db.productTargetGroups.targetGroupId.equals(targetGroupId),
+            ),
+        );
+        predicate = predicate & hasTg;
+      }
+
+      if (categoryId != null) {
+        predicate = predicate & db.products.categoryId.equals(categoryId);
+      }
+
+      if (isFeedAdditive) {
+        final hasBulkPres = existsQuery(
+          db.selectOnly(db.presentations)
+            ..addColumns([const Constant(1)])
+            ..where(
+              db.presentations.productId.equalsExp(db.products.id) &
+                  db.presentations.bulkItem.equals(1),
+            ),
+        );
+        final hasFeedAdditiveDirection = existsQuery(
+          db.selectOnly(db.directions)
+            ..addColumns([const Constant(1)])
+            ..join([
+              innerJoin(
+                db.species,
+                db.species.id.equalsExp(db.directions.speciesId),
+              ),
+              innerJoin(
+                db.targetGroups,
+                db.targetGroups.id.equalsExp(db.species.targetGroupId),
+              ),
+            ])
+            ..where(
+              db.directions.productId.equalsExp(db.products.id) &
+                  (db.targetGroups.nameEn.equals('Feed Additives') |
+                      db.targetGroups.nameEn.equals('Feed Additive')),
+            ),
+        );
+        predicate = predicate & (hasBulkPres | hasFeedAdditiveDirection);
+      }
+      return predicate;
+    }
 
     if (trimmed.isNotEmpty) {
+      final basePredicate = buildBasePredicate();
       final ftsCandidateList = <Map<String, dynamic>>[];
       final triCandidateList = <Map<String, dynamic>>[];
       final likeCandidateList = <Map<String, dynamic>>[];
@@ -248,143 +298,174 @@ class ProductDao {
         if (sanitizedTokens.isNotEmpty) {
           final isReady = await isFtsReady(db.executor, 'products_fts');
           if (isReady) {
-            final ftsWhere = List<String>.from(where);
-            final ftsArgs = List<Object?>.from(args);
-            ftsWhere.add('fts.products_fts MATCH ?');
-            ftsArgs.add(sanitizedTokens);
-
-            const ftsJoin = 'JOIN products_fts fts ON fts.rowid = p.id';
-            final sqlQuery =
-                '''
-              SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn,
-                     bm25(fts, 10.0, 10.0, 5.0, 3.0, 2.0, 2.0) AS bm25_rank
-              FROM products p
-              $ftsJoin
-              LEFT JOIN categories c ON c.id = p.category_id
-              $join
-              WHERE ${ftsWhere.join(' AND ')}
-              ORDER BY bm25_rank ASC
-            ''';
             try {
-              final ftsRows = await db.executor.customQuery(sqlQuery, ftsArgs);
-              ftsCandidateList.addAll(ftsRows);
-            } catch (_) {}
+              final ftsRows = await db
+                  .customSelect(
+                    'SELECT rowid, bm25(products_fts, 10.0, 10.0, 5.0, 3.0, 2.0, 2.0) AS bm25_rank FROM products_fts WHERE products_fts MATCH ? ORDER BY bm25_rank ASC',
+                    variables: [Variable.withString(sanitizedTokens)],
+                  )
+                  .get();
+              if (ftsRows.isNotEmpty) {
+                final rankMap = {
+                  for (final r in ftsRows)
+                    r.read<int>('rowid'): r.read<double>('bm25_rank'),
+                };
+                final q = db.select(db.products).join([
+                  leftOuterJoin(
+                    db.categories,
+                    db.categories.id.equalsExp(db.products.categoryId),
+                  ),
+                ])..where(basePredicate & db.products.id.isIn(rankMap.keys));
+                final productsWithCat = await q.get();
+                for (final r in productsWithCat) {
+                  final p = r.readTable(db.products);
+                  final c = r.readTableOrNull(db.categories);
+                  ftsCandidateList.add(_rowMap(p, c, rankMap[p.id]));
+                }
+                ftsCandidateList.sort(
+                  (a, b) => ((a['bm25_rank'] as num?) ?? 0).compareTo(
+                    (b['bm25_rank'] as num?) ?? 0,
+                  ),
+                );
+              }
+            } catch (e, st) {
+              debugPrint('Product FTS search query error: $e\n$st');
+            }
+          }
+        }
+
+        // 1b. Trigram FTS query (for mid-word, SKU, and code substring matching)
+        if (trimmed.length >= 3) {
+          final isTrigramReady = await isFtsReady(
+            db.executor,
+            'products_trigram_fts',
+          );
+          if (isTrigramReady) {
+            try {
+              final triRows = await db
+                  .customSelect(
+                    'SELECT rowid FROM products_trigram_fts WHERE products_trigram_fts MATCH ?',
+                    variables: [Variable.withString('"$trimmed"')],
+                  )
+                  .get();
+              if (triRows.isNotEmpty) {
+                final triIds = triRows
+                    .map((r) => r.read<int>('rowid'))
+                    .toList();
+                final q = db.select(db.products).join([
+                  leftOuterJoin(
+                    db.categories,
+                    db.categories.id.equalsExp(db.products.categoryId),
+                  ),
+                ])..where(basePredicate & db.products.id.isIn(triIds));
+                final productsWithCat = await q.get();
+                for (final r in productsWithCat) {
+                  final p = r.readTable(db.products);
+                  final c = r.readTableOrNull(db.categories);
+                  triCandidateList.add(_rowMap(p, c));
+                }
+              }
+            } catch (e, st) {
+              debugPrint('Product Trigram search query error: $e\n$st');
+            }
           }
         }
       }
 
-      // 1b. Trigram FTS query (for mid-word, SKU, and code substring matching)
-      if ((scope == SearchScope.all || scope == SearchScope.name) &&
-          trimmed.length >= 3) {
-        final isTrigramReady = await isFtsReady(
-          db.executor,
-          'products_trigram_fts',
-        );
-        if (isTrigramReady) {
-          final triWhere = List<String>.from(where);
-          final triArgs = List<Object?>.from(args);
-          triWhere.add('tri.products_trigram_fts MATCH ?');
-          triArgs.add('"$trimmed"');
-
-          const triJoin = 'JOIN products_trigram_fts tri ON tri.rowid = p.id';
-          final triSqlQuery =
-              '''
-            SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn
-            FROM products p
-            $triJoin
-            LEFT JOIN categories c ON c.id = p.category_id
-            $join
-            WHERE ${triWhere.join(' AND ')}
-          ''';
-          try {
-            final triRows = await db.executor.customQuery(triSqlQuery, triArgs);
-            triCandidateList.addAll(triRows);
-          } catch (_) {}
-        }
-      }
-
-      // 2. Scope-based LIKE query
+      // 2. Scope-based LIKE query using Drift query builder
       final pattern = '%$trimmed%';
-      final baseWhere = List<String>.from(where);
-      final baseArgs = List<Object?>.from(args);
-
-      final likeWhere = List<String>.from(baseWhere);
-      final likeArgs = List<Object?>.from(baseArgs);
-
+      Expression<bool> scopeCond;
       switch (scope) {
         case SearchScope.symptom:
-          likeWhere.add('''
-            EXISTS (
-              SELECT 1 FROM indications ind 
-              WHERE ind.product_id = p.id AND (ind.text_en LIKE ? OR ind.text_bn LIKE ?)
-            )
-          ''');
-          likeArgs.addAll([pattern, pattern]);
-
-        case SearchScope.ingredient:
-          likeWhere.add('''
-            EXISTS (
-              SELECT 1 FROM compositions comp 
-              WHERE comp.product_id = p.id AND (comp.ingredient_en LIKE ? OR comp.ingredient_bn LIKE ?)
-            )
-          ''');
-          likeArgs.addAll([pattern, pattern]);
-
-        case SearchScope.name:
-          likeWhere.add(
-            '(p.title_en LIKE ? OR p.title_bn LIKE ? OR p.short_description_en LIKE ? OR p.short_description_bn LIKE ?)',
+          scopeCond = existsQuery(
+            db.selectOnly(db.indications)
+              ..addColumns([const Constant(1)])
+              ..where(
+                db.indications.productId.equalsExp(db.products.id) &
+                    (db.indications.textEn.like(pattern) |
+                        db.indications.textBn.like(pattern)),
+              ),
           );
-          likeArgs.addAll([pattern, pattern, pattern, pattern]);
-
+        case SearchScope.ingredient:
+          scopeCond = existsQuery(
+            db.selectOnly(db.compositions)
+              ..addColumns([const Constant(1)])
+              ..where(
+                db.compositions.productId.equalsExp(db.products.id) &
+                    (db.compositions.ingredientEn.like(pattern) |
+                        db.compositions.ingredientBn.like(pattern)),
+              ),
+          );
+        case SearchScope.name:
+          scopeCond =
+              db.products.titleEn.like(pattern) |
+              db.products.titleBn.like(pattern) |
+              db.products.shortDescriptionEn.like(pattern) |
+              db.products.shortDescriptionBn.like(pattern);
         case SearchScope.all:
-          likeWhere.add('''
-            (
-              p.title_en LIKE ? OR p.title_bn LIKE ? OR 
-              p.short_description_en LIKE ? OR p.short_description_bn LIKE ? OR 
-              c.name_en LIKE ? OR c.name_bn LIKE ? OR
-              EXISTS (SELECT 1 FROM compositions comp WHERE comp.product_id = p.id AND (comp.ingredient_en LIKE ? OR comp.ingredient_bn LIKE ?)) OR
-              EXISTS (SELECT 1 FROM benefits ben WHERE ben.product_id = p.id AND (ben.text_en LIKE ? OR ben.text_bn LIKE ?)) OR
-              EXISTS (SELECT 1 FROM indications ind WHERE ind.product_id = p.id AND (ind.text_en LIKE ? OR ind.text_bn LIKE ?))
-            )
-          ''');
-          likeArgs.addAll([
-            pattern,
-            pattern,
-            pattern,
-            pattern,
-            pattern,
-            pattern,
-            pattern,
-            pattern,
-            pattern,
-            pattern,
-            pattern,
-            pattern,
-          ]);
+          final inComp = existsQuery(
+            db.selectOnly(db.compositions)
+              ..addColumns([const Constant(1)])
+              ..where(
+                db.compositions.productId.equalsExp(db.products.id) &
+                    (db.compositions.ingredientEn.like(pattern) |
+                        db.compositions.ingredientBn.like(pattern)),
+              ),
+          );
+          final inBen = existsQuery(
+            db.selectOnly(db.benefits)
+              ..addColumns([const Constant(1)])
+              ..where(
+                db.benefits.productId.equalsExp(db.products.id) &
+                    (db.benefits.textEn.like(pattern) |
+                        db.benefits.textBn.like(pattern)),
+              ),
+          );
+          final inInd = existsQuery(
+            db.selectOnly(db.indications)
+              ..addColumns([const Constant(1)])
+              ..where(
+                db.indications.productId.equalsExp(db.products.id) &
+                    (db.indications.textEn.like(pattern) |
+                        db.indications.textBn.like(pattern)),
+              ),
+          );
+          scopeCond =
+              db.products.titleEn.like(pattern) |
+              db.products.titleBn.like(pattern) |
+              db.products.shortDescriptionEn.like(pattern) |
+              db.products.shortDescriptionBn.like(pattern) |
+              db.categories.nameEn.like(pattern) |
+              db.categories.nameBn.like(pattern) |
+              inComp |
+              inBen |
+              inInd;
       }
 
-      final likeSqlQuery =
-          '''
-        SELECT DISTINCT p.*, c.name_en as cat_name_en, c.name_bn as cat_name_bn FROM products p
-        LEFT JOIN categories c ON c.id = p.category_id
-        $join
-        WHERE ${likeWhere.join(' AND ')}
-      ''';
       try {
-        final likeRows = await db.executor.customQuery(likeSqlQuery, likeArgs);
-        likeCandidateList.addAll(likeRows);
-      } catch (_) {}
+        final likeQuery = db.select(db.products).join([
+          leftOuterJoin(
+            db.categories,
+            db.categories.id.equalsExp(db.products.categoryId),
+          ),
+        ])..where(basePredicate & scopeCond);
+        final likeRows = await likeQuery.get();
+        for (final r in likeRows) {
+          final p = r.readTable(db.products);
+          final c = r.readTableOrNull(db.categories);
+          likeCandidateList.add(_rowMap(p, c));
+        }
+      } catch (e, st) {
+        debugPrint('Product LIKE search query error: $e\n$st');
+      }
 
       // 3. Fuzzy fallback query
       try {
-        final fuzzyRows = await _fuzzyFallbackSearch(
-          trimmed,
-          baseWhere,
-          baseArgs,
-          join,
-        );
+        final fuzzyRows = await _fuzzyFallbackSearch(trimmed, basePredicate);
         fuzzyCandidateList.addAll(fuzzyRows);
-      } catch (_) {}
+      } catch (e, st) {
+        debugPrint('Product fuzzy search query error: $e\n$st');
+      }
 
       // 4. Perform Hybrid Search Fusion via Reciprocal Rank Fusion (RRF)
       final activeRankedLists = <List<Map<String, dynamic>>>[];
@@ -457,63 +538,98 @@ class ProductDao {
         return titleA.compareTo(titleB);
       });
 
-      rows = sortedList.skip(offset).take(limit).toList();
+      final rows = sortedList.skip(offset).take(limit).toList();
+      final products = await _hydrateList(rows.map(Product.fromRow).toList());
+      final labels = products.map((p) => p.toLabel()).toList();
+
+      if (trimmed.isNotEmpty && offset == 0) {
+        _searchCache.put(cacheKey, labels);
+      }
+
+      return labels;
     } else {
-      final sqlQuery =
-          '''
-        SELECT DISTINCT p.* FROM products p
-        $join
-        WHERE ${where.join(' AND ')}
-        $orderBy
-        LIMIT ? OFFSET ?
-      ''';
-      rows = await db.executor.customQuery(sqlQuery, [...args, limit, offset]);
+      // Direct type-safe Drift query for non-search browsing
+      final q = db.select(db.products, distinct: true)
+        ..where((_) => buildBasePredicate())
+        ..orderBy([(t) => OrderingTerm.asc(t.titleEn)])
+        ..limit(limit, offset: offset);
+
+      final entityRows = await q.get();
+      final products = await _hydrateList(
+        entityRows.map(_mapProductEntity).toList(),
+      );
+      return products.map((p) => p.toLabel()).toList();
     }
-
-    final products = await _hydrateList(rows.map(Product.fromRow).toList());
-    final labels = products.map((p) => p.toLabel()).toList();
-
-    if (trimmed.isNotEmpty && offset == 0) {
-      _searchCache.put(cacheKey, labels);
-    }
-
-    return labels;
   }
 
   Future<List<Product>> getByManufacturer(
     int manufacturerId, {
     bool activeOnly = true,
   }) async {
-    final where = <String>['manufacturer_id = ?'];
-    final args = <Object?>[manufacturerId];
-    if (activeOnly) where.add('is_active = 1');
-    final rows = await db.executor.query(
-      'products',
-      where: where.join(' AND '),
-      whereArgs: args,
-      orderBy: 'title_en',
-    );
-    return _hydrateList(rows.map(Product.fromRow).toList());
+    final q = db.select(db.products)
+      ..where(
+        (t) =>
+            t.manufacturerId.equals(manufacturerId) &
+            (activeOnly ? t.isActive.equals(1) : const Constant(true)),
+      )
+      ..orderBy([(t) => OrderingTerm.asc(t.titleEn)]);
+    final rows = await q.get();
+    return _hydrateList(rows.map(_mapProductEntity).toList());
+  }
+
+  Map<String, dynamic> _rowMap(
+    ProductEntity p,
+    CategoryEntity? c, [
+    double? bm25Rank,
+  ]) {
+    return {
+      'id': p.id,
+      'title_en': p.titleEn,
+      'title_bn': p.titleBn,
+      'slug': p.slug,
+      'category_id': p.categoryId,
+      'manufacturer_id': p.manufacturerId,
+      'image_url': p.imageUrl,
+      'motto_en': p.mottoEn,
+      'motto_bn': p.mottoBn,
+      'composition_basis_en': p.compositionBasisEn,
+      'composition_basis_bn': p.compositionBasisBn,
+      'short_description_en': p.shortDescriptionEn,
+      'short_description_bn': p.shortDescriptionBn,
+      'is_active': p.isActive,
+      'created_at': p.createdAt,
+      'updated_at': p.updatedAt,
+      'cat_name_en': c?.nameEn,
+      'cat_name_bn': c?.nameBn,
+      'category_en': c?.nameEn,
+      'category_bn': c?.nameBn,
+      'cat_en': c?.nameEn,
+      'cat_bn': c?.nameBn,
+      'bm25_rank': ?bm25Rank,
+    };
   }
 
   /// Fuzzy fallback search using Levenshtein distance matching on product title and category.
   Future<List<Map<String, dynamic>>> _fuzzyFallbackSearch(
     String query,
-    List<String> baseWhere,
-    List<Object?> baseArgs,
-    String joinSql,
+    Expression<bool> basePredicate,
   ) async {
     final trimmed = query.trim().toLowerCase();
     if (trimmed.length < 2) return [];
 
-    final sqlQuery =
-        '''
-      SELECT DISTINCT p.*, c.name_en as cat_en, c.name_bn as cat_bn FROM products p
-      LEFT JOIN categories c ON c.id = p.category_id
-      $joinSql
-      ${baseWhere.isNotEmpty ? 'WHERE ${baseWhere.join(' AND ')}' : ''}
-    ''';
-    final candidates = await db.executor.customQuery(sqlQuery, baseArgs);
+    final q = db.select(db.products).join([
+      leftOuterJoin(
+        db.categories,
+        db.categories.id.equalsExp(db.products.categoryId),
+      ),
+    ])..where(basePredicate);
+
+    final rows = await q.get();
+    final candidates = rows.map((r) {
+      final p = r.readTable(db.products);
+      final c = r.readTableOrNull(db.categories);
+      return _rowMap(p, c);
+    }).toList();
     if (candidates.isEmpty) return [];
 
     return compute(
@@ -529,56 +645,48 @@ class ProductDao {
     int limit = 10,
   }) async {
     final compositions = await _getCompositions(productId);
-    final targetProductRows = await db.executor.query(
-      'products',
-      where: 'id = ?',
-      whereArgs: [productId],
-    );
+    final targetProduct = await (db.select(
+      db.products,
+    )..where((t) => t.id.equals(productId))).getSingleOrNull();
 
-    if (targetProductRows.isEmpty) return const [];
-    final categoryId = targetProductRows.first['category_id'] as int?;
+    if (targetProduct == null) return const [];
+    final categoryId = targetProduct.categoryId;
 
     final ingredientTokens = compositions
         .map((c) => c.ingredientEn.trim())
         .where((s) => s.isNotEmpty)
         .toList();
 
-    final where = <String>['p.id != ?', 'p.is_active = 1'];
-    final args = <Object?>[productId];
+    final q = db.select(db.products, distinct: true);
+    Expression<bool> predicate =
+        db.products.id.equals(productId).not() & db.products.isActive.equals(1);
 
-    final conditions = <String>[];
+    Expression<bool>? conditions;
     if (ingredientTokens.isNotEmpty) {
       for (final ing in ingredientTokens.take(3)) {
-        conditions.add('''
-          EXISTS (
-            SELECT 1 FROM compositions comp 
-            WHERE comp.product_id = p.id AND (comp.ingredient_en LIKE ? OR comp.ingredient_bn LIKE ?)
-          )
-        ''');
         final pat = '%$ing%';
-        args.addAll([pat, pat]);
+        final matchIng = existsQuery(
+          db.selectOnly(db.compositions)
+            ..addColumns([const Constant(1)])
+            ..where(
+              db.compositions.productId.equalsExp(db.products.id) &
+                  (db.compositions.ingredientEn.like(pat) |
+                      db.compositions.ingredientBn.like(pat)),
+            ),
+        );
+        conditions = (conditions != null) ? (conditions | matchIng) : matchIng;
       }
     }
 
-    if (categoryId != null) {
-      conditions.add('p.category_id = ?');
-      args.add(categoryId);
-    }
+    final matchCat = db.products.categoryId.equals(categoryId);
+    conditions = (conditions != null) ? (conditions | matchCat) : matchCat;
+    predicate = predicate & conditions;
 
-    if (conditions.isNotEmpty) {
-      where.add('(${conditions.join(' OR ')})');
-    }
+    q.where((_) => predicate);
+    q.limit(limit);
 
-    final sqlQuery =
-        '''
-      SELECT DISTINCT p.* FROM products p
-      WHERE ${where.join(' AND ')}
-      LIMIT ?
-    ''';
-    args.add(limit);
-
-    final rows = await db.executor.customQuery(sqlQuery, args);
-    return _hydrateList(rows.map(Product.fromRow).toList());
+    final rows = await q.get();
+    return _hydrateList(rows.map(_mapProductEntity).toList());
   }
 
   // ------------------------------------------------------------
@@ -597,17 +705,15 @@ class ProductDao {
     if (labels.isEmpty) return [];
 
     final ids = labels.map((l) => l.id).toList();
-    final where = <String>['p.id IN (${ids.map((_) => '?').join(',')})'];
-    final rows = await db.executor.customQuery(
-      'SELECT DISTINCT p.* FROM products p WHERE ${where.first}',
-      ids,
-    );
-    final rowMap = {for (final r in rows) r['id'] as int: r};
+    final rows = await (db.select(
+      db.products,
+    )..where((t) => t.id.isIn(ids))).get();
+    final rowMap = {for (final r in rows) r.id: _mapProductEntity(r)};
     final orderedRows = ids
         .map((id) => rowMap[id])
-        .whereType<Map<String, dynamic>>()
+        .whereType<Product>()
         .toList();
-    return _hydrateList(orderedRows.map(Product.fromRow).toList());
+    return _hydrateList(orderedRows);
   }
 
   // ------------------------------------------------------------
@@ -615,73 +721,139 @@ class ProductDao {
   // ------------------------------------------------------------
 
   Future<List<int>> _getTargetGroupIds(int productId) async {
-    final rows = await db.executor.query(
-      'product_target_groups',
-      columns: ['target_group_id'],
-      where: 'product_id = ?',
-      whereArgs: [productId],
-    );
-    return rows.map((r) => r['target_group_id'] as int).toList();
+    final rows = await (db.select(
+      db.productTargetGroups,
+    )..where((t) => t.productId.equals(productId))).get();
+    return rows.map((r) => r.targetGroupId).toList();
   }
 
   Future<List<Composition>> _getCompositions(int productId) async {
-    final rows = await db.executor.query(
-      'compositions',
-      where: 'product_id = ?',
-      whereArgs: [productId],
-      orderBy: 'display_order',
-    );
-    return rows.map(Composition.fromRow).toList();
+    final rows =
+        await (db.select(db.compositions)
+              ..where((t) => t.productId.equals(productId))
+              ..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]))
+            .get();
+    return rows
+        .map(
+          (r) => Composition(
+            id: r.id,
+            productId: r.productId,
+            ingredientEn: r.ingredientEn,
+            ingredientBn: r.ingredientBn,
+            concentration: r.concentration,
+            displayOrder: r.displayOrder,
+          ),
+        )
+        .toList();
   }
 
   Future<List<Benefit>> _getBenefits(int productId) async {
-    final rows = await db.executor.query(
-      'benefits',
-      where: 'product_id = ?',
-      whereArgs: [productId],
-      orderBy: 'display_order',
-    );
-    return rows.map(Benefit.fromRow).toList();
+    final rows =
+        await (db.select(db.benefits)
+              ..where((t) => t.productId.equals(productId))
+              ..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]))
+            .get();
+    return rows
+        .map(
+          (r) => Benefit(
+            id: r.id,
+            productId: r.productId,
+            textEn: r.textEn,
+            textBn: r.textBn,
+            displayOrder: r.displayOrder,
+          ),
+        )
+        .toList();
   }
 
   Future<List<Indication>> _getIndications(int productId) async {
-    final rows = await db.executor.query(
-      'indications',
-      where: 'product_id = ?',
-      whereArgs: [productId],
-      orderBy: 'display_order',
-    );
-    return rows.map(Indication.fromRow).toList();
+    final rows =
+        await (db.select(db.indications)
+              ..where((t) => t.productId.equals(productId))
+              ..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]))
+            .get();
+    return rows
+        .map(
+          (r) => Indication(
+            id: r.id,
+            productId: r.productId,
+            textEn: r.textEn,
+            textBn: r.textBn,
+            displayOrder: r.displayOrder,
+          ),
+        )
+        .toList();
   }
 
   Future<List<Direction>> _getDirections(int productId) async {
-    final rows = await db.executor.query(
-      'directions',
-      where: 'product_id = ?',
-      whereArgs: [productId],
-      orderBy: 'display_order',
-    );
-    return rows.map(Direction.fromRow).toList();
+    final rows =
+        await (db.select(db.directions)
+              ..where((t) => t.productId.equals(productId))
+              ..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]))
+            .get();
+    return rows
+        .map(
+          (r) => Direction(
+            id: r.id,
+            productId: r.productId,
+            contentTypeId: r.contentTypeId,
+            speciesId: r.speciesId,
+            doseValueMin: r.doseValueMin,
+            doseValueMax: r.doseValueMax,
+            doseUnitId: r.doseUnitId,
+            doseBasisId: r.doseBasisId,
+            durationDaysMin: r.durationDaysMin,
+            durationDaysMax: r.durationDaysMax,
+            administrationEn: r.administrationEn,
+            administrationBn: r.administrationBn,
+            dosageEn: r.dosageEn,
+            dosageBn: r.dosageBn,
+            displayOrder: r.displayOrder,
+          ),
+        )
+        .toList();
   }
 
   Future<List<Precaution>> _getPrecautions(int productId) async {
-    final rows = await db.executor.query(
-      'precautions',
-      where: 'product_id = ?',
-      whereArgs: [productId],
-      orderBy: 'display_order',
-    );
-    return rows.map(Precaution.fromRow).toList();
+    final rows =
+        await (db.select(db.precautions)
+              ..where((t) => t.productId.equals(productId))
+              ..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]))
+            .get();
+    return rows
+        .map(
+          (r) => Precaution(
+            id: r.id,
+            productId: r.productId,
+            textEn: r.textEn,
+            textBn: r.textBn,
+            displayOrder: r.displayOrder,
+          ),
+        )
+        .toList();
   }
 
   Future<List<Presentation>> _getPresentations(int productId) async {
-    final rows = await db.executor.query(
-      'presentations',
-      where: 'product_id = ?',
-      whereArgs: [productId],
-      orderBy: 'display_order',
-    );
-    return rows.map(Presentation.fromRow).toList();
+    final rows =
+        await (db.select(db.presentations)
+              ..where((t) => t.productId.equals(productId))
+              ..orderBy([(t) => OrderingTerm.asc(t.displayOrder)]))
+            .get();
+    return rows
+        .map(
+          (r) => Presentation(
+            id: r.id,
+            productId: r.productId,
+            productTypeId: r.productTypeId,
+            contentTypeId: r.contentTypeId,
+            size: r.size,
+            mrp: r.mrp,
+            imageUrl: r.imageUrl,
+            displayOrder: r.displayOrder,
+            bulkItem: r.bulkItem == 1,
+          ),
+        )
+        .toList();
   }
 
   /// Finds close matching product title suggestions using Levenshtein distance
@@ -694,13 +866,15 @@ class ProductDao {
     if (trimmed.length < 3) return const [];
 
     try {
-      final rows = await db.executor.customQuery(
-        'SELECT DISTINCT title_en FROM products WHERE title_en IS NOT NULL LIMIT 200',
-      );
+      final q = db.selectOnly(db.products, distinct: true)
+        ..addColumns([db.products.titleEn])
+        ..where(db.products.titleEn.isNotNull())
+        ..limit(200);
+      final rows = await q.get();
 
       final candidates = <MapEntry<String, int>>[];
       for (final row in rows) {
-        final title = row['title_en'] as String?;
+        final title = row.read(db.products.titleEn);
         if (title == null || title.isEmpty) continue;
         final titleLower = title.toLowerCase();
 
@@ -725,62 +899,72 @@ class ProductDao {
   Future<List<String>> getAllSearchTerms() async {
     final terms = <String>{};
     try {
-      final titleRows = await db.executor.customQuery(
-        'SELECT DISTINCT title_en, title_bn FROM products WHERE is_active = 1',
-      );
+      // 1. Products
+      final titleQuery = db.selectOnly(db.products, distinct: true)
+        ..addColumns([db.products.titleEn, db.products.titleBn])
+        ..where(db.products.isActive.equals(1));
+      final titleRows = await titleQuery.get();
       for (final r in titleRows) {
-        final en = r['title_en'] as String?;
-        final bn = r['title_bn'] as String?;
+        final en = r.read(db.products.titleEn);
+        final bn = r.read(db.products.titleBn);
         if (en != null && en.isNotEmpty) terms.add(en);
         if (bn != null && bn.isNotEmpty) terms.add(bn);
       }
 
-      final catRows = await db.executor.customQuery(
-        'SELECT DISTINCT name_en, name_bn FROM categories',
-      );
+      // 2. Categories
+      final catQuery = db.selectOnly(db.categories, distinct: true)
+        ..addColumns([db.categories.nameEn, db.categories.nameBn]);
+      final catRows = await catQuery.get();
       for (final r in catRows) {
-        final en = r['name_en'] as String?;
-        final bn = r['name_bn'] as String?;
+        final en = r.read(db.categories.nameEn);
+        final bn = r.read(db.categories.nameBn);
         if (en != null && en.isNotEmpty) terms.add(en);
         if (bn != null && bn.isNotEmpty) terms.add(bn);
       }
 
-      final tgRows = await db.executor.customQuery(
-        'SELECT DISTINCT name_en, name_bn FROM target_groups',
-      );
+      // 3. Target Groups
+      final tgQuery = db.selectOnly(db.targetGroups, distinct: true)
+        ..addColumns([db.targetGroups.nameEn, db.targetGroups.nameBn]);
+      final tgRows = await tgQuery.get();
       for (final r in tgRows) {
-        final en = r['name_en'] as String?;
-        final bn = r['name_bn'] as String?;
+        final en = r.read(db.targetGroups.nameEn);
+        final bn = r.read(db.targetGroups.nameBn);
         if (en != null && en.isNotEmpty) terms.add(en);
         if (bn != null && bn.isNotEmpty) terms.add(bn);
       }
 
-      final benRows = await db.executor.customQuery(
-        'SELECT DISTINCT text_en, text_bn FROM benefits',
-      );
+      // 4. Benefits
+      final benQuery = db.selectOnly(db.benefits, distinct: true)
+        ..addColumns([db.benefits.textEn, db.benefits.textBn]);
+      final benRows = await benQuery.get();
       for (final r in benRows) {
-        final en = r['text_en'] as String?;
-        final bn = r['text_bn'] as String?;
+        final en = r.read(db.benefits.textEn);
+        final bn = r.read(db.benefits.textBn);
         if (en != null && en.isNotEmpty) terms.add(en);
         if (bn != null && bn.isNotEmpty) terms.add(bn);
       }
 
-      final indRows = await db.executor.customQuery(
-        'SELECT DISTINCT text_en, text_bn FROM indications',
-      );
+      // 5. Indications
+      final indQuery = db.selectOnly(db.indications, distinct: true)
+        ..addColumns([db.indications.textEn, db.indications.textBn]);
+      final indRows = await indQuery.get();
       for (final r in indRows) {
-        final en = r['text_en'] as String?;
-        final bn = r['text_bn'] as String?;
+        final en = r.read(db.indications.textEn);
+        final bn = r.read(db.indications.textBn);
         if (en != null && en.isNotEmpty) terms.add(en);
         if (bn != null && bn.isNotEmpty) terms.add(bn);
       }
 
-      final compRows = await db.executor.customQuery(
-        'SELECT DISTINCT ingredient_en, ingredient_bn FROM compositions',
-      );
+      // 6. Compositions
+      final compQuery = db.selectOnly(db.compositions, distinct: true)
+        ..addColumns([
+          db.compositions.ingredientEn,
+          db.compositions.ingredientBn,
+        ]);
+      final compRows = await compQuery.get();
       for (final r in compRows) {
-        final en = r['ingredient_en'] as String?;
-        final bn = r['ingredient_bn'] as String?;
+        final en = r.read(db.compositions.ingredientEn);
+        final bn = r.read(db.compositions.ingredientBn);
         if (en != null && en.isNotEmpty) terms.add(en);
         if (bn != null && bn.isNotEmpty) terms.add(bn);
       }

@@ -38,7 +38,7 @@ void main() {
       final report = await DatabaseFreshnessChecker.checkLocalDatabaseHealth();
 
       final productsReport = report['products.db'] as Map<String, dynamic>;
-      final distReport = report['distributors.db'] as Map<String, dynamic>;
+      final distReport = report['team.db'] as Map<String, dynamic>;
 
       expect(productsReport['status'], equals('missing'));
       expect(distReport['status'], equals('missing'));
@@ -58,7 +58,7 @@ void main() {
         final report =
             await DatabaseFreshnessChecker.checkLocalDatabaseHealth();
         final productsReport = report['products.db'] as Map<String, dynamic>;
-        final distReport = report['distributors.db'] as Map<String, dynamic>;
+        final distReport = report['team.db'] as Map<String, dynamic>;
 
         expect(productsReport['status'], equals('healthy'));
         expect(productsReport['dataVersion'], equals(4));
