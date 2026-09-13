@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.6] - 2026-09-13
+### What's Changed
+- Added in-app update checks, prompt dialog, and product catalog asset updates
+
 ## [1.0.5] - 2026-09-12
 ### What's Changed
 - Release build 6 (Version 1.0.5).
