@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/app_update_provider.dart';
 import 'package:impulse_app/screens/manufacturers_screen.dart';
 import 'package:impulse_app/screens/products_screen.dart';
 import 'package:impulse_app/screens/sales_personnels_screen.dart';
@@ -28,10 +29,49 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   late final List<Widget?> _builtScreens = List.filled(_screens.length, null);
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref
+            .read(appUpdateProvider.notifier)
+            .checkAndPromptUpdate(context: context);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final lang = ref.watch(languageSettingProvider);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    ref.listen<AppUpdateState>(appUpdateProvider, (previous, next) {
+      if (next.status == UpdateStatus.downloaded &&
+          previous?.status != UpdateStatus.downloaded) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              lang == 'bn'
+                  ? 'নতুন আপডেট ডাউনলোড সম্পন্ন হয়েছে!'
+                  : 'Update downloaded successfully!',
+            ),
+            duration: const Duration(days: 1),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            action: SnackBarAction(
+              label: lang == 'bn' ? 'রিস্টার্ট করুন' : 'Restart to Apply',
+              textColor: colorScheme.inversePrimary,
+              onPressed: () {
+                ref.read(appUpdateProvider.notifier).completeFlexibleUpdate();
+              },
+            ),
+          ),
+        );
+      }
+    });
 
     return Scaffold(
       drawer: AppDrawer(

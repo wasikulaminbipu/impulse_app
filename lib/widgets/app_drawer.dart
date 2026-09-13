@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/constants/app_assets.dart';
 import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/app_update_provider.dart';
 import 'package:impulse_app/screens/about_us_screen.dart';
 import 'package:impulse_app/screens/distributors_screen.dart';
 import 'package:impulse_app/widgets/glass_container.dart';
@@ -206,6 +207,7 @@ class AppDrawer extends ConsumerWidget {
                       );
                     },
                   ),
+                  _buildUpdateTile(context, ref, isBn: isBn),
                 ],
               ),
             ),
@@ -296,6 +298,79 @@ class AppDrawer extends ConsumerWidget {
         onTap: () {
           HapticFeedback.selectionClick();
           onTap();
+        },
+      ),
+    );
+  }
+
+  Widget _buildUpdateTile(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isBn,
+  }) {
+    final updateState = ref.watch(appUpdateProvider);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    String label;
+    IconData icon;
+    if (updateState.status == UpdateStatus.downloaded) {
+      label = isBn
+          ? 'রিস্টার্ট করে আপডেট সম্পন্ন করুন'
+          : 'Restart to Apply Update';
+      icon = Icons.restart_alt_rounded;
+    } else if (updateState.status == UpdateStatus.downloading) {
+      label = isBn ? 'আপডেট ডাউনলোড হচ্ছে...' : 'Downloading Update...';
+      icon = Icons.downloading_rounded;
+    } else if (updateState.hasUpdate) {
+      label = isBn ? 'নতুন আপডেট উপলব্ধ!' : 'Update Available!';
+      icon = Icons.rocket_launch_rounded;
+    } else {
+      label = isBn ? 'আপডেট পরীক্ষা করুন' : 'Check for Updates';
+      icon = Icons.system_update_rounded;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        leading: Icon(
+          icon,
+          color: updateState.hasUpdate
+              ? colorScheme.primary
+              : colorScheme.onSurfaceVariant,
+        ),
+        title: Text(
+          label,
+          style: TextStyle(
+            fontWeight: updateState.hasUpdate
+                ? FontWeight.w700
+                : FontWeight.w500,
+            color: updateState.hasUpdate
+                ? colorScheme.primary
+                : colorScheme.onSurface,
+            fontSize: 14,
+          ),
+        ),
+        trailing: updateState.hasUpdate
+            ? Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                  shape: BoxShape.circle,
+                ),
+              )
+            : null,
+        onTap: () {
+          HapticFeedback.selectionClick();
+          Navigator.of(context).pop();
+          if (updateState.status == UpdateStatus.downloaded) {
+            ref.read(appUpdateProvider.notifier).completeFlexibleUpdate();
+          } else {
+            ref
+                .read(appUpdateProvider.notifier)
+                .checkAndPromptUpdate(context: context, force: true);
+          }
         },
       ),
     );
