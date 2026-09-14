@@ -1,7 +1,6 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
-import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/constants/app_keys.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/app_version_provider.dart';
@@ -9,7 +8,6 @@ import 'package:impulse_app/services/app_update_service.dart';
 import 'package:impulse_app/widgets/update_prompt_sheet.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 part 'app_update_provider.g.dart';
 
@@ -58,7 +56,7 @@ class AppUpdateNotifier extends _$AppUpdateNotifier {
 
   void _showSnackBar(SnackBar snackBar) {
     try {
-      AppKeys.rootScaffoldMessengerKey.currentState?.removeCurrentSnackBar();
+      AppKeys.rootScaffoldMessengerKey.currentState?.clearSnackBars();
       AppKeys.rootScaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     } catch (_) {
       // Safely ignore if running in pure headless unit tests
@@ -67,7 +65,7 @@ class AppUpdateNotifier extends _$AppUpdateNotifier {
 
   void _hideSnackBar() {
     try {
-      AppKeys.rootScaffoldMessengerKey.currentState?.removeCurrentSnackBar();
+      AppKeys.rootScaffoldMessengerKey.currentState?.clearSnackBars();
     } catch (_) {
       // Safely ignore if running in pure headless unit tests
     }
@@ -171,14 +169,6 @@ class AppUpdateNotifier extends _$AppUpdateNotifier {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            action: SnackBarAction(
-              label: isBn ? 'প্লে স্টোর' : 'Play Store',
-              textColor: Colors.amberAccent,
-              onPressed: () async {
-                final uri = Uri.parse(AppConstants.playStoreUrl);
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              },
-            ),
           ),
         );
       }
@@ -212,6 +202,7 @@ class AppUpdateNotifier extends _$AppUpdateNotifier {
       await showModalBottomSheet<void>(
         context: targetContext,
         isScrollControlled: true,
+        showDragHandle: true,
         backgroundColor: Colors.transparent,
         builder: (ctx) => UpdatePromptSheet(
           availableVersionCode: versionCode,

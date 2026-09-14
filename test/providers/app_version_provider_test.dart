@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/providers/app_version_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -8,24 +7,22 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('AppVersionProvider Tests', () {
-    test('appVersionDisplayProvider falls back to AppConstants when packageInfo is loading/empty', () {
+    test('appVersionDisplayProvider falls back to fallbackAppVersion when packageInfo is loading/empty', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final version = container.read(appVersionDisplayProvider);
-      expect(version, equals(AppConstants.appVersion));
+      expect(version, equals(fallbackAppVersion));
     });
 
-    test('appFullVersionDisplayProvider falls back to AppConstants when packageInfo is loading/empty', () {
+    test('appFullVersionDisplayProvider falls back to fallbackAppVersion when packageInfo is loading/empty', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       final fullVersion = container.read(appFullVersionDisplayProvider);
       expect(
         fullVersion,
-        equals(
-          'v${AppConstants.appVersion} (Build ${AppConstants.buildNumber})',
-        ),
+        equals('v$fallbackAppVersion (Build $fallbackBuildNumber)'),
       );
     });
 

@@ -5,6 +5,7 @@ import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/products_provider.dart';
 import 'package:impulse_app/screens/product_details_screen.dart';
+import 'package:impulse_app/services/app_review_service.dart';
 import 'package:impulse_app/widgets/product_details/benefits_section.dart';
 import 'package:impulse_app/widgets/product_details/composition_section.dart';
 import 'package:impulse_app/widgets/product_details/directions_section.dart';
@@ -13,6 +14,8 @@ import 'package:impulse_app/widgets/product_details/manufacturer_section.dart';
 import 'package:impulse_app/widgets/product_details/precautions_section.dart';
 import 'package:impulse_app/widgets/product_details/presentations_section.dart';
 import 'package:impulse_app/widgets/product_details/section_card.dart';
+import 'package:impulse_app/widgets/whatsapp_icon.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   const mockProduct = Product(
@@ -329,6 +332,83 @@ void main() {
     });
 
     testWidgets(
+      'PresentationsSection renders Call for Price when MRP is null or 0',
+      (tester) async {
+        bool tapped = false;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: PresentationsSection(
+                presentations: const [
+                  Presentation(
+                    id: 99,
+                    productId: 1,
+                    productTypeId: 1,
+                    contentTypeId: 1,
+                    size: '500ml bottle',
+                  ),
+                ],
+                lang: 'en',
+                onCallForPriceTap: () => tapped = true,
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('500ml bottle'), findsOneWidget);
+        expect(find.text('Call for Price'), findsOneWidget);
+        expect(find.byIcon(Icons.phone_in_talk_rounded), findsOneWidget);
+
+        await tester.tap(find.text('Call for Price'));
+        await tester.pump();
+        expect(tapped, isTrue);
+      },
+    );
+
+    testWidgets('PresentationsSection renders Call for Price in Bengali', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: PresentationsSection(
+              presentations: [
+                Presentation(
+                  id: 99,
+                  productId: 1,
+                  productTypeId: 1,
+                  contentTypeId: 1,
+                  size: '৫০০ মিলি বোতল',
+                  mrp: 0.0,
+                ),
+              ],
+              lang: 'bn',
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('৫০০ মিলি বোতল'), findsOneWidget);
+      expect(find.text('মূল্যের জন্য কল করুন'), findsOneWidget);
+    });
+
+    testWidgets(
+      'PresentationsSection handles empty presentations list with Call for Price fallback',
+      (tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: PresentationsSection(presentations: [], lang: 'en'),
+            ),
+          ),
+        );
+
+        expect(find.text('Price unlisted'), findsOneWidget);
+        expect(find.text('Call for Price'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
       'ManufacturerSection renders details and handles empty fields',
       (tester) async {
         await tester.pumpWidget(
@@ -346,7 +426,170 @@ void main() {
         expect(find.text('Dhaka, Bangladesh'), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'Renders side-by-side WhatsApp Inquiry and Field Team buttons in English and handles tap',
+      (tester) async {
+        tester.view.physicalSize = const Size(800 * 3, 2000 * 3);
+        tester.view.devicePixelRatio = 3.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        final fakeLauncher = _FakeUrlLauncherWrapper();
+
+        await tester.pumpWidget(
+          createHarness(
+            child: ProductDetailsScreen(
+              product: mockLabel,
+              launcher: fakeLauncher,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final inquiryButtonFinder = find.byKey(
+          const Key('product_whatsapp_inquiry_button'),
+        );
+        final fieldTeamButtonFinder = find.byKey(
+          const Key('product_find_field_team_button'),
+        );
+
+        expect(inquiryButtonFinder, findsOneWidget);
+        expect(fieldTeamButtonFinder, findsOneWidget);
+        expect(find.text('Inquire'), findsOneWidget);
+        expect(find.text('Field Team'), findsOneWidget);
+        expect(find.byType(WhatsAppIcon), findsOneWidget);
+
+        await tester.tap(inquiryButtonFinder);
+        await tester.pumpAndSettle();
+
+        expect(fakeLauncher.launchedUris.length, 1);
+        final uri = fakeLauncher.launchedUris.first;
+        expect(uri.host, 'wa.me');
+        expect(uri.queryParameters['text'], contains('Amoxivet 50% WSP'));
+      },
+    );
+
+    testWidgets(
+      'Renders WhatsApp Inquiry button with "আরও জানুন" in Bengali and triggers WhatsApp',
+      (tester) async {
+        tester.view.physicalSize = const Size(800 * 3, 2000 * 3);
+        tester.view.devicePixelRatio = 3.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        final fakeLauncher = _FakeUrlLauncherWrapper();
+
+        await tester.pumpWidget(
+          createHarness(
+            lang: 'bn',
+            child: ProductDetailsScreen(
+              product: mockLabel,
+              launcher: fakeLauncher,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('আরও জানুন'), findsOneWidget);
+        expect(find.text('ফিল্ড টিম'), findsOneWidget);
+
+        final inquiryButtonFinder = find.byKey(
+          const Key('product_whatsapp_inquiry_button'),
+        );
+        await tester.tap(inquiryButtonFinder);
+        await tester.pumpAndSettle();
+
+        expect(fakeLauncher.launchedUris.length, 1);
+        final uri = fakeLauncher.launchedUris.first;
+        expect(uri.host, 'wa.me');
+        expect(
+          uri.queryParameters['text'],
+          contains('এমক্সিবেট ৫০% ডব্লিউএসপি'),
+        );
+      },
+    );
+
+    testWidgets('Shows SnackBar when WhatsApp launch fails', (tester) async {
+      tester.view.physicalSize = const Size(800 * 3, 2000 * 3);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final fakeLauncher = _FakeUrlLauncherWrapper()..shouldSucceed = false;
+
+      await tester.pumpWidget(
+        createHarness(
+          child: ProductDetailsScreen(
+            product: mockLabel,
+            launcher: fakeLauncher,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final inquiryButtonFinder = find.byKey(
+        const Key('product_whatsapp_inquiry_button'),
+      );
+      await tester.tap(inquiryButtonFinder);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Could not open WhatsApp'), findsOneWidget);
+    });
+
+    testWidgets(
+      'Tapping share button opens modal with Share as Image and Share as PDF options',
+      (tester) async {
+        await tester.pumpWidget(
+          createHarness(child: const ProductDetailsScreen(product: mockLabel)),
+        );
+        await tester.pumpAndSettle();
+
+        final shareButtonFinder = find.byIcon(Icons.share);
+        expect(shareButtonFinder, findsOneWidget);
+
+        await tester.tap(shareButtonFinder);
+        await tester.pumpAndSettle();
+
+        expect(find.text('Share Product'), findsOneWidget);
+        expect(find.text('Share as Image'), findsOneWidget);
+        expect(find.text('Share as PDF'), findsOneWidget);
+      },
+    );
+
+    testWidgets('Tapping Share as PDF dismisses modal bottom sheet', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        createHarness(child: const ProductDetailsScreen(product: mockLabel)),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.share));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Share as PDF'), findsOneWidget);
+      await tester.tap(find.text('Share as PDF'));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Share Product'), findsNothing);
+    });
   });
+}
+
+class _FakeUrlLauncherWrapper extends UrlLauncherWrapper {
+  final List<Uri> launchedUris = [];
+  bool shouldSucceed = true;
+
+  @override
+  Future<bool> launch(
+    Uri uri, {
+    LaunchMode mode = LaunchMode.platformDefault,
+  }) async {
+    launchedUris.add(uri);
+    return shouldSucceed;
+  }
 }
 
 class _MockLanguageSetting extends LanguageSetting {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/constants/app_keys.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/app_version_provider.dart';
@@ -49,7 +48,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Impulse'), findsOneWidget);
-        expect(find.text('v${AppConstants.appVersion}'), findsOneWidget);
+        expect(find.text('v$fallbackAppVersion'), findsOneWidget);
         expect(find.text('Products Directory'), findsOneWidget);
         expect(find.text('Manufacturers'), findsOneWidget);
         expect(find.text('Contact Details'), findsOneWidget);

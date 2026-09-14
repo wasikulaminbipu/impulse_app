@@ -74,18 +74,26 @@ class AppReviewNotifier extends _$AppReviewNotifier {
   }
 
   /// Handles user email feedback route.
-  Future<bool> sendFeedbackEmail({String? feedback}) async {
+  Future<bool> sendFeedbackEmail({
+    String? feedback,
+    String? recipientEmail,
+  }) async {
     final service = ref.read(appReviewServiceProvider);
     return await service.openFeedbackEmail(
+      recipientEmail: recipientEmail,
       subject: 'Impulse App Feedback & User Experience',
       body: feedback,
     );
   }
 
   /// Handles user WhatsApp feedback route.
-  Future<bool> sendFeedbackWhatsApp({String? feedback}) async {
+  Future<bool> sendFeedbackWhatsApp({
+    String? feedback,
+    String? whatsAppTarget,
+  }) async {
     final service = ref.read(appReviewServiceProvider);
     return await service.openFeedbackWhatsApp(
+      whatsAppTarget: whatsAppTarget,
       message: feedback != null && feedback.isNotEmpty
           ? 'Hello Impulse Team, here is my feedback: $feedback'
           : null,

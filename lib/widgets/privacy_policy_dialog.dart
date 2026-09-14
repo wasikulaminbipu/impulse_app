@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:impulse_app/config/app_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyPolicyDialog extends StatelessWidget {
   const PrivacyPolicyDialog({super.key});
 
-  static const String privacyPolicyUrl =
-      'https://github.com/wasikulaminbipu/impulse_app/blob/main/PRIVACY_POLICY.md';
-  static const String dataDeletionUrl =
-      'https://www.impulseagrisciencelimited.com/delete-account';
+  static const String privacyPolicyUrl = AppConfig.privacyPolicyUrl;
+  static const String dataDeletionUrl = AppConfig.dataDeletionUrl;
 
   Future<void> _launchUrl(String urlString) async {
     final Uri url = Uri.parse(urlString);
@@ -23,15 +22,8 @@ class PrivacyPolicyDialog extends StatelessWidget {
 
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Row(
-        children: [
-          Icon(Icons.privacy_tip_outlined, color: colorScheme.primary),
-          const SizedBox(width: 10),
-          const Expanded(
-            child: Text('Privacy Policy & Data', softWrap: true, maxLines: 2),
-          ),
-        ],
-      ),
+      icon: Icon(Icons.privacy_tip_outlined, color: colorScheme.primary),
+      title: const Text('Privacy Policy & Data'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,

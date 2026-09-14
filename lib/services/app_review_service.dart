@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/foundation.dart';
 import 'package:impulse_app/constants/app_constants.dart';
+import 'package:impulse_app/constants/feedback_config.dart';
 import 'package:impulse_app/data/app_maintenance_dao.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,10 +31,11 @@ class AppReviewService {
   static const String statePostponed = 'postponed';
 
   /// Minimum number of app sessions before an automated prompt can be shown.
-  static const int minSessionsBeforePrompt = 5;
+  static const int minSessionsBeforePrompt =
+      AppConfig.minSessionsBeforeRatingPrompt;
 
   /// Cooldown window between prompts if user postponed (60 days).
-  static const Duration cooldownInterval = Duration(days: 60);
+  static const Duration cooldownInterval = AppConfig.ratingPromptCooldown;
 
   const AppReviewService({this.launcher = const UrlLauncherWrapper()});
 
@@ -165,19 +167,16 @@ class AppReviewService {
   /// Opens the customer support email composer with prefilled subject.
   Future<bool> openFeedbackEmail({
     UrlLauncherWrapper? customLauncher,
+    String? recipientEmail,
     String? subject,
     String? body,
   }) async {
     final l = customLauncher ?? launcher;
     final sub = subject ?? 'Impulse App Feedback & Suggestions';
-    final content = body ?? '';
-    final emailUri = Uri(
-      scheme: 'mailto',
-      path: AppConstants.supportEmail,
-      queryParameters: {
-        'subject': sub,
-        if (content.isNotEmpty) 'body': content,
-      },
+    final emailUri = FeedbackConfig.buildEmailUri(
+      recipient: recipientEmail,
+      subject: sub,
+      body: body,
     );
 
     try {
@@ -191,16 +190,14 @@ class AppReviewService {
   /// Opens WhatsApp to chat directly with support.
   Future<bool> openFeedbackWhatsApp({
     UrlLauncherWrapper? customLauncher,
+    String? whatsAppTarget,
     String? message,
   }) async {
     final l = customLauncher ?? launcher;
-    final cleanPhone = AppConstants.supportPhone.replaceAll(
-      RegExp('[^0-9]'),
-      '',
-    );
     final msg = message ?? 'Hello Impulse Team, I have some feedback: ';
-    final waUri = Uri.parse(
-      'https://wa.me/$cleanPhone?text=${Uri.encodeComponent(msg)}',
+    final waUri = FeedbackConfig.buildWhatsAppUri(
+      customTarget: whatsAppTarget,
+      message: msg,
     );
 
     try {

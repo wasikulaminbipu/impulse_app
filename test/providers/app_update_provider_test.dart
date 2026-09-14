@@ -1,6 +1,8 @@
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:impulse_app/constants/app_keys.dart';
 import 'package:impulse_app/data/app_databases.dart';
 import 'package:impulse_app/providers/app_update_provider.dart';
 import 'package:impulse_app/providers/database_provider.dart';
@@ -59,6 +61,11 @@ void main() {
     setUp(() async {
       db = AppMaintenanceDb(NativeDatabase.memory());
       await db.createMigrator().createAll();
+      container = ProviderContainer(
+        overrides: [
+          appMaintenanceDatabaseProvider.overrideWith((ref) async => db),
+        ],
+      );
     });
 
     tearDown(() async {
@@ -95,6 +102,48 @@ void main() {
       expect(state.status, equals(UpdateStatus.idle));
       expect(state.hasUpdate, isFalse);
     });
+
+    testWidgets(
+      'checkAndPromptUpdate shows auto-dismissing SnackBar without action',
+      (WidgetTester tester) async {
+        final fakeService = FakeTestUpdateService();
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              appMaintenanceDatabaseProvider.overrideWith((ref) async => db),
+              appUpdateServiceProvider.overrideWithValue(fakeService),
+            ],
+            child: MaterialApp(
+              scaffoldMessengerKey: AppKeys.rootScaffoldMessengerKey,
+              home: const Scaffold(body: SizedBox()),
+            ),
+          ),
+        );
+
+        final testContainer = ProviderScope.containerOf(
+          tester.element(find.byType(Scaffold)),
+        );
+
+        await testContainer
+            .read(appUpdateProvider.notifier)
+            .checkAndPromptUpdate(force: true);
+
+        // Let the first SnackBar ("Checking for updates...") finish and dismiss
+        await tester.pump(const Duration(seconds: 3));
+        await tester.pumpAndSettle();
+
+        // The second SnackBar ("Your app is up to date") is now shown
+        expect(find.textContaining('Your app is up to date'), findsOneWidget);
+        final SnackBar snackBar = tester.widget(find.byType(SnackBar));
+        expect(snackBar.persist, isFalse);
+        expect(snackBar.action, isNull);
+
+        // Advance past second SnackBar duration (4 seconds) to trigger timeout dismissal
+        await tester.pump(const Duration(seconds: 5));
+        await tester.pumpAndSettle();
+        expect(find.byType(SnackBar), findsNothing);
+      },
+    );
 
     test('flexible update download and completion updates state', () async {
       final fakeService = FakeTestUpdateService();

@@ -350,14 +350,7 @@ class AppDrawer extends ConsumerWidget {
           ),
         ),
         trailing: updateState.hasUpdate
-            ? Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  shape: BoxShape.circle,
-                ),
-              )
+            ? Badge(backgroundColor: colorScheme.primary, smallSize: 10)
             : (updateState.status == UpdateStatus.checking
                   ? SizedBox(
                       width: 16,

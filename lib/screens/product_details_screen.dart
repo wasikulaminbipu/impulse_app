@@ -2,11 +2,14 @@ import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:impulse_app/config/app_config.dart';
 import 'package:impulse_app/models/app_maintenance.dart';
 import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/products_provider.dart';
 import 'package:impulse_app/screens/sales_personnels_screen.dart';
+import 'package:impulse_app/services/app_review_service.dart'
+    show UrlLauncherWrapper;
 import 'package:impulse_app/utils/bilingual_string.dart';
 import 'package:impulse_app/utils/product_share_service.dart';
 import 'package:impulse_app/widgets/custom_badge.dart';
@@ -19,11 +22,18 @@ import 'package:impulse_app/widgets/product_details/indications_section.dart';
 import 'package:impulse_app/widgets/product_details/manufacturer_section.dart';
 import 'package:impulse_app/widgets/product_details/precautions_section.dart';
 import 'package:impulse_app/widgets/product_details/presentations_section.dart';
+import 'package:impulse_app/widgets/whatsapp_icon.dart';
+import 'package:url_launcher/url_launcher.dart' show LaunchMode;
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
   final ProductLabel product;
+  final UrlLauncherWrapper launcher;
 
-  const ProductDetailsScreen({super.key, required this.product});
+  const ProductDetailsScreen({
+    super.key,
+    required this.product,
+    this.launcher = const UrlLauncherWrapper(),
+  });
 
   @override
   ConsumerState<ProductDetailsScreen> createState() =>
@@ -34,7 +44,45 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
   final GlobalKey _shareBoundaryKey = GlobalKey();
   bool _isSharing = false;
 
-  Future<void> _handleShare(String title) async {
+  Future<void> _handleWhatsAppInquiry(String productTitle, String lang) async {
+    final message = lang == 'bn'
+        ? 'হ্যালো ইমপালস টিম, আমি "$productTitle" পণ্যটি সম্পর্কে আরও জানতে আগ্রহী।'
+        : 'Hello Impulse Team, I would like to inquire about the product: "$productTitle".';
+
+    final uri = AppConfig.buildWhatsAppUri(message: message);
+
+    try {
+      final launched = await widget.launcher.launch(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!launched && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              lang == 'bn'
+                  ? 'হোয়াটসঅ্যাপ খোলা যায়নি'
+                  : 'Could not open WhatsApp',
+            ),
+          ),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              lang == 'bn'
+                  ? 'হোয়াটসঅ্যাপ খোলা যায়নি'
+                  : 'Could not open WhatsApp',
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleShareImage(String title) async {
     if (_isSharing) return;
 
     setState(() {
@@ -50,7 +98,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to share product: $e'),
+            content: Text('Failed to share product image: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -64,14 +112,237 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
     }
   }
 
+  Future<void> _handleSharePdf(String title) async {
+    if (_isSharing) return;
+
+    setState(() {
+      _isSharing = true;
+    });
+
+    try {
+      Product productToShare;
+      final fullProductAsync = ref.read(
+        productDetailProvider(widget.product.id),
+      );
+      if (fullProductAsync.hasValue && fullProductAsync.value != null) {
+        productToShare = fullProductAsync.value!;
+      } else {
+        try {
+          productToShare = await ref.read(
+            productDetailProvider(widget.product.id).future,
+          );
+        } catch (_) {
+          productToShare = Product(
+            id: widget.product.id,
+            titleEn: widget.product.titleEn,
+            titleBn: widget.product.titleBn,
+            slug: '',
+            categoryId: widget.product.categoryId,
+            category: widget.product.category,
+            targetGroups: widget.product.targetGroups,
+            presentations: widget.product.presentations,
+            shortDescriptionEn: widget.product.shortDescriptionEn,
+            shortDescriptionBn: widget.product.shortDescriptionBn,
+            mottoEn: widget.product.mottoEn,
+            mottoBn: widget.product.mottoBn,
+            imageUrl: widget.product.imageUrl,
+            createdAt: '',
+            updatedAt: '',
+          );
+        }
+      }
+
+      final speciesList = ref.read(speciesProvider).value ?? [];
+
+      await ProductShareService.shareProductPdf(
+        product: productToShare,
+        shareSubject: title,
+        speciesList: speciesList,
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to share product PDF: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSharing = false;
+        });
+      }
+    }
+  }
+
+  void _showShareOptionsModal({
+    required BuildContext context,
+    required String productTitle,
+    required String lang,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (bottomSheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  lang == 'bn' ? 'পণ্য শেয়ার করুন' : 'Share Product',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  lang == 'bn'
+                      ? 'শেয়ার করার জন্য ফরম্যাট নির্বাচন করুন'
+                      : 'Choose format to share',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: colorScheme.outlineVariant.withValues(
+                          alpha: isDark ? 0.3 : 0.6,
+                        ),
+                      ),
+                    ),
+                    leading: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer.withValues(
+                          alpha: 0.6,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.image_outlined,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                    title: Text(
+                      lang == 'bn' ? 'ছবি শেয়ার করুন' : 'Share as Image',
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      lang == 'bn'
+                          ? 'উচ্চ মানের পিএনজি ছবি'
+                          : 'High-resolution PNG image',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.chevron_right, size: 20),
+                    onTap: () {
+                      Navigator.pop(bottomSheetContext);
+                      _handleShareImage(productTitle);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: colorScheme.outlineVariant.withValues(
+                          alpha: isDark ? 0.3 : 0.6,
+                        ),
+                      ),
+                    ),
+                    leading: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.picture_as_pdf_outlined,
+                        color: Colors.red,
+                      ),
+                    ),
+                    title: Text(
+                      lang == 'bn' ? 'পিডিএফ শেয়ার করুন' : 'Share as PDF',
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      lang == 'bn'
+                          ? 'প্রিন্টযোগ্য সম্পূর্ণ স্পেসিফিকেশন শিট'
+                          : 'Printable full specification sheet',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.chevron_right, size: 20),
+                    onTap: () {
+                      Navigator.pop(bottomSheetContext);
+                      _handleSharePdf(productTitle);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final lang = ref.watch(languageSettingProvider);
     final productTitle = widget.product.titleEn.resolve(
       widget.product.titleBn,
       lang,
     );
+
+    final whatsappBg = isDark
+        ? const Color(0xFF132F23)
+        : const Color(0xFFE8F8F0);
+    final whatsappFg = isDark
+        ? const Color(0xFF4ADE80)
+        : const Color(0xFF0F763E);
+    final whatsappBorder = isDark
+        ? const Color(0xFF25D366).withValues(alpha: 0.35)
+        : const Color(0xFF25D366).withValues(alpha: 0.50);
 
     return Scaffold(
       body: Stack(
@@ -145,7 +416,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                 : const Icon(Icons.share, color: Colors.white),
                             onPressed: _isSharing
                                 ? null
-                                : () => _handleShare(productTitle),
+                                : () => _showShareOptionsModal(
+                                    context: context,
+                                    productTitle: productTitle,
+                                    lang: lang,
+                                  ),
                             tooltip: lang == 'bn' ? 'শেয়ার করুন' : 'Share',
                           ),
                         ),
@@ -309,11 +584,10 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                     precautions: fullProduct.precautions,
                                     lang: lang,
                                   ),
-                                if (fullProduct.presentations.isNotEmpty)
-                                  PresentationsSection(
-                                    presentations: fullProduct.presentations,
-                                    lang: lang,
-                                  ),
+                                PresentationsSection(
+                                  presentations: fullProduct.presentations,
+                                  lang: lang,
+                                ),
                                 if (fullProduct.manufacturer.nameEn.isNotEmpty)
                                   ManufacturerSection(
                                     manufacturer: fullProduct.manufacturer,
@@ -336,38 +610,89 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             ),
                           ),
                       const SizedBox(height: 16),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                builder: (context) =>
-                                    const SalesPersonnelsScreen(),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 48,
+                              child: OutlinedButton.icon(
+                                key: const Key(
+                                  'product_whatsapp_inquiry_button',
+                                ),
+                                onPressed: () =>
+                                    _handleWhatsAppInquiry(productTitle, lang),
+                                icon: WhatsAppIcon(size: 18, color: whatsappFg),
+                                label: Text(
+                                  lang == 'bn' ? 'আরও জানুন' : 'Inquire',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: whatsappFg,
+                                  ),
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: whatsappBg,
+                                  foregroundColor: whatsappFg,
+                                  side: BorderSide(
+                                    color: whatsappBorder,
+                                    width: 1.2,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
                               ),
-                            );
-                          },
-                          icon: const Icon(Icons.people),
-                          label: Text(
-                            lang == 'bn'
-                                ? 'ফিল্ড টিম খুঁজুন'
-                                : 'Find Field Team',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 18),
-                            backgroundColor: colorScheme.primary,
-                            foregroundColor: colorScheme.onPrimary,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: SizedBox(
+                              height: 48,
+                              child: FilledButton.icon(
+                                key: const Key(
+                                  'product_find_field_team_button',
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute<void>(
+                                      builder: (context) =>
+                                          const SalesPersonnelsScreen(),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.people_alt_rounded,
+                                  size: 18,
+                                ),
+                                label: Text(
+                                  lang == 'bn' ? 'ফিল্ড টিম' : 'Field Team',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: colorScheme.primary,
+                                  foregroundColor: colorScheme.onPrimary,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
                       const SizedBox(height: 40),
                     ],
@@ -556,11 +881,10 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                     precautions: fullProduct.precautions,
                                     lang: lang,
                                   ),
-                                if (fullProduct.presentations.isNotEmpty)
-                                  PresentationsSection(
-                                    presentations: fullProduct.presentations,
-                                    lang: lang,
-                                  ),
+                                PresentationsSection(
+                                  presentations: fullProduct.presentations,
+                                  lang: lang,
+                                ),
                                 if (fullProduct.manufacturer.nameEn.isNotEmpty)
                                   ManufacturerSection(
                                     manufacturer: fullProduct.manufacturer,

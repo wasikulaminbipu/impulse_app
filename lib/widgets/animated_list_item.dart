@@ -14,6 +14,7 @@ class _AnimatedListItemState extends State<AnimatedListItem>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
+  late final Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
@@ -28,6 +29,10 @@ class _AnimatedListItemState extends State<AnimatedListItem>
       parent: _controller,
       curve: Curves.easeOutCubic,
     );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.15),
+      end: Offset.zero,
+    ).animate(_animation);
     _controller.forward();
   }
 
@@ -41,14 +46,8 @@ class _AnimatedListItemState extends State<AnimatedListItem>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _animation,
-      child: AnimatedBuilder(
-        animation: _animation,
-        builder: (context, child) {
-          return Transform.translate(
-            offset: Offset(0, 50 * (1.0 - _animation.value)),
-            child: child,
-          );
-        },
+      child: SlideTransition(
+        position: _slideAnimation,
         child: RepaintBoundary(child: widget.child),
       ),
     );

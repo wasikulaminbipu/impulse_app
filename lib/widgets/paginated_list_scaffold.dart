@@ -91,35 +91,39 @@ class _PaginatedListScaffoldState<T>
                         horizontal: 16,
                         vertical: 10,
                       ),
-                      child: TextField(
+                      child: SearchBar(
                         controller: _searchController,
+                        hintText: widget.searchHint,
+                        leading: const Icon(Icons.search),
+                        elevation: const WidgetStatePropertyAll(0),
+                        backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.surfaceContainerHighest
+                              .withValues(alpha: 0.4),
+                        ),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        trailing: [
+                          if (_searchController.text.isNotEmpty)
+                            IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                if (widget.onSearchCleared != null) {
+                                  widget.onSearchCleared!();
+                                } else if (widget.onSearchChanged != null) {
+                                  widget.onSearchChanged!('');
+                                }
+                              },
+                            ),
+                        ],
                         onChanged: (val) {
                           if (widget.onSearchChanged != null) {
                             widget.onSearchChanged!(val);
                           }
                         },
-                        decoration: InputDecoration(
-                          hintText: widget.searchHint,
-                          prefixIcon: const Icon(Icons.search),
-                          suffixIcon: _searchController.text.isNotEmpty
-                              ? IconButton(
-                                  icon: const Icon(Icons.clear),
-                                  onPressed: () {
-                                    _searchController.clear();
-                                    if (widget.onSearchCleared != null) {
-                                      widget.onSearchCleared!();
-                                    } else if (widget.onSearchChanged != null) {
-                                      widget.onSearchChanged!('');
-                                    }
-                                  },
-                                )
-                              : null,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
                       ),
                     ),
                   )

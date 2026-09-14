@@ -213,16 +213,10 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                   ),
                   if (isQueryActive) ...[
                     const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
+                    Badge(
+                      backgroundColor: colorScheme.primaryContainer,
+                      textColor: colorScheme.onPrimaryContainer,
+                      label: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
@@ -233,10 +227,9 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                           const SizedBox(width: 4),
                           Text(
                             lang == 'bn' ? 'ফিল্টার' : 'Active',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
-                              color: colorScheme.onPrimaryContainer,
                             ),
                           ),
                         ],
@@ -271,9 +264,56 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 2, 16, 6),
-                  child: TextField(
+                  child: SearchBar(
                     controller: _searchController,
                     focusNode: _searchFocusNode,
+                    constraints: const BoxConstraints(
+                      minHeight: 46.0,
+                      maxHeight: 46.0,
+                    ),
+                    elevation: const WidgetStatePropertyAll(0),
+                    backgroundColor: WidgetStatePropertyAll(
+                      colorScheme.surfaceContainerHighest.withValues(
+                        alpha: 0.4,
+                      ),
+                    ),
+                    side: WidgetStatePropertyAll(
+                      BorderSide(
+                        color: _searchFocusNode.hasFocus
+                            ? colorScheme.primary
+                            : colorScheme.outlineVariant.withValues(alpha: 0.4),
+                        width: _searchFocusNode.hasFocus ? 1.5 : 1.0,
+                      ),
+                    ),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    padding: const WidgetStatePropertyAll(
+                      EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    hintText: lang == 'bn'
+                        ? 'প্রোডাক্ট, উপসর্গ, উপাদান খুঁজুন...'
+                        : 'Search products, symptoms, ingredients...',
+                    leading: Icon(
+                      Icons.search_rounded,
+                      color: colorScheme.primary,
+                      size: 22,
+                    ),
+                    trailing: [
+                      if (_searchController.text.isNotEmpty)
+                        IconButton(
+                          icon: const Icon(Icons.clear_rounded, size: 20),
+                          onPressed: () {
+                            _searchController.clear();
+                            ref
+                                .read(productSearchQueryProvider.notifier)
+                                .updateQuery('');
+                            FocusScope.of(context).unfocus();
+                          },
+                        ),
+                    ],
                     onChanged: (val) => ref
                         .read(productSearchQueryProvider.notifier)
                         .updateQuery(val),
@@ -295,60 +335,6 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                         await dao.logSearchEvent(val, currentItems);
                       }
                     },
-                    decoration: InputDecoration(
-                      hintText: lang == 'bn'
-                          ? 'প্রোডাক্ট, উপসর্গ, উপাদান খুঁজুন...'
-                          : 'Search products, symptoms, ingredients...',
-                      isDense: true,
-                      prefixIcon: Icon(
-                        Icons.search_rounded,
-                        color: colorScheme.primary,
-                        size: 22,
-                      ),
-                      suffixIcon: _searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear_rounded, size: 20),
-                              onPressed: () {
-                                _searchController.clear();
-                                ref
-                                    .read(productSearchQueryProvider.notifier)
-                                    .updateQuery('');
-                                FocusScope.of(context).unfocus();
-                              },
-                            )
-                          : null,
-                      filled: true,
-                      fillColor: colorScheme.surfaceContainerHighest.withValues(
-                        alpha: 0.4,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 11,
-                        horizontal: 16,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide(
-                          color: colorScheme.outlineVariant.withValues(
-                            alpha: 0.4,
-                          ),
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide(
-                          color: colorScheme.outlineVariant.withValues(
-                            alpha: 0.4,
-                          ),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide(
-                          color: colorScheme.primary,
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
                   ),
                 ),
                 _buildSearchHistoryChips(context, ref, lang),

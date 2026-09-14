@@ -239,5 +239,53 @@ void main() {
       await tester.pumpAndSettle();
       expect(neverAskCalled, true);
     });
+
+    testWidgets(
+      'renders without horizontal overflow on small and narrow devices',
+      (WidgetTester tester) async {
+        for (final width in [280.0, 320.0, 360.0]) {
+          tester.view.physicalSize = Size(width, 700.0);
+          tester.view.devicePixelRatio = 1.0;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
+
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [
+                languageSettingProvider.overrideWith(MockLanguageSettingBn.new),
+              ],
+              child: const MaterialApp(home: Scaffold(body: FeedbackDialog())),
+            ),
+          );
+          await tester.pumpAndSettle();
+
+          // Verify 5 stars render without error
+          expect(find.byKey(const Key('feedback_star_5')), findsOneWidget);
+          expect(tester.takeException(), isNull);
+
+          // Tap 5th star (Play Store route)
+          await tester.tap(find.byKey(const Key('feedback_star_5')));
+          await tester.pumpAndSettle();
+          expect(
+            find.byKey(const Key('feedback_play_store_button')),
+            findsOneWidget,
+          );
+          expect(tester.takeException(), isNull);
+
+          // Tap 2nd star (Constructive feedback route with email & whatsapp)
+          await tester.tap(find.byKey(const Key('feedback_star_2')));
+          await tester.pumpAndSettle();
+          expect(
+            find.byKey(const Key('feedback_whatsapp_button')),
+            findsOneWidget,
+          );
+          expect(
+            find.byKey(const Key('feedback_email_button')),
+            findsOneWidget,
+          );
+          expect(tester.takeException(), isNull);
+        }
+      },
+    );
   });
 }

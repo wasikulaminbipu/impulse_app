@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/app_version_provider.dart';
 import 'package:impulse_app/screens/about_us_screen.dart';
@@ -35,9 +34,7 @@ void main() {
         expect(find.text('About Us'), findsOneWidget);
         expect(find.text('Impulse'), findsOneWidget);
         expect(
-          find.text(
-            'v${AppConstants.appVersion} (Build ${AppConstants.buildNumber})',
-          ),
+          find.text('v$fallbackAppVersion (Build $fallbackBuildNumber)'),
           findsOneWidget,
         );
         expect(find.text('Our Companies'), findsOneWidget);

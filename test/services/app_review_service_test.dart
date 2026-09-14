@@ -1,6 +1,7 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_app/constants/app_constants.dart';
+import 'package:impulse_app/constants/feedback_config.dart';
 import 'package:impulse_app/data/app_databases.dart';
 import 'package:impulse_app/data/app_maintenance_dao.dart';
 import 'package:impulse_app/services/app_review_service.dart';
@@ -142,34 +143,52 @@ void main() {
       },
     );
 
-    test(
-      'openFeedbackEmail constructs proper mailto URI with subject and body',
-      () async {
-        final success = await service.openFeedbackEmail(
-          subject: 'My Custom Subject',
-          body: 'Here is my review',
-        );
-        expect(success, true);
-        final uri = fakeLauncher.launchedUris.last;
-        expect(uri.scheme, 'mailto');
-        expect(uri.path, AppConstants.supportEmail);
-        expect(uri.queryParameters['subject'], 'My Custom Subject');
-        expect(uri.queryParameters['body'], 'Here is my review');
-      },
-    );
+    test('openFeedbackEmail constructs proper mailto URI using FeedbackConfig default', () async {
+      final success = await service.openFeedbackEmail(
+        subject: 'My Custom Subject',
+        body: 'Here is my review',
+      );
+      expect(success, true);
+      final uri = fakeLauncher.launchedUris.last;
+      expect(uri.scheme, 'mailto');
+      expect(uri.path, FeedbackConfig.email);
+      expect(uri.path, 'impulsepmd@gmail.com');
+      expect(uri.queryParameters['subject'], 'My Custom Subject');
+      expect(uri.queryParameters['body'], 'Here is my review');
+    });
 
-    test(
-      'openFeedbackWhatsApp formats telephone digits and query message',
-      () async {
-        final success = await service.openFeedbackWhatsApp(
-          message: 'Hello Support!',
-        );
-        expect(success, true);
-        final uri = fakeLauncher.launchedUris.last;
-        expect(uri.host, 'wa.me');
-        expect(uri.path, '/8801629389015');
-        expect(uri.queryParameters['text'], 'Hello Support!');
-      },
-    );
+    test('openFeedbackEmail allows overriding recipient email', () async {
+      final success = await service.openFeedbackEmail(
+        recipientEmail: 'custom@impulseagriscience.com',
+        subject: 'Custom Subject',
+        body: 'Feedback message',
+      );
+      expect(success, true);
+      final uri = fakeLauncher.launchedUris.last;
+      expect(uri.path, 'custom@impulseagriscience.com');
+    });
+
+    test('openFeedbackWhatsApp formats telephone digits and query message using FeedbackConfig default', () async {
+      final success = await service.openFeedbackWhatsApp(
+        message: 'Hello Support!',
+      );
+      expect(success, true);
+      final uri = fakeLauncher.launchedUris.last;
+      expect(uri.host, 'wa.me');
+      expect(uri.path, '/8801613716307');
+      expect(uri.queryParameters['text'], 'Hello Support!');
+    });
+
+    test('openFeedbackWhatsApp allows overriding WhatsApp target', () async {
+      final success = await service.openFeedbackWhatsApp(
+        whatsAppTarget: 'https://wa.me/8801999999999',
+        message: 'Custom message',
+      );
+      expect(success, true);
+      final uri = fakeLauncher.launchedUris.last;
+      expect(uri.host, 'wa.me');
+      expect(uri.path, '/8801999999999');
+      expect(uri.queryParameters['text'], 'Custom message');
+    });
   });
 }

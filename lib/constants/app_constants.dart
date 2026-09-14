@@ -1,29 +1,7 @@
-/// Central constants defining application metadata, contact channels,
-/// and canonical product category identifiers.
-abstract final class AppConstants {
-  static const String appNameEn = 'Impulse';
-  static const String appNameBn = 'ইমপালস';
-  static const String appVersion = '1.0.6';
-  static const int buildNumber = 7;
+import 'package:impulse_app/config/app_config.dart';
 
-  static const String websiteUrl = 'https://www.impulseagrisciencelimited.com';
-  static const String supportEmail = 'impulseagriscienceltd@gmail.com';
-  static const String supportPhone = '+880-1629-389015';
+export 'package:impulse_app/config/app_config.dart';
 
-  static const String playStorePackageName =
-      'com.impulseagriscienceltd.impulse_app';
-  static const String playStoreUrl =
-      'https://play.google.com/store/apps/details?id=com.impulseagriscienceltd.impulse_app';
-  static const String playStoreMarketUrl =
-      'market://details?id=com.impulseagriscienceltd.impulse_app';
-
-  // Category & Filter Identifiers
-  static const String categoryFeedAdditives = 'Feed Additives';
-  static const String categoryFeedAdditive = 'Feed Additive';
-  static const String categoryVaccine = 'Vaccine';
-  static const String categoryVaccines = 'Vaccines';
-  static const String categoryPoultry = 'Poultry';
-  static const String categoryCattle = 'Cattle';
-  static const String categoryAqua = 'Aqua';
-  static const String categoryAll = 'All';
-}
+/// Legacy alias for [AppConfig] to preserve backward compatibility.
+/// All application configuration data is centralized in `lib/config/app_config.dart`.
+typedef AppConstants = AppConfig;

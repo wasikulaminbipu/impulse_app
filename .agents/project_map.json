@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-09-13T09:13:00Z",
+  "last_updated": "2026-09-14T09:21:00Z",
   "project_info": {
     "name": "impulse_dex",
     "architecture_pattern": "Clean Architecture / Feature-based with Riverpod, Drift, Freezed",
@@ -22,7 +22,9 @@
         "flutter_native_splash",
         "url_launcher",
         "flutter_contacts",
-        "package_info_plus"
+        "package_info_plus",
+        "share_plus",
+        "pdf"
       ]
     }
   },
