@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/constants/app_assets.dart';
 import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/app_version_provider.dart';
+import 'package:impulse_app/widgets/feedback_dialog.dart';
 import 'package:impulse_app/widgets/glass_container.dart';
 import 'package:impulse_app/widgets/privacy_policy_dialog.dart';
 import 'package:impulse_app/widgets/tactile_button.dart';
@@ -223,7 +225,7 @@ class AboutUsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          'v${AppConstants.appVersion} (Build ${AppConstants.buildNumber})',
+                          ref.watch(appFullVersionDisplayProvider),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -486,6 +488,26 @@ class AboutUsScreen extends ConsumerWidget {
                       showDialog<void>(
                         context: context,
                         builder: (context) => const PrivacyPolicyDialog(),
+                      );
+                    },
+                  ),
+                  Divider(
+                    height: 1,
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+                  ),
+                  _buildContactListTile(
+                    context,
+                    icon: Icons.star_rate_rounded,
+                    title: isBn ? 'রেটিং ও মতামত প্রদান' : 'Rate & Feedback',
+                    subtitle: isBn
+                        ? 'গুগল প্লে স্টোর রিভিউ বা সহায়তা'
+                        : 'Play Store Review or Support',
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      showDialog<void>(
+                        context: context,
+                        builder: (context) =>
+                            const FeedbackDialog(isUserInitiated: true),
                       );
                     },
                   ),

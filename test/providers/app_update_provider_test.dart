@@ -50,6 +50,8 @@ class FakeTestUpdateService extends AppUpdateService {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('AppUpdateNotifier Provider Tests', () {
     late AppMaintenanceDb db;
     late ProviderContainer container;

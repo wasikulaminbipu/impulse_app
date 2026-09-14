@@ -164,11 +164,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
       key: ValueKey(categories.join(',')),
       length: categories.length,
       child: Scaffold(
-        drawer: AppDrawer(
-          onTabSelected: (index) {
-            // Handled by parent MainScreen or Tab selection
-          },
-        ),
+        drawer: const AppDrawer(),
         appBar: AppBar(
           titleSpacing: 0,
           leading: Builder(

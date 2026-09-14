@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-09-12T13:11:45Z",
+  "last_updated": "2026-09-13T09:13:00Z",
   "project_info": {
     "name": "impulse_dex",
     "architecture_pattern": "Clean Architecture / Feature-based with Riverpod, Drift, Freezed",
@@ -21,7 +21,8 @@
         "flutter_svg",
         "flutter_native_splash",
         "url_launcher",
-        "flutter_contacts"
+        "flutter_contacts",
+        "package_info_plus"
       ]
     }
   },
@@ -72,10 +73,13 @@
       "path": "lib/providers",
       "description": "Riverpod state management providers and query state controllers",
       "key_files": [
+        "lib/providers/navigation_provider.dart",
+        "lib/providers/app_version_provider.dart",
         "lib/providers/products_provider.dart",
         "lib/providers/stakeholder_provider.dart",
         "lib/providers/app_maintenance_provider.dart",
         "lib/providers/app_update_provider.dart",
+        "lib/providers/app_review_provider.dart",
         "lib/providers/database_provider.dart"
       ],
       "dependencies": [
@@ -116,7 +120,8 @@
         "lib/widgets/favorite_button.dart",
         "lib/widgets/app_drawer.dart",
         "lib/widgets/product_details/benefits_section.dart",
-        "lib/widgets/update_prompt_sheet.dart"
+        "lib/widgets/update_prompt_sheet.dart",
+        "lib/widgets/feedback_dialog.dart"
       ],
       "dependencies": [
         "flutter"
@@ -128,7 +133,8 @@
       "name": "Services Layer",
       "description": "External integration and platform services (In-app updates, native device bridges)",
       "key_files": [
-        "lib/services/app_update_service.dart"
+        "lib/services/app_update_service.dart",
+        "lib/services/app_review_service.dart"
       ],
       "dependencies": [
         "in_app_update",
@@ -159,7 +165,15 @@
     ],
     "state": [
       "lib/providers/products_provider.dart",
-      "lib/providers/stakeholder_provider.dart"
+      "lib/providers/stakeholder_provider.dart",
+      "lib/providers/navigation_provider.dart",
+      "lib/providers/app_version_provider.dart"
+    ],
+    "navigation": [
+      "lib/providers/navigation_provider.dart"
+    ],
+    "app_version": [
+      "lib/providers/app_version_provider.dart"
     ],
     "ui_screens": [
       "lib/screens/main_screen.dart",
@@ -173,6 +187,13 @@
     ],
     "plan": [
       "APP_PLAN.md"
+    ],
+    "app_review": [
+      "lib/services/app_review_service.dart",
+      "lib/providers/app_review_provider.dart"
+    ],
+    "feedback_dialog": [
+      "lib/widgets/feedback_dialog.dart"
     ],
     "tests": [
       "test/db_integration_test.dart",
@@ -657,6 +678,49 @@
         "lib/providers/products_provider.dart",
         "lib/providers/stakeholder_provider.dart",
         "lib/screens/sales_personnels_screen.dart",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 29,
+      "desc": "Implement customer-first Play Store Feedback & 5-Star Rating Dialog, AppReviewService with session heuristic & 60-day cooldown safeguards, AppReviewNotifier Riverpod provider, App Drawer & About Us entry points, and comprehensive unit and widget tests.",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "lib/constants/app_constants.dart",
+        "lib/services/app_review_service.dart",
+        "lib/providers/app_review_provider.dart",
+        "lib/widgets/feedback_dialog.dart",
+        "lib/widgets/app_drawer.dart",
+        "lib/screens/about_us_screen.dart",
+        "lib/screens/main_screen.dart",
+        "test/services/app_review_service_test.dart",
+        "test/widgets/feedback_dialog_test.dart",
+        "test/widgets/app_drawer_test.dart",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 30,
+      "desc": "Resolve menu drawer issues: remove Distributors tile, wire navigation to respective tabs via MainNavIndex Riverpod provider, rename Sales Representatives to Contact Details, dynamically fetch app version via package_info_plus and AppVersionProvider in Drawer & About Us, and maintain 100% passing tests and >80% test coverage.",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "pubspec.yaml",
+        "lib/constants/app_constants.dart",
+        "lib/providers/navigation_provider.dart",
+        "lib/providers/app_version_provider.dart",
+        "lib/widgets/app_drawer.dart",
+        "lib/screens/about_us_screen.dart",
+        "lib/screens/main_screen.dart",
+        "lib/screens/products_screen.dart",
+        "lib/screens/manufacturers_screen.dart",
+        "lib/screens/sales_personnels_screen.dart",
+        "test/widgets/app_drawer_test.dart",
+        "test/screens/about_us_screen_test.dart",
+        "test/providers/navigation_provider_test.dart",
+        "test/providers/app_version_provider_test.dart",
+        "badges/coverage.svg",
         ".agents/project_map.json"
       ]
     }

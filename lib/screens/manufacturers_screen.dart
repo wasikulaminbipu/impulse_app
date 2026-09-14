@@ -18,7 +18,7 @@ class ManufacturersScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return PaginatedListScaffold<Manufacturer>(
-      drawer: const AppDrawer(currentTabIndex: 1),
+      drawer: const AppDrawer(),
       title: lang == 'bn' ? 'প্রস্তুতকারক তালিকা' : 'Manufacturers List',
       searchHint: lang == 'bn'
           ? 'প্রস্তুতকারক খুঁজুন...'

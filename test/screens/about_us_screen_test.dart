@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/app_version_provider.dart';
 import 'package:impulse_app/screens/about_us_screen.dart';
 
 class MockLanguageSettingEn extends LanguageSetting {
@@ -80,6 +81,26 @@ void main() {
       expect(find.text('মূল সুবিধাসমূহ'), findsOneWidget);
       expect(find.text('যোগাযোগ ও সাপোর্ট'), findsOneWidget);
       expect(find.text('ওয়েবসাইট ভিজিট করুন'), findsOneWidget);
+    });
+
+    testWidgets('renders dynamically fetched app version from provider', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            languageSettingProvider.overrideWith(MockLanguageSettingEn.new),
+            appFullVersionDisplayProvider.overrideWithValue(
+              'v3.0.0 (Build 99)',
+            ),
+          ],
+          child: const MaterialApp(home: AboutUsScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('v3.0.0 (Build 99)'), findsOneWidget);
     });
   });
 }

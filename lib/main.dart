@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:impulse_app/constants/app_keys.dart';
 import 'package:impulse_app/core/errors/app_error_handler.dart';
 import 'package:impulse_app/core/errors/app_provider_observer.dart';
 import 'package:impulse_app/screens/main_screen.dart';
@@ -31,6 +32,8 @@ class ImpulseProductsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: AppKeys.rootNavigatorKey,
+      scaffoldMessengerKey: AppKeys.rootScaffoldMessengerKey,
       title: 'Impulse',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
+import 'package:impulse_app/providers/app_review_provider.dart';
 import 'package:impulse_app/providers/app_update_provider.dart';
+import 'package:impulse_app/providers/navigation_provider.dart';
 import 'package:impulse_app/screens/manufacturers_screen.dart';
 import 'package:impulse_app/screens/products_screen.dart';
 import 'package:impulse_app/screens/sales_personnels_screen.dart';
@@ -18,8 +21,6 @@ class MainScreen extends ConsumerStatefulWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  int _currentIndex = 0;
-
   final List<Widget> _screens = const [
     ProductsScreen(),
     ManufacturersScreen(),
@@ -27,6 +28,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   ];
 
   late final List<Widget?> _builtScreens = List.filled(_screens.length, null);
+  Timer? _reviewTimer;
 
   @override
   void initState() {
@@ -36,8 +38,23 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         ref
             .read(appUpdateProvider.notifier)
             .checkAndPromptUpdate(context: context);
+
+        // Schedule session recording and gentle review prompt evaluation
+        _reviewTimer = Timer(const Duration(seconds: 2), () {
+          if (mounted) {
+            ref
+                .read(appReviewProvider.notifier)
+                .recordSessionAndCheckPrompt(context: context);
+          }
+        });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _reviewTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -73,20 +90,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       }
     });
 
+    final currentIndex = ref.watch(mainNavIndexProvider);
+
     return Scaffold(
-      drawer: AppDrawer(
-        currentTabIndex: _currentIndex,
-        onTabSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
+      drawer: const AppDrawer(),
       extendBody: true, // Allows the screens to scroll behind the floating glass nav bar
       body: SlideIndexedStack(
-        index: _currentIndex,
+        index: currentIndex,
         children: List.generate(_screens.length, (index) {
-          if (index == _currentIndex || _builtScreens[index] != null) {
+          if (index == currentIndex || _builtScreens[index] != null) {
             _builtScreens[index] ??= _screens[index];
             return _builtScreens[index]!;
           }
@@ -99,17 +111,17 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           if (details.primaryVelocity != null) {
             if (details.primaryVelocity! < 0) {
               // Swiped left (velocity < 0) -> go to next tab
-              if (_currentIndex < _screens.length - 1) {
-                setState(() {
-                  _currentIndex++;
-                });
+              if (currentIndex < _screens.length - 1) {
+                ref
+                    .read(mainNavIndexProvider.notifier)
+                    .setIndex(currentIndex + 1);
               }
             } else if (details.primaryVelocity! > 0) {
               // Swiped right (velocity > 0) -> go to previous tab
-              if (_currentIndex > 0) {
-                setState(() {
-                  _currentIndex--;
-                });
+              if (currentIndex > 0) {
+                ref
+                    .read(mainNavIndexProvider.notifier)
+                    .setIndex(currentIndex - 1);
               }
             }
           }
@@ -156,7 +168,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                           curve: Curves.fastOutSlowIn,
                           alignment: Alignment(
                             -1.0 +
-                                (_currentIndex * (2.0 / (_screens.length - 1))),
+                                (currentIndex * (2.0 / (_screens.length - 1))),
                             0.0,
                           ),
                           child: FractionallySizedBox(
@@ -237,7 +249,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     IconData selectedIcon,
     String label,
   ) {
-    final isSelected = _currentIndex == index;
+    final currentIndex = ref.watch(mainNavIndexProvider);
+    final isSelected = currentIndex == index;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -245,11 +258,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          if (_currentIndex != index) {
+          if (currentIndex != index) {
             HapticFeedback.selectionClick();
-            setState(() {
-              _currentIndex = index;
-            });
+            ref.read(mainNavIndexProvider.notifier).setIndex(index);
           }
         },
         child: Column(

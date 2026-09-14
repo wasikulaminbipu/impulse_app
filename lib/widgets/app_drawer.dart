@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/constants/app_assets.dart';
-import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/providers/app_maintenance_provider.dart';
 import 'package:impulse_app/providers/app_update_provider.dart';
+import 'package:impulse_app/providers/app_version_provider.dart';
+import 'package:impulse_app/providers/navigation_provider.dart';
 import 'package:impulse_app/screens/about_us_screen.dart';
-import 'package:impulse_app/screens/distributors_screen.dart';
+import 'package:impulse_app/widgets/feedback_dialog.dart';
 import 'package:impulse_app/widgets/glass_container.dart';
 import 'package:impulse_app/widgets/privacy_policy_dialog.dart';
 
 class AppDrawer extends ConsumerWidget {
   final void Function(int index)? onTabSelected;
-  final int currentTabIndex;
+  final int? currentTabIndex;
 
-  const AppDrawer({super.key, this.onTabSelected, this.currentTabIndex = 0});
+  const AppDrawer({super.key, this.onTabSelected, this.currentTabIndex});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,6 +23,14 @@ class AppDrawer extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
     final lang = ref.watch(languageSettingProvider);
     final isBn = lang == 'bn';
+    final activeTabIndex = currentTabIndex ?? ref.watch(mainNavIndexProvider);
+    final appVersion = ref.watch(appVersionDisplayProvider);
+
+    void navigateToTab(int index) {
+      Navigator.of(context).pop();
+      ref.read(mainNavIndexProvider.notifier).setIndex(index);
+      if (onTabSelected != null) onTabSelected!(index);
+    }
 
     return Drawer(
       backgroundColor: colorScheme.surface,
@@ -92,7 +101,7 @@ class AppDrawer extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              'v${AppConstants.appVersion}',
+                              'v$appVersion',
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
@@ -120,50 +129,24 @@ class AppDrawer extends ConsumerWidget {
                     icon: Icons.inventory_2_outlined,
                     selectedIcon: Icons.inventory_2,
                     label: isBn ? 'প্রোডাক্টস ক্যাটালগ' : 'Products Directory',
-                    isSelected: currentTabIndex == 0,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      if (onTabSelected != null) onTabSelected!(0);
-                    },
+                    isSelected: activeTabIndex == 0,
+                    onTap: () => navigateToTab(0),
                   ),
                   _buildDrawerTile(
                     context,
                     icon: Icons.factory_outlined,
                     selectedIcon: Icons.factory,
                     label: isBn ? 'ম্যানুফ্যাকচারার' : 'Manufacturers',
-                    isSelected: currentTabIndex == 1,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      if (onTabSelected != null) onTabSelected!(1);
-                    },
+                    isSelected: activeTabIndex == 1,
+                    onTap: () => navigateToTab(1),
                   ),
                   _buildDrawerTile(
                     context,
                     icon: Icons.contacts_outlined,
                     selectedIcon: Icons.contacts,
-                    label: isBn
-                        ? 'প্রতিনিধি কন্টাক্টস'
-                        : 'Sales Representatives',
-                    isSelected: currentTabIndex == 2,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      if (onTabSelected != null) onTabSelected!(2);
-                    },
-                  ),
-                  _buildDrawerTile(
-                    context,
-                    icon: Icons.storefront_outlined,
-                    selectedIcon: Icons.storefront,
-                    label: isBn ? 'ডিস্ট্রিবিউটর' : 'Distributors',
-                    isSelected: false,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (context) => const DistributorsScreen(),
-                        ),
-                      );
-                    },
+                    label: isBn ? 'যোগাযোগের বিবরণ' : 'Contact Details',
+                    isSelected: activeTabIndex == 2,
+                    onTap: () => navigateToTab(2),
                   ),
 
                   Padding(
@@ -204,6 +187,21 @@ class AppDrawer extends ConsumerWidget {
                       showDialog<void>(
                         context: context,
                         builder: (context) => const PrivacyPolicyDialog(),
+                      );
+                    },
+                  ),
+                  _buildDrawerTile(
+                    context,
+                    icon: Icons.star_outline_rounded,
+                    selectedIcon: Icons.star_rounded,
+                    label: isBn ? 'রেটিং ও মতামত' : 'Rate & Feedback',
+                    isSelected: false,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      showDialog<void>(
+                        context: context,
+                        builder: (context) =>
+                            const FeedbackDialog(isUserInitiated: true),
                       );
                     },
                   ),
@@ -360,7 +358,16 @@ class AppDrawer extends ConsumerWidget {
                   shape: BoxShape.circle,
                 ),
               )
-            : null,
+            : (updateState.status == UpdateStatus.checking
+                  ? SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: colorScheme.primary,
+                      ),
+                    )
+                  : null),
         onTap: () {
           HapticFeedback.selectionClick();
           Navigator.of(context).pop();
@@ -369,7 +376,7 @@ class AppDrawer extends ConsumerWidget {
           } else {
             ref
                 .read(appUpdateProvider.notifier)
-                .checkAndPromptUpdate(context: context, force: true);
+                .checkAndPromptUpdate(force: true);
           }
         },
       ),

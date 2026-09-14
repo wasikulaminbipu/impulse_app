@@ -194,12 +194,7 @@ class _SalesPersonnelsScreenState extends ConsumerState<SalesPersonnelsScreen>
     final hasChips = _searchFocusNode.hasFocus;
 
     return Scaffold(
-      drawer: AppDrawer(
-        currentTabIndex: 2,
-        onTabSelected: (index) {
-          // Handled by parent tab controller if needed
-        },
-      ),
+      drawer: const AppDrawer(),
       appBar: AppBar(
         titleSpacing: 0,
         leading: Builder(

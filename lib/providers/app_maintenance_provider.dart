@@ -1,4 +1,4 @@
-﻿import 'package:impulse_app/data/app_maintenance_dao.dart';
+import 'package:impulse_app/data/app_maintenance_dao.dart';
 import 'package:impulse_app/models/app_maintenance.dart';
 import 'package:impulse_app/providers/database_provider.dart';
 
@@ -46,7 +46,9 @@ class LanguageSetting extends _$LanguageSetting {
 
   Future<void> _init() async {
     final dao = await ref.read(appMaintenanceDaoProvider.future);
-    state = await dao.getLanguage();
+    if (ref.mounted) {
+      state = await dao.getLanguage();
+    }
   }
 
   Future<void> toggle() async {

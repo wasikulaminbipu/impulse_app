@@ -237,7 +237,7 @@ final class LanguageSettingProvider
   }
 }
 
-String _$languageSettingHash() => r'3a34852c0bb52782dc93748463ef41564b3d5a15';
+String _$languageSettingHash() => r'2c3f2776cd8e2fc6420cb45829b1b4cc8ce15e29';
 
 abstract class _$LanguageSetting extends $Notifier<String> {
   String build();
