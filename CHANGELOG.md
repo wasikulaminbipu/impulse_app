@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.8] - 2026-09-14
+### What's Changed
+- Native vector PDF monograph export, WhatsApp inquiry button, Call for price presentation, and WebP product asset optimization
+
 ## [1.0.7] - 2026-09-14
 ### What's Changed
 - Release build 8 (Version 1.0.7).

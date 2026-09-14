@@ -52,17 +52,17 @@ final class PackageInfoProvider
 
 String _$packageInfoHash() => r'44d37547139567a5f03c1942c1d62ff1abb07248';
 
-/// Dynamic app version string (e.g., '1.0.6') with fallback to AppConstants.
+/// Dynamic app version string (e.g., '1.0.6') with fallback.
 
 @ProviderFor(appVersionDisplay)
 final appVersionDisplayProvider = AppVersionDisplayProvider._();
 
-/// Dynamic app version string (e.g., '1.0.6') with fallback to AppConstants.
+/// Dynamic app version string (e.g., '1.0.6') with fallback.
 
 final class AppVersionDisplayProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  /// Dynamic app version string (e.g., '1.0.6') with fallback to AppConstants.
+  /// Dynamic app version string (e.g., '1.0.6') with fallback.
   AppVersionDisplayProvider._()
     : super(
         from: null,
@@ -96,7 +96,7 @@ final class AppVersionDisplayProvider
   }
 }
 
-String _$appVersionDisplayHash() => r'0d66bf3b34a8c2447018f2f6255029d3675883a4';
+String _$appVersionDisplayHash() => r'3ad529baf0c07523f7fa9ba17f81554dd5b672ac';
 
 /// Dynamic full app version string (e.g., 'v1.0.6 (Build 7)') with fallback.
 
@@ -143,4 +143,4 @@ final class AppFullVersionDisplayProvider
 }
 
 String _$appFullVersionDisplayHash() =>
-    r'afcc2ca8427fcfd968e54d5482bb21968009f087';
+    r'8995f62cfef17e65065d02a28c37f0b93f5b1f34';

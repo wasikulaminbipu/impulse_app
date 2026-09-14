@@ -87,7 +87,7 @@ final class AppReviewNotifierProvider
   }
 }
 
-String _$appReviewNotifierHash() => r'e3daac13b511cec126f0366dfa9437891455c14d';
+String _$appReviewNotifierHash() => r'491e2f8a4cf12445ae549b7588fc3d6240a30c6f';
 
 abstract class _$AppReviewNotifier extends $Notifier<void> {
   void build();
