@@ -1,4 +1,10 @@
 # Changelog
+## [1.0.7] - 2026-09-14
+### What's Changed
+- Release build 8 (Version 1.0.7).
+- 100% verified: Regenerated models, native splash screen, launcher icons, asset audits, and test suite.
+- Google Play Store & Data Safety policy compliance verified.
+
 ## [1.0.6] - 2026-09-13
 ### What's Changed
 - Added in-app update checks, prompt dialog, and product catalog asset updates
