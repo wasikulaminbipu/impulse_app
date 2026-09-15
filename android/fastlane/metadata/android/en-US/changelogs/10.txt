@@ -1,0 +1,1 @@
+- Release v1.0.9: Redesign PDF datasheet manufacturer and marketer cards with dedicated logo and text columns

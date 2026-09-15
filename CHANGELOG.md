@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.9] - 2026-09-15
+### What's Changed
+- Redesign PDF datasheet manufacturer and marketer cards with dedicated logo and text columns
+
 ## [1.0.8] - 2026-09-14
 ### What's Changed
 - Native vector PDF monograph export, WhatsApp inquiry button, Call for price presentation, and WebP product asset optimization
