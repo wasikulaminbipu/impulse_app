@@ -53,7 +53,7 @@ platform :android do
       track: 'production',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
-      user_fraction: 0.10,
+      rollout: '0.10',
       skip_upload_apk: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
@@ -71,17 +71,22 @@ platform :android do
 
     UI.message("Promoting release from #{from_track} to #{to_track} with #{rollout * 100}% rollout...")
 
-    upload_to_play_store(
+    params = {
       track: from_track,
       track_promote_to: to_track,
-      user_fraction: (to_track == 'production' && rollout < 1.0) ? rollout : nil,
       skip_upload_apk: true,
       skip_upload_aab: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
       changes_not_sent_for_review: true
-    )
+    }
+
+    if to_track == 'production' && rollout < 1.0
+      params[:rollout] = rollout.to_s
+    end
+
+    upload_to_play_store(params)
   end
 
   desc "Upload Store Text Metadata and Localized Descriptions Only (No Screenshots / Icons)"
