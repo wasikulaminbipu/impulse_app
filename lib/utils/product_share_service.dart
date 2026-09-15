@@ -111,7 +111,7 @@ class ProductShareService {
   ///
   /// Includes header with `logo_impulse.png`, product photo, clinical monograph
   /// tables, species-specific dosing, precautions callouts, presentation tables,
-  /// simple manufacturer details with logo, and Google Play app download QR code.
+  /// two-column Manufacturer & Distributor section, and Google Play app download QR code.
   static Future<Uint8List> buildNativeProductPdf({
     required Product product,
     Uint8List? logoBytes,
@@ -676,93 +676,278 @@ class ProductShareService {
               ),
             ],
 
-            // Manufacturer & Distributor (Simple Text + Logo)
-            if (product.manufacturer.nameEn.isNotEmpty) ...[
-              buildSectionTitle('MANUFACTURER & DISTRIBUTOR'),
-              pw.Padding(
-                padding: const pw.EdgeInsets.symmetric(vertical: 4),
-                child: pw.Row(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    if (manufacturerLogo != null) ...[
-                      pw.Container(
-                        width: 76,
-                        height: 54,
-                        alignment: pw.Alignment.center,
-                        padding: const pw.EdgeInsets.all(3),
-                        decoration: pw.BoxDecoration(
-                          color: PdfColors.white,
-                          borderRadius: pw.BorderRadius.circular(4),
-                          border: pw.Border.all(color: borderLight, width: 0.6),
-                        ),
-                        child: pw.Center(child: pw.Image(manufacturerLogo)),
+            // Manufacturer & Distributor (Two-Column Layout: Not Table)
+            buildSectionTitle('MANUFACTURER & DISTRIBUTOR'),
+            pw.Padding(
+              padding: const pw.EdgeInsets.symmetric(vertical: 2),
+              child: pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  // Left Column: Manufactured By
+                  pw.Expanded(
+                    child: pw.Container(
+                      padding: const pw.EdgeInsets.all(8),
+                      decoration: pw.BoxDecoration(
+                        color: tableZebraBg,
+                        borderRadius: pw.BorderRadius.circular(6),
+                        border: pw.Border.all(color: borderLight, width: 0.6),
                       ),
-                      pw.SizedBox(width: 14),
-                    ],
-                    pw.Expanded(
-                      child: pw.Column(
+                      child: pw.Row(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          pw.Text(
-                            product.manufacturer.nameEn,
-                            style: pw.TextStyle(
-                              fontSize: 10,
-                              fontWeight: pw.FontWeight.bold,
-                              color: slateDark,
+                          // One side: ONLY Logo
+                          if (manufacturerLogo != null)
+                            pw.Container(
+                              width: 50,
+                              height: 50,
+                              alignment: pw.Alignment.center,
+                              padding: const pw.EdgeInsets.all(3),
+                              decoration: pw.BoxDecoration(
+                                color: PdfColors.white,
+                                borderRadius: pw.BorderRadius.circular(4),
+                                border: pw.Border.all(
+                                  color: borderLight,
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: pw.Image(manufacturerLogo),
+                            )
+                          else
+                            pw.Container(
+                              width: 50,
+                              height: 50,
+                              alignment: pw.Alignment.center,
+                              padding: const pw.EdgeInsets.all(3),
+                              decoration: pw.BoxDecoration(
+                                color: tableHeaderBg,
+                                borderRadius: pw.BorderRadius.circular(4),
+                                border: pw.Border.all(
+                                  color: borderLight,
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: pw.Text(
+                                'MFG',
+                                style: pw.TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: pw.FontWeight.bold,
+                                  color: slateLight,
+                                ),
+                              ),
+                            ),
+                          pw.SizedBox(width: 8),
+                          // Other side: ALL the text
+                          pw.Expanded(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                pw.Text(
+                                  'Manufactured By',
+                                  style: pw.TextStyle(
+                                    fontSize: 8,
+                                    fontWeight: pw.FontWeight.bold,
+                                    color: primaryColor,
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                                pw.SizedBox(height: 2),
+                                pw.Text(
+                                  product.manufacturer.nameEn.isNotEmpty
+                                      ? product.manufacturer.nameEn
+                                      : 'Not Specified',
+                                  style: pw.TextStyle(
+                                    fontSize: 8.5,
+                                    fontWeight: pw.FontWeight.bold,
+                                    color: slateDark,
+                                  ),
+                                ),
+                                if (product.manufacturer.addressEn != null &&
+                                    product
+                                        .manufacturer
+                                        .addressEn!
+                                        .isNotEmpty) ...[
+                                  pw.SizedBox(height: 2.5),
+                                  pw.Text(
+                                    product.manufacturer.addressEn!,
+                                    style: pw.TextStyle(
+                                      fontSize: 7,
+                                      color: slateBody,
+                                      lineSpacing: 1.15,
+                                    ),
+                                  ),
+                                ],
+                                if (product.manufacturer.mobile != null &&
+                                    product
+                                        .manufacturer
+                                        .mobile!
+                                        .isNotEmpty) ...[
+                                  pw.SizedBox(height: 2),
+                                  pw.Text(
+                                    'Phone: ${product.manufacturer.mobile!}',
+                                    style: pw.TextStyle(
+                                      fontSize: 7,
+                                      color: slateBody,
+                                    ),
+                                  ),
+                                ],
+                                if (product.manufacturer.email != null &&
+                                    product.manufacturer.email!.isNotEmpty) ...[
+                                  pw.SizedBox(height: 1.5),
+                                  pw.Text(
+                                    'Email: ${product.manufacturer.email!}',
+                                    style: pw.TextStyle(
+                                      fontSize: 7,
+                                      color: slateBody,
+                                    ),
+                                  ),
+                                ],
+                                if (product.manufacturer.website != null &&
+                                    product
+                                        .manufacturer
+                                        .website!
+                                        .isNotEmpty) ...[
+                                  pw.SizedBox(height: 1.5),
+                                  pw.Text(
+                                    'Web: ${product.manufacturer.website!}',
+                                    style: pw.TextStyle(
+                                      fontSize: 7,
+                                      color: slateBody,
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                           ),
-                          if (product.manufacturer.addressEn != null &&
-                              product.manufacturer.addressEn!.isNotEmpty) ...[
-                            pw.SizedBox(height: 2),
-                            pw.Text(
-                              product.manufacturer.addressEn!,
-                              textAlign: pw.TextAlign.justify,
-                              style: pw.TextStyle(
-                                fontSize: 8,
-                                color: slateBody,
-                              ),
-                            ),
-                          ],
-                          if (product.manufacturer.mobile != null &&
-                              product.manufacturer.mobile!.isNotEmpty) ...[
-                            pw.SizedBox(height: 2),
-                            pw.Text(
-                              'Contact: ${product.manufacturer.mobile!}',
-                              style: pw.TextStyle(
-                                fontSize: 8,
-                                color: slateBody,
-                              ),
-                            ),
-                          ],
-                          if (product.manufacturer.email != null &&
-                              product.manufacturer.email!.isNotEmpty) ...[
-                            pw.SizedBox(height: 2),
-                            pw.Text(
-                              'Email: ${product.manufacturer.email!}',
-                              style: pw.TextStyle(
-                                fontSize: 8,
-                                color: slateBody,
-                              ),
-                            ),
-                          ],
-                          if (product.manufacturer.website != null &&
-                              product.manufacturer.website!.isNotEmpty) ...[
-                            pw.SizedBox(height: 2),
-                            pw.Text(
-                              'Website: ${product.manufacturer.website!}',
-                              style: pw.TextStyle(
-                                fontSize: 8,
-                                color: slateBody,
-                              ),
-                            ),
-                          ],
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+
+                  pw.SizedBox(width: 10),
+
+                  // Right Column: Marketed and Distributed by
+                  pw.Expanded(
+                    child: pw.Container(
+                      padding: const pw.EdgeInsets.all(8),
+                      decoration: pw.BoxDecoration(
+                        color: tableZebraBg,
+                        borderRadius: pw.BorderRadius.circular(6),
+                        border: pw.Border.all(color: borderLight, width: 0.6),
+                      ),
+                      child: pw.Row(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          // One side: ONLY Logo
+                          if (logoImage != null)
+                            pw.Container(
+                              width: 50,
+                              height: 50,
+                              alignment: pw.Alignment.center,
+                              padding: const pw.EdgeInsets.all(3),
+                              decoration: pw.BoxDecoration(
+                                color: PdfColors.white,
+                                borderRadius: pw.BorderRadius.circular(4),
+                                border: pw.Border.all(
+                                  color: borderLight,
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: pw.Image(logoImage),
+                            )
+                          else
+                            pw.Container(
+                              width: 50,
+                              height: 50,
+                              alignment: pw.Alignment.center,
+                              padding: const pw.EdgeInsets.all(3),
+                              decoration: pw.BoxDecoration(
+                                color: tableHeaderBg,
+                                borderRadius: pw.BorderRadius.circular(4),
+                                border: pw.Border.all(
+                                  color: borderLight,
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: pw.Text(
+                                'IMPULSE',
+                                style: pw.TextStyle(
+                                  fontSize: 7.5,
+                                  fontWeight: pw.FontWeight.bold,
+                                  color: primaryColor,
+                                ),
+                              ),
+                            ),
+                          pw.SizedBox(width: 8),
+                          // Other side: ALL the text
+                          pw.Expanded(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                pw.Text(
+                                  'Marketed and Distributed by',
+                                  style: pw.TextStyle(
+                                    fontSize: 8,
+                                    fontWeight: pw.FontWeight.bold,
+                                    color: primaryColor,
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                                pw.SizedBox(height: 2),
+                                pw.Text(
+                                  AppConfig.companyName,
+                                  style: pw.TextStyle(
+                                    fontSize: 8.5,
+                                    fontWeight: pw.FontWeight.bold,
+                                    color: slateDark,
+                                  ),
+                                ),
+                                pw.SizedBox(height: 2.5),
+                                pw.Text(
+                                  AppConfig.companyAddress,
+                                  style: pw.TextStyle(
+                                    fontSize: 7,
+                                    color: slateBody,
+                                    lineSpacing: 1.15,
+                                  ),
+                                ),
+                                pw.SizedBox(height: 2),
+                                pw.Text(
+                                  'Phone: ${AppConfig.supportPhone}',
+                                  style: pw.TextStyle(
+                                    fontSize: 7,
+                                    color: slateBody,
+                                  ),
+                                ),
+                                if (AppConfig.supportEmail.isNotEmpty) ...[
+                                  pw.SizedBox(height: 1.5),
+                                  pw.Text(
+                                    'Email: ${AppConfig.supportEmail}',
+                                    style: pw.TextStyle(
+                                      fontSize: 7,
+                                      color: slateBody,
+                                    ),
+                                  ),
+                                ],
+                                if (AppConfig.websiteCleanUrl.isNotEmpty) ...[
+                                  pw.SizedBox(height: 1.5),
+                                  pw.Text(
+                                    'Web: ${AppConfig.websiteCleanUrl}',
+                                    style: pw.TextStyle(
+                                      fontSize: 7,
+                                      color: slateBody,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
 
             // App Download & Play Store QR Code
             pw.Container(

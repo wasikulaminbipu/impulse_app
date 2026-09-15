@@ -14,7 +14,15 @@ abstract final class AppConfig {
   // ===========================================================================
   // 1. Company & General Support Channels
   // ===========================================================================
+  static const String companyName = 'Impulse Agriscience Ltd.';
+  static const String defaultCompanyAddress =
+      'House# 459, Road# 31, New DOHS, Mohakhali, Dhaka-1212, Bangladesh';
+  static const String companyAddress = String.fromEnvironment(
+    'COMPANY_ADDRESS',
+    defaultValue: defaultCompanyAddress,
+  );
   static const String websiteUrl = 'https://www.impulseagrisciencelimited.com';
+  static const String websiteCleanUrl = 'www.impulseagrisciencelimited.com';
   static const String supportEmail = 'impulseagriscienceltd@gmail.com';
   static const String supportPhone = '+880-1629-389015';
 

@@ -291,5 +291,126 @@ void main() {
         expect(header, '%PDF');
       },
     );
+
+    test('buildNativeProductPdf handles full manufacturer details with website & email', () async {
+      final dummyPngBytes = Uint8List.fromList([
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13,
+        73,
+        72,
+        68,
+        82,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        8,
+        6,
+        0,
+        0,
+        0,
+        31,
+        21,
+        196,
+        137,
+        0,
+        0,
+        0,
+        10,
+        73,
+        68,
+        65,
+        84,
+        120,
+        156,
+        99,
+        0,
+        1,
+        0,
+        0,
+        5,
+        0,
+        1,
+        13,
+        10,
+        45,
+        180,
+        0,
+        0,
+        0,
+        0,
+        73,
+        69,
+        78,
+        68,
+        174,
+        66,
+        96,
+        130,
+      ]);
+
+      const fullProduct = Product(
+        id: 2,
+        titleEn: 'Delos Doxy 50%',
+        titleBn: 'ডেলস ডক্সি ৫০%',
+        slug: 'delos-doxy-50',
+        categoryId: 1,
+        shortDescriptionEn: 'Water soluble antibiotic powder',
+        createdAt: '2026-01-01',
+        updatedAt: '2026-01-01',
+        manufacturer: Manufacturer(
+          id: 2,
+          nameEn: 'Delos Medica',
+          addressEn: 'no. 81 Horia, Otopeni, Ilfov County, Romania',
+          mobile: '+40720026534',
+          email: 'export@delosmedica.ro',
+          website: 'www.delosmedica.ro',
+          logoUrl: 'delos.webp',
+        ),
+      );
+
+      final pdfBytes = await ProductShareService.buildNativeProductPdf(
+        product: fullProduct,
+        logoBytes: dummyPngBytes,
+        manufacturerLogoBytes: dummyPngBytes,
+      );
+
+      expect(pdfBytes, isNotEmpty);
+      expect(String.fromCharCodes(pdfBytes.take(4)), '%PDF');
+    });
+
+    test('buildNativeProductPdf handles minimal/empty manufacturer details gracefully', () async {
+      const minimalProduct = Product(
+        id: 3,
+        titleEn: 'Generic Supplement',
+        titleBn: 'জেনেরিক সাপ্লিমেন্ট',
+        slug: 'generic-supplement',
+        categoryId: 2,
+        createdAt: '2026-01-01',
+        updatedAt: '2026-01-01',
+        manufacturer: Manufacturer(id: 3, nameEn: ''),
+      );
+
+      final pdfBytes = await ProductShareService.buildNativeProductPdf(
+        product: minimalProduct,
+      );
+
+      expect(pdfBytes, isNotEmpty);
+      expect(String.fromCharCodes(pdfBytes.take(4)), '%PDF');
+    });
   });
 }
