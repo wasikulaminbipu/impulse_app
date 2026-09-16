@@ -20,7 +20,22 @@ void main(List<String> args) {
   final rubyCheck = _runCommand('ruby', ['--version']);
   if (rubyCheck.success) {
     stdout.writeln('✅ Found: ${rubyCheck.output}');
-    results['Ruby Runtime'] = true;
+    final verMatch = RegExp(r'ruby\s+(\d+)\.(\d+)')
+        .firstMatch(rubyCheck.output);
+    if (verMatch != null) {
+      final major = int.tryParse(verMatch.group(1) ?? '0') ?? 0;
+      if (major < 3) {
+        stdout.writeln(
+          '   ⚠️ Ruby version is < 3.0. Fastlane 2.239+ mandates Ruby 3.0+ for OpenSSL 3.0 and modern Bundler compatibility.',
+        );
+        results['Ruby Runtime (>= 3.0)'] = false;
+      } else {
+        stdout.writeln('   ✅ Ruby SemVer >= 3.0 verified');
+        results['Ruby Runtime (>= 3.0)'] = true;
+      }
+    } else {
+      results['Ruby Runtime'] = true;
+    }
   } else {
     stdout.writeln('⚠️ Not detected in PATH (Required for Fastlane execution)');
     results['Ruby Runtime'] = false;

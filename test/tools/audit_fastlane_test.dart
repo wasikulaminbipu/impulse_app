@@ -32,6 +32,7 @@ void main() {
       expect(stdoutText, contains('Appfile package_name'));
       expect(stdoutText, contains('Application ID Alignment'));
       expect(stdoutText, contains('Required Lanes Present'));
+      expect(stdoutText, contains('Custom Fastlane Actions'));
       expect(stdoutText, contains('Metadata Limits Compliance'));
       expect(stdoutText, contains('iOS Fastfile Lanes'));
       expect(stdoutText, contains('Digital Asset Links'));

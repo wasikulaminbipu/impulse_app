@@ -56,6 +56,11 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  FASTLANE_SKIP_UPDATE_CHECK: '1'
+  FASTLANE_HIDE_CHANGELOG: '1'
+  FASTLANE_DISABLE_ANIMATION: '1'
+  FASTLANE_OPT_OUT_USAGE: '1'
+  FASTLANE_SKIP_ACTION_SUMMARY: '1'
 
 jobs:
   # =========================================================================
@@ -512,8 +517,29 @@ jobs:
           echo "| **Target Track** | \`${{ github.event.inputs.track || 'alpha' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Update Priority** | \`${{ github.event.inputs.update_priority || '0' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Rollout Fraction** | \`${{ github.event.inputs.rollout_fraction || '0.10' }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Deployment Status** | ✅ Successfully Uploaded |" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "| **Deployment Status** | ✅ Successfully Uploaded |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| **Deployment Status** | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "| **Timestamp** | \`$(date -u)\` |" >> $GITHUB_STEP_SUMMARY
+
+      - name: "Google Play Deployment Failure Diagnostics & Triage"
+        if: failure()
+        run: |
+          echo "### ⚠️ Failure Diagnostics & Troubleshooting" >> $GITHUB_STEP_SUMMARY
+          echo "Fastlane encountered an error during Google Play Store deployment. Common failure modes and remediation:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. **Google Play API 403 Forbidden / Invalid Grant**:" >> $GITHUB_STEP_SUMMARY
+          echo "   - Ensure \`PLAYSTORE_SERVICE_ACCOUNT_JSON\` secret is active and not expired in Google Cloud Console." >> $GITHUB_STEP_SUMMARY
+          echo "   - Verify the service account has **Admin** or **Release Manager** permissions in Google Play Console -> Users & permissions." >> $GITHUB_STEP_SUMMARY
+          echo "2. **Changes Not Sent for Review / Release In Review**:" >> $GITHUB_STEP_SUMMARY
+          echo "   - If another release is currently undergoing Google Play review, subsequent uploads to that track may be rejected." >> $GITHUB_STEP_SUMMARY
+          echo "   - Fastlane uses \`changes_not_sent_for_review: true\` to safeguard draft uploads." >> $GITHUB_STEP_SUMMARY
+          echo "3. **Version Code Conflict**:" >> $GITHUB_STEP_SUMMARY
+          echo "   - Verify \`pubspec.yaml\` version code (\`+N\`) is strictly greater than the highest version code currently in Google Play Console." >> $GITHUB_STEP_SUMMARY
+          echo "4. **Metadata or Changelog Limits Exceeded**:" >> $GITHUB_STEP_SUMMARY
+          echo "   - Google Play strictly enforces character limits (500 chars for changelogs, 80 for short descriptions). Audit locally with \`dart run bin/audit_fastlane.dart\`." >> $GITHUB_STEP_SUMMARY
 
       - name: "Securely wipe Google Play API credentials from runner"
         if: always()

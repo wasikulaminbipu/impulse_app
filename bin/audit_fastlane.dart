@@ -116,6 +116,19 @@ void main(List<String> args) {
     report['Required Lanes Present'] = allLanesFound;
   }
 
+  // 4b. Audit Fastlane Custom Actions
+  final customAction = File(
+    'android/fastlane/actions/audit_fastlane_health.rb',
+  );
+  if (customAction.existsSync()) {
+    stdout.writeln('✅ Custom Fastlane action found: audit_fastlane_health.rb');
+    report['Custom Fastlane Actions'] = true;
+  } else {
+    stdout.writeln(
+      'ℹ️ Custom Fastlane action audit_fastlane_health.rb optional',
+    );
+  }
+
   // 5. Audit Google Play Metadata & Character Limits
   final metaRoot = Directory('android/fastlane/metadata/android');
   if (!metaRoot.existsSync()) {

@@ -78,6 +78,7 @@ end
 platform :android do
   desc "Dry-run Pre-Flight Validation of Google Play credentials and AAB without releasing"
   lane :validate do
+    audit_fastlane_health
     params = {
       track: 'internal',
       validate_only: true,
