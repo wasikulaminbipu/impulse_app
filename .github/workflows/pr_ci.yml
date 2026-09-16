@@ -60,6 +60,9 @@ jobs:
       - name: "Validate Fastlane Store Graphic Assets & Screenshots"
         run: dart run bin/sync_fastlane_assets.dart
 
+      - name: "Execute Fastlane Health, Configuration & Limits Audit"
+        run: dart run bin/audit_fastlane.dart
+
       - name: "Audit package dependencies for deprecations & outdated packages"
         run: |
           echo "Auditing dependencies..."

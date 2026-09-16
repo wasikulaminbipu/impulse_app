@@ -10,28 +10,67 @@ end
 
 def notify_webhook(message, is_error: false)
   slack_url = ENV['SLACK_URL']
-  discord_url = ENV['DISCORD_WEBHOOK']
+  discord_url = ENV['DISCORD_WEBHOOK'] || ENV['DISCORD_WEBHOOK_URL']
   return if (slack_url.nil? || slack_url.empty?) && (discord_url.nil? || discord_url.empty?)
 
   require 'net/http'
   require 'uri'
   require 'json'
 
-  payload = {
-    text: message,
-    content: message
-  }.to_json
+  title = is_error ? "🚨 Impulse DEX Fastlane Alert" : "🚀 Impulse DEX Fastlane Notification"
+  color_hex = is_error ? 0xE74C3C : 0x2ECC71
+  timestamp_str = Time.now.utc.strftime('%Y-%m-%d %H:%M:%S UTC')
 
-  [slack_url, discord_url].compact.reject(&:empty?).each do |webhook|
+  # 1. Discord Rich Embed Payload
+  if discord_url && !discord_url.empty?
     begin
-      uri = URI.parse(webhook)
+      uri = URI.parse(discord_url)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = (uri.scheme == 'https')
       req = Net::HTTP::Post.new(uri.request_uri, { 'Content-Type' => 'application/json' })
-      req.body = payload
+      req.body = {
+        username: "Impulse DEX CI/CD",
+        embeds: [
+          {
+            title: title,
+            description: message,
+            color: color_hex,
+            fields: [
+              { name: "Platform", value: "Android / Google Play", inline: true },
+              { name: "Timestamp", value: timestamp_str, inline: true }
+            ],
+            footer: { text: "Impulse DEX Automated Delivery Engine" }
+          }
+        ]
+      }.to_json
       http.request(req)
     rescue => e
-      UI.important("Webhook notification skipped: #{e.message}")
+      UI.important("Discord notification skipped: #{e.message}")
+    end
+  end
+
+  # 2. Slack Block / Attachment Payload
+  if slack_url && !slack_url.empty?
+    begin
+      uri = URI.parse(slack_url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == 'https')
+      req = Net::HTTP::Post.new(uri.request_uri, { 'Content-Type' => 'application/json' })
+      req.body = {
+        text: "#{title}: #{message}",
+        attachments: [
+          {
+            color: is_error ? "danger" : "good",
+            title: title,
+            text: message,
+            footer: "Impulse DEX Delivery • #{timestamp_str}",
+            ts: Time.now.to_i
+          }
+        ]
+      }.to_json
+      http.request(req)
+    rescue => e
+      UI.important("Slack notification skipped: #{e.message}")
     end
   end
 end

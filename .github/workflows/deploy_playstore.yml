@@ -496,6 +496,7 @@ jobs:
           TRACK: ${{ github.event.inputs.track || 'alpha' }}
           UPDATE_PRIORITY: ${{ github.event.inputs.update_priority || '0' }}
           ROLLOUT_FRACTION: ${{ github.event.inputs.rollout_fraction || '0.10' }}
+          PLAY_STORE_JSON_KEY_DATA: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
         run: |
           set -e
           cd android
@@ -517,7 +518,10 @@ jobs:
       - name: "Securely wipe Google Play API credentials from runner"
         if: always()
         run: |
-          rm -f android/pc-api-key.json
+          if [ -f android/pc-api-key.json ]; then
+            dd if=/dev/urandom of=android/pc-api-key.json bs=1k count=10 2>/dev/null || true
+            rm -f android/pc-api-key.json
+          fi
 
   # =========================================================================
   # Job 5: Publish Official GitHub Release

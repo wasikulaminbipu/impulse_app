@@ -56,6 +56,12 @@ jobs:
       - name: "Validate Fastlane Store Graphic Assets & Screenshots"
         run: dart run bin/sync_fastlane_assets.dart
 
+      - name: "Execute Fastlane Health & Configuration Audit"
+        run: dart run bin/audit_fastlane.dart
+
+      - name: "Execute Fastlane Environment Doctor Diagnostics"
+        run: dart run bin/fastlane_doctor.dart
+
       - name: "Execute Google Play Store Requirement & Publishing Audit"
         run: dart run bin/audit_playstore_compliance.dart
 
