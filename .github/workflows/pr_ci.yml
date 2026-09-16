@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v6
@@ -113,7 +113,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v6
@@ -160,7 +160,7 @@ jobs:
 
       - name: "Post Automated PR Code Quality & Coverage Status Comment"
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -221,7 +221,7 @@ jobs:
 
     steps:
       - name: "Check out source code repository"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: "Set up Java 17 JDK (Temurin)"
         uses: actions/setup-java@v6
