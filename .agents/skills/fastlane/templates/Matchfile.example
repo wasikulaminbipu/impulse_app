@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+# Fastlane iOS Matchfile Template
+# Centralized code signing & provisioning profile synchronization via Fastlane Match
+
+# 1. Storage Mode: "git", "google_cloud", or "s3"
+storage_mode("git")
+
+# 2. Git Repository URL storing encrypted certificates and provisioning profiles
+git_url("git@github.com:your-org/ios-certificates.git")
+git_branch("master")
+
+# 3. Target App Bundle Identifier(s)
+app_identifier(["com.example.app"])
+
+# 4. Apple Developer Account Email
+username(ENV["APPLE_ID"] || "developer@example.com")
+
+# 5. Developer Team ID
+team_id(ENV["APPLE_TEAM_ID"] || "A1B2C3D4E5")
+
+# 6. Default Signing Type: "development", "adhoc", "enterprise", or "appstore"
+type("appstore")
+
+# 7. Readonly flag for CI/CD runners (prevents modifying repository or generating new certs)
+readonly(ENV["CI"] == "true")

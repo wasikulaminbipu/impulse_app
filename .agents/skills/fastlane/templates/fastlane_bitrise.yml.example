@@ -1,0 +1,38 @@
+# Bitrise CI/CD Configuration for Flutter & Fastlane Deployment
+
+format_version: '11'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+workflows:
+  deploy_release:
+    steps:
+    - activate-ssh-key@4:
+        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+    - git-clone-repository@1: {}
+    - flutter-installer@0:
+        inputs:
+        - version: stable
+    - flutter-analyze@0:
+        inputs:
+        - project_location: "."
+    - flutter-test@1:
+        inputs:
+        - project_location: "."
+    - script@1:
+        title: "Audit Fastlane Configuration"
+        inputs:
+        - content: |-
+            dart run bin/audit_fastlane.dart
+    - flutter-build@0:
+        inputs:
+        - project_location: "."
+        - platform: android
+        - android_output_type: aab
+        - build_mode: release
+    - fastlane@3:
+        inputs:
+        - work_dir: "./android"
+        - lane: "production"
+        - update_fastlane: "false"
+        env:
+        - PLAYSTORE_SERVICE_ACCOUNT_JSON: $PLAYSTORE_SERVICE_ACCOUNT_JSON

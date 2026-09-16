@@ -1,0 +1,98 @@
+name: Deploy with Fastlane
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Target Google Play Track (internal, alpha, beta, production)'
+        required: true
+        default: 'alpha'
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+
+concurrency:
+  group: fastlane-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  CI: 'true'
+  FASTLANE_SKIP_UPDATE_CHECK: '1'
+  FASTLANE_HIDE_CHANGELOG: '1'
+  FASTLANE_DISABLE_ANIMATION: '1'
+
+jobs:
+  fastlane-deploy:
+    name: "Build & Deploy via Fastlane"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Check out source code repository"
+        uses: actions/checkout@v6
+
+      - name: "Set up Java 17 JDK (Temurin)"
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: "Install Flutter SDK (Stable Channel)"
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: false # Zero-Cache Policy strictly enforced
+
+      - name: "Set up Ruby 3.3 & Bundler"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          working-directory: 'android'
+          bundler-cache: false # Zero-Cache Policy strictly enforced
+
+      - name: "Install Fastlane Gem Dependencies"
+        run: |
+          cd android
+          bundle install
+
+      - name: "Audit Fastlane Configuration & Health"
+        run: dart run bin/audit_fastlane.dart
+
+      - name: "Decode Production Signing Keystore"
+        env:
+          KEYSTORE_BASE64: ${{ secrets.PLAYSTORE_UPLOAD_KEYSTORE_BASE64 }}
+          KEY_PROPS_BASE64: ${{ secrets.PLAYSTORE_KEY_PROPERTIES }}
+        run: |
+          set -e
+          echo "$KEYSTORE_BASE64" | base64 -d > android/app/upload-keystore.jks
+          echo "$KEY_PROPS_BASE64" | base64 -d > android/key.properties
+          cp android/key.properties android/app/key.properties
+
+      - name: "Compile Android App Bundle (AAB)"
+        run: flutter build appbundle --release --obfuscate --split-debug-info=build/app/outputs/symbols
+
+      - name: "Execute Fastlane Deployment"
+        env:
+          PLAYSTORE_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
+          TARGET_TRACK: ${{ github.event.inputs.track || 'alpha' }}
+        run: |
+          set -e
+          echo "$PLAYSTORE_SERVICE_ACCOUNT_JSON" > android/pc-api-key.json
+          cd android
+          bundle exec fastlane $TARGET_TRACK
+
+      - name: "Securely wipe secrets from runner disk"
+        if: always()
+        run: |
+          rm -f android/app/upload-keystore.jks
+          rm -f android/key.properties
+          rm -f android/app/key.properties
+          rm -f android/pc-api-key.json

@@ -244,6 +244,11 @@ void main(List<String> args) async {
       args: ['run', 'bin/audit_playstore_compliance.dart'],
     ),
     (
+      name: 'Fastlane Configuration & Health Audit',
+      cmd: 'dart',
+      args: ['run', 'bin/audit_fastlane.dart'],
+    ),
+    (
       name: 'Unit, Widget & Golden Test Suite with Coverage',
       cmd: 'flutter',
       args: ['test', '--coverage'],

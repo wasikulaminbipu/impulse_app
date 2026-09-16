@@ -1,0 +1,54 @@
+// Fastfile.swift
+// Native Swift configuration for Fastlane iOS pipelines
+
+import Foundation
+
+class Fastfile: LaneFile {
+    
+    func checkLane() {
+        desc("Pre-flight quality gate: formatting, analysis, and test coverage")
+        sh(command: "flutter analyze --fatal-infos --fatal-warnings")
+        sh(command: "flutter test --coverage")
+    }
+
+    func betaLane() {
+        desc("Build iOS archive and deploy to Apple TestFlight")
+        
+        // 1. Run quality check
+        checkLane()
+        
+        // 2. Fetch App Store Connect API Key credentials
+        appStoreConnectApiKey(
+            keyId: ProcessInfo.processInfo.environment["APP_STORE_CONNECT_API_KEY_ID"] ?? "",
+            issuerId: ProcessInfo.processInfo.environment["APP_STORE_CONNECT_API_ISSUER_ID"] ?? "",
+            keyContent: ProcessInfo.processInfo.environment["APP_STORE_CONNECT_API_KEY_CONTENT"] ?? "",
+            isKeyContentBase64: true,
+            inHouse: false
+        )
+        
+        // 3. Sync signing certificates with match
+        match(type: "appstore", readonly: isCi)
+        
+        // 4. Build Flutter iOS release archive
+        sh(command: "flutter build ipa --release --obfuscate --split-debug-info=build/ios/symbols")
+        
+        // 5. Upload to TestFlight
+        uploadToTestflight(
+            skipWaitingForBuildProcessing: false,
+            distributeExternal: false
+        )
+    }
+
+    func releaseLane() {
+        desc("Deploy production release to Apple App Store")
+        
+        betaLane()
+        
+        uploadToAppStore(
+            submitForReview: true,
+            automaticRelease: true,
+            force: true,
+            skipScreenshots: true
+        )
+    }
+}

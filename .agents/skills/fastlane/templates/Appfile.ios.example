@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+# Fastlane iOS Appfile Template
+# Configuration for Apple Developer Portal and App Store Connect authentication
+
+# 1. iOS App Bundle Identifier
+app_identifier("com.example.app")
+
+# 2. Apple Developer / App Store Connect Account Email
+apple_id(ENV["APPLE_ID"] || "developer@example.com")
+
+# 3. Developer Portal Team ID (10-character alphanumeric, found on developer.apple.com)
+team_id(ENV["APPLE_TEAM_ID"] || "A1B2C3D4E5")
+
+# 4. App Store Connect Team ID (if different from Developer Team ID or associated with multiple teams)
+itc_team_id(ENV["APP_STORE_CONNECT_TEAM_ID"] || "123456789")

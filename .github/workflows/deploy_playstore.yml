@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       track:
-        description: 'Google Play Store Track (internal / alpha / beta / production)'
+        description: 'Google Play Track / Lane (internal / alpha / beta / production / validate / store_assets / metadata)'
         required: true
         default: 'alpha'
         type: choice
@@ -16,6 +16,26 @@ on:
           - alpha
           - beta
           - production
+          - validate
+          - store_assets
+          - metadata
+      update_priority:
+        description: 'In-App Update Priority (0=Default, 1-3=Flexible, 4-5=Immediate Critical)'
+        required: false
+        default: '0'
+        type: choice
+        options:
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
+      rollout_fraction:
+        description: 'Production Staged Rollout Fraction (e.g. 0.10 for 10%, 1.0 for 100%)'
+        required: false
+        default: '0.10'
+        type: string
       create_github_release:
         description: 'Create Official GitHub Release upon Successful Play Store Deployment'
         required: false
@@ -474,6 +494,8 @@ jobs:
       - name: "Execute Fastlane deployment to Google Play Store"
         env:
           TRACK: ${{ github.event.inputs.track || 'alpha' }}
+          UPDATE_PRIORITY: ${{ github.event.inputs.update_priority || '0' }}
+          ROLLOUT_FRACTION: ${{ github.event.inputs.rollout_fraction || '0.10' }}
         run: |
           set -e
           cd android
@@ -487,6 +509,8 @@ jobs:
           echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
           echo "| **Target Track** | \`${{ github.event.inputs.track || 'alpha' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Update Priority** | \`${{ github.event.inputs.update_priority || '0' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Rollout Fraction** | \`${{ github.event.inputs.rollout_fraction || '0.10' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Deployment Status** | ✅ Successfully Uploaded |" >> $GITHUB_STEP_SUMMARY
           echo "| **Timestamp** | \`$(date -u)\` |" >> $GITHUB_STEP_SUMMARY
 

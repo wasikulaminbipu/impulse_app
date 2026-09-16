@@ -1,0 +1,104 @@
+name: Manage Google Play Production Rollout
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform on production release'
+        required: true
+        default: 'update_rollout'
+        type: choice
+        options:
+          - update_rollout
+          - halt_rollout
+      rollout_fraction:
+        description: 'Rollout fraction (Applicable only for update_rollout)'
+        required: false
+        default: '0.25'
+        type: choice
+        options:
+          - '0.25'
+          - '0.50'
+          - '0.75'
+          - '1.0'
+
+concurrency:
+  group: manage-rollout-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+jobs:
+  manage-production-rollout:
+    name: "Production Rollout Management"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Check out source code repository"
+        uses: actions/checkout@v6
+
+      - name: "Set up Ruby 3.3 & Bundler for Fastlane"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          working-directory: 'android'
+          bundler-cache: false
+
+      - name: "Install Fastlane Gem Dependencies"
+        run: |
+          cd android
+          bundle install
+
+      - name: "Strictly validate Google Play service account API credentials"
+        env:
+          PLAYSTORE_JSON_KEY: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set -e
+          if [ -z "$PLAYSTORE_JSON_KEY" ]; then
+            echo "::error::PLAYSTORE_SERVICE_ACCOUNT_JSON secret is missing! Valid credentials are required to manage rollouts."
+            exit 1
+          fi
+
+          echo "$PLAYSTORE_JSON_KEY" > android/pc-api-key.json
+
+          if [ ! -s android/pc-api-key.json ]; then
+            echo "::error::Google Play service account JSON file is empty or invalid!"
+            exit 1
+          fi
+          echo "Google Play service account API credentials successfully validated."
+
+      - name: "Execute Rollout Action via Fastlane"
+        env:
+          ACTION: ${{ github.event.inputs.action }}
+          ROLLOUT_FRACTION: ${{ github.event.inputs.rollout_fraction }}
+          SLACK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          set -e
+          cd android
+          if [ "$ACTION" = "halt_rollout" ]; then
+            echo "🛑 Executing Emergency Halt of production rollout..."
+            bundle exec fastlane halt_rollout
+          else
+            echo "🚀 Updating production rollout fraction to: $ROLLOUT_FRACTION"
+            bundle exec fastlane update_rollout fraction:$ROLLOUT_FRACTION
+          fi
+
+      - name: "Generate Rollout Management Step Summary"
+        if: always()
+        run: |
+          echo "## 📊 Google Play Rollout Management Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Action Executed** | \`${{ github.event.inputs.action }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Rollout Fraction** | \`${{ github.event.inputs.rollout_fraction }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Timestamp** | \`$(date -u)\` |" >> $GITHUB_STEP_SUMMARY
+
+      - name: "Securely wipe Google Play API credentials from runner"
+        if: always()
+        run: |
+          rm -f android/pc-api-key.json

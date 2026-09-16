@@ -23,6 +23,7 @@ This file contains project-scoped rules, architecture guidelines, and workflow c
 - **Asset Management**: Follow `asset-management` when referencing icons, images, or custom fonts.
 - **Bundle Size Optimization**: Follow `flutter-size-reduction` when analyzing app bloat, R8 shrinking, and Dart AOT profiling.
 - **CI/CD Pipeline & Automation**: Follow `ci-cd-pipeline` for GitHub Actions workflows, PR quality gates, Fastlane deployment lanes, secrets management, and automated release promotion.
+- **Fastlane Automation**: Follow `fastlane` for managing automated mobile builds, test deployment (Google Play internal/alpha/beta, TestFlight), staged rollouts, Play Store & App Store metadata sync, certificates/signing (`match`), and CI/CD headless runner execution.
 - **GitHub & Version Control**: Follow `github` for branch strategies, conventional commits, PR standards, and `gh` CLI commands.
 - **Play Store Release & Policy Compliance**: Follow `playstore-release` when releasing Flutter applications to Google Play Store.
 
@@ -42,6 +43,7 @@ This file contains project-scoped rules, architecture guidelines, and workflow c
   2. **Comprehensive Quality & Compliance Gate**:
      - Run strict static analysis: `flutter analyze --fatal-infos --fatal-warnings`
      - Run Google Play Store publishing & policy compliance audit: `dart run bin/audit_playstore_compliance.dart` (all checks must pass)
+     - Run Fastlane configuration & metadata limits audit: `dart run bin/audit_fastlane.dart` (all checks must pass)
      - Run full automated unit, widget, and golden test suite with code coverage: `flutter test --coverage`
      - Enforce minimum test coverage quality gate (>= 70%, preferred > 90%): `dart run bin/generate_coverage_badge.dart --min-coverage=70.0`
   3. **Privacy Policy & Data Safety Verification**:

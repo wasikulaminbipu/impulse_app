@@ -1,0 +1,62 @@
+# frozen_string_literal: true
+
+fastlane_version "2.239.0"
+default_platform(:ios)
+
+platform :ios do
+  desc "Pre-Flight Dry-Run Verification of iOS Build and Code Signing"
+  lane :validate do
+    UI.message("Validating iOS build configuration and environment...")
+    ensure_git_status_clean unless ENV["CI"].nil?
+  end
+
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    setup_ci if ENV["CI"]
+    
+    # Optional match code signing if MATCH_PASSWORD configured
+    if ENV["MATCH_PASSWORD"]
+      match(type: "appstore", readonly: is_ci)
+    end
+
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner",
+      export_method: "app-store"
+    )
+
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Push a new release build to the App Store"
+  lane :release do
+    setup_ci if ENV["CI"]
+
+    if ENV["MATCH_PASSWORD"]
+      match(type: "appstore", readonly: is_ci)
+    end
+
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner",
+      export_method: "app-store"
+    )
+
+    upload_to_app_store(
+      force: true,
+      skip_metadata: false,
+      skip_screenshots: true,
+      reject_build_if_possible: true
+    )
+  end
+
+  after_all do |lane|
+    UI.success("Fastlane iOS successfully executed lane: #{lane}")
+  end
+
+  error do |lane, exception|
+    UI.error("Fastlane iOS error in lane #{lane}: #{exception.message}")
+  end
+end

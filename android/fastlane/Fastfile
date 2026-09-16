@@ -1,66 +1,145 @@
-fastlane_version "2.220.0"
+# frozen_string_literal: true
+
+fastlane_version "2.239.0"
 default_platform(:android)
 
+def resolve_native_debug_symbols
+  symbols = Dir['../build/symbols/*.zip']
+  symbols.empty? ? nil : symbols
+end
+
+def notify_webhook(message, is_error: false)
+  slack_url = ENV['SLACK_URL']
+  discord_url = ENV['DISCORD_WEBHOOK']
+  return if (slack_url.nil? || slack_url.empty?) && (discord_url.nil? || discord_url.empty?)
+
+  require 'net/http'
+  require 'uri'
+  require 'json'
+
+  payload = {
+    text: message,
+    content: message
+  }.to_json
+
+  [slack_url, discord_url].compact.reject(&:empty?).each do |webhook|
+    begin
+      uri = URI.parse(webhook)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == 'https')
+      req = Net::HTTP::Post.new(uri.request_uri, { 'Content-Type' => 'application/json' })
+      req.body = payload
+      http.request(req)
+    rescue => e
+      UI.important("Webhook notification skipped: #{e.message}")
+    end
+  end
+end
+
 platform :android do
+  desc "Dry-run Pre-Flight Validation of Google Play credentials and AAB without releasing"
+  lane :validate do
+    params = {
+      track: 'internal',
+      validate_only: true,
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
+      timeout: 300,
+      ack_bundle_installation_warning: true
+    }
+    native_symbols = resolve_native_debug_symbols
+    params[:native_debug_symbol_paths] = native_symbols if native_symbols
+    upload_to_play_store(params)
+  end
+
   desc "Deploy Internal QA / Testing Build to Google Play Internal Track"
-  lane :internal do
-    upload_to_play_store(
+  lane :internal do |options|
+    priority = (options[:priority] || ENV['UPDATE_PRIORITY'] || 0).to_i
+    params = {
       track: 'internal',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
+      in_app_update_priority: priority,
+      timeout: 300,
+      ack_bundle_installation_warning: true,
       skip_upload_apk: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_changelogs: false,
       changes_not_sent_for_review: true
-    )
+    }
+    native_symbols = resolve_native_debug_symbols
+    params[:native_debug_symbol_paths] = native_symbols if native_symbols
+    upload_to_play_store(params)
   end
 
   desc "Deploy to Google Play Closed Testing / Alpha Track"
-  lane :alpha do
-    upload_to_play_store(
+  lane :alpha do |options|
+    priority = (options[:priority] || ENV['UPDATE_PRIORITY'] || 0).to_i
+    params = {
       track: 'alpha',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
+      in_app_update_priority: priority,
+      timeout: 300,
+      ack_bundle_installation_warning: true,
       skip_upload_apk: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_changelogs: false,
       changes_not_sent_for_review: true
-    )
+    }
+    native_symbols = resolve_native_debug_symbols
+    params[:native_debug_symbol_paths] = native_symbols if native_symbols
+    upload_to_play_store(params)
   end
 
   desc "Deploy to Google Play Closed Testing / Beta Track"
-  lane :beta do
-    upload_to_play_store(
+  lane :beta do |options|
+    priority = (options[:priority] || ENV['UPDATE_PRIORITY'] || 0).to_i
+    params = {
       track: 'beta',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
+      in_app_update_priority: priority,
+      timeout: 300,
+      ack_bundle_installation_warning: true,
       skip_upload_apk: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_changelogs: false,
       changes_not_sent_for_review: true
-    )
+    }
+    native_symbols = resolve_native_debug_symbols
+    params[:native_debug_symbol_paths] = native_symbols if native_symbols
+    upload_to_play_store(params)
   end
 
-  desc "Deploy to Google Play Production Track with 10% Staged Rollout"
-  lane :production do
-    upload_to_play_store(
+  desc "Deploy to Google Play Production Track with Configurable Staged Rollout"
+  lane :production do |options|
+    priority = (options[:priority] || ENV['UPDATE_PRIORITY'] || 0).to_i
+    rollout = options[:rollout] || ENV['ROLLOUT_FRACTION'] || '0.10'
+    params = {
       track: 'production',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
-      rollout: '0.10',
+      rollout: rollout.to_s,
+      in_app_update_priority: priority,
+      timeout: 300,
+      ack_bundle_installation_warning: true,
       skip_upload_apk: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_changelogs: false,
       changes_not_sent_for_review: true
-    )
+    }
+    native_symbols = resolve_native_debug_symbols
+    params[:native_debug_symbol_paths] = native_symbols if native_symbols
+    upload_to_play_store(params)
   end
 
   desc "Promote Release Track (e.g. Beta -> Production or Internal -> Beta) with Configurable Rollout"
@@ -68,6 +147,7 @@ platform :android do
     from_track = options[:from_track] || ENV['FROM_TRACK'] || 'beta'
     to_track = options[:to_track] || ENV['TO_TRACK'] || 'production'
     rollout = (options[:rollout] || ENV['ROLLOUT_FRACTION'] || '1.0').to_f
+    priority = (options[:priority] || ENV['UPDATE_PRIORITY'] || 0).to_i
 
     UI.message("Promoting release from #{from_track} to #{to_track} with #{rollout * 100}% rollout...")
 
@@ -79,8 +159,14 @@ platform :android do
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      changes_not_sent_for_review: true
+      changes_not_sent_for_review: true,
+      timeout: 300,
+      ack_bundle_installation_warning: true
     }
+
+    if priority > 0
+      params[:in_app_update_priority] = priority
+    end
 
     if to_track == 'production' && rollout < 1.0
       params[:rollout] = rollout.to_s
@@ -97,15 +183,81 @@ platform :android do
       skip_upload_metadata: false,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      changes_not_sent_for_review: true
+      changes_not_sent_for_review: true,
+      timeout: 300
     )
+  end
+
+  desc "Upload Store Graphic Assets and Screenshots (Icon, Feature Graphic, Phone/Tablet Screenshots)"
+  lane :store_assets do
+    upload_to_play_store(
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      skip_upload_changelogs: true,
+      changes_not_sent_for_review: true,
+      timeout: 600
+    )
+  end
+
+  desc "Update Staged Rollout Fraction on Google Play Production Track (without re-uploading AAB)"
+  lane :update_rollout do |options|
+    fraction = (options[:fraction] || ENV['ROLLOUT_FRACTION'] || "0.25").to_f
+    upload_to_play_store(
+      track: "production",
+      rollout: fraction.to_s,
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      changes_not_sent_for_review: true,
+      timeout: 300
+    )
+    UI.success("🚀 Google Play production staged rollout updated to: #{fraction * 100}%")
+    notify_webhook("🚀 [Impulse DEX] Google Play production staged rollout increased to #{(fraction * 100).to_i}%")
+  end
+
+  desc "Emergency Halt of Active Google Play Production Staged Rollout"
+  lane :halt_rollout do
+    upload_to_play_store(
+      track: "production",
+      release_status: "halted",
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      changes_not_sent_for_review: true,
+      timeout: 300
+    )
+    UI.error("🛑 EMERGENCY: Google Play production staged rollout has been HALTED!")
+    notify_webhook("🛑 [Impulse DEX] EMERGENCY: Google Play production staged rollout has been HALTED!", is_error: true)
+  end
+
+  desc "Enforce App Size Budget on Compiled AAB (Max 45 MB)"
+  lane :check_app_size do |options|
+    aab_path = options[:aab] || "../build/app/outputs/bundle/release/app-release.aab"
+    max_mb = (options[:max_mb] || 45.0).to_f
+    UI.user_error!("Artifact not found at #{aab_path}") unless File.exist?(aab_path)
+
+    raw_mb = (File.size(aab_path) / (1024.0 * 1024.0)).round(2)
+    if raw_mb > max_mb
+      UI.user_error!("❌ App size budget exceeded: #{raw_mb} MB > #{max_mb} MB limit")
+    else
+      UI.success("✅ App size within budget: #{raw_mb} MB / #{max_mb} MB limit")
+    end
   end
 
   after_all do |lane|
     UI.success("Fastlane successfully executed lane: #{lane}")
+    notify_webhook("🚀 [Impulse DEX] Fastlane successfully executed lane :#{lane}")
   end
 
   error do |lane, exception|
     UI.error("Fastlane error in lane #{lane}: #{exception.message}")
+    notify_webhook("💥 [Impulse DEX] Fastlane error in lane :#{lane}: #{exception.message}", is_error: true)
   end
 end

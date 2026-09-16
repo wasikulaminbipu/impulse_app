@@ -1,0 +1,95 @@
+# frozen_string_literal: true
+
+fastlane_version "2.239.0"
+default_platform(:ios)
+
+require "yaml"
+
+platform :ios do
+  # Helper to parse version info from pubspec.yaml
+  def load_flutter_version
+    pubspec_path = File.expand_path("../../pubspec.yaml", __dir__)
+    unless File.exist?(pubspec_path)
+      UI.user_error!("Could not find pubspec.yaml at #{pubspec_path}")
+    end
+
+    pubspec = YAML.load_file(pubspec_path)
+    version_raw = pubspec["version"] || "1.0.0+1"
+    version_name, version_code = version_raw.split("+")
+    { name: version_name, code: (version_code || "1").to_i }
+  end
+
+  desc "Load App Store Connect API Key"
+  private_lane :get_api_key do
+    app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+      key_content: ENV["APP_STORE_CONNECT_KEY_CONTENT"],
+      is_key_content_base64: false,
+      in_house: false
+    )
+  end
+
+  desc "Sync Code Signing Certificates & Provisioning Profiles"
+  lane :certificates do |options|
+    readonly_mode = options[:readonly] || (ENV["CI"] == "true")
+    match(
+      type: options[:type] || "appstore",
+      readonly: readonly_mode
+    )
+  end
+
+  desc "Build and Package iOS IPA"
+  lane :build do
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner",
+      export_method: "app-store",
+      output_directory: "../build/ios/ipa",
+      output_name: "impulse_dex.ipa",
+      clean: true
+    )
+  end
+
+  desc "Deploy to Apple TestFlight"
+  lane :beta do
+    api_key = get_api_key
+
+    upload_to_testflight(
+      api_key: api_key,
+      ipa: "../build/ios/ipa/impulse_dex.ipa",
+      skip_waiting_for_build_processing: true,
+      distribute_external: true,
+      groups: ["Internal QA", "Beta Testers"],
+      changelog: "Automated TestFlight build"
+    )
+  end
+
+  desc "Submit to Apple App Store for Review"
+  lane :release do
+    api_key = get_api_key
+
+    upload_to_app_store(
+      api_key: api_key,
+      ipa: "../build/ios/ipa/impulse_dex.ipa",
+      submit_for_review: true,
+      phased_release: true,
+      automatic_release: true,
+      force: true,
+      skip_metadata: true,
+      skip_screenshots: true,
+      submission_information: {
+        export_compliance_uses_encryption: false,
+        add_id_info_serves_ads: false
+      }
+    )
+  end
+
+  after_all do |lane|
+    UI.success("🎉 Fastlane iOS successfully finished lane: #{lane}")
+  end
+
+  error do |lane, exception|
+    UI.error("💥 Fastlane iOS error in lane #{lane}: #{exception.message}")
+  end
+end

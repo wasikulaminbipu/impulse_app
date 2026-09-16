@@ -1,0 +1,14 @@
+# frozen_string_literal: true
+
+# Fastlane Android Appfile Template
+# Configuration for package identification and Google Play Developer API authentication
+
+# 1. Android Application ID / Package Name (matches defaultConfig.applicationId in build.gradle)
+package_name("com.example.app")
+
+# 2. Google Play Developer API Service Account Key
+# Prefer json_key_data in CI environments to avoid writing credentials to disk
+# json_key_data(ENV["PLAYSTORE_SERVICE_ACCOUNT_JSON"])
+
+# Or path to service account key file for local development:
+json_key(ENV["SUPPLY_JSON_KEY"] || "fastlane/service_account.json")

@@ -1,3 +1,9 @@
-json_key_file(ENV["PLAY_STORE_JSON_KEY"] || ENV["JSON_KEY_FILE"] || "pc-api-key.json")
-package_name("com.impulseagriscienceltd.impulse_app")
+# frozen_string_literal: true
 
+if ENV["PLAY_STORE_JSON_KEY_DATA"] && !ENV["PLAY_STORE_JSON_KEY_DATA"].empty?
+  json_key_data(ENV["PLAY_STORE_JSON_KEY_DATA"])
+else
+  json_key_file(ENV["PLAY_STORE_JSON_KEY"] || ENV["JSON_KEY_FILE"] || "pc-api-key.json")
+end
+
+package_name("com.impulseagriscienceltd.impulse_app")

@@ -1,0 +1,7 @@
+# frozen_string_literal: true
+
+# Fastlane iOS Appfile Configuration
+app_identifier("com.impulseagriscienceltd.impulse_app")
+apple_id(ENV["APPLE_ID"] || "developer@impulseagrisciencelimited.com")
+team_id(ENV["APPLE_TEAM_ID"] || "")
+itc_team_id(ENV["APP_STORE_CONNECT_TEAM_ID"] || "")
