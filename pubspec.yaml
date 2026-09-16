@@ -41,8 +41,8 @@ dependencies:
   path_provider: ^2.1.6
   path: ^1.9.1
   flutter_svg: ^2.3.0
-  drift: ^2.34.4
-  sqlite3: ^3.5.2
+  drift: ^2.35.0
+  sqlite3: ^3.6.0
   flutter_native_splash: ^2.4.8
   flutter_localizations:
     sdk: flutter
@@ -50,7 +50,7 @@ dependencies:
   json_annotation: ^4.12.0
   collection: ^1.19.1
   url_launcher: ^6.3.2
-  flutter_contacts: ^2.3.1
+  flutter_contacts: ^2.5.0
   share_plus: ^13.3.0
   pdf: ^3.13.0
   in_app_update: ^5.0.0
@@ -68,7 +68,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   riverpod_generator: ^4.0.9
   build_runner: ^2.16.1
-  drift_dev: ^2.34.6
+  drift_dev: ^2.35.0
   freezed: ^4.0.1
   json_serializable: ^6.14.1
   flutter_launcher_icons: ^0.14.4

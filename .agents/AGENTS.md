@@ -68,4 +68,9 @@ This file contains project-scoped rules, architecture guidelines, and workflow c
 ## Persistent Workspace Tracking
 - Keep `.agents/project_map.json` updated with module maps, file indexes, and routing references.
 
-
+## Latest Versions & Live Documentation Verification (Strict Zero Tolerance)
+- **Mandatory Modernity Across the Board**: You MUST ALWAYS and WITHOUT EXCEPTION use the absolute latest stable release of every product, library, package, SDK, framework, runtime, compiler, build tool, platform target (e.g., Android API 35 / Android 15, iOS target), asset, plugin, toolchain, and dependency across all project components.
+- **Strict Ban on Stale Software & Dependency Downgrades**: Older, legacy, superseded, archived, or deprecated versions are STRICTLY FORBIDDEN. When dependency conflicts arise, NEVER resolve them by downgrading packages; resolve them by upgrading dependents, finding active alternatives, or using targeted overrides.
+- **Toolchain, Lockfiles & CI/CD Coverage**: Enforce latest versions across `pubspec.lock`, Gradle plugins, GitHub Actions workflow action versions, build tools, and system runtimes.
+- **Mandatory Live Documentation Verification**: Always search the internet for official documentation, API references, release notes, changelogs, and migration guides before writing code or configuring tooling.
+- **Stability & Non-Breaking Safety Gate (Never Break the App)**: While aggressively targeting the latest stable releases, you MUST NEVER break the application, introduce runtime crashes, or fail builds. Do not be recklessly aggressive; upgrades must be executed with technical precision. Target latest official **stable** releases (avoid unvetted pre-alpha/beta releases). Whenever the latest version introduces breaking changes, proactively refactor all affected code and verify via static analysis (`flutter analyze`) and test suites to guarantee 100% stability.
