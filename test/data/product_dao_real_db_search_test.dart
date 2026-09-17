@@ -15,14 +15,21 @@ void main() {
     late ManufacturerDao manufacturerDao;
     late ProductDao productDao;
 
+    late Directory tempDir;
+    late File tempFile;
+
     setUp(() async {
-      final file = File('assets/db/products.db');
+      final sourceFile = File('assets/db/products.db');
       expect(
-        file.existsSync(),
+        sourceFile.existsSync(),
         isTrue,
         reason: 'assets/db/products.db must exist',
       );
-      db = ProductsDb(NativeDatabase(file));
+      tempDir = Directory.systemTemp.createTempSync('products_db_test_');
+      tempFile = File('${tempDir.path}/test_products.db');
+      sourceFile.copySync(tempFile.path);
+
+      db = ProductsDb(NativeDatabase(tempFile));
       lookupDao = LookupDao(db);
       manufacturerDao = ManufacturerDao(db);
       productDao = ProductDao(db, lookupDao, manufacturerDao: manufacturerDao);
@@ -30,6 +37,9 @@ void main() {
 
     tearDown(() async {
       await db.close();
+      try {
+        tempDir.deleteSync(recursive: true);
+      } catch (_) {}
     });
 
     test('Searching on real products.db returns matching products and categories without SQLite column errors', () async {

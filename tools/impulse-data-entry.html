@@ -208,6 +208,48 @@ function nowIso(){
 }
 
 // ---------- open / save ----------
+function sanitizeFtsForDataEntry(){
+  if(!db) return;
+  try {
+    // 1. Drop known triggers that reference FTS5 virtual tables
+    const knownTriggers = [
+      'products_ai', 'products_ad', 'products_au', 'categories_au',
+      'distributors_ai', 'distributors_ad', 'distributors_au',
+      'sales_personnels_ai', 'sales_personnels_ad', 'sales_personnels_au'
+    ];
+    for (const t of knownTriggers) {
+      try { db.run(`DROP TRIGGER IF EXISTS "${t}";`); } catch (_) {}
+    }
+
+    // 2. Discover and drop any remaining triggers referencing FTS
+    try {
+      const stmt = db.prepare("SELECT name FROM sqlite_master WHERE type='trigger' AND (sql LIKE '%_fts%' OR sql LIKE '%fts5%');");
+      const trigNames = [];
+      while(stmt.step()) trigNames.push(stmt.getAsObject().name);
+      stmt.free();
+      for (const name of trigNames) {
+        try { db.run(`DROP TRIGGER IF EXISTS "${name}";`); } catch (_) {}
+      }
+    } catch (_) {}
+
+    // 3. Drop FTS virtual tables so catalog data entry operates cleanly
+    const knownFtsTables = [
+      'products_fts', 'products_trigram_fts',
+      'distributors_fts', 'sales_personnels_fts'
+    ];
+    for (const tbl of knownFtsTables) {
+      try { db.run(`DROP TABLE IF EXISTS "${tbl}";`); } catch (_) {}
+    }
+
+    // 4. Reset FTS readiness keys in db_meta so Flutter mobile app rebuilds fresh FTS on next launch
+    try {
+      db.run("DELETE FROM db_meta WHERE key LIKE 'fts_ready_%';");
+    } catch (_) {}
+  } catch(e) {
+    console.warn('FTS sanitization warning:', e);
+  }
+}
+
 async function initDatabaseWithBytes(arrayBuf, name, isServer = false, handle = null){
   currentFileName = name;
   fileHandle = handle;
@@ -218,6 +260,7 @@ async function initDatabaseWithBytes(arrayBuf, name, isServer = false, handle = 
     SQLmod = await initSqlJs({ locateFile: f => CDN_WASM + f });
   }
   db = new SQLmod.Database(new Uint8Array(arrayBuf));
+  sanitizeFtsForDataEntry();
   detectType();
   setDirty(false);
 
@@ -307,6 +350,7 @@ async function openDbFallback(){
 
 async function saveDb(forceDialog){
   if(!db) return;
+  sanitizeFtsForDataEntry();
   const data = db.export();
   setStatus('Saving database…');
 
