@@ -53,7 +53,7 @@ This file contains project-scoped rules, architecture guidelines, and workflow c
      - Update `CHANGELOG.md` with release notes.
      - Generate localized Fastlane release notes enforcing Google Play's 500-character limit.
   5. **Staging & Git Tagging**:
-     - Stage all modified and regenerated files and commit (`chore(release): bump version to vX.Y.Z`).
+     - Stage all modified tracked files (generated code is Git-ignored and never committed) and commit (`chore(release): bump version to vX.Y.Z`).
      - Create an annotated git tag matching the version (`git tag -a vX.Y.Z -m "Release vX.Y.Z"`).
   6. **Push & Release Trigger**:
      - Push commits to main branch (`git push origin main`).

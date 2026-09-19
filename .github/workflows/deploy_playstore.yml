@@ -104,11 +104,10 @@ jobs:
       - name: "Validate Fastlane Store Graphic Assets & Screenshots"
         run: dart run bin/sync_fastlane_assets.dart
 
-      - name: "Verify code generation synchronization (Drift & Freezed)"
+      - name: "Generate code models (Drift & Freezed)"
         run: |
           set -e
           dart run build_runner build --delete-conflicting-outputs
-          git diff --exit-code lib/ || (echo "::error::Generated code is out of sync! Run build_runner locally and commit changes." && exit 1)
 
       - name: "Validate Dart source code formatting"
         run: dart format --output=none --set-exit-if-changed .
@@ -355,12 +354,6 @@ jobs:
           keytool -list -keystore android/app/upload-keystore.jks -storepass "$STORE_PASS" -alias "$KEY_ALIAS"
           echo "✅ Keystore and alias verified successfully with keytool."
 
-      - name: "Fetch Flutter project dependencies"
-        run: flutter pub get
-
-      - name: "Generate immutable models and database DAOs"
-        run: dart run build_runner build --delete-conflicting-outputs
-
       - name: "Clean Flutter and Gradle build caches"
         run: |
           flutter clean
@@ -369,6 +362,9 @@ jobs:
           ./gradlew clean || gradle clean
           cd ..
           flutter pub get
+
+      - name: "Generate immutable models and database DAOs"
+        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: "Accept Android SDK licenses and ensure Android 36 SDK"
         run: |

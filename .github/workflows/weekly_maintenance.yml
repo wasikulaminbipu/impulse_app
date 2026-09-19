@@ -68,11 +68,10 @@ jobs:
       - name: "Audit codebase for dead code and unreferenced assets"
         run: dart run bin/audit_unused_code.dart
 
-      - name: "Verify Code Generation Models Synchronization"
+      - name: "Generate Code Models (Drift & Freezed)"
         run: |
           set -e
           dart run build_runner build --delete-conflicting-outputs
-          git diff --exit-code lib/ || (echo "::warning::Generated code differs from source definitions!" && exit 0)
 
       - name: "Validate Dart Source Code Formatting"
         run: dart format --output=none --set-exit-if-changed .

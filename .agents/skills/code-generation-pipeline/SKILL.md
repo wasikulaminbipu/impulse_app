@@ -115,11 +115,15 @@ dart run build_runner build --delete-conflicting-outputs
 
 ---
 
-## 4. CI/CD Code Generation Verification
-
-To ensure generated code is never committed out-of-sync with source files, CI workflows run:
-```bash
-dart run build_runner build --delete-conflicting-outputs
-git diff --exit-code
-```
-If `git diff` produces output, generated files were outdated before commit.
+## 4. CI/CD & Repository Policy: Dynamic Generation (Git-Ignored)
+ 
+Generated code (`*.g.dart`, `*.freezed.dart`, `*.mocks.dart`) is explicitly excluded from version control in `.gitignore` and is not stored in GitHub repositories.
+ 
+- **Developer Local Onboarding**: Developers cloning the repository run:
+  ```bash
+  dart run build_runner build --delete-conflicting-outputs
+  ```
+- **CI/CD Pipelines**: GitHub Actions workflows run dynamic code generation across all quality, test, and release compilation jobs prior to analysis, testing, or building:
+  ```bash
+  dart run build_runner build --delete-conflicting-outputs
+  ```

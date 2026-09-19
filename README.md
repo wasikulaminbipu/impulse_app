@@ -151,8 +151,8 @@ impulse_dex/
    dart run bin/validate_db.dart
    ```
 
-5. **Run Code Generation**
-   Generate Drift DAOs, Riverpod providers, and Freezed models:
+5. **Run Code Generation (Required on First Setup)**
+   Generated files (`*.g.dart`, `*.freezed.dart`) are Git-ignored and kept out of version control. Generate Drift DAOs, Riverpod providers, and Freezed models:
    ```bash
    dart run build_runner build --delete-conflicting-outputs
    ```
