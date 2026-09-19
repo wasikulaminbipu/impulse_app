@@ -78,19 +78,29 @@ android {
             if (relSigning != null) {
                 signingConfig = relSigning
             } else {
-                throw GradleException(
-                    "CRITICAL RELEASE SIGNING FAILURE: Cannot build release binary without valid signing config!\n" +
-                    "keystorePropertiesFile: ${keystorePropertiesFile?.absolutePath} (exists: ${keystorePropertiesFile?.exists()})\n" +
-                    "keystore candidate resolved: ${sFile?.absolutePath} (exists: ${sFile?.exists()})\n" +
-                    "keyAlias present: ${!alias.isNullOrEmpty()}\n" +
-                    "keyPassword present: ${!keyPass.isNullOrEmpty()}\n" +
-                    "storePassword present: ${!storePass.isNullOrEmpty()}\n" +
-                    "keys found in properties: ${keystoreProperties.keys}"
-                )
+                signingConfig = signingConfigs.getByName("debug")
             }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
+
+    gradle.taskGraph.whenReady {
+        val isReleaseRequested = allTasks.any { task ->
+            val tName = task.name.lowercase()
+            (tName.startsWith("assemble") || tName.startsWith("bundle") || tName.startsWith("package")) && tName.contains("release")
+        }
+        if (isReleaseRequested && !hasReleaseSigning) {
+            throw GradleException(
+                "CRITICAL RELEASE SIGNING FAILURE: Cannot build release binary without valid signing config!\n" +
+                "keystorePropertiesFile: ${keystorePropertiesFile?.absolutePath} (exists: ${keystorePropertiesFile?.exists()})\n" +
+                "keystore candidate resolved: ${sFile?.absolutePath} (exists: ${sFile?.exists()})\n" +
+                "keyAlias present: ${!alias.isNullOrEmpty()}\n" +
+                "keyPassword present: ${!keyPass.isNullOrEmpty()}\n" +
+                "storePassword present: ${!storePass.isNullOrEmpty()}\n" +
+                "keys found in properties: ${keystoreProperties.keys}"
+            )
         }
     }
 

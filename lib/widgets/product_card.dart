@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:impulse_app/constants/app_constants.dart';
 import 'package:impulse_app/models/app_maintenance.dart';
 import 'package:impulse_app/models/product.dart';
 import 'package:impulse_app/screens/product_details_screen.dart';
@@ -136,8 +135,8 @@ class _ProductCardState extends State<ProductCard> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Flexible(
-                                  child: CustomBadge(
-                                    color: _getCategoryColor(
+                                  child: CustomBadge.fromToken(
+                                    token: _getCategoryColorToken(
                                       context,
                                       widget.product,
                                     ),
@@ -269,59 +268,22 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
-  /// Get category name from product
-  String _getCategoryName(ProductLabel product) {
-    return product.category.nameEn;
-  }
-
-  Color _getCategoryColor(BuildContext context, ProductLabel product) {
+  CategoryColorToken _getCategoryColorToken(
+    BuildContext context,
+    ProductLabel product,
+  ) {
     final categoryColors = Theme.of(context).extension<CategoryColors>();
-    final defaultColor = categoryColors?.defaultCategoryColor ?? Colors.grey;
-    final categoryName = _getCategoryName(product);
-
-    if (categoryName.toLowerCase().contains(
-      AppConstants.categoryFeedAdditive.toLowerCase(),
-    )) {
-      return categoryColors?.feedAdditiveColor ?? defaultColor;
+    if (categoryColors == null) {
+      return const CategoryColorToken(
+        primary: Colors.grey,
+        container: Color(0x1F9E9E9E),
+        border: Color(0x429E9E9E),
+        text: Colors.grey,
+      );
     }
-    if (categoryName.toLowerCase().contains(
-      AppConstants.categoryVaccine.toLowerCase(),
-    )) {
-      return categoryColors?.vaccineColor ?? defaultColor;
-    }
-
-    final hasPoultry = product.targetGroups.any(
-      (tg) =>
-          tg.nameEn.toLowerCase() == AppConstants.categoryPoultry.toLowerCase(),
+    return categoryColors.resolve(
+      category: product.category.nameEn,
+      targetGroups: product.targetGroups.map((tg) => tg.nameEn),
     );
-    final hasCattle = product.targetGroups.any(
-      (tg) =>
-          tg.nameEn.toLowerCase() == AppConstants.categoryCattle.toLowerCase(),
-    );
-    final hasAqua = product.targetGroups.any(
-      (tg) =>
-          tg.nameEn.toLowerCase() == AppConstants.categoryAqua.toLowerCase(),
-    );
-
-    if (hasPoultry) {
-      return categoryColors?.poultryColor ?? defaultColor;
-    } else if (hasCattle) {
-      return categoryColors?.cattleColor ?? defaultColor;
-    } else if (hasAqua) {
-      return categoryColors?.aquaColor ?? defaultColor;
-    }
-
-    return switch (categoryName) {
-      AppConstants.categoryPoultry =>
-        categoryColors?.poultryColor ?? defaultColor,
-      AppConstants.categoryCattle =>
-        categoryColors?.cattleColor ?? defaultColor,
-      AppConstants.categoryAqua => categoryColors?.aquaColor ?? defaultColor,
-      AppConstants.categoryFeedAdditives =>
-        categoryColors?.feedAdditiveColor ?? defaultColor,
-      AppConstants.categoryVaccines =>
-        categoryColors?.vaccineColor ?? defaultColor,
-      _ => defaultColor,
-    };
   }
 }

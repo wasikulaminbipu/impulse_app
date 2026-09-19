@@ -1,24 +1,152 @@
 import 'package:flutter/material.dart';
 
+/// Represents a cohesive, contrast-calibrated color token set for a category or target group.
+class CategoryColorToken {
+  final Color primary;
+  final Color container;
+  final Color border;
+  final Color text;
+
+  const CategoryColorToken({
+    required this.primary,
+    required this.container,
+    required this.border,
+    required this.text,
+  });
+
+  /// Generates a [CategoryColorToken] from a single base color with default opacities.
+  factory CategoryColorToken.fromColor(Color color) {
+    return CategoryColorToken(
+      primary: color,
+      container: color.withValues(alpha: 0.12),
+      border: color.withValues(alpha: 0.25),
+      text: color,
+    );
+  }
+
+  CategoryColorToken copyWith({
+    Color? primary,
+    Color? container,
+    Color? border,
+    Color? text,
+  }) {
+    return CategoryColorToken(
+      primary: primary ?? this.primary,
+      container: container ?? this.container,
+      border: border ?? this.border,
+      text: text ?? this.text,
+    );
+  }
+
+  static CategoryColorToken lerp(
+    CategoryColorToken a,
+    CategoryColorToken b,
+    double t,
+  ) {
+    return CategoryColorToken(
+      primary: Color.lerp(a.primary, b.primary, t)!,
+      container: Color.lerp(a.container, b.container, t)!,
+      border: Color.lerp(a.border, b.border, t)!,
+      text: Color.lerp(a.text, b.text, t)!,
+    );
+  }
+}
+
 class CategoryColors extends ThemeExtension<CategoryColors> {
-  final Color feedAdditiveColor;
-  final Color vaccineColor;
-  final Color poultryColor;
-  final Color cattleColor;
-  final Color aquaColor;
-  final Color defaultCategoryColor;
+  final CategoryColorToken feedAdditive;
+  final CategoryColorToken vaccine;
+  final CategoryColorToken poultry;
+  final CategoryColorToken cattle;
+  final CategoryColorToken aqua;
+  final CategoryColorToken defaultToken;
 
   const CategoryColors({
-    required this.feedAdditiveColor,
-    required this.vaccineColor,
-    required this.poultryColor,
-    required this.cattleColor,
-    required this.aquaColor,
-    required this.defaultCategoryColor,
+    required this.feedAdditive,
+    required this.vaccine,
+    required this.poultry,
+    required this.cattle,
+    required this.aqua,
+    required this.defaultToken,
   });
+
+  /// Factory constructor for constructing [CategoryColors] from raw colors.
+  factory CategoryColors.raw({
+    required Color feedAdditiveColor,
+    required Color vaccineColor,
+    required Color poultryColor,
+    required Color cattleColor,
+    required Color aquaColor,
+    required Color defaultCategoryColor,
+  }) {
+    return CategoryColors(
+      feedAdditive: CategoryColorToken.fromColor(feedAdditiveColor),
+      vaccine: CategoryColorToken.fromColor(vaccineColor),
+      poultry: CategoryColorToken.fromColor(poultryColor),
+      cattle: CategoryColorToken.fromColor(cattleColor),
+      aqua: CategoryColorToken.fromColor(aquaColor),
+      defaultToken: CategoryColorToken.fromColor(defaultCategoryColor),
+    );
+  }
+
+  // Backwards-compatible legacy color getters:
+  Color get feedAdditiveColor => feedAdditive.primary;
+  Color get vaccineColor => vaccine.primary;
+  Color get poultryColor => poultry.primary;
+  Color get cattleColor => cattle.primary;
+  Color get aquaColor => aqua.primary;
+  Color get defaultCategoryColor => defaultToken.primary;
+
+  /// Resolves the appropriate [CategoryColorToken] with category taking primary precedence,
+  /// followed by target group if applicable.
+  CategoryColorToken resolve({
+    String? category,
+    Iterable<String>? targetGroups,
+  }) {
+    if (category != null && category.trim().isNotEmpty) {
+      final cat = category.trim().toLowerCase();
+      if (cat.contains('feed additive')) {
+        return feedAdditive;
+      }
+      if (cat.contains('vaccine')) {
+        return vaccine;
+      }
+      if (cat.contains('poultry')) {
+        return poultry;
+      }
+      if (cat.contains('cattle')) {
+        return cattle;
+      }
+      if (cat.contains('aqua')) {
+        return aqua;
+      }
+    }
+
+    if (targetGroups != null) {
+      for (final tg in targetGroups) {
+        final group = tg.trim().toLowerCase();
+        if (group.contains('poultry')) {
+          return poultry;
+        }
+        if (group.contains('cattle')) {
+          return cattle;
+        }
+        if (group.contains('aqua')) {
+          return aqua;
+        }
+      }
+    }
+
+    return defaultToken;
+  }
 
   @override
   ThemeExtension<CategoryColors> copyWith({
+    CategoryColorToken? feedAdditive,
+    CategoryColorToken? vaccine,
+    CategoryColorToken? poultry,
+    CategoryColorToken? cattle,
+    CategoryColorToken? aqua,
+    CategoryColorToken? defaultToken,
     Color? feedAdditiveColor,
     Color? vaccineColor,
     Color? poultryColor,
@@ -27,12 +155,36 @@ class CategoryColors extends ThemeExtension<CategoryColors> {
     Color? defaultCategoryColor,
   }) {
     return CategoryColors(
-      feedAdditiveColor: feedAdditiveColor ?? this.feedAdditiveColor,
-      vaccineColor: vaccineColor ?? this.vaccineColor,
-      poultryColor: poultryColor ?? this.poultryColor,
-      cattleColor: cattleColor ?? this.cattleColor,
-      aquaColor: aquaColor ?? this.aquaColor,
-      defaultCategoryColor: defaultCategoryColor ?? this.defaultCategoryColor,
+      feedAdditive:
+          feedAdditive ??
+          (feedAdditiveColor != null
+              ? this.feedAdditive.copyWith(primary: feedAdditiveColor)
+              : this.feedAdditive),
+      vaccine:
+          vaccine ??
+          (vaccineColor != null
+              ? this.vaccine.copyWith(primary: vaccineColor)
+              : this.vaccine),
+      poultry:
+          poultry ??
+          (poultryColor != null
+              ? this.poultry.copyWith(primary: poultryColor)
+              : this.poultry),
+      cattle:
+          cattle ??
+          (cattleColor != null
+              ? this.cattle.copyWith(primary: cattleColor)
+              : this.cattle),
+      aqua:
+          aqua ??
+          (aquaColor != null
+              ? this.aqua.copyWith(primary: aquaColor)
+              : this.aqua),
+      defaultToken:
+          defaultToken ??
+          (defaultCategoryColor != null
+              ? this.defaultToken.copyWith(primary: defaultCategoryColor)
+              : this.defaultToken),
     );
   }
 
@@ -45,20 +197,20 @@ class CategoryColors extends ThemeExtension<CategoryColors> {
       return this;
     }
     return CategoryColors(
-      feedAdditiveColor: Color.lerp(
-        feedAdditiveColor,
-        other.feedAdditiveColor,
+      feedAdditive: CategoryColorToken.lerp(
+        feedAdditive,
+        other.feedAdditive,
         t,
-      )!,
-      vaccineColor: Color.lerp(vaccineColor, other.vaccineColor, t)!,
-      poultryColor: Color.lerp(poultryColor, other.poultryColor, t)!,
-      cattleColor: Color.lerp(cattleColor, other.cattleColor, t)!,
-      aquaColor: Color.lerp(aquaColor, other.aquaColor, t)!,
-      defaultCategoryColor: Color.lerp(
-        defaultCategoryColor,
-        other.defaultCategoryColor,
+      ),
+      vaccine: CategoryColorToken.lerp(vaccine, other.vaccine, t),
+      poultry: CategoryColorToken.lerp(poultry, other.poultry, t),
+      cattle: CategoryColorToken.lerp(cattle, other.cattle, t),
+      aqua: CategoryColorToken.lerp(aqua, other.aqua, t),
+      defaultToken: CategoryColorToken.lerp(
+        defaultToken,
+        other.defaultToken,
         t,
-      )!,
+      ),
     );
   }
 }
@@ -127,13 +279,82 @@ class AppTheme {
     topSpecularColor: Color(0x33FFFFFF),
   );
 
-  static const _categoryColors = CategoryColors(
-    feedAdditiveColor: Color(0xFF00796B), // Premium Teal
-    vaccineColor: Color(0xFF673AB7), // Premium Deep Purple
-    poultryColor: Color(0xFFFF8F00), // Premium Amber/Orange
-    cattleColor: Color(0xFF795548), // Premium Brown
-    aquaColor: Color(0xFF1976D2), // Premium Blue
-    defaultCategoryColor: Color(0xFF78909C),
+  static const _categoryColorsLight = CategoryColors(
+    feedAdditive: CategoryColorToken(
+      primary: Color(0xFF00796B),
+      container: Color(0xFFE0F2F1),
+      border: Color(0xFF80CBC4),
+      text: Color(0xFF004D40),
+    ),
+    vaccine: CategoryColorToken(
+      primary: Color(0xFF673AB7),
+      container: Color(0xFFEDE7F6),
+      border: Color(0xFFB39DDB),
+      text: Color(0xFF311B92),
+    ),
+    poultry: CategoryColorToken(
+      primary: Color(0xFFE65100),
+      container: Color(0xFFFFF3E0),
+      border: Color(0xFFFFCC80),
+      text: Color(0xFFBF360C),
+    ),
+    cattle: CategoryColorToken(
+      primary: Color(0xFF5D4037),
+      container: Color(0xFFEFEBE9),
+      border: Color(0xFFBCAAA4),
+      text: Color(0xFF3E2723),
+    ),
+    aqua: CategoryColorToken(
+      primary: Color(0xFF0277BD),
+      container: Color(0xFFE1F5FE),
+      border: Color(0xFF81D4FA),
+      text: Color(0xFF01579B),
+    ),
+    defaultToken: CategoryColorToken(
+      primary: Color(0xFF546E7A),
+      container: Color(0xFFECEFF1),
+      border: Color(0xFFB0BEC5),
+      text: Color(0xFF37474F),
+    ),
+  );
+
+  static const _categoryColorsDark = CategoryColors(
+    feedAdditive: CategoryColorToken(
+      primary: Color(0xFF4DB6AC),
+      container: Color(0x2E4DB6AC),
+      border: Color(0x594DB6AC),
+      text: Color(0xFF80CBC4),
+    ),
+    vaccine: CategoryColorToken(
+      primary: Color(0xFFB39DDB),
+      container: Color(0x2EB39DDB),
+      border: Color(0x59B39DDB),
+      text: Color(0xFFD1C4E9),
+    ),
+    poultry: CategoryColorToken(
+      primary: Color(0xFFFFB74D),
+      container: Color(0x2EFEB84D),
+      border: Color(0x59FFB74D),
+      text: Color(0xFFFFE082),
+    ),
+    cattle: CategoryColorToken(
+      primary: Color(0xFFBCAAA4),
+      container: Color(0x2EBCAAA4),
+      border: Color(0x59BCAAA4),
+      text: Color(0xFFD7CCC8),
+    ),
+    aqua: CategoryColorToken(
+      primary: Color(0xFF4FC3F7),
+      container: Color(0x2E4FC3F7),
+      border: Color(0x594FC3F7),
+      text: Color(0xFF81D4FA),
+    ),
+    defaultToken: CategoryColorToken(
+      primary: Color(0xFF90A4AE),
+      container: Color(0x2E90A4AE),
+      border: Color(0x5990A4AE),
+      text: Color(0xFFCFD8DC),
+    ),
   );
 
   static final lightTheme = ThemeData(
@@ -287,7 +508,7 @@ class AppTheme {
       labelLarge: TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
       bodyMedium: TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
     ),
-    extensions: const [_categoryColors, _glassLight],
+    extensions: const [_categoryColorsLight, _glassLight],
   );
 
   static final darkTheme = ThemeData(
@@ -438,7 +659,7 @@ class AppTheme {
       thickness: 1,
       space: 1,
     ),
-    extensions: const [_categoryColors, _glassDark],
+    extensions: const [_categoryColorsDark, _glassDark],
   );
 }
 

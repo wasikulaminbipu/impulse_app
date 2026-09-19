@@ -10,6 +10,7 @@ import 'package:impulse_app/providers/products_provider.dart';
 import 'package:impulse_app/screens/sales_personnels_screen.dart';
 import 'package:impulse_app/services/app_review_service.dart'
     show UrlLauncherWrapper;
+import 'package:impulse_app/theme/app_theme.dart';
 import 'package:impulse_app/utils/bilingual_string.dart';
 import 'package:impulse_app/utils/product_share_service.dart';
 import 'package:impulse_app/widgets/custom_badge.dart';
@@ -80,6 +81,22 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
         );
       }
     }
+  }
+
+  CategoryColorToken _getCategoryColorToken(BuildContext context) {
+    final categoryColors = Theme.of(context).extension<CategoryColors>();
+    if (categoryColors == null) {
+      return const CategoryColorToken(
+        primary: Colors.grey,
+        container: Color(0x1F9E9E9E),
+        border: Color(0x429E9E9E),
+        text: Colors.grey,
+      );
+    }
+    return categoryColors.resolve(
+      category: widget.product.category.nameEn,
+      targetGroups: widget.product.targetGroups.map((tg) => tg.nameEn),
+    );
   }
 
   Future<void> _handleShareImage(String title) async {
@@ -481,8 +498,8 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomBadge(
-                            color: Colors.teal,
+                          CustomBadge.fromToken(
+                            token: _getCategoryColorToken(context),
                             textStyle: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -777,8 +794,8 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomBadge(
-                            color: Colors.teal,
+                          CustomBadge.fromToken(
+                            token: _getCategoryColorToken(context),
                             textStyle: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,

@@ -19,8 +19,8 @@ void main() {
       },
     );
 
-    test('CategoryColors extension supports copyWith and lerp', () {
-      const colors = CategoryColors(
+    test('CategoryColors extension supports copyWith, lerp, and resolve', () {
+      final colors = CategoryColors.raw(
         feedAdditiveColor: Colors.amber,
         vaccineColor: Colors.blue,
         poultryColor: Colors.green,
@@ -39,6 +39,16 @@ void main() {
 
       // Lerp with null returns self
       expect(colors.lerp(null, 0.5), equals(colors));
+
+      // Test resolve
+      final token = colors.resolve(category: 'Feed Additive');
+      expect(token.primary, equals(Colors.amber));
+
+      final vaccineToken = colors.resolve(category: 'Vaccine');
+      expect(vaccineToken.primary, equals(Colors.blue));
+
+      final poultryToken = colors.resolve(targetGroups: ['Poultry']);
+      expect(poultryToken.primary, equals(Colors.green));
     });
 
     test('GlassThemeExtension extension supports copyWith and lerp', () {
