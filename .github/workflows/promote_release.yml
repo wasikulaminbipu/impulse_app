@@ -104,11 +104,11 @@ jobs:
           echo "## 🚀 Google Play Release Track Promotion Summary" >> $GITHUB_STEP_SUMMARY
           echo "| Configuration | Value |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Source Track** | `${{ github.event.inputs.from_track }}` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Target Track** | `${{ github.event.inputs.to_track }}` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Staged Rollout Fraction** | `${{ github.event.inputs.rollout_fraction }}` ($(awk "BEGIN {print ${{ github.event.inputs.rollout_fraction }} * 100}")%) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Source Track** | \`${{ github.event.inputs.from_track }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target Track** | \`${{ github.event.inputs.to_track }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Staged Rollout Fraction** | \`${{ github.event.inputs.rollout_fraction }}\` ($(awk "BEGIN {print ${{ github.event.inputs.rollout_fraction }} * 100}")%) |" >> $GITHUB_STEP_SUMMARY
           echo "| **Promotion Status** | ✅ Successfully Promoted |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Timestamp** | `$(date -u)` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Timestamp** | \`$(date -u)\` |" >> $GITHUB_STEP_SUMMARY
 
       - name: "Securely wipe Google Play credentials from runner"
         if: always()
