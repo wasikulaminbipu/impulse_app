@@ -60,7 +60,7 @@ class ProductsDb extends _$ProductsDb {
   int get schemaVersion => 1;
 }
 
-/// Thin Drift wrapper around team.db.
+/// Thin Drift wrapper around teams.db.
 @DriftDatabase(
   tables: [
     Divisions,
@@ -182,7 +182,8 @@ Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
   T Function(QueryExecutor) wrap,
   Future<void> Function(QueryExecutor executor) ftsSetup,
 ) async {
-  if (dbName == 'team.db') {
+  if (dbName == 'teams.db') {
+    await _cleanLegacyDbFiles('team.db');
     await _cleanLegacyDbFiles('distributors.db');
   }
 

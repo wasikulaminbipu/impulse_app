@@ -1,7 +1,7 @@
 import 'package:sqlite3/sqlite3.dart';
 
 void main() {
-  const dbPath = 'assets/db/team.db';
+  const dbPath = 'assets/db/teams.db';
   final db = sqlite3.open(dbPath);
 
   final String now = DateTime.now().toIso8601String();

@@ -27,8 +27,8 @@ Future<ProductsDb> productsDatabase(Ref ref) async {
 @Riverpod(keepAlive: true)
 Future<DistributorsDb> distributorsDatabase(Ref ref) async {
   final db = await copyAndOpenAssetDb(
-    'team.db',
-    'team.db',
+    'teams.db',
+    'teams.db',
     DistributorsDb.new,
     setupDistributorsFts,
   );

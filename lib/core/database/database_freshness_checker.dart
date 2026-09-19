@@ -8,10 +8,37 @@ import 'package:sqlite3/sqlite3.dart';
 /// Service that verifies offline SQLite database file freshness,
 /// schema integrity, and triggers clean asset refreshes across app updates.
 class DatabaseFreshnessChecker {
-  static const List<String> databaseFiles = ['products.db', 'team.db'];
+  static const List<String> databaseFiles = ['products.db', 'teams.db'];
+  static const List<String> legacyDatabaseFiles = [
+    'team.db',
+    'distributors.db',
+  ];
+
+  /// Safely purges legacy database files from older application releases.
+  static Future<void> purgeLegacyDatabases() async {
+    try {
+      final docDir = await getApplicationDocumentsDirectory();
+      for (final legacyName in legacyDatabaseFiles) {
+        final legacyPath = p.join(docDir.path, legacyName);
+        for (final ext in ['', '-journal', '-wal', '-shm', '.version']) {
+          final f = File('$legacyPath$ext');
+          if (f.existsSync()) {
+            try {
+              f.deleteSync();
+            } catch (e) {
+              debugPrint('Error deleting legacy DB file ${f.path}: $e');
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error purging legacy databases: $e');
+    }
+  }
 
   /// Checks the integrity and metadata version of all local SQLite databases.
   static Future<Map<String, dynamic>> checkLocalDatabaseHealth() async {
+    await purgeLegacyDatabases();
     final report = <String, dynamic>{};
     final docDir = await getApplicationDocumentsDirectory();
 

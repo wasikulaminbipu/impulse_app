@@ -8,17 +8,24 @@ void main(List<String> args) {
   stdout.writeln('====================================================');
 
   final productsDbFile = File('assets/db/products.db');
-  final teamDbFile = File('assets/db/team.db');
+  final teamsDbFile = File('assets/db/teams.db');
+  final legacyTeamDbFile = File('assets/db/team.db');
 
   var allPassed = true;
+
+  if (legacyTeamDbFile.existsSync()) {
+    stderr.writeln(
+      '⚠️ Warning: Legacy assets/db/team.db found in assets! Remove it in favor of teams.db.',
+    );
+  }
 
   if (!productsDbFile.existsSync()) {
     stderr.writeln('❌ Error: assets/db/products.db does not exist!');
     exit(1);
   }
 
-  if (!teamDbFile.existsSync()) {
-    stderr.writeln('❌ Error: assets/db/team.db does not exist!');
+  if (!teamsDbFile.existsSync()) {
+    stderr.writeln('❌ Error: assets/db/teams.db does not exist!');
     exit(1);
   }
 
@@ -66,9 +73,11 @@ void main(List<String> args) {
     allPassed = false;
   }
 
-  stdout.writeln('\n📦 Checking team.db (${teamDbFile.lengthSync()} bytes)...');
+  stdout.writeln(
+    '\n📦 Checking teams.db (${teamsDbFile.lengthSync()} bytes)...',
+  );
   try {
-    final db = sqlite3.open(teamDbFile.path);
+    final db = sqlite3.open(teamsDbFile.path);
 
     // 1. Integrity Check
     final integrityResult = db.select('PRAGMA integrity_check;');
@@ -104,7 +113,7 @@ void main(List<String> args) {
 
     db.close();
   } catch (e) {
-    stderr.writeln('  ❌ Error reading team.db: $e');
+    stderr.writeln('  ❌ Error reading teams.db: $e');
     allPassed = false;
   }
 

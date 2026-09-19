@@ -38,7 +38,7 @@ void main() {
       final report = await DatabaseFreshnessChecker.checkLocalDatabaseHealth();
 
       final productsReport = report['products.db'] as Map<String, dynamic>;
-      final distReport = report['team.db'] as Map<String, dynamic>;
+      final distReport = report['teams.db'] as Map<String, dynamic>;
 
       expect(productsReport['status'], equals('missing'));
       expect(distReport['status'], equals('missing'));
@@ -58,7 +58,7 @@ void main() {
         final report =
             await DatabaseFreshnessChecker.checkLocalDatabaseHealth();
         final productsReport = report['products.db'] as Map<String, dynamic>;
-        final distReport = report['team.db'] as Map<String, dynamic>;
+        final distReport = report['teams.db'] as Map<String, dynamic>;
 
         expect(productsReport['status'], equals('healthy'));
         expect(productsReport['dataVersion'], equals(4));
@@ -66,5 +66,29 @@ void main() {
         expect(distReport['status'], equals('missing'));
       },
     );
+
+    test('purges legacy database files during health check', () async {
+      final legacyDbPath = p.join(tempDir.path, 'team.db');
+      final legacyVersionPath = p.join(tempDir.path, 'team.db.version');
+      final legacyWalPath = p.join(tempDir.path, 'team.db-wal');
+      final legacyDistPath = p.join(tempDir.path, 'distributors.db');
+
+      File(legacyDbPath).writeAsStringSync('legacy db');
+      File(legacyVersionPath).writeAsStringSync('1.0');
+      File(legacyWalPath).writeAsStringSync('wal');
+      File(legacyDistPath).writeAsStringSync('dist');
+
+      expect(File(legacyDbPath).existsSync(), isTrue);
+      expect(File(legacyVersionPath).existsSync(), isTrue);
+      expect(File(legacyWalPath).existsSync(), isTrue);
+      expect(File(legacyDistPath).existsSync(), isTrue);
+
+      await DatabaseFreshnessChecker.checkLocalDatabaseHealth();
+
+      expect(File(legacyDbPath).existsSync(), isFalse);
+      expect(File(legacyVersionPath).existsSync(), isFalse);
+      expect(File(legacyWalPath).existsSync(), isFalse);
+      expect(File(legacyDistPath).existsSync(), isFalse);
+    });
   });
 }
