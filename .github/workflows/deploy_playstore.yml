@@ -566,6 +566,12 @@ jobs:
           name: release-artifacts
           path: release-binaries
 
+      - name: "Generate Cryptographic Checksums (SHA-256)"
+        run: |
+          cd release-binaries
+          find . -type f \( -name "*.apk" -o -name "*.aab" \) -exec sha256sum {} + > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
       - name: "Publish official GitHub Release with signed binaries"
         id: create_release
         uses: softprops/action-gh-release@v3
@@ -576,6 +582,7 @@ jobs:
             release-binaries/flutter-apk/app-arm64-v8a-release.apk
             release-binaries/flutter-apk/app-armeabi-v7a-release.apk
             release-binaries/flutter-apk/app-x86_64-release.apk
+            release-binaries/SHA256SUMS.txt
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

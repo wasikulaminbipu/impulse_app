@@ -12,12 +12,21 @@ import 'package:in_app_update/in_app_update.dart';
 class FakeTestUpdateService extends AppUpdateService {
   final AppUpdateInfo? infoToReturn;
   final bool failFlexible;
+  final bool failComplete;
+  final bool shouldCheckResult;
   bool completeCalled = false;
+  int? dismissedVersion;
 
-  FakeTestUpdateService({this.infoToReturn, this.failFlexible = false});
+  FakeTestUpdateService({
+    this.infoToReturn,
+    this.failFlexible = false,
+    this.failComplete = false,
+    this.shouldCheckResult = true,
+  });
 
   @override
-  Future<bool> shouldCheckForUpdate(dynamic dao, {DateTime? now}) async => true;
+  Future<bool> shouldCheckForUpdate(dynamic dao, {DateTime? now}) async =>
+      shouldCheckResult;
 
   @override
   Future<void> recordUpdateChecked(dynamic dao, {DateTime? now}) async {}
@@ -33,7 +42,7 @@ class FakeTestUpdateService extends AppUpdateService {
   @override
   Future<bool> completeFlexibleUpdate() async {
     completeCalled = true;
-    return true;
+    return !failComplete;
   }
 
   @override
@@ -48,7 +57,9 @@ class FakeTestUpdateService extends AppUpdateService {
     dynamic dao,
     int versionCode, {
     DateTime? now,
-  }) async {}
+  }) async {
+    dismissedVersion = versionCode;
+  }
 }
 
 void main() {
@@ -178,6 +189,68 @@ void main() {
 
       final state = container.read(appUpdateProvider);
       expect(state.status, equals(UpdateStatus.available));
+    });
+
+    test(
+      'default appUpdateServiceProvider resolves to const AppUpdateService',
+      () {
+        final defaultContainer = ProviderContainer();
+        final service = defaultContainer.read(appUpdateServiceProvider);
+        expect(service, isA<AppUpdateService>());
+        defaultContainer.dispose();
+      },
+    );
+
+    test('completeFlexibleUpdate reverts to available on failure', () async {
+      final fakeService = FakeTestUpdateService(failComplete: true);
+      container = ProviderContainer(
+        overrides: [
+          appMaintenanceDatabaseProvider.overrideWith((ref) async => db),
+          appUpdateServiceProvider.overrideWithValue(fakeService),
+        ],
+      );
+
+      // Transition to downloaded first
+      await container.read(appUpdateProvider.notifier).startFlexibleUpdate();
+      expect(
+        container.read(appUpdateProvider).status,
+        equals(UpdateStatus.downloaded),
+      );
+
+      await container.read(appUpdateProvider.notifier).completeFlexibleUpdate();
+      expect(
+        container.read(appUpdateProvider).status,
+        equals(UpdateStatus.available),
+      );
+    });
+
+    test('dismissPrompt records prompt dismissal via service', () async {
+      final fakeService = FakeTestUpdateService();
+      container = ProviderContainer(
+        overrides: [
+          appMaintenanceDatabaseProvider.overrideWith((ref) async => db),
+          appUpdateServiceProvider.overrideWithValue(fakeService),
+        ],
+      );
+
+      await container.read(appUpdateProvider.notifier).dismissPrompt(105);
+      expect(fakeService.dismissedVersion, equals(105));
+    });
+
+    test('checkAndPromptUpdate with force: false does not check when shouldCheck is false', () async {
+      final fakeService = FakeTestUpdateService(shouldCheckResult: false);
+      container = ProviderContainer(
+        overrides: [
+          appMaintenanceDatabaseProvider.overrideWith((ref) async => db),
+          appUpdateServiceProvider.overrideWithValue(fakeService),
+        ],
+      );
+
+      await container.read(appUpdateProvider.notifier).checkAndPromptUpdate();
+      expect(
+        container.read(appUpdateProvider).status,
+        equals(UpdateStatus.idle),
+      );
     });
   });
 }

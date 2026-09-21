@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- Exclude internal SQLite databases and sensitive local data from cloud backups -->
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+    </cloud-backup>
+    <device-to-device-transfer>
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+    </device-to-device-transfer>
+</data-extraction-rules>

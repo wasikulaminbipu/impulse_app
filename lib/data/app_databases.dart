@@ -215,7 +215,50 @@ Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
         '_${assetBytes[24]}_${assetBytes[25]}_${assetBytes[26]}_${assetBytes[27]}';
   }
 
+  bool isDbCorrupted = false;
+  if (await file.exists()) {
+    try {
+      final len = await file.length();
+      if (len < 100) {
+        isDbCorrupted = true;
+      } else {
+        final header = await file.openRead(0, 16).first;
+        const sqliteHeader = [
+          0x53,
+          0x51,
+          0x4C,
+          0x69,
+          0x74,
+          0x65,
+          0x20,
+          0x66,
+          0x6F,
+          0x72,
+          0x6D,
+          0x61,
+          0x74,
+          0x20,
+          0x33,
+          0x00,
+        ];
+        if (header.length < 16) {
+          isDbCorrupted = true;
+        } else {
+          for (int i = 0; i < 16; i++) {
+            if (header[i] != sqliteHeader[i]) {
+              isDbCorrupted = true;
+              break;
+            }
+          }
+        }
+      }
+    } catch (_) {
+      isDbCorrupted = true;
+    }
+  }
+
   final needsCopy =
+      isDbCorrupted ||
       !await file.exists() ||
       !await versionFile.exists() ||
       (await versionFile.readAsString()).trim() != assetSig;

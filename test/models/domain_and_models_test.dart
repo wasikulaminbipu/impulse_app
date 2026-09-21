@@ -276,5 +276,75 @@ void main() {
       expect(row['mrp'], equals(250.0));
       expect(row['bulk_item'], equals(1));
     });
+
+    test('Composition fromRow factory maps all fields', () {
+      final composition = Composition.fromRow({
+        'id': 101,
+        'product_id': 202,
+        'ingredient_en': 'Amoxicillin',
+        'ingredient_bn': 'অ্যামোক্সিসিলিন',
+        'concentration': '500mg',
+        'display_order': 2,
+      });
+
+      expect(composition.id, equals(101));
+      expect(composition.productId, equals(202));
+      expect(composition.ingredientEn, equals('Amoxicillin'));
+      expect(composition.ingredientBn, equals('অ্যামোক্সিসিলিন'));
+      expect(composition.concentration, equals('500mg'));
+      expect(composition.displayOrder, equals(2));
+    });
+
+    test('Direction fromRow factory maps all fields and numbers', () {
+      final direction = Direction.fromRow({
+        'id': 301,
+        'product_id': 202,
+        'content_type_id': 1,
+        'species_id': 2,
+        'dose_value_min': 10,
+        'dose_value_max': 20.5,
+        'dose_unit_id': 3,
+        'dose_basis_id': 4,
+        'duration_days_min': 3,
+        'duration_days_max': 5,
+        'administration_en': 'Oral',
+        'administration_bn': 'মুখের মাধ্যমে',
+        'dosage_en': '10-20.5 mg/kg',
+        'dosage_bn': '১০-২০.৫ মিগ্রা/কেজি',
+        'display_order': 1,
+      });
+
+      expect(direction.id, equals(301));
+      expect(direction.doseValueMin, equals(10.0));
+      expect(direction.doseValueMax, equals(20.5));
+      expect(direction.administrationEn, equals('Oral'));
+      expect(direction.displayOrder, equals(1));
+    });
+
+    test('Indication and Precaution fromRow factories map fields', () {
+      final indication = Indication.fromRow({
+        'id': 401,
+        'product_id': 202,
+        'text_en': 'Bacterial infections',
+        'text_bn': 'ব্যাকটেরিয়া সংক্রমণ',
+        'display_order': 1,
+      });
+
+      expect(indication.id, equals(401));
+      expect(indication.textEn, equals('Bacterial infections'));
+      expect(indication.textBn, equals('ব্যাকটেরিয়া সংক্রমণ'));
+
+      final precaution = Precaution.fromRow({
+        'id': 501,
+        'product_id': 202,
+        'text_en': 'Do not use in allergic animals',
+        'text_bn': 'অ্যালার্জি থাকলে ব্যবহার করবেন না',
+        'display_order': 1,
+      });
+
+      expect(precaution.id, equals(501));
+      expect(precaution.textEn, equals('Do not use in allergic animals'));
+      expect(precaution.textBn, equals('অ্যালার্জি থাকলে ব্যবহার করবেন না'));
+    });
   });
 }

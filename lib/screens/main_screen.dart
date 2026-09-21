@@ -255,65 +255,72 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final colorScheme = theme.colorScheme;
 
     return Expanded(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          if (currentIndex != index) {
-            HapticFeedback.selectionClick();
-            ref.read(mainNavIndexProvider.notifier).setIndex(index);
-          }
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 4),
-            AnimatedSlide(
-              offset: isSelected ? const Offset(0, -0.08) : Offset.zero,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeOutBack,
-              child: AnimatedScale(
-                scale: isSelected ? 1.15 : 1.0,
+      child: Semantics(
+        button: true,
+        selected: isSelected,
+        label: label,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            if (currentIndex != index) {
+              HapticFeedback.selectionClick();
+              ref.read(mainNavIndexProvider.notifier).setIndex(index);
+            }
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 4),
+              AnimatedSlide(
+                offset: isSelected ? const Offset(0, -0.08) : Offset.zero,
                 duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOutBack,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  switchInCurve: Curves.easeOut,
-                  switchOutCurve: Curves.easeIn,
-                  transitionBuilder: (child, animation) {
-                    return ScaleTransition(
-                      scale: Tween<double>(
-                        begin: 0.8,
-                        end: 1.0,
-                      ).animate(animation),
-                      child: FadeTransition(opacity: animation, child: child),
-                    );
-                  },
-                  child: Icon(
-                    isSelected ? selectedIcon : unselectedIcon,
-                    key: ValueKey<bool>(isSelected),
-                    color: isSelected
-                        ? colorScheme.primary
-                        : colorScheme.onSurfaceVariant.withValues(alpha: 0.55),
-                    size: 24,
+                child: AnimatedScale(
+                  scale: isSelected ? 1.15 : 1.0,
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeOutBack,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
+                    transitionBuilder: (child, animation) {
+                      return ScaleTransition(
+                        scale: Tween<double>(
+                          begin: 0.8,
+                          end: 1.0,
+                        ).animate(animation),
+                        child: FadeTransition(opacity: animation, child: child),
+                      );
+                    },
+                    child: Icon(
+                      isSelected ? selectedIcon : unselectedIcon,
+                      key: ValueKey<bool>(isSelected),
+                      color: isSelected
+                          ? colorScheme.primary
+                          : colorScheme.onSurfaceVariant.withValues(
+                              alpha: 0.55,
+                            ),
+                      size: 24,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 3),
-            AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 200),
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected
-                    ? colorScheme.primary
-                    : colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                letterSpacing: 0.2,
+              const SizedBox(height: 3),
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 200),
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  color: isSelected
+                      ? colorScheme.primary
+                      : colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                  letterSpacing: 0.2,
+                ),
+                child: Text(label),
               ),
-              child: Text(label),
-            ),
-            const SizedBox(height: 6),
-          ],
+              const SizedBox(height: 6),
+            ],
+          ),
         ),
       ),
     );

@@ -46,35 +46,39 @@ class _TactileButtonState extends State<TactileButton>
   Widget build(BuildContext context) {
     final isDisabled = widget.onPressed == null;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapDown: isDisabled
-          ? null
-          : (_) {
-              _controller.forward();
-              if (widget.enableHaptics) {
-                HapticFeedback.lightImpact();
-              }
-            },
-      onTapUp: isDisabled
-          ? null
-          : (_) {
-              _controller.reverse();
-              widget.onPressed?.call();
-            },
-      onTapCancel: isDisabled
-          ? null
-          : () {
-              _controller.reverse();
-            },
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-          child: Center(
-            widthFactor: 1.0,
-            heightFactor: 1.0,
-            child: widget.child,
+    return Semantics(
+      button: true,
+      enabled: !isDisabled,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: isDisabled
+            ? null
+            : (_) {
+                _controller.forward();
+                if (widget.enableHaptics) {
+                  HapticFeedback.lightImpact();
+                }
+              },
+        onTapUp: isDisabled
+            ? null
+            : (_) {
+                _controller.reverse();
+                widget.onPressed?.call();
+              },
+        onTapCancel: isDisabled
+            ? null
+            : () {
+                _controller.reverse();
+              },
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+            child: Center(
+              widthFactor: 1.0,
+              heightFactor: 1.0,
+              child: widget.child,
+            ),
           ),
         ),
       ),

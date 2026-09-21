@@ -1,0 +1,23 @@
+# Code Owners for Impulse DEX Repository
+# These owners will be automatically requested for review on pull requests touching their areas.
+
+# Default owner for everything in the repository
+* @wasikulaminbipu
+
+# CI/CD Workflows, GitHub Actions & Automation
+/.github/workflows/ @wasikulaminbipu
+/.github/ @wasikulaminbipu
+
+# Android Native Configurations, Gradle & ProGuard
+/android/ @wasikulaminbipu
+
+# Fastlane Deployment Lanes & Metadata
+/fastlane/ @wasikulaminbipu
+
+# Database Architecture, DAOs, Tables & SQLite Assets
+/lib/data/ @wasikulaminbipu
+/lib/core/database/ @wasikulaminbipu
+/assets/db/ @wasikulaminbipu
+
+# Quality Audit & Release Engineering Scripts
+/bin/ @wasikulaminbipu

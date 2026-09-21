@@ -125,5 +125,40 @@ void main() {
       );
       expect(result, equals('success_data'));
     });
+
+    test('addCrashReporter dispatches error to reporter and removeCrashReporter unregisters it', () {
+      final captured = <AppException>[];
+      final reporter = _MockCrashReporter((e, {context, stackTrace}) {
+        captured.add(e);
+      });
+
+      AppErrorHandler.addCrashReporter(reporter);
+      AppErrorHandler.logError('Telemetry error 1');
+      expect(captured.length, equals(1));
+      expect(captured.first.message, contains('Telemetry error 1'));
+
+      AppErrorHandler.removeCrashReporter(reporter);
+      AppErrorHandler.logError('Telemetry error 2');
+      expect(captured.length, equals(1));
+    });
   });
+}
+
+class _MockCrashReporter implements AppCrashReporter {
+  final void Function(
+    AppException error, {
+    StackTrace? stackTrace,
+    String? context,
+  })
+  onReport;
+  _MockCrashReporter(this.onReport);
+
+  @override
+  void reportError(
+    AppException error, {
+    StackTrace? stackTrace,
+    String? context,
+  }) {
+    onReport(error, stackTrace: stackTrace, context: context);
+  }
 }

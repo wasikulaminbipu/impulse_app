@@ -84,32 +84,40 @@ class _FavoriteButtonState extends ConsumerState<FavoriteButton>
       ),
     };
 
-    return ScaleTransition(
-      scale: _scaleAnimation,
-      child: IconButton(
-        icon: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          transitionBuilder: (child, animation) {
-            return ScaleTransition(scale: animation, child: child);
-          },
-          child: Icon(
-            isFav ? Icons.favorite : Icons.favorite_border,
-            key: ValueKey<bool>(isFav),
-            size: widget.size ?? 24,
-            color: isFav
-                ? (widget.activeColor ?? Colors.red)
-                : (widget.color ?? Colors.grey),
+    final label = isFav ? 'Remove from favorites' : 'Add to favorites';
+
+    return Semantics(
+      button: true,
+      selected: isFav,
+      label: label,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: IconButton(
+          icon: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            transitionBuilder: (child, animation) {
+              return ScaleTransition(scale: animation, child: child);
+            },
+            child: Icon(
+              isFav ? Icons.favorite : Icons.favorite_border,
+              key: ValueKey<bool>(isFav),
+              size: widget.size ?? 24,
+              color: isFav
+                  ? (widget.activeColor ?? Colors.red)
+                  : (widget.color ?? Colors.grey),
+            ),
           ),
+          tooltip: label,
+          onPressed: () {
+            _controller.forward(from: 0.0);
+            HapticFeedback.mediumImpact();
+            ref
+                .read(favoriteToggleProvider.notifier)
+                .toggle(widget.type, widget.refId);
+          },
+          constraints: const BoxConstraints(),
+          padding: EdgeInsets.zero,
         ),
-        onPressed: () {
-          _controller.forward(from: 0.0);
-          HapticFeedback.mediumImpact();
-          ref
-              .read(favoriteToggleProvider.notifier)
-              .toggle(widget.type, widget.refId);
-        },
-        constraints: const BoxConstraints(),
-        padding: EdgeInsets.zero,
       ),
     );
   }

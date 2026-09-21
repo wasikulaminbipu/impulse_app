@@ -172,25 +172,90 @@ void main() {
       },
     );
 
-    test(
-      'stakeholder search trie providers return suggestions on query',
-      () async {
-        container
-            .read(salesPersonnelSearchQueryProvider.notifier)
-            .updateQuery('Rafiq');
-        final salesSuggestions = await container.read(
-          salesPersonnelSearchTrieSuggestionsProvider.future,
-        );
-        expect(salesSuggestions, isA<List<String>>());
+    test('stakeholder search trie providers populate correctly and return suggestions', () async {
+      // Direct read of tries to ensure complete iteration of all properties
+      final salesTrie = await container.read(
+        salesPersonnelSearchTrieProvider.future,
+      );
+      expect(salesTrie.getSuggestions('Md.'), contains('Md. Rafiqul Islam'));
+      expect(
+        salesTrie.getSuggestions('Territory'),
+        contains('Territory Officer'),
+      );
+      expect(salesTrie.getSuggestions('EMP'), contains('EMP001'));
+      expect(salesTrie.getSuggestions('Dhaka'), isNotEmpty);
+      expect(salesTrie.getSuggestions('Gazipur'), isNotEmpty);
 
-        container
-            .read(vetDoctorsSearchQueryProvider.notifier)
-            .updateQuery('Shamsul');
-        final vetSuggestions = await container.read(
-          vetDoctorSearchTrieSuggestionsProvider.future,
-        );
-        expect(vetSuggestions, isA<List<String>>());
-      },
-    );
+      final vetTrie = await container.read(vetDoctorSearchTrieProvider.future);
+      expect(vetTrie.getSuggestions('Dr.'), contains('Dr. Shamsul Alam'));
+      expect(vetTrie.getSuggestions('DVM'), contains('DVM, MS'));
+      expect(
+        vetTrie.getSuggestions('Veterinary'),
+        contains('Veterinary Consultant'),
+      );
+      expect(vetTrie.getSuggestions('Dhaka'), isNotEmpty);
+      expect(vetTrie.getSuggestions('Gazipur'), isNotEmpty);
+
+      // Empty queries return empty suggestions
+      expect(
+        await container.read(
+          salesPersonnelSearchTrieSuggestionsProvider.future,
+        ),
+        isEmpty,
+      );
+      expect(
+        await container.read(vetDoctorSearchTrieSuggestionsProvider.future),
+        isEmpty,
+      );
+
+      // Keep auto-dispose providers active while debounce fires
+      final salesSub = container.listen(
+        salesPersonnelSearchTrieSuggestionsProvider,
+        (_, _) {},
+      );
+      final vetSub = container.listen(
+        vetDoctorSearchTrieSuggestionsProvider,
+        (_, _) {},
+      );
+
+      container
+          .read(salesPersonnelSearchQueryProvider.notifier)
+          .updateQuery('Md.');
+      container.read(vetDoctorsSearchQueryProvider.notifier).updateQuery('Dr.');
+
+      await Future<void>.delayed(const Duration(milliseconds: 350));
+
+      final salesSuggestions = await container.read(
+        salesPersonnelSearchTrieSuggestionsProvider.future,
+      );
+      expect(salesSuggestions, isNotEmpty);
+      expect(salesSuggestions, contains('Md. Rafiqul Islam'));
+
+      final vetSuggestions = await container.read(
+        vetDoctorSearchTrieSuggestionsProvider.future,
+      );
+      expect(vetSuggestions, isNotEmpty);
+      expect(vetSuggestions, contains('Dr. Shamsul Alam'));
+
+      salesSub.close();
+      vetSub.close();
+    });
+
+    test('Paginated providers handle filtering by region and area', () async {
+      container
+          .read(selectedContactRegionFilterProvider.notifier)
+          .selectRegion('Dhaka Region');
+      container
+          .read(selectedContactAreaFilterProvider.notifier)
+          .selectArea('Gazipur Area');
+
+      final salesState = await container.read(
+        paginatedSalesPersonnelProvider.future,
+      );
+      expect(salesState.items.length, equals(1));
+
+      final vetState = await container.read(paginatedVetDoctorsProvider.future);
+      expect(vetState.items.length, equals(1));
+    });
   });
 }

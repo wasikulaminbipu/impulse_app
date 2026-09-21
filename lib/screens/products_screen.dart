@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:impulse_app/models/product.dart';
@@ -138,6 +139,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
   }
 
   void _onCategoryTap(String categoryName) {
+    HapticFeedback.selectionClick();
     _searchController.text = categoryName;
     ref.read(productSearchQueryProvider.notifier).updateQuery(categoryName);
     if (categoryName.trim().isNotEmpty) {
@@ -253,8 +255,13 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onPressed: () =>
-                  ref.read(languageSettingProvider.notifier).toggle(),
+              tooltip: lang == 'bn'
+                  ? 'Switch to English'
+                  : 'বাংলা ভাষায় পরিবর্তন করুন',
+              onPressed: () {
+                HapticFeedback.selectionClick();
+                ref.read(languageSettingProvider.notifier).toggle();
+              },
             ),
           ],
           bottom: PreferredSize(
@@ -305,7 +312,9 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                       if (_searchController.text.isNotEmpty)
                         IconButton(
                           icon: const Icon(Icons.clear_rounded, size: 20),
+                          tooltip: lang == 'bn' ? 'মুছে ফেলুন' : 'Clear search',
                           onPressed: () {
+                            HapticFeedback.lightImpact();
                             _searchController.clear();
                             ref
                                 .read(productSearchQueryProvider.notifier)
@@ -360,6 +369,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                       fontWeight: FontWeight.w500,
                       fontSize: 13.5,
                     ),
+                    onTap: (_) => HapticFeedback.selectionClick(),
                     tabs: categories
                         .map((c) => Tab(height: 36, text: c))
                         .toList(),

@@ -4,11 +4,32 @@ import 'package:impulse_app/core/errors/app_error.dart';
 import 'package:impulse_app/widgets/app_error_boundary.dart';
 import 'package:impulse_app/widgets/feedback_banner.dart';
 
+/// Pluggable crash and error reporting contract for external telemetry providers (e.g. Sentry, Firebase Crashlytics).
+abstract interface class AppCrashReporter {
+  /// Invoked whenever an unhandled or intercepted application exception is processed.
+  void reportError(
+    AppException error, {
+    StackTrace? stackTrace,
+    String? context,
+  });
+}
+
 /// Central handler for intercepting, logging, guarding, and processing application errors.
 class AppErrorHandler {
   AppErrorHandler._();
 
   static final List<void Function(AppException error)> _errorListeners = [];
+  static final List<AppCrashReporter> _crashReporters = [];
+
+  /// Registers an [AppCrashReporter] for external telemetry recording.
+  static void addCrashReporter(AppCrashReporter reporter) {
+    _crashReporters.add(reporter);
+  }
+
+  /// Unregisters an [AppCrashReporter].
+  static void removeCrashReporter(AppCrashReporter reporter) {
+    _crashReporters.remove(reporter);
+  }
 
   /// Registers a listener callback triggered whenever an [AppException] is logged.
   static void addErrorListener(void Function(AppException error) listener) {
@@ -83,6 +104,18 @@ class AppErrorHandler {
         listener(appException);
       } catch (e) {
         debugPrint('Error in error listener: $e');
+      }
+    }
+
+    for (final reporter in List.of(_crashReporters)) {
+      try {
+        reporter.reportError(
+          appException,
+          stackTrace: stackTrace,
+          context: context,
+        );
+      } catch (e) {
+        debugPrint('Error in crash reporter: $e');
       }
     }
 
