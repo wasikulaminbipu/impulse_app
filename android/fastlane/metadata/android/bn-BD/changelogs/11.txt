@@ -1,0 +1,1 @@
+- Release v1.0.10: Upgrade offline database signature to SHA-256 and update product catalog with Trio manufacturer

@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.10] - 2026-09-23
+### What's Changed
+- Upgrade offline database signature to SHA-256 and update product catalog with Trio manufacturer
+
 ## [1.0.9] - 2026-09-15
 ### What's Changed
 - Redesign PDF datasheet manufacturer and marketer cards with dedicated logo and text columns
