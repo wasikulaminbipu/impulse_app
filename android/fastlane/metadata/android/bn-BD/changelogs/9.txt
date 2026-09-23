@@ -1,1 +1,0 @@
-- Release v1.0.8: Native vector PDF monograph export, WhatsApp inquiry button, Call for price presentation, and WebP product asset optimization

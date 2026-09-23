@@ -1,1 +1,0 @@
-- Release v1.0.6: Added in-app update checks, prompt dialog, and product catalog asset updates

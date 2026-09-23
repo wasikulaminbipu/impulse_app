@@ -48,10 +48,10 @@ This file contains project-scoped rules, architecture guidelines, and workflow c
      - Enforce minimum test coverage quality gate (>= 70%, preferred > 90%): `dart run bin/generate_coverage_badge.dart --min-coverage=70.0`
   3. **Privacy Policy & Data Safety Verification**:
      - Automatically verify privacy policy URL accessibility and audit permissions/SDK dependencies against Google Play Data Safety declarations without interactive terminal prompts.
-  4. **Versioning & Localized Fastlane Changelogs**:
+  4. **Versioning & Fastlane Release Notes (en-US Only)**:
      - Increment the version number (e.g. `version: X.Y.Z+N`) in `pubspec.yaml`.
      - Update `CHANGELOG.md` with release notes.
-     - Generate localized Fastlane release notes enforcing Google Play's 500-character limit.
+     - Generate standardized Fastlane release notes strictly in `en-US` enforcing Google Play's 500-character limit (single-language `en-US` policy).
   5. **Staging & Git Tagging**:
      - Stage all modified tracked files (generated code is Git-ignored and never committed) and commit (`chore(release): bump version to vX.Y.Z`).
      - Create an annotated git tag matching the version (`git tag -a vX.Y.Z -m "Release vX.Y.Z"`).

@@ -948,28 +948,86 @@ $details
   stdout.writeln('  ✅ Updated CHANGELOG.md with release notes');
 }
 
+String formatStandardReleaseNotes({
+  required String versionName,
+  int? buildNumber,
+  String? customNotes,
+}) {
+  final buffer = StringBuffer("What's new in v$versionName:\n");
+  final bullets = <String>[];
+
+  if (customNotes != null && customNotes.trim().isNotEmpty) {
+    final lines = customNotes
+        .split(RegExp(r'[\r\n]+'))
+        .map((l) => l.trim().replaceFirst(RegExp(r'^[•\-\*]\s*'), ''))
+        .where((l) => l.isNotEmpty);
+    bullets.addAll(lines);
+  }
+
+  final hasDbNote = bullets.any(
+    (b) =>
+        b.toLowerCase().contains('database') ||
+        b.toLowerCase().contains('catalog'),
+  );
+  final hasPerfNote = bullets.any(
+    (b) =>
+        b.toLowerCase().contains('performance') ||
+        b.toLowerCase().contains('stability') ||
+        b.toLowerCase().contains('optimization'),
+  );
+
+  if (!hasDbNote && bullets.length < 3) {
+    bullets.add('Offline database & product catalog updates');
+  }
+  if (!hasPerfNote && bullets.length < 4) {
+    bullets.add('Performance optimizations & stability improvements');
+  }
+
+  if (bullets.isEmpty) {
+    bullets.addAll([
+      'Offline database & product catalog updates',
+      'General performance optimizations',
+      'UI refinements & stability improvements',
+    ]);
+  }
+
+  for (final bullet in bullets) {
+    buffer.writeln('• $bullet');
+  }
+
+  var result = buffer.toString().trim();
+  if (result.length > 500) {
+    result = '${result.substring(0, 496)}...';
+  }
+  return result;
+}
+
 void generateFastlaneChangelogs(
   String versionName,
   int buildNumber, {
   String? customNotes,
 }) {
   final enDir = Directory('android/fastlane/metadata/android/en-US/changelogs');
-  final bnDir = Directory('android/fastlane/metadata/android/bn-BD/changelogs');
   enDir.createSync(recursive: true);
-  bnDir.createSync(recursive: true);
 
-  final rawNotes = customNotes != null
-      ? '- Release v$versionName: $customNotes'
-      : '- Release v$versionName (Build $buildNumber): General performance improvements, updated asset catalog, and database optimizations.';
+  // Enforce single-language release notes (en-US only); clean up legacy locales if present
+  final legacyBnDir = Directory(
+    'android/fastlane/metadata/android/bn-BD/changelogs',
+  );
+  if (legacyBnDir.existsSync()) {
+    legacyBnDir.deleteSync(recursive: true);
+  }
 
-  final notes = rawNotes.length > 500
-      ? '${rawNotes.substring(0, 496)}...'
-      : rawNotes;
+  final notes = formatStandardReleaseNotes(
+    versionName: versionName,
+    buildNumber: buildNumber,
+    customNotes: customNotes,
+  );
 
   File('${enDir.path}/$buildNumber.txt').writeAsStringSync(notes);
-  File('${bnDir.path}/$buildNumber.txt').writeAsStringSync(notes);
+  File('${enDir.path}/default.txt').writeAsStringSync(notes);
   stdout.writeln(
-    '  ✅ Generated Fastlane localized changelogs (${notes.length}/500 chars limit)',
+    '  ✅ Generated Fastlane en-US changelog (${notes.length}/500 chars limit)',
   );
 }
 

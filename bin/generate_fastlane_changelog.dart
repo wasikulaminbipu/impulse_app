@@ -1,27 +1,29 @@
 import 'dart:io';
 
-/// Fastlane Localized Changelog Generator CLI Tool
+/// Fastlane Standardized en-US Changelog Generator CLI Tool
 ///
 /// Automatically generates and syncs release notes for Fastlane Supply:
 /// - Reads version name and build code from pubspec.yaml
-/// - Extracts recent conventional commits from git log (or uses --notes)
-/// - Supports optional localized Bengali release notes via --bn-notes
-/// - Enforces Google Play's strict 500-character limit per locale
-/// - Generates changelog files in en-US and bn-BD
+/// - Enforces single-language policy (en-US only for all future release notes)
+/// - Formats release notes with a clean, standardized structure
+/// - Enforces Google Play's strict 500-character limit
+/// - Generates changelog files: en-US/changelogs/`[buildNumber]`.txt and default.txt
+/// - Automatically removes legacy multi-language changelog directories (e.g. bn-BD)
 void main(List<String> args) {
   final isDryRun = args.contains('--dry-run');
   var customNotes = '';
-  var bnNotes = '';
 
   for (final arg in args) {
     if (arg.startsWith('--notes=')) {
       customNotes = arg.substring(8).trim();
     } else if (arg.startsWith('--bn-notes=')) {
-      bnNotes = arg.substring(11).trim();
+      stdout.writeln(
+        'ℹ️ Note: Multi-language release notes are disabled. Using standardized en-US only.',
+      );
     }
   }
 
-  stdout.writeln('📝 Fastlane Localized Changelog Generator');
+  stdout.writeln('📝 Fastlane Standardized Changelog Generator (en-US only)');
   stdout.writeln('-------------------------------------------------------');
 
   // 1. Read version from pubspec.yaml
@@ -48,22 +50,19 @@ void main(List<String> args) {
   final buildNumber = int.parse(versionMatch.group(2)!);
   stdout.writeln('ℹ️  Target Version: v$versionName (Build $buildNumber)');
 
-  // 2. Resolve English Changelog Text
-  String enChangelogText;
-  if (customNotes.isNotEmpty) {
-    enChangelogText = '- Release v$versionName: $customNotes';
-  } else {
-    // Attempt to extract recent git commits since last tag
+  // 2. Resolve commits if no custom notes provided
+  List<String>? commitBullets;
+  if (customNotes.isEmpty) {
     final gitResult = Process.runSync('git', [
       'log',
       '-n',
       '5',
-      '--pretty=format:- %s',
+      '--pretty=format:%s',
     ], runInShell: true);
 
     if (gitResult.exitCode == 0 &&
         gitResult.stdout.toString().trim().isNotEmpty) {
-      final commitLines = gitResult.stdout
+      commitBullets = gitResult.stdout
           .toString()
           .trim()
           .split('\n')
@@ -71,46 +70,23 @@ void main(List<String> args) {
             (line) =>
                 !line.contains('Merge ') && !line.contains('chore(release)'),
           )
-          .take(4)
-          .join('\n');
-
-      if (commitLines.isNotEmpty) {
-        enChangelogText =
-            'Release v$versionName (Build $buildNumber):\n$commitLines';
-      } else {
-        enChangelogText =
-            '- Release v$versionName (Build $buildNumber): General performance improvements, updated asset catalog, and database optimizations.';
-      }
-    } else {
-      enChangelogText =
-          '- Release v$versionName (Build $buildNumber): General performance improvements, updated asset catalog, and database optimizations.';
+          .take(3)
+          .toList();
     }
   }
 
-  // 3. Resolve Bengali Changelog Text
-  String bnChangelogText;
-  if (bnNotes.isNotEmpty) {
-    bnChangelogText = '- Release v$versionName: $bnNotes';
-  } else {
-    bnChangelogText = enChangelogText;
-  }
-
-  // 4. Enforce 500-Character Google Play Limit
-  if (enChangelogText.length > 500) {
-    enChangelogText = '${enChangelogText.substring(0, 496)}...';
-  }
-  if (bnChangelogText.length > 500) {
-    bnChangelogText = '${bnChangelogText.substring(0, 496)}...';
-  }
+  // 3. Format Standardized en-US Release Notes
+  final changelogText = formatStandardReleaseNotes(
+    versionName: versionName,
+    buildNumber: buildNumber,
+    customNotes: customNotes.isNotEmpty ? customNotes : null,
+    commitBullets: commitBullets,
+  );
 
   stdout.writeln(
-    '\n📄 [en-US] Changelog Preview (${enChangelogText.length}/500 chars):',
+    '\n📄 [en-US] Standardized Changelog Preview (${changelogText.length}/500 chars):',
   );
-  stdout.writeln(enChangelogText);
-  stdout.writeln(
-    '\n📄 [bn-BD] Changelog Preview (${bnChangelogText.length}/500 chars):',
-  );
-  stdout.writeln(bnChangelogText);
+  stdout.writeln(changelogText);
   stdout.writeln('-------------------------------------------------------');
 
   if (isDryRun) {
@@ -118,26 +94,97 @@ void main(List<String> args) {
     exit(0);
   }
 
-  // 5. Write to en-US and bn-BD changelog directories
-  final localeMap = {'en-US': enChangelogText, 'bn-BD': bnChangelogText};
-
-  for (final entry in localeMap.entries) {
-    final locale = entry.key;
-    final text = entry.value;
-    final changelogDir = Directory(
-      'android/fastlane/metadata/android/$locale/changelogs',
-    );
-    if (!changelogDir.existsSync()) {
-      changelogDir.createSync(recursive: true);
-    }
-
-    final targetFile = File('${changelogDir.path}/$buildNumber.txt');
-    final defaultFile = File('${changelogDir.path}/default.txt');
-
-    targetFile.writeAsStringSync(text);
-    defaultFile.writeAsStringSync(text);
-    stdout.writeln('✅ Written: ${targetFile.path} (${text.length} chars)');
+  // 4. Ensure legacy bn-BD changelog directory is removed
+  final legacyBnDir = Directory(
+    'android/fastlane/metadata/android/bn-BD/changelogs',
+  );
+  if (legacyBnDir.existsSync()) {
+    legacyBnDir.deleteSync(recursive: true);
+    stdout.writeln('🧹 Cleaned up legacy bn-BD changelogs directory');
   }
 
-  stdout.writeln('\n🎉 Fastlane localized changelogs generated successfully!');
+  // 5. Write to en-US changelog directory
+  final enDir = Directory('android/fastlane/metadata/android/en-US/changelogs');
+  if (!enDir.existsSync()) {
+    enDir.createSync(recursive: true);
+  }
+
+  final targetFile = File('${enDir.path}/$buildNumber.txt');
+  final defaultFile = File('${enDir.path}/default.txt');
+
+  targetFile.writeAsStringSync(changelogText);
+  defaultFile.writeAsStringSync(changelogText);
+  stdout.writeln(
+    '✅ Written: ${targetFile.path} (${changelogText.length} chars)',
+  );
+  stdout.writeln(
+    '✅ Written: ${defaultFile.path} (${changelogText.length} chars)',
+  );
+
+  stdout.writeln(
+    '\n🎉 Fastlane standardized en-US changelogs generated successfully!',
+  );
+}
+
+/// Builds a standardized, professional release note within Google Play's 500-char limit
+String formatStandardReleaseNotes({
+  required String versionName,
+  int? buildNumber,
+  String? customNotes,
+  List<String>? commitBullets,
+}) {
+  final buffer = StringBuffer("What's new in v$versionName:\n");
+  final bullets = <String>[];
+
+  if (customNotes != null && customNotes.trim().isNotEmpty) {
+    final lines = customNotes
+        .split(RegExp(r'[\r\n]+'))
+        .map((l) => l.trim().replaceFirst(RegExp(r'^[•\-\*]\s*'), ''))
+        .where((l) => l.isNotEmpty);
+    bullets.addAll(lines);
+  } else if (commitBullets != null && commitBullets.isNotEmpty) {
+    for (final commit in commitBullets) {
+      final clean = commit.trim().replaceFirst(RegExp(r'^[•\-\*]\s*'), '');
+      if (clean.isNotEmpty) {
+        bullets.add(clean);
+      }
+    }
+  }
+
+  final hasDbNote = bullets.any(
+    (b) =>
+        b.toLowerCase().contains('database') ||
+        b.toLowerCase().contains('catalog'),
+  );
+  final hasPerfNote = bullets.any(
+    (b) =>
+        b.toLowerCase().contains('performance') ||
+        b.toLowerCase().contains('stability') ||
+        b.toLowerCase().contains('optimization'),
+  );
+
+  if (!hasDbNote && bullets.length < 3) {
+    bullets.add('Offline database & product catalog updates');
+  }
+  if (!hasPerfNote && bullets.length < 4) {
+    bullets.add('Performance optimizations & stability improvements');
+  }
+
+  if (bullets.isEmpty) {
+    bullets.addAll([
+      'Offline database & product catalog updates',
+      'General performance optimizations',
+      'UI refinements & stability improvements',
+    ]);
+  }
+
+  for (final bullet in bullets) {
+    buffer.writeln('• $bullet');
+  }
+
+  var result = buffer.toString().trim();
+  if (result.length > 500) {
+    result = '${result.substring(0, 496)}...';
+  }
+  return result;
 }

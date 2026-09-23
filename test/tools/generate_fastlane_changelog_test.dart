@@ -25,7 +25,7 @@ void main() {
 
         expect(result.exitCode, equals(0), reason: 'stderr: ${result.stderr}');
         final output = result.stdout.toString();
-        expect(output, contains('Fastlane Localized Changelog Generator'));
+        expect(output, contains('Fastlane Standardized Changelog Generator'));
         expect(output, contains('Target Version:'));
         expect(output, contains('Changelog Preview'));
         expect(output, contains('/500 chars'));
