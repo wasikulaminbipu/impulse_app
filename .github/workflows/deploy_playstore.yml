@@ -356,11 +356,8 @@ jobs:
 
       - name: "Clean Flutter and Gradle build caches"
         run: |
+          flutter pub get
           flutter clean
-          cd android
-          chmod +x gradlew || true
-          ./gradlew clean || gradle clean
-          cd ..
           flutter pub get
 
       - name: "Generate immutable models and database DAOs"
