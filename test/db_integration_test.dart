@@ -15,7 +15,11 @@ void main() {
       final dbFile = File('assets/db/products.db');
       expect(dbFile.existsSync(), isTrue);
 
-      final db = ProductsDb(NativeDatabase(dbFile.absolute));
+      final tempDir = Directory.systemTemp.createTempSync('db_integ_test_');
+      final tempDbFile = File('${tempDir.path}/products.db');
+      dbFile.copySync(tempDbFile.path);
+
+      final db = ProductsDb(NativeDatabase(tempDbFile));
       final dao = ProductDao(db, LookupDao(db));
 
       try {
@@ -39,6 +43,9 @@ void main() {
         }
       } finally {
         await db.close();
+        try {
+          tempDir.deleteSync(recursive: true);
+        } catch (_) {}
       }
     });
 

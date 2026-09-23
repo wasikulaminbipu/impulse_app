@@ -539,6 +539,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             widget.product.mottoBn,
                             lang,
                           ),
+                          textAlign: TextAlign.justify,
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w500,
@@ -555,6 +556,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             widget.product.shortDescriptionBn,
                             lang,
                           ),
+                          textAlign: TextAlign.justify,
                           style: TextStyle(
                             fontSize: 15,
                             height: 1.5,
@@ -835,6 +837,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             widget.product.mottoBn,
                             lang,
                           ),
+                          textAlign: TextAlign.justify,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -851,6 +854,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             widget.product.shortDescriptionBn,
                             lang,
                           ),
+                          textAlign: TextAlign.justify,
                           style: TextStyle(
                             fontSize: 14,
                             height: 1.4,

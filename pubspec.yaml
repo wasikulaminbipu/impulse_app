@@ -55,6 +55,7 @@ dependencies:
   pdf: ^3.13.1
   in_app_update: ^5.0.0
   package_info_plus: ^10.2.1
+  crypto: ^3.0.7
 
 dev_dependencies:
   flutter_test:

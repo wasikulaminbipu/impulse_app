@@ -34,7 +34,12 @@ class BenefitsSection extends StatelessWidget {
                       '• ',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Expanded(child: Text(b.textEn.resolve(b.textBn, lang))),
+                    Expanded(
+                      child: Text(
+                        b.textEn.resolve(b.textBn, lang),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
                   ],
                 ),
               ),

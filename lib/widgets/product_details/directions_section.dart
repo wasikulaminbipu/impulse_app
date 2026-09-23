@@ -75,6 +75,7 @@ class DirectionsSection extends StatelessWidget {
                       specName.isNotEmpty
                           ? '$specName: $dosageText'
                           : dosageText,
+                      textAlign: TextAlign.justify,
                       style: const TextStyle(fontSize: 14),
                     ),
                   ),
@@ -91,6 +92,7 @@ class DirectionsSection extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 6),
                     child: Text(
                       '${lang == 'bn' ? 'প্রয়োগ' : 'Administration'}: $adminText',
+                      textAlign: TextAlign.justify,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.grey.shade600,
@@ -110,7 +112,7 @@ class DirectionsSection extends StatelessWidget {
                 directionWidgets.add(
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Text(dosageText),
+                    child: Text(dosageText, textAlign: TextAlign.justify),
                   ),
                 );
               }
@@ -124,6 +126,7 @@ class DirectionsSection extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 6),
                     child: Text(
                       '${lang == 'bn' ? 'প্রয়োগ' : 'Administration'}: $adminText',
+                      textAlign: TextAlign.justify,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.grey.shade600,
@@ -160,6 +163,7 @@ class DirectionsSection extends StatelessWidget {
               padding: const EdgeInsets.only(top: 12.0),
               child: Text(
                 staticLine,
+                textAlign: TextAlign.justify,
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,

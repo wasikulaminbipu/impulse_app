@@ -6,6 +6,7 @@
 *.swo
 *~
 *.bak
+*.crswap
 .DS_Store
 **/.DS_Store
 ._*

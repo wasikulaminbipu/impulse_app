@@ -729,6 +729,16 @@
         "badges/coverage.svg",
         ".agents/project_map.json"
       ]
+    },
+    {
+      "id": 31,
+      "desc": "Streamline data entry in tools/impulse-data-entry.html: eliminate double-saving in product add/edit by rendering all child sections upfront, refactoring childRows with in-memory/DOM state & auto-capture, and binding a single unified save transaction with immediate database disk persistence (await saveDb) across products, lookup tables, distributors, personnel, bases, and quick-add modals.",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        "tools/impulse-data-entry.html",
+        ".agents/project_map.json"
+      ]
     }
   ]
 }

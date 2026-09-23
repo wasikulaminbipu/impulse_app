@@ -31,7 +31,12 @@ class PrecautionsSection extends StatelessWidget {
                       '• ',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Expanded(child: Text(p.textEn.resolve(p.textBn, lang))),
+                    Expanded(
+                      child: Text(
+                        p.textEn.resolve(p.textBn, lang),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
                   ],
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
@@ -174,7 +175,7 @@ Future<void> _cleanLegacyDbFiles(String legacyDbName) async {
   } catch (_) {}
 }
 
-/// Copies the bundled asset DB to the documents directory (if needed or if size differs), then
+/// Copies the bundled asset DB to the documents directory (if needed or if SHA-256 signature differs), then
 /// opens it with [NativeDatabase] and sets up FTS tables outside of beforeOpen.
 Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
   String assetName,
@@ -207,13 +208,9 @@ Future<T> copyAndOpenAssetDb<T extends GeneratedDatabase>(
     byteData.offsetInBytes,
     byteData.lengthInBytes,
   );
-  String assetSig =
-      '${assetBytes.length}_${assetBytes.first}_${assetBytes.last}';
-  if (assetBytes.length >= 100) {
-    // Include the SQLite file change counter (bytes 24-27) which increments on every transaction
-    assetSig +=
-        '_${assetBytes[24]}_${assetBytes[25]}_${assetBytes[26]}_${assetBytes[27]}';
-  }
+  // Cryptographic SHA-256 digest of the bundled SQLite asset binary.
+  // Guarantees that any single-bit or single-row modification is 100% detected on user devices.
+  final assetSig = sha256.convert(assetBytes).toString();
 
   bool isDbCorrupted = false;
   if (await file.exists()) {

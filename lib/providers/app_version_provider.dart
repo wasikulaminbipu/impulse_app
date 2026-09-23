@@ -4,8 +4,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'app_version_provider.g.dart';
 
 /// Fallback version metadata used only before platform PackageInfo resolves.
-const String fallbackAppVersion = '1.0.6';
-const int fallbackBuildNumber = 7;
+const String fallbackAppVersion = '1.0.9';
+const int fallbackBuildNumber = 10;
 
 /// Provides dynamically fetched package metadata from platform channels.
 @Riverpod(keepAlive: true)

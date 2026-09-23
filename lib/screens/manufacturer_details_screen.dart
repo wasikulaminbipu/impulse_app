@@ -222,7 +222,13 @@ class _InfoRow extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 8),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
+          Expanded(
+            child: Text(
+              text,
+              textAlign: TextAlign.justify,
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
         ],
       ),
     );

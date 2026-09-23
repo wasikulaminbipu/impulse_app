@@ -572,7 +572,18 @@ window.addEventListener('beforeunload', e=>{
 window.addEventListener('keydown', e=>{
   if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's'){
     e.preventDefault();
-    if(db) saveDb(false);
+    const productSaveBtn = document.getElementById('topSaveStay') || document.getElementById('bottomStay') || document.getElementById('topSaveDone');
+    const formSaveBtn = document.getElementById('saveField');
+    const modalSaveBtn = document.getElementById('qaSave');
+    if(modalSaveBtn){
+      modalSaveBtn.click();
+    } else if(productSaveBtn){
+      productSaveBtn.click();
+    } else if(formSaveBtn){
+      formSaveBtn.click();
+    } else if(db){
+      saveDb(false);
+    }
   }
 });
 
@@ -732,10 +743,10 @@ function simpleLookupPage(opts){
     };
     document.getElementById('addBtn').onclick = ()=>showForm(null);
     main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>showForm(+b.dataset.edit));
-    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=async ()=>{
       const id = +b.dataset.del;
       if(!confirm(`Delete this ${opts.title.toLowerCase().slice(0,-1)}? This cannot be undone.`)) return;
-      try{ run(`delete from ${opts.table} where id=?`, [id]); render(filter); toast('Deleted.'); }
+      try{ run(`delete from ${opts.table} where id=?`, [id]); await saveDb(false); render(filter); toast('Deleted.'); }
       catch(err){ toast('Delete failed — it is probably referenced elsewhere: '+err.message, true); }
     });
 
@@ -749,7 +760,7 @@ function simpleLookupPage(opts){
       document.getElementById('formSlot').innerHTML = f;
       renderRefSelects(opts.columns, record);
       document.getElementById('cancelField').onclick = ()=>{ document.getElementById('formSlot').innerHTML=''; };
-      const performSave = (keepOpenForNew = false) => {
+      const performSave = async (keepOpenForNew = false) => {
         const data = {};
         let ok = true;
         opts.columns.forEach(c=>{
@@ -767,6 +778,7 @@ function simpleLookupPage(opts){
             const keys = opts.columns.map(c=>c.key);
             run(`insert into ${opts.table} (${keys.join(',')}) values (${keys.map(()=>'?').join(',')})`, keys.map(k=>data[k]));
           }
+          await saveDb(false);
           toast('Saved.');
           render(filter);
           if (keepOpenForNew) {
@@ -914,7 +926,7 @@ function openQuickAdd(tableName, onCreated, onCancel) {
   document.addEventListener('keydown', escHandler);
   overlay.addEventListener('mousedown', e => { if (e.target === overlay) { close(); if (onCancel) onCancel(); } });
   overlay.querySelector('#qaCancel').onclick = () => { close(); if (onCancel) onCancel(); };
-  overlay.querySelector('#qaSave').onclick = () => {
+  overlay.querySelector('#qaSave').onclick = async () => {
     const data = {};
     let ok = true;
     def.columns.forEach(c => {
@@ -942,6 +954,7 @@ function openQuickAdd(tableName, onCreated, onCancel) {
         const ar = q('select name_en from areas where id=?', [newRow.area_id])[0];
         label = (ar ? ar.name_en : '?') + ' — ' + newRow.name_en;
       }
+      await saveDb(false);
       close();
       toast('Added.');
       onCreated(newId, label);
@@ -1025,9 +1038,9 @@ function productsListPage(){
     };
     document.getElementById('addBtn').onclick = ()=>productDetailPage(null, ()=>render(filter));
     main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>productDetailPage(+b.dataset.edit, ()=>render(filter)));
-    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=async ()=>{
       if(!confirm('Delete this product and all its compositions, benefits, indications, directions, precautions and presentations? This cannot be undone.')) return;
-      try{ run('delete from products where id=?',[+b.dataset.del]); render(filter); toast('Deleted.'); }
+      try{ run('delete from products where id=?',[+b.dataset.del]); await saveDb(false); render(filter); toast('Deleted.'); }
       catch(err){ toast('Delete failed: '+err.message, true); }
     });
   }
@@ -1045,7 +1058,17 @@ function productDetailPage(id, onDone){
   const selectedTG = isNew ? [] : q('select target_group_id from product_target_groups where product_id=?',[id]).map(r=>r.target_group_id);
 
   let html = `<button class="backlink" id="back">&larr; Back to products</button>`;
-  html += `<h2 class="pagetitle">${isNew?'Add product':'Edit: '+esc(p.title_en)}</h2>`;
+  html += `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+      <h2 class="pagetitle" style="margin:0;">${isNew ? 'Add product' : 'Edit: ' + esc(p.title_en)}</h2>
+      <div class="btnbar" style="margin:0;">
+        <button class="btn" id="topSaveDone">Save &amp; return to products</button>
+        <button class="btn secondary" id="topSaveStay">Save &amp; continue editing</button>
+        <button class="btn add-another" id="topSaveAnother">Save &amp; add another</button>
+        <button class="btn secondary" id="topCancel">Cancel</button>
+      </div>
+    </div>
+  `;
 
   html += `<div class="card"><h3>Basic info</h3><div class="grid2">
     <div class="field"><label class="required">Title (EN)</label><input type="text" id="f_title_en" value="${esc(val(p.title_en))}"></div>
@@ -1060,18 +1083,33 @@ function productDetailPage(id, onDone){
     <div class="field checkbox"><input type="checkbox" id="f_is_active" ${p.is_active?'checked':''}><label>Active (visible in app)</label></div>
   </div>
   <div class="field" style="margin-top:6px;"><label>Target groups</label><div class="checkgrid" id="tgGrid"></div></div>
-  <div class="btnbar"><button class="btn" id="saveBasic">${isNew?'Create product':'Save basic info'}</button><button class="btn secondary" id="cancelBasic">Cancel</button></div>
   </div>`;
 
-  if(!isNew){
-    html += `<div id="childSections"></div>`;
-  } else {
-    html += `<p class="subtle">Save the basic info first — then you can add compositions, benefits, indications, dosage directions, precautions and pack presentations.</p>`;
-  }
+  html += `<div id="childSections">
+    <div class="card">
+      <h3>Compositions</h3>
+      <div class="grid2" style="margin-bottom:12px;">
+        <div class="field"><label>Composition basis / Amount (EN)</label><input type="text" id="f_composition_basis_en" placeholder="e.g. 1 Liter" value="${esc(val(p.composition_basis_en))}"></div>
+        <div class="field"><label>Composition basis / Amount (BN)</label><input type="text" id="f_composition_basis_bn" placeholder="e.g. ১ লিটার" value="${esc(val(p.composition_basis_bn))}"></div>
+      </div>
+      <div id="sec_comp"></div>
+    </div>
+    <div class="card"><h3>Benefits</h3><div id="sec_ben"></div></div>
+    <div class="card"><h3>Indications</h3><div id="sec_ind"></div></div>
+    <div class="card"><h3>Dosage &amp; administration (directions)</h3><div id="sec_dir"></div></div>
+    <div class="card"><h3>Precautions</h3><div id="sec_prec"></div></div>
+    <div class="card"><h3>Presentations &amp; MRP</h3><div id="sec_pres"></div></div>
+  </div>`;
+
+  // Bottom action bar
+  html += `<div class="card" style="margin-top:20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <button class="btn" id="bottomDone">Save &amp; return to products</button>
+    <button class="btn secondary" id="bottomStay">Save &amp; continue editing</button>
+    <button class="btn add-another" id="bottomSaveAndAddAnother">Save &amp; add another product</button>
+    <button class="btn secondary" id="bottomCancel">Cancel</button>
+  </div>`;
 
   main.innerHTML = html;
-  document.getElementById('back').onclick = onDone;
-  document.getElementById('cancelBasic').onclick = onDone;
 
   const catSel = document.getElementById('f_category_id');
   catSel.innerHTML = categories.map(c=>`<option value="${c.id}" ${p.category_id==c.id?'selected':''}>${esc(c.name_en)}</option>`).join('');
@@ -1094,145 +1132,37 @@ function productDetailPage(id, onDone){
   renderTgGrid();
   attachCreatableCheckgrid(tgGrid, 'target_groups', renderTgGrid);
 
-  document.getElementById('saveBasic').onclick = () => {
-    const title_en = document.getElementById('f_title_en').value.trim();
-    if(!title_en){ toast('Title (EN) is required.', true); return; }
-    const category_id = +catSel.value;
-    const compElEn = document.getElementById('f_composition_basis_en');
-    const compElBn = document.getElementById('f_composition_basis_bn');
-    const data = {
-      title_en,
-      title_bn: document.getElementById('f_title_bn').value || null,
-      category_id,
-      manufacturer_id: manSel.value ? +manSel.value : null,
-      motto_en: document.getElementById('f_motto_en').value || null,
-      motto_bn: document.getElementById('f_motto_bn').value || null,
-      composition_basis_en: compElEn ? (compElEn.value || null) : (p.composition_basis_en || null),
-      composition_basis_bn: compElBn ? (compElBn.value || null) : (p.composition_basis_bn || null),
-      short_description_en: document.getElementById('f_short_description_en').value || null,
-      short_description_bn: document.getElementById('f_short_description_bn').value || null,
-      image_url: document.getElementById('f_image_url').value || null,
-      is_active: document.getElementById('f_is_active').checked ? 1 : 0,
-    };
-    const tgSelected = Array.from(tgGrid.querySelectorAll('input:checked')).map(cb=>+cb.value);
-    try{
-      let productId = id;
-      if(isNew){
-        run(`insert into products (manufacturer_id,category_id,title_en,title_bn,motto_en,motto_bn,composition_basis_en,composition_basis_bn,short_description_en,short_description_bn,image_url,is_active)
-             values (?,?,?,?,?,?,?,?,?,?,?,?)`,
-          [data.manufacturer_id,data.category_id,data.title_en,data.title_bn,data.motto_en,data.motto_bn,data.composition_basis_en,data.composition_basis_bn,data.short_description_en,data.short_description_bn,data.image_url,data.is_active]);
-        productId = q('select last_insert_rowid() as id').at(0).id;
-      } else {
-        run(`update products set manufacturer_id=?,category_id=?,title_en=?,title_bn=?,motto_en=?,motto_bn=?,composition_basis_en=?,composition_basis_bn=?,short_description_en=?,short_description_bn=?,image_url=?,is_active=?,updated_at=? where id=?`,
-          [data.manufacturer_id,data.category_id,data.title_en,data.title_bn,data.motto_en,data.motto_bn,data.composition_basis_en,data.composition_basis_bn,data.short_description_en,data.short_description_bn,data.image_url,data.is_active,nowIso(),productId]);
-      }
-      run('delete from product_target_groups where product_id=?',[productId]);
-      tgSelected.forEach(tid=>run('insert into product_target_groups (product_id,target_group_id) values (?,?)',[productId,tid]));
-      toast('Saved.');
-      productDetailPage(productId, onDone);
-    }catch(err){ toast('Save failed: '+err.message, true); }
-  };
-
-  if(!isNew){
-    renderChildSections(id);
-  }
-
-  // Bottom action bar for product detail view
-  const bottomBarHtml = `<div class="card" style="margin-top:20px;display:flex;gap:10px;align-items:center;">
-    <button class="btn" id="bottomDone">Save &amp; return to products</button>
-    <button class="btn add-another" id="bottomSaveAndAddAnother">Save &amp; add another product</button>
-  </div>`;
-  const bottomContainer = document.createElement('div');
-  bottomContainer.innerHTML = bottomBarHtml;
-  main.appendChild(bottomContainer);
-
-  document.getElementById('bottomDone').onclick = async () => {
-    await saveDb(false);
-    onDone();
-  };
-  document.getElementById('bottomSaveAndAddAnother').onclick = async () => {
-    await saveDb(false);
-    productDetailPage(null, onDone);
-  };
-
-  function renderChildSections(productId){
-    const slot = document.getElementById('childSections');
-    slot.innerHTML = `
-      <div class="card">
-        <h3>Compositions</h3>
-        <div class="grid2" style="margin-bottom:12px;">
-          <div class="field"><label>Composition basis / Amount (EN)</label><input type="text" id="f_composition_basis_en" placeholder="e.g. 1 Liter" value="${esc(val(p.composition_basis_en))}"></div>
-          <div class="field"><label>Composition basis / Amount (BN)</label><input type="text" id="f_composition_basis_bn" placeholder="e.g. ১ লিটার" value="${esc(val(p.composition_basis_bn))}"></div>
-        </div>
-        <div id="sec_comp"></div>
-      </div>
-      <div class="card"><h3>Benefits</h3><div id="sec_ben"></div></div>
-      <div class="card"><h3>Indications</h3><div id="sec_ind"></div></div>
-      <div class="card"><h3>Dosage &amp; administration (directions)</h3><div id="sec_dir"></div></div>
-      <div class="card"><h3>Precautions</h3><div id="sec_prec"></div></div>
-      <div class="card"><h3>Presentations &amp; MRP</h3><div id="sec_pres"></div></div>
-    `;
-
-    const saveCompBasis = () => {
-      const cb_en = document.getElementById('f_composition_basis_en').value || null;
-      const cb_bn = document.getElementById('f_composition_basis_bn').value || null;
-      run(`update products set composition_basis_en=?, composition_basis_bn=?, updated_at=? where id=?`,
-        [cb_en, cb_bn, nowIso(), productId]);
-      toast('Composition basis updated.');
-    };
-    document.getElementById('f_composition_basis_en').onchange = saveCompBasis;
-    document.getElementById('f_composition_basis_bn').onchange = saveCompBasis;
-
-    childRows({
-      mount:'sec_comp', table:'compositions', productId,
+  const childControllers = {
+    compositions: childRows({
+      mount:'sec_comp', table:'compositions', productId: id,
       cols:[
         {key:'ingredient_en', label:'Ingredient (EN)', required:true},
         {key:'ingredient_bn', label:'Ingredient (BN)'},
         {key:'concentration', label:'Concentration'},
         {key:'display_order', label:'Order', type:'number', width:'70px'},
       ]
-    });
-    childRows({
-      mount:'sec_ben', table:'benefits', productId,
+    }),
+    benefits: childRows({
+      mount:'sec_ben', table:'benefits', productId: id,
       cols:[
         {key:'text_en', label:'Text (EN)', required:true, type:'textarea'},
         {key:'text_bn', label:'Text (BN)', type:'textarea'},
         {key:'display_order', label:'Order', type:'number', width:'70px'},
       ]
-    });
-    childRows({
-      mount:'sec_ind', table:'indications', productId,
+    }),
+    indications: childRows({
+      mount:'sec_ind', table:'indications', productId: id,
       cols:[
         {key:'text_en', label:'Text (EN)', required:true, type:'textarea'},
         {key:'text_bn', label:'Text (BN)', type:'textarea'},
         {key:'display_order', label:'Order', type:'number', width:'70px'},
       ]
-    });
-    childRows({
-      mount:'sec_prec', table:'precautions', productId,
-      cols:[
-        {key:'text_en', label:'Text (EN)', required:true, type:'textarea'},
-        {key:'text_bn', label:'Text (BN)', type:'textarea'},
-        {key:'display_order', label:'Order', type:'number', width:'70px'},
-      ]
-    });
-    childRows({
-      mount:'sec_pres', table:'presentations', productId,
-      cols:[
-        {key:'product_type_id', label:'Pack type', type:'select', ref:{table:'product_types',label:'name_en'}, required:true},
-        {key:'content_type_id', label:'Content type', type:'select', ref:{table:'content_types',label:'name_en'}, required:true},
-        {key:'size', label:'Size'},
-        {key:'mrp', label:'MRP', type:'number'},
-        {key:'bulk_item', label:'Bulk', type:'checkbox', width:'50px'},
-        {key:'display_order', label:'Order', type:'number', width:'70px'},
-      ]
-    });
-    const speciesRows = q('select s.*, tg.name_en as tg_name from species s join target_groups tg on tg.id=s.target_group_id order by tg.name_en, s.name_en');
-    childRows({
-      mount:'sec_dir', table:'directions', productId,
+    }),
+    directions: childRows({
+      mount:'sec_dir', table:'directions', productId: id,
       cols:[
         {key:'content_type_id', label:'Content type', type:'select', ref:{table:'content_types',label:'name_en'}, required:true},
-        {key:'species_id', label:'Species', type:'select', options: speciesRows.map(s=>({id:s.id, label:`${s.tg_name} / ${s.name_en}`})), required:true},
+        {key:'species_id', label:'Species', type:'select', options: () => q('select s.*, tg.name_en as tg_name from species s join target_groups tg on tg.id=s.target_group_id order by tg.name_en, s.name_en').map(s=>({id:s.id, label:`${s.tg_name} / ${s.name_en}`})), required:true},
         {key:'dose_value_min', label:'Dose min', type:'number', required:true, width:'85px'},
         {key:'dose_value_max', label:'Dose max', type:'number', width:'85px'},
         {key:'dose_unit_id', label:'Unit', type:'select', ref:{table:'dosage_units',label:'name_en'}, required:true},
@@ -1245,92 +1175,311 @@ function productDetailPage(id, onDone){
         {key:'dosage_bn', label:'Dosage note (BN)', type:'textarea'},
         {key:'display_order', label:'Order', type:'number', width:'70px'},
       ]
-    });
-  }
+    }),
+    precautions: childRows({
+      mount:'sec_prec', table:'precautions', productId: id,
+      cols:[
+        {key:'text_en', label:'Text (EN)', required:true, type:'textarea'},
+        {key:'text_bn', label:'Text (BN)', type:'textarea'},
+        {key:'display_order', label:'Order', type:'number', width:'70px'},
+      ]
+    }),
+    presentations: childRows({
+      mount:'sec_pres', table:'presentations', productId: id,
+      cols:[
+        {key:'product_type_id', label:'Pack type', type:'select', ref:{table:'product_types',label:'name_en'}, required:true},
+        {key:'content_type_id', label:'Content type', type:'select', ref:{table:'content_types',label:'name_en'}, required:true},
+        {key:'size', label:'Size'},
+        {key:'mrp', label:'MRP', type:'number'},
+        {key:'bulk_item', label:'Bulk', type:'checkbox', width:'50px'},
+        {key:'display_order', label:'Order', type:'number', width:'70px'},
+      ]
+    })
+  };
+
+  const performProductSave = async (actionType = 'return') => {
+    const title_en = document.getElementById('f_title_en').value.trim();
+    if(!title_en){
+      toast('Title (EN) is required.', true);
+      const el = document.getElementById('f_title_en');
+      el.focus();
+      el.style.borderColor = 'var(--danger)';
+      return;
+    }
+    const catVal = catSel.value;
+    if(!catVal || catVal === '__add__'){
+      toast('Category is required.', true);
+      catSel.focus();
+      catSel.style.borderColor = 'var(--danger)';
+      return;
+    }
+    const category_id = +catVal;
+
+    const compElEn = document.getElementById('f_composition_basis_en');
+    const compElBn = document.getElementById('f_composition_basis_bn');
+    const data = {
+      title_en,
+      title_bn: document.getElementById('f_title_bn').value.trim() || null,
+      category_id,
+      manufacturer_id: (manSel.value && manSel.value !== '__add__') ? +manSel.value : null,
+      motto_en: document.getElementById('f_motto_en').value.trim() || null,
+      motto_bn: document.getElementById('f_motto_bn').value.trim() || null,
+      composition_basis_en: compElEn ? (compElEn.value.trim() || null) : null,
+      composition_basis_bn: compElBn ? (compElBn.value.trim() || null) : null,
+      short_description_en: document.getElementById('f_short_description_en').value.trim() || null,
+      short_description_bn: document.getElementById('f_short_description_bn').value.trim() || null,
+      image_url: document.getElementById('f_image_url').value.trim() || null,
+      is_active: document.getElementById('f_is_active').checked ? 1 : 0,
+    };
+    const tgSelected = Array.from(tgGrid.querySelectorAll('input:checked')).map(cb=>+cb.value);
+
+    const saveBtns = ['topSaveDone', 'topSaveStay', 'topSaveAnother', 'bottomDone', 'bottomStay', 'bottomSaveAndAddAnother'];
+    saveBtns.forEach(bid => { const b = document.getElementById(bid); if(b) b.disabled = true; });
+
+    try {
+      let productId = id;
+      if(isNew){
+        run(`insert into products (manufacturer_id,category_id,title_en,title_bn,motto_en,motto_bn,composition_basis_en,composition_basis_bn,short_description_en,short_description_bn,image_url,is_active)
+             values (?,?,?,?,?,?,?,?,?,?,?,?)`,
+          [data.manufacturer_id,data.category_id,data.title_en,data.title_bn,data.motto_en,data.motto_bn,data.composition_basis_en,data.composition_basis_bn,data.short_description_en,data.short_description_bn,data.image_url,data.is_active]);
+        productId = q('select last_insert_rowid() as id').at(0).id;
+      } else {
+        run(`update products set manufacturer_id=?,category_id=?,title_en=?,title_bn=?,motto_en=?,motto_bn=?,composition_basis_en=?,composition_basis_bn=?,short_description_en=?,short_description_bn=?,image_url=?,is_active=?,updated_at=? where id=?`,
+          [data.manufacturer_id,data.category_id,data.title_en,data.title_bn,data.motto_en,data.motto_bn,data.composition_basis_en,data.composition_basis_bn,data.short_description_en,data.short_description_bn,data.image_url,data.is_active,nowIso(),productId]);
+      }
+
+      run('delete from product_target_groups where product_id=?', [productId]);
+      tgSelected.forEach(tid => run('insert into product_target_groups (product_id,target_group_id) values (?,?)', [productId, tid]));
+
+      // Save all 6 child sections
+      for(const ctrl of Object.values(childControllers)){
+        ctrl.saveToDb(productId);
+      }
+
+      await saveDb(false);
+      toast('Product and all data saved.');
+
+      if(actionType === 'return'){
+        onDone();
+      } else if(actionType === 'another'){
+        productDetailPage(null, onDone);
+      } else if(actionType === 'stay'){
+        productDetailPage(productId, onDone);
+      }
+    } catch(err) {
+      console.error('Save error:', err);
+      toast('Save failed: ' + err.message, true);
+    } finally {
+      saveBtns.forEach(bid => { const b = document.getElementById(bid); if(b) b.disabled = false; });
+    }
+  };
+
+  document.getElementById('back').onclick = onDone;
+  document.getElementById('topCancel').onclick = onDone;
+  document.getElementById('bottomCancel').onclick = onDone;
+
+  document.getElementById('topSaveDone').onclick = () => performProductSave('return');
+  document.getElementById('bottomDone').onclick = () => performProductSave('return');
+
+  document.getElementById('topSaveStay').onclick = () => performProductSave('stay');
+  document.getElementById('bottomStay').onclick = () => performProductSave('stay');
+
+  document.getElementById('topSaveAnother').onclick = () => performProductSave('another');
+  document.getElementById('bottomSaveAndAddAnother').onclick = () => performProductSave('another');
 }
 
 // Generic repeating child-row editor tied to a product_id (or any parent id)
 function childRows(opts){
   // opts: {mount, table, productId, cols}
   const mount = document.getElementById(opts.mount);
-  function render(){
-    const rows = q(`select * from ${opts.table} where product_id=? order by display_order, id`, [opts.productId]);
-    let html = `<table class="childtable"><thead><tr>${opts.cols.map(c=>`<th${c.width?` style="width:${c.width}"`:''}>${c.label}</th>`).join('')}<th></th></tr></thead><tbody>`;
-    rows.forEach(r=>{
-      html += `<tr data-id="${r.id}">` + opts.cols.map(c=>cellInput(c, r[c.key], r.id)).join('') + `<td><button class="del" data-del="${r.id}">✕</button></td></tr>`;
+  let rows = [];
+  if(opts.productId){
+    try {
+      rows = q(`select * from ${opts.table} where product_id=? order by display_order, id`, [opts.productId]);
+    } catch(e) {
+      console.warn('Failed to load child rows for', opts.table, e);
+      rows = [];
+    }
+  }
+
+  function getRefOptions(c){
+    if(c.ref){
+      try {
+        return q(`select id, ${c.ref.label} as label from ${c.ref.table} order by ${c.ref.label}`);
+      } catch(_) { return []; }
+    }
+    if(typeof c.options === 'function') return c.options();
+    return c.options || [];
+  }
+
+  function syncRowsFromDom(){
+    const trs = mount.querySelectorAll('tbody tr:not([data-id="new"])');
+    trs.forEach((tr, i) => {
+      if(!rows[i]) return;
+      opts.cols.forEach(c => {
+        const el = tr.querySelector(`[data-col="${c.key}"]`);
+        if(!el) return;
+        let v = c.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value;
+        rows[i][c.key] = (v === '' ? null : v);
+      });
     });
-    html += `<tr data-id="new">` + opts.cols.map(c=>cellInput(c, c.default!==undefined?c.default:'', 'new')).join('') + `<td><button data-add="1">+ Add</button></td></tr>`;
+  }
+
+  function render(){
+    let html = `<table class="childtable"><thead><tr>${opts.cols.map(c=>`<th${c.width?` style="width:${c.width}"`:''}>${c.label}</th>`).join('')}<th></th></tr></thead><tbody>`;
+    rows.forEach((r, idx)=>{
+      html += `<tr data-idx="${idx}">` + opts.cols.map(c=>cellInput(c, r[c.key], idx)).join('') + `<td><button class="del" data-del-idx="${idx}" title="Remove entry" type="button">✕</button></td></tr>`;
+    });
+    html += `<tr data-id="new">` + opts.cols.map(c=>cellInput(c, c.default!==undefined?c.default:'', 'new')).join('') + `<td><button class="btn small add-another" data-add="1" type="button">+ Add</button></td></tr>`;
     html += '</tbody></table>';
-    if(rows.length===0) html = `<p class="empty">No entries yet.</p>` + html.replace('<tbody>','<tbody>');
+    if(rows.length === 0){
+      html = `<p class="empty" style="padding:4px 0 10px;margin:0;">No entries added yet.</p>` + html;
+    }
     mount.innerHTML = html;
 
-    // populate selects
-    opts.cols.forEach(c=>{
-      if(c.type!=='select') return;
-      mount.querySelectorAll(`select[data-col="${c.key}"]`).forEach(sel=>{
-        const rowId = sel.closest('tr').dataset.id;
-        const current = rowId==='new' ? '' : rows.find(r=>r.id==rowId)[c.key];
-        let items;
-        if(c.ref) items = q(`select id, ${c.ref.label} as label from ${c.ref.table} order by ${c.ref.label}`);
-        else items = c.options;
-        sel.innerHTML = (c.required?'':'<option value="">—</option>') + items.map(it=>`<option value="${it.id}" ${current==it.id?'selected':''}>${esc(it.label)}</option>`).join('');
+    // Populate selects
+    opts.cols.forEach(c => {
+      if(c.type !== 'select') return;
+      const optionsList = getRefOptions(c);
+      mount.querySelectorAll(`select[data-col="${c.key}"]`).forEach(sel => {
+        const tr = sel.closest('tr');
+        const isNewRow = tr.dataset.id === 'new';
+        const rowIdx = isNewRow ? null : +tr.dataset.idx;
+        const currentVal = isNewRow ? '' : (rows[rowIdx] ? rows[rowIdx][c.key] : '');
+        sel.innerHTML = (c.required ? '' : '<option value="">—</option>') +
+          optionsList.map(it => `<option value="${it.id}" ${currentVal == it.id ? 'selected' : ''}>${esc(it.label)}</option>`).join('');
         let lookupTable = c.ref ? c.ref.table : (c.key === 'species_id' ? 'species' : null);
-        if (lookupTable) attachCreatableSelect(sel, lookupTable);
+        if(lookupTable) attachCreatableSelect(sel, lookupTable);
       });
     });
 
-    mount.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
-      if(!confirm('Remove this entry?')) return;
-      run(`delete from ${opts.table} where id=?`,[+b.dataset.del]);
-      render();
-    });
-    mount.querySelector('[data-add]').onclick = ()=>{
-      const tr = mount.querySelector('tr[data-id="new"]');
-      const data = {product_id: opts.productId};
-      let ok = true;
-      opts.cols.forEach(c=>{
-        const el = tr.querySelector(`[data-col="${c.key}"]`);
-        let v = c.type==='checkbox' ? (el.checked?1:0) : el.value;
-        if(c.required && (v===''||v===null||v===undefined)){ ok=false; el.style.borderColor='var(--danger)'; }
-        data[c.key] = v===''?null:v;
-      });
-      if(!ok){ toast('Fill required fields for the new row.', true); return; }
-      const keys = Object.keys(data);
-      try{
-        run(`insert into ${opts.table} (${keys.join(',')}) values (${keys.map(()=>'?').join(',')})`, keys.map(k=>data[k]));
+    // Delete button click
+    mount.querySelectorAll('[data-del-idx]').forEach(b => {
+      b.onclick = (e) => {
+        e.preventDefault();
+        const delIdx = +b.dataset.delIdx;
+        syncRowsFromDom();
+        rows.splice(delIdx, 1);
         render();
-      }catch(err){ toast('Add failed: '+err.message, true); }
-    };
-
-    // inline-edit on blur for existing rows
-    mount.querySelectorAll('tr:not([data-id="new"]) [data-col]').forEach(el=>{
-      const evt = (el.tagName==='SELECT') ? 'change' : 'blur';
-      el.addEventListener(evt, ()=>{
-        const tr = el.closest('tr');
-        const rowId = tr.dataset.id;
-        const col = el.dataset.col;
-        const colDef = opts.cols.find(c=>c.key===col);
-        let v = colDef.type==='checkbox' ? (el.checked?1:0) : el.value;
-        v = v===''?null:v;
-        try{ run(`update ${opts.table} set ${col}=? where id=?`,[v, rowId]); }
-        catch(err){ toast('Update failed: '+err.message, true); }
-      });
+      };
     });
+
+    // Add button click
+    const addBtn = mount.querySelector('[data-add]');
+    if(addBtn){
+      addBtn.onclick = (e) => {
+        e.preventDefault();
+        const trNew = mount.querySelector('tr[data-id="new"]');
+        const newRowData = { id: null };
+        let ok = true;
+        opts.cols.forEach(c => {
+          const el = trNew.querySelector(`[data-col="${c.key}"]`);
+          if(!el) return;
+          let v = c.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value;
+          if(c.required && (v === '' || v === null || v === undefined)){
+            ok = false;
+            el.style.borderColor = 'var(--danger)';
+          } else {
+            el.style.borderColor = '';
+          }
+          newRowData[c.key] = (v === '' ? null : v);
+        });
+        if(!ok){
+          toast('Please fill all required fields in the new row.', true);
+          return;
+        }
+        syncRowsFromDom();
+        if(!newRowData.display_order && newRowData.display_order !== 0){
+          newRowData.display_order = rows.length + 1;
+        }
+        rows.push(newRowData);
+        render();
+      };
+    }
   }
-  function cellInput(c, value, rowId){
-    if(c.type==='select'){
+
+  function cellInput(c, value, rowRef){
+    if(c.type === 'select'){
       return `<td><select data-col="${c.key}"></select></td>`;
     }
-    if(c.type==='checkbox'){
-      return `<td><input type="checkbox" data-col="${c.key}" ${value?'checked':''}></td>`;
+    if(c.type === 'checkbox'){
+      return `<td><input type="checkbox" data-col="${c.key}" ${value ? 'checked' : ''}></td>`;
     }
-    if(c.type==='textarea'){
+    if(c.type === 'textarea'){
       return `<td><textarea data-col="${c.key}">${esc(val(value))}</textarea></td>`;
     }
-    const type = c.type==='number'?'number':'text';
+    const type = c.type === 'number' ? 'number' : 'text';
     return `<td><input type="${type}" data-col="${c.key}" value="${esc(val(value))}"></td>`;
   }
+
   render();
+
+  function getRows(){
+    syncRowsFromDom();
+    const result = rows.map((r, idx) => {
+      const item = { ...r };
+      if(!item.display_order && item.display_order !== 0){
+        item.display_order = idx + 1;
+      }
+      return item;
+    });
+
+    // Auto-capture non-empty new row if user entered data without clicking "+ Add"
+    const trNew = mount.querySelector('tr[data-id="new"]');
+    if(trNew){
+      const newRowData = {};
+      let hasAnyValue = false;
+      let missingRequired = false;
+      opts.cols.forEach(c => {
+        const el = trNew.querySelector(`[data-col="${c.key}"]`);
+        if(!el) return;
+        let v = c.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value;
+        if(v !== '' && v !== null && v !== undefined && v !== 0 && v !== false){
+          hasAnyValue = true;
+        }
+        if(c.required && (v === '' || v === null || v === undefined)){
+          missingRequired = true;
+        }
+        newRowData[c.key] = (v === '' ? null : v);
+      });
+      if(hasAnyValue && !missingRequired){
+        newRowData.id = null;
+        if(!newRowData.display_order && newRowData.display_order !== 0){
+          newRowData.display_order = result.length + 1;
+        }
+        result.push(newRowData);
+      }
+    }
+    return result;
+  }
+
+  function saveToDb(targetProductId){
+    const finalRows = getRows();
+    const keptIds = [];
+    finalRows.forEach((rowData, idx) => {
+      const row = { ...rowData, product_id: targetProductId };
+      if(!row.display_order && row.display_order !== 0) row.display_order = idx + 1;
+      const existingId = row.id;
+      delete row.id;
+      const keys = Object.keys(row);
+      if(existingId){
+        keptIds.push(existingId);
+        const sets = keys.map(k=>`${k}=?`).join(',');
+        run(`update ${opts.table} set ${sets} where id=? and product_id=?`, [...keys.map(k=>row[k]), existingId, targetProductId]);
+      } else {
+        run(`insert into ${opts.table} (${keys.join(',')}) values (${keys.map(()=>'?').join(',')})`, keys.map(k=>row[k]));
+        const newId = q('select last_insert_rowid() as id').at(0).id;
+        keptIds.push(newId);
+      }
+    });
+    if(keptIds.length > 0){
+      run(`delete from ${opts.table} where product_id=? and id not in (${keptIds.map(()=>'?').join(',')})`, [targetProductId, ...keptIds]);
+    } else {
+      run(`delete from ${opts.table} where product_id=?`, [targetProductId]);
+    }
+  }
+
+  return { getRows, saveToDb, render };
 }
 
 // =========================================================
@@ -1367,9 +1516,9 @@ function distributorsListPage(){
     };
     document.getElementById('addBtn').onclick = ()=>showForm(null);
     main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>showForm(+b.dataset.edit));
-    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=async ()=>{
       if(!confirm('Delete this distributor?')) return;
-      try{ run('delete from distributors where id=?',[+b.dataset.del]); render(filter); toast('Deleted.'); }
+      try{ run('delete from distributors where id=?',[+b.dataset.del]); await saveDb(false); render(filter); toast('Deleted.'); }
       catch(err){ toast('Delete failed: '+err.message, true); }
     });
 
@@ -1389,7 +1538,7 @@ function distributorsListPage(){
       document.getElementById('formSlot').innerHTML = f;
       attachCreatableSelect(document.getElementById('f_area_id'), 'areas');
       document.getElementById('cancelField').onclick = ()=>{ document.getElementById('formSlot').innerHTML=''; };
-      const performSaveDistributor = (keepOpenForNew = false) => {
+      const performSaveDistributor = async (keepOpenForNew = false) => {
         const name_en = document.getElementById('f_name_en').value.trim();
         const name_bn = document.getElementById('f_name_bn').value.trim();
         const mobile = document.getElementById('f_mobile').value.trim();
@@ -1411,6 +1560,7 @@ function distributorsListPage(){
             run(`insert into distributors (name_en,name_bn,designation,address_en,address_bn,area_id,mobile,is_active) values (?,?,?,?,?,?,?,?)`,
               [data.name_en,data.name_bn,data.designation,data.address_en,data.address_bn,data.area_id,data.mobile,data.is_active]);
           }
+          await saveDb(false);
           toast('Saved.'); render(filter);
           if (keepOpenForNew) {
             showForm(null);
@@ -1462,9 +1612,9 @@ function personWithAreasPage(cfg){
     };
     document.getElementById('addBtn').onclick = ()=>showForm(null);
     main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>showForm(+b.dataset.edit));
-    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=async ()=>{
       if(!confirm('Delete this record?')) return;
-      try{ run(`delete from ${cfg.table} where id=?`,[+b.dataset.del]); render(filter); toast('Deleted.'); }
+      try{ run(`delete from ${cfg.table} where id=?`,[+b.dataset.del]); await saveDb(false); render(filter); toast('Deleted.'); }
       catch(err){ toast('Delete failed: '+err.message, true); }
     });
 
@@ -1561,7 +1711,7 @@ function personWithAreasPage(cfg){
       attachCreatableCheckgrid(baseGrid, 'bases', (newId) => renderBaseGrid(newId, baseSearch.value));
 
       document.getElementById('cancelField').onclick = ()=>{ document.getElementById('formSlot').innerHTML=''; };
-      const performSavePerson = (keepOpenForNew = false) => {
+      const performSavePerson = async (keepOpenForNew = false) => {
         const name_en = document.getElementById('f_name_en').value.trim();
         const name_bn = document.getElementById('f_name_bn').value.trim();
         if(!name_en||!name_bn){ toast('Name (EN/BN) required.', true); return; }
@@ -1593,6 +1743,7 @@ function personWithAreasPage(cfg){
           run(`delete from ${prefix}_bases where ${cfg.junctionKey}=?`,[recId]);
           baseSelected.forEach(bid=>run(`insert into ${prefix}_bases (${cfg.junctionKey},base_id) values (?,?)`,[recId,bid]));
 
+          await saveDb(false);
           toast('Saved.'); render(filter);
           if (keepOpenForNew) {
             showForm(null);
@@ -1641,9 +1792,9 @@ function baseWithUpazilasPage(){
     };
     document.getElementById('addBtn').onclick = ()=>showForm(null);
     main.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>showForm(+b.dataset.edit));
-    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    main.querySelectorAll('[data-del]').forEach(b=>b.onclick=async ()=>{
       if(!confirm('Delete this base?')) return;
-      try{ run('delete from bases where id=?',[+b.dataset.del]); render(filter); toast('Deleted.'); }
+      try{ run('delete from bases where id=?',[+b.dataset.del]); await saveDb(false); render(filter); toast('Deleted.'); }
       catch(err){ toast('Delete failed: '+err.message, true); }
     });
 
@@ -1684,7 +1835,7 @@ function baseWithUpazilasPage(){
       upazilaGrid.parentNode.insertBefore(upaSearch, upazilaGrid);
       attachCreatableCheckgrid(upazilaGrid, 'upazilas', (newId) => renderUpazilaGrid(newId, upaSearch.value));
       document.getElementById('cancelField').onclick = ()=>{ document.getElementById('formSlot').innerHTML=''; };
-      const performSaveBase = (keepOpenForNew = false) => {
+      const performSaveBase = async (keepOpenForNew = false) => {
         const name_en = document.getElementById('f_name_en').value.trim();
         const name_bn = document.getElementById('f_name_bn').value.trim();
         const area_id = +document.getElementById('f_area_id').value;
@@ -1700,6 +1851,7 @@ function baseWithUpazilasPage(){
           const upazilaSelected = Array.from(upazilaGrid.querySelectorAll('input:checked')).map(cb=>+cb.value);
           run('delete from base_upazilas where base_id=?', [recId]);
           upazilaSelected.forEach(uid=>run('insert into base_upazilas (base_id, upazila_id) values (?,?)', [recId, uid]));
+          await saveDb(false);
           toast('Saved.'); render(filter);
           if (keepOpenForNew) {
             showForm(null);

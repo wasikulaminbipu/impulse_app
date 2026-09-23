@@ -13,14 +13,24 @@ void main() {
     late ProductsDb db;
     late ProductDao dao;
 
+    late Directory tempDir;
+    late File tempFile;
+
     setUp(() async {
       final dbFile = File('assets/db/products.db');
-      db = ProductsDb(NativeDatabase(dbFile.absolute));
+      tempDir = Directory.systemTemp.createTempSync('product_filter_test_');
+      tempFile = File('${tempDir.path}/products.db');
+      dbFile.copySync(tempFile.path);
+
+      db = ProductsDb(NativeDatabase(tempFile));
       dao = ProductDao(db, LookupDao(db));
     });
 
     tearDown(() async {
       await db.close();
+      try {
+        tempDir.deleteSync(recursive: true);
+      } catch (_) {}
     });
 
     test('getAllLight includes target groups from directions', () async {

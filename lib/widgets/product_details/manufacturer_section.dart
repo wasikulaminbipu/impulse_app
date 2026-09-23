@@ -59,6 +59,7 @@ class ManufacturerSection extends StatelessWidget {
                   if (addressText.isNotEmpty)
                     Text(
                       addressText,
+                      textAlign: TextAlign.justify,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey.shade600,

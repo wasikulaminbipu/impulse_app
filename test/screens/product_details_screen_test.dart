@@ -195,7 +195,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(BenefitsSection), findsWidgets);
-      expect(find.text('Improves vitality and growth'), findsWidgets);
+      final benefitFinder = find.text('Improves vitality and growth');
+      expect(benefitFinder, findsWidgets);
+      expect(
+        tester.widget<Text>(benefitFinder.first).textAlign,
+        TextAlign.justify,
+      );
     });
 
     testWidgets('Renders ProductDetailsScreen in Bengali', (tester) async {
@@ -214,6 +219,40 @@ void main() {
 
       expect(find.text('এমক্সিবেট ৫০% ডব্লিউএসপি'), findsWidgets);
       expect(find.text('ইমপালস এগ্রিসায়েন্স লি:'), findsWidgets);
+    });
+
+    testWidgets('Renders short description with justified alignment', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(800 * 3, 1200 * 3);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      const labelWithDesc = ProductLabel(
+        id: 1,
+        titleEn: 'Amoxivet 50% WSP',
+        titleBn: 'এমক্সিবেট ৫০% ডব্লিউএসপি',
+        categoryId: 1,
+        imageUrl: 'assets/amoxivet.png',
+        shortDescriptionEn: 'Broad spectrum antibiotic powder for poultry',
+        shortDescriptionBn: 'পোল্ট্রির জন্য অ্যান্টিবায়োটিক পাউডার',
+      );
+
+      await tester.pumpWidget(
+        createHarness(
+          child: const ProductDetailsScreen(product: labelWithDesc),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final descFinder = find.text(
+        'Broad spectrum antibiotic powder for poultry',
+      );
+      expect(descFinder, findsWidgets);
+
+      final textWidget = tester.widget<Text>(descFinder.first);
+      expect(textWidget.textAlign, TextAlign.justify);
     });
 
     testWidgets('SectionCard renders title, icon, and child widget', (
@@ -266,7 +305,12 @@ void main() {
         ),
       );
 
-      expect(find.text('Respiratory tract infections'), findsOneWidget);
+      final indicationFinder = find.text('Respiratory tract infections');
+      expect(indicationFinder, findsOneWidget);
+      expect(
+        tester.widget<Text>(indicationFinder).textAlign,
+        TextAlign.justify,
+      );
     });
 
     testWidgets('DirectionsSection renders species, route, and dosage', (
@@ -310,7 +354,12 @@ void main() {
         ),
       );
 
-      expect(find.text('Do not use in laying hens'), findsOneWidget);
+      final precautionFinder = find.text('Do not use in laying hens');
+      expect(precautionFinder, findsOneWidget);
+      expect(
+        tester.widget<Text>(precautionFinder).textAlign,
+        TextAlign.justify,
+      );
     });
 
     testWidgets('PresentationsSection renders pack sizes and MRP', (
@@ -423,7 +472,9 @@ void main() {
         );
 
         expect(find.text('Impulse Agriscience Ltd.'), findsOneWidget);
-        expect(find.text('Dhaka, Bangladesh'), findsOneWidget);
+        final addressFinder = find.text('Dhaka, Bangladesh');
+        expect(addressFinder, findsOneWidget);
+        expect(tester.widget<Text>(addressFinder).textAlign, TextAlign.justify);
       },
     );
 

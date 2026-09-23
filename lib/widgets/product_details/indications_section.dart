@@ -31,7 +31,12 @@ class IndicationsSection extends StatelessWidget {
                       '• ',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Expanded(child: Text(i.textEn.resolve(i.textBn, lang))),
+                    Expanded(
+                      child: Text(
+                        i.textEn.resolve(i.textBn, lang),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
                   ],
                 ),
               ),
