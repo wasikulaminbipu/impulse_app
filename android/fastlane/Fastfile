@@ -8,6 +8,10 @@ def resolve_native_debug_symbols
   symbols.empty? ? nil : symbols
 end
 
+def resolve_json_key
+  ['pc-api-key.json', 'android/pc-api-key.json', ENV['PLAY_STORE_JSON_KEY'], ENV['JSON_KEY_FILE'], ENV['SUPPLY_JSON_KEY']].compact.find { |f| File.exist?(f) }
+end
+
 def notify_webhook(message, is_error: false)
   slack_url = ENV['SLACK_URL']
   discord_url = ENV['DISCORD_WEBHOOK'] || ENV['DISCORD_WEBHOOK_URL']
@@ -87,6 +91,8 @@ platform :android do
       timeout: 300,
       ack_bundle_installation_warning: true
     }
+    key = resolve_json_key
+    params[:json_key] = key if key
     native_symbols = resolve_native_debug_symbols
     params[:native_debug_symbol_paths] = native_symbols if native_symbols
     upload_to_play_store(params)
@@ -109,6 +115,8 @@ platform :android do
       skip_upload_changelogs: false,
       changes_not_sent_for_review: true
     }
+    key = resolve_json_key
+    params[:json_key] = key if key
     native_symbols = resolve_native_debug_symbols
     params[:native_debug_symbol_paths] = native_symbols if native_symbols
     upload_to_play_store(params)
@@ -131,6 +139,8 @@ platform :android do
       skip_upload_changelogs: false,
       changes_not_sent_for_review: true
     }
+    key = resolve_json_key
+    params[:json_key] = key if key
     native_symbols = resolve_native_debug_symbols
     params[:native_debug_symbol_paths] = native_symbols if native_symbols
     upload_to_play_store(params)
@@ -153,6 +163,8 @@ platform :android do
       skip_upload_changelogs: false,
       changes_not_sent_for_review: true
     }
+    key = resolve_json_key
+    params[:json_key] = key if key
     native_symbols = resolve_native_debug_symbols
     params[:native_debug_symbol_paths] = native_symbols if native_symbols
     upload_to_play_store(params)
@@ -177,6 +189,8 @@ platform :android do
       skip_upload_changelogs: false,
       changes_not_sent_for_review: true
     }
+    key = resolve_json_key
+    params[:json_key] = key if key
     native_symbols = resolve_native_debug_symbols
     params[:native_debug_symbol_paths] = native_symbols if native_symbols
     upload_to_play_store(params)
