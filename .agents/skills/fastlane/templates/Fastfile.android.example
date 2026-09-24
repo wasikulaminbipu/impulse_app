@@ -41,7 +41,7 @@ platform :android do
 
   desc "Deploy to Google Play Closed Testing Track (Alpha / Beta)"
   lane :closed_test do |options|
-    target_track = options[:track] || "alpha"
+    target_track = options[:track] || "beta"
     upload_to_play_store(
       track: target_track,
       aab: "../build/app/outputs/bundle/release/app-release.aab",

@@ -642,7 +642,7 @@ In CI/CD environments, Fastlane runs headlessly. Adhere strictly to the project'
           FASTLANE_DISABLE_ANIMATION: "1"
         run: |
           cd android
-          bundle exec fastlane alpha
+          bundle exec fastlane beta
 
       - name: "Securely wipe credentials from runner disk"
         if: always()

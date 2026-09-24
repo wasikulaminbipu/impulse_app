@@ -7,14 +7,14 @@ on:
   workflow_dispatch:
     inputs:
       track:
-        description: 'Google Play Track / Lane (internal / alpha / beta / production / validate / store_assets / metadata)'
+        description: 'Google Play Track / Lane (beta / internal / alpha / production / validate / store_assets / metadata)'
         required: true
-        default: 'alpha'
+        default: 'beta'
         type: choice
         options:
+          - beta
           - internal
           - alpha
-          - beta
           - production
           - validate
           - store_assets
@@ -491,7 +491,7 @@ jobs:
 
       - name: "Execute Fastlane deployment to Google Play Store"
         env:
-          TRACK: ${{ github.event.inputs.track || 'alpha' }}
+          TRACK: ${{ github.event.inputs.track || 'beta' }}
           UPDATE_PRIORITY: ${{ github.event.inputs.update_priority || '0' }}
           ROLLOUT_FRACTION: ${{ github.event.inputs.rollout_fraction || '0.10' }}
           PLAY_STORE_JSON_KEY: 'pc-api-key.json'
@@ -510,7 +510,7 @@ jobs:
           echo "## 🚀 Google Play Deployment Status" >> $GITHUB_STEP_SUMMARY
           echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Target Track** | \`${{ github.event.inputs.track || 'alpha' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target Track** | \`${{ github.event.inputs.track || 'beta' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Update Priority** | \`${{ github.event.inputs.update_priority || '0' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Rollout Fraction** | \`${{ github.event.inputs.rollout_fraction || '0.10' }}\` |" >> $GITHUB_STEP_SUMMARY
           if [ "${{ job.status }}" = "success" ]; then
