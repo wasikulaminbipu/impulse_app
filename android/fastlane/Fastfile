@@ -84,7 +84,7 @@ platform :android do
   lane :validate do
     audit_fastlane_health
     params = {
-      track: 'beta',
+      track: 'alpha',
       validate_only: true,
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],

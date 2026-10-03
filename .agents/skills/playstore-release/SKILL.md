@@ -474,11 +474,12 @@ on:
   workflow_dispatch:
     inputs:
       track:
-        description: 'Google Play Store Track (beta / closed testing / internal / production)'
+        description: 'Google Play Store Track (alpha / beta / closed testing / internal / production)'
         required: true
-        default: 'beta'
+        default: 'alpha'
         type: choice
         options:
+          - alpha
           - beta
           - internal
           - production

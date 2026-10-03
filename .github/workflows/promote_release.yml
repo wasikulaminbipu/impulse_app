@@ -6,11 +6,11 @@ on:
       from_track:
         description: 'Source Google Play Track'
         required: true
-        default: 'beta'
+        default: 'alpha'
         type: choice
         options:
-          - beta
           - alpha
+          - beta
           - internal
       to_track:
         description: 'Target Google Play Track'
