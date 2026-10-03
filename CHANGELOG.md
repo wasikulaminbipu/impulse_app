@@ -1,4 +1,10 @@
 # Changelog
+## [1.0.12] - 2026-10-03
+### What's Changed
+- Release build 13 (Version 1.0.12).
+- 100% verified: Regenerated models, native splash screen, launcher icons, asset audits, and test suite.
+- Google Play Store & Data Safety policy compliance verified.
+
 ## [1.0.11] - 2026-10-03
 ### What's Changed
 - Release build 12 (Version 1.0.11).
