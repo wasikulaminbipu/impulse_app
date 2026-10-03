@@ -203,10 +203,10 @@ The repository uses GitHub Actions for continuous delivery to the Google Play Co
   1. `quality-gate`: Code formatting, strict static analysis, and compliance audit.
   2. `test-suite`: Complete test execution with coverage enforcement.
   3. `build-release-artifacts`: Clean Gradle compilation of release Android App Bundle (AAB) and Universal/Split APKs signed with Play Store keystore.
-  4. `deploy-google-play`: Automated distribution to Google Play internal/closed testing tracks via Fastlane Supply.
+  4. `deploy-google-play`: Automated distribution to Google Play Closed Testing (Beta Track) via Fastlane Supply.
   5. `publish-github-release`: Publishes GitHub Release with checksums and downloadable APK artifacts.
 - **🛡️ PR Quality Gate (`pr_ci.yml`)**: Runs on pull requests to ensure formatting, zero analysis warnings, passing test suite, and clean compilation.
-- **⚡ Release Promotion (`promote_release.yml`)**: Seamlessly promotes existing builds between Play Store tracks (e.g. Internal ➔ Alpha ➔ Beta ➔ Production) with staged rollout percentages.
+- **⚡ Release Promotion (`promote_release.yml`)**: Seamlessly promotes existing builds between Play Store tracks (e.g. Beta ➔ Production) with staged rollout percentages.
 - **🏥 Weekly Maintenance (`weekly_maintenance.yml`)**: Scheduled weekly maintenance auditing dependencies, security advisories, and toolchain compatibility.
 - **🔒 Zero-Cache CI Policy:** CI/CD runners enforce fresh, clean dependency resolution and compilation to eliminate cache poisoning and build discrepancies.
 

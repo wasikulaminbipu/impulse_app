@@ -36,7 +36,7 @@ void main(List<String> args) async {
   final autoConfirm = args.contains('--yes') || args.contains('-y');
   final trackArg = args.firstWhere(
     (a) => a.startsWith('--track='),
-    orElse: () => '--track=internal',
+    orElse: () => '--track=beta',
   );
   final track = trackArg.split('=')[1].trim().toLowerCase();
 
@@ -1128,8 +1128,8 @@ void printHelp() {
 Usage: dart run bin/release.dart [patch|minor|major|X.Y.Z+N] [options]
 
 Options:
-  --track=<track>       Google Play Store Track: internal (default), beta, production
-  --rollout=<fraction>  Staged rollout fraction for Google Play (0.01 to 1.0, default: 0.10 for production, 1.0 for internal)
+  --track=<track>       Google Play Store Track: beta (default), internal, production
+  --rollout=<fraction>  Staged rollout fraction for Google Play (0.01 to 1.0, default: 0.10 for production, 1.0 for beta/internal)
   --notes="<text>"      Custom release notes for CHANGELOG.md, Fastlane, and GitHub Releases
   --build-local         Compiles release Android App Bundle (AAB) locally with obfuscation and size audit
   --clean               Cleans build caches (flutter clean && flutter pub get) before running checks
