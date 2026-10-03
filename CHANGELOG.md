@@ -1,4 +1,10 @@
 # Changelog
+## [1.0.11] - 2026-10-03
+### What's Changed
+- Release build 12 (Version 1.0.11).
+- 100% verified: Regenerated models, native splash screen, launcher icons, asset audits, and test suite.
+- Google Play Store & Data Safety policy compliance verified.
+
 ## [1.0.10] - 2026-09-23
 ### What's Changed
 - Upgrade offline database signature to SHA-256 and update product catalog with Trio manufacturer
