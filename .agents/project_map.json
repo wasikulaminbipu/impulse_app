@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-10-06T09:40:00Z",
+  "last_updated": "2026-10-06T12:15:00Z",
   "project_info": {
     "name": "impulse_dex",
     "architecture_pattern": "Clean Architecture / Feature-based with Riverpod, Drift, Freezed",
