@@ -42,11 +42,10 @@ void main(List<String> args) async {
 
   final rolloutArg = args.firstWhere(
     (a) => a.startsWith('--rollout='),
-    orElse: () => track == 'production' ? '--rollout=0.10' : '--rollout=1.0',
+    orElse: () => '--rollout=1.0',
   );
   final rolloutFraction =
-      double.tryParse(rolloutArg.split('=')[1].trim()) ??
-      (track == 'production' ? 0.10 : 1.0);
+      double.tryParse(rolloutArg.split('=')[1].trim()) ?? 1.0;
 
   final notesArg = args.firstWhere(
     (a) => a.startsWith('--notes='),
@@ -1129,7 +1128,7 @@ Usage: dart run bin/release.dart [patch|minor|major|X.Y.Z+N] [options]
 
 Options:
   --track=<track>       Google Play Store Track: production (default), beta, alpha, internal
-  --rollout=<fraction>  Staged rollout fraction for Google Play (0.01 to 1.0, default: 0.10 for production, 1.0 for beta/internal)
+  --rollout=<fraction>  Rollout fraction for Google Play (0.01 to 1.0, default: 1.0 for immediate rollout)
   --notes="<text>"      Custom release notes for CHANGELOG.md, Fastlane, and GitHub Releases
   --build-local         Compiles release Android App Bundle (AAB) locally with obfuscation and size audit
   --clean               Cleans build caches (flutter clean && flutter pub get) before running checks

@@ -32,9 +32,9 @@ on:
           - '4'
           - '5'
       rollout_fraction:
-        description: 'Production Staged Rollout Fraction (e.g. 0.10 for 10%, 1.0 for 100%)'
+        description: 'Production Rollout Fraction (e.g. 1.0 for immediate 100%, 0.10 for 10% staged)'
         required: false
-        default: '0.10'
+        default: '1.0'
         type: string
       create_github_release:
         description: 'Create Official GitHub Release upon Successful Play Store Deployment'
@@ -512,7 +512,7 @@ jobs:
         env:
           TRACK: ${{ steps.track-resolver.outputs.deploy_track }}
           UPDATE_PRIORITY: ${{ github.event.inputs.update_priority || '0' }}
-          ROLLOUT_FRACTION: ${{ github.event.inputs.rollout_fraction || '0.10' }}
+          ROLLOUT_FRACTION: ${{ github.event.inputs.rollout_fraction || '1.0' }}
           PLAY_STORE_JSON_KEY: 'pc-api-key.json'
           SUPPLY_JSON_KEY: 'pc-api-key.json'
           JSON_KEY_FILE: 'pc-api-key.json'
@@ -531,7 +531,7 @@ jobs:
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
           echo "| **Target Track** | \`${{ steps.track-resolver.outputs.deploy_track || 'production' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Update Priority** | \`${{ github.event.inputs.update_priority || '0' }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Rollout Fraction** | \`${{ github.event.inputs.rollout_fraction || '0.10' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Rollout Fraction** | \`${{ github.event.inputs.rollout_fraction || '1.0' }}\` |" >> $GITHUB_STEP_SUMMARY
           if [ "${{ job.status }}" = "success" ]; then
             echo "| **Deployment Status** | ✅ Successfully Uploaded |" >> $GITHUB_STEP_SUMMARY
           else
