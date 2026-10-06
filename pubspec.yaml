@@ -42,7 +42,7 @@ dependencies:
   path: ^1.9.1
   flutter_svg: ^2.3.0
   drift: ^2.35.0
-  sqlite3: ^3.6.0
+  sqlite3: ^3.7.0
   flutter_native_splash: ^2.4.8
   flutter_localizations:
     sdk: flutter
