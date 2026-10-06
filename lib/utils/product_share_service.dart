@@ -647,7 +647,11 @@ class ProductShareService {
             ],
 
             // Presentations & Pricing
-            if (product.presentations.isNotEmpty) ...[
+            if (product.presentations.any(
+              (p) =>
+                  (p.size != null && p.size!.trim().isNotEmpty) ||
+                  (p.mrp != null && p.mrp! > 0),
+            )) ...[
               buildSectionTitle('PRESENTATION & PACK SIZES'),
               pw.TableHelper.fromTextArray(
                 columnWidths: {
@@ -666,12 +670,23 @@ class ProductShareService {
                   vertical: 4,
                 ),
                 headers: ['Pack Size', 'Maximum Retail Price (MRP)'],
-                data: product.presentations.map((p) {
-                  final priceText = (p.mrp != null && p.mrp! > 0)
-                      ? 'BDT ${p.mrp!.toStringAsFixed(2)}'
-                      : 'Call for Price';
-                  return [p.size, priceText];
-                }).toList(),
+                data: product.presentations
+                    .where(
+                      (p) =>
+                          (p.size != null && p.size!.trim().isNotEmpty) ||
+                          (p.mrp != null && p.mrp! > 0),
+                    )
+                    .map((p) {
+                      final priceText = (p.mrp != null && p.mrp! > 0)
+                          ? 'BDT ${p.mrp!.toStringAsFixed(2)}'
+                          : 'Call for Price';
+                      final sizeText =
+                          (p.size != null && p.size!.trim().isNotEmpty)
+                          ? p.size!.trim()
+                          : 'Standard';
+                      return [sizeText, priceText];
+                    })
+                    .toList(),
                 border: pw.TableBorder.all(color: borderLight, width: 0.5),
               ),
             ],

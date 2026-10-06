@@ -1434,8 +1434,10 @@ function childRows(opts){
         const el = trNew.querySelector(`[data-col="${c.key}"]`);
         if(!el) return;
         let v = c.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value;
-        if(v !== '' && v !== null && v !== undefined && v !== 0 && v !== false){
-          hasAnyValue = true;
+        if(c.type !== 'select' && c.type !== 'checkbox' && c.key !== 'display_order'){
+          if(v !== '' && v !== null && v !== undefined && String(v).trim() !== ''){
+            hasAnyValue = true;
+          }
         }
         if(c.required && (v === '' || v === null || v === undefined)){
           missingRequired = true;
@@ -1454,7 +1456,10 @@ function childRows(opts){
   }
 
   function saveToDb(targetProductId){
-    const finalRows = getRows();
+    let finalRows = getRows();
+    if(opts.table === 'presentations'){
+      finalRows = finalRows.filter(r => (r.size && String(r.size).trim() !== '') || (r.mrp !== null && r.mrp !== undefined && String(r.mrp).trim() !== ''));
+    }
     const keptIds = [];
     finalRows.forEach((rowData, idx) => {
       const row = { ...rowData, product_id: targetProductId };

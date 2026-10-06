@@ -7,15 +7,15 @@ on:
   workflow_dispatch:
     inputs:
       track:
-        description: 'Google Play Track / Lane (alpha / beta / internal / production / validate / store_assets / metadata)'
+        description: 'Google Play Track / Lane (production / beta / alpha / internal / validate / store_assets / metadata)'
         required: true
-        default: 'alpha'
+        default: 'production'
         type: choice
         options:
-          - alpha
-          - beta
-          - internal
           - production
+          - beta
+          - alpha
+          - internal
           - validate
           - store_assets
           - metadata
@@ -258,8 +258,9 @@ jobs:
             fi
           fi
 
+          mkdir -p "android/fastlane/metadata/android/en-US/changelogs"
           echo "$CHANGELOG_TEXT" > "android/fastlane/metadata/android/en-US/changelogs/${VERSION_CODE}.txt"
-          echo "$CHANGELOG_TEXT" > "android/fastlane/metadata/android/bn-BD/changelogs/${VERSION_CODE}.txt"
+          rm -rf "android/fastlane/metadata/android/bn-BD/changelogs" 2>/dev/null || true
 
           echo "Generated changelog for Version Code ${VERSION_CODE}:"
           cat "android/fastlane/metadata/android/en-US/changelogs/${VERSION_CODE}.txt"
@@ -489,9 +490,27 @@ jobs:
           fi
           echo "Google Play service account API key successfully validated."
 
+      - name: "Resolve target deployment track"
+        id: track-resolver
+        run: |
+          set -e
+          if [ -n "${{ github.event.inputs.track }}" ]; then
+            DEPLOY_TRACK="${{ github.event.inputs.track }}"
+          elif [[ "${{ github.ref_name }}" == *"-beta"* ]]; then
+            DEPLOY_TRACK="beta"
+          elif [[ "${{ github.ref_name }}" == *"-alpha"* ]]; then
+            DEPLOY_TRACK="alpha"
+          elif [[ "${{ github.ref_name }}" == *"-internal"* ]]; then
+            DEPLOY_TRACK="internal"
+          else
+            DEPLOY_TRACK="production"
+          fi
+          echo "deploy_track=$DEPLOY_TRACK" >> $GITHUB_OUTPUT
+          echo "Resolved deployment track: $DEPLOY_TRACK"
+
       - name: "Execute Fastlane deployment to Google Play Store"
         env:
-          TRACK: ${{ github.event.inputs.track || 'alpha' }}
+          TRACK: ${{ steps.track-resolver.outputs.deploy_track }}
           UPDATE_PRIORITY: ${{ github.event.inputs.update_priority || '0' }}
           ROLLOUT_FRACTION: ${{ github.event.inputs.rollout_fraction || '0.10' }}
           PLAY_STORE_JSON_KEY: 'pc-api-key.json'
@@ -510,7 +529,7 @@ jobs:
           echo "## 🚀 Google Play Deployment Status" >> $GITHUB_STEP_SUMMARY
           echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Target Track** | \`${{ github.event.inputs.track || 'alpha' }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target Track** | \`${{ steps.track-resolver.outputs.deploy_track || 'production' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Update Priority** | \`${{ github.event.inputs.update_priority || '0' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Rollout Fraction** | \`${{ github.event.inputs.rollout_fraction || '0.10' }}\` |" >> $GITHUB_STEP_SUMMARY
           if [ "${{ job.status }}" = "success" ]; then

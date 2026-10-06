@@ -74,7 +74,15 @@ class PresentationsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final isBn = lang == 'bn';
 
-    if (presentations.isEmpty) {
+    final validPresentations = presentations
+        .where(
+          (p) =>
+              (p.size != null && p.size!.trim().isNotEmpty) ||
+              (p.mrp != null && p.mrp! > 0),
+        )
+        .toList();
+
+    if (validPresentations.isEmpty) {
       return SectionCard(
         title: isBn ? 'প্যাক সাইজ ও মূল্য' : 'Presentation & MRP',
         icon: Icons.inventory_2,
@@ -101,7 +109,7 @@ class PresentationsSection extends StatelessWidget {
       title: isBn ? 'প্যাক সাইজ ও মূল্য' : 'Presentation & MRP',
       icon: Icons.inventory_2,
       child: Column(
-        children: presentations
+        children: validPresentations
             .map(
               (p) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
@@ -109,7 +117,9 @@ class PresentationsSection extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      p.size ?? '',
+                      p.size?.trim().isNotEmpty == true
+                          ? p.size!.trim()
+                          : (isBn ? 'স্ট্যান্ডার্ড' : 'Standard'),
                       style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                     if (p.mrp != null && p.mrp! > 0)

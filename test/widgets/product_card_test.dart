@@ -75,9 +75,61 @@ void main() {
           child: const ProductCard(product: sampleProduct, lang: 'bn'),
         ),
       );
-      await tester.pump();
-
       expect(find.text('অ্যামোক্সিভেট ৫০%'), findsOneWidget);
     });
+
+    testWidgets(
+      'Does not render blank pack size chips when size is null or empty',
+      (tester) async {
+        const productWithEmptyPresentations = ProductLabel(
+          id: 2,
+          titleEn: 'Test Product',
+          titleBn: 'টেস্ট প্রোডাক্ট',
+          categoryId: 1,
+          category: Category(id: 1, nameEn: 'Antibiotics'),
+          presentations: [
+            Presentation(
+              id: 1,
+              productId: 2,
+              productTypeId: 1,
+              contentTypeId: 1,
+              size: '100g',
+            ),
+            Presentation(
+              id: 2,
+              productId: 2,
+              productTypeId: 1,
+              contentTypeId: 1,
+            ),
+            Presentation(
+              id: 3,
+              productId: 2,
+              productTypeId: 1,
+              contentTypeId: 1,
+              size: '',
+            ),
+            Presentation(
+              id: 4,
+              productId: 2,
+              productTypeId: 1,
+              contentTypeId: 1,
+              size: '   ',
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(
+          createProductCardHarness(
+            container: container,
+            child: const ProductCard(product: productWithEmptyPresentations),
+          ),
+        );
+        await tester.pump();
+
+        expect(find.text('100g'), findsOneWidget);
+        // Category badge + single valid pack size badge
+        expect(find.text(''), findsNothing);
+      },
+    );
   });
 }

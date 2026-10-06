@@ -81,10 +81,11 @@ end
 
 platform :android do
   desc "Dry-run Pre-Flight Validation of Google Play credentials and AAB without releasing"
-  lane :validate do
+  lane :validate do |options|
     audit_fastlane_health
+    val_track = options[:track] || ENV['TRACK'] || 'production'
     params = {
-      track: 'alpha',
+      track: val_track,
       validate_only: true,
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
@@ -173,12 +174,11 @@ platform :android do
   desc "Deploy to Google Play Production Track with Configurable Staged Rollout"
   lane :production do |options|
     priority = (options[:priority] || ENV['UPDATE_PRIORITY'] || 0).to_i
-    rollout = options[:rollout] || ENV['ROLLOUT_FRACTION'] || '0.10'
+    rollout_val = (options[:rollout] || ENV['ROLLOUT_FRACTION'] || '0.10').to_f
     params = {
       track: 'production',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       mapping_paths: ['../build/app/outputs/mapping/release/mapping.txt'],
-      rollout: rollout.to_s,
       in_app_update_priority: priority,
       timeout: 300,
       ack_bundle_installation_warning: true,
@@ -189,6 +189,10 @@ platform :android do
       skip_upload_changelogs: false,
       changes_not_sent_for_review: true
     }
+    # Apply staged rollout fraction if < 1.0 (e.g. 0.10 for 10%); omitting marks as completed 100% release
+    if rollout_val > 0.0 && rollout_val < 1.0
+      params[:rollout] = rollout_val.to_s
+    end
     key = resolve_json_key
     params[:json_key] = key if key
     native_symbols = resolve_native_debug_symbols

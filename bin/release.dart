@@ -36,7 +36,7 @@ void main(List<String> args) async {
   final autoConfirm = args.contains('--yes') || args.contains('-y');
   final trackArg = args.firstWhere(
     (a) => a.startsWith('--track='),
-    orElse: () => '--track=alpha',
+    orElse: () => '--track=production',
   );
   final track = trackArg.split('=')[1].trim().toLowerCase();
 
@@ -1128,7 +1128,7 @@ void printHelp() {
 Usage: dart run bin/release.dart [patch|minor|major|X.Y.Z+N] [options]
 
 Options:
-  --track=<track>       Google Play Store Track: alpha (default), internal, production
+  --track=<track>       Google Play Store Track: production (default), beta, alpha, internal
   --rollout=<fraction>  Staged rollout fraction for Google Play (0.01 to 1.0, default: 0.10 for production, 1.0 for beta/internal)
   --notes="<text>"      Custom release notes for CHANGELOG.md, Fastlane, and GitHub Releases
   --build-local         Compiles release Android App Bundle (AAB) locally with obfuscation and size audit
@@ -1140,8 +1140,9 @@ Options:
   --help, -h            Shows this help message
 
 Examples:
-  dart run bin/release.dart patch                                           # Standard patch release
-  dart run bin/release.dart minor --track=production --rollout=0.10         # 10% Production staged rollout
+  dart run bin/release.dart patch                                           # Standard patch release to production (10% rollout)
+  dart run bin/release.dart minor --rollout=1.0                             # 100% Production full release
+  dart run bin/release.dart patch --track=beta                              # Deploy to beta closed testing track
   dart run bin/release.dart patch --notes="Updated distributor catalogs"    # Release with custom notes
   dart run bin/release.dart patch --build-local --clean                     # Compiles local AAB and tests release
   dart run bin/release.dart patch --dry-run                                 # Dry-run validation

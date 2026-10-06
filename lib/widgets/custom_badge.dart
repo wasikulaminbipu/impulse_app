@@ -63,6 +63,9 @@ class CustomBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (text.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
     final effectiveBg = backgroundColor ?? color;
     final effectiveBorder = borderColor != null
         ? Border.all(color: borderColor!)

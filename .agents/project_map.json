@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-10-03T09:23:45Z",
+  "last_updated": "2026-10-06T09:40:00Z",
   "project_info": {
     "name": "impulse_dex",
     "architecture_pattern": "Clean Architecture / Feature-based with Riverpod, Drift, Freezed",
@@ -737,6 +737,20 @@
       "priority": "high",
       "affected_files": [
         "tools/impulse-data-entry.html",
+        ".agents/project_map.json"
+      ]
+    },
+    {
+      "id": 32,
+      "desc": "Make app capable of releasing CI/CD to Google Play Store production channel: configure deploy_playstore.yml to target production track by default with dynamic tag resolution, support configurable staged rollout fractions (default 10%) and full 100% releases in Fastfile production lane, enforce en-US single-language changelogs, set release.dart default track to production, and update release documentation.",
+      "status": "completed",
+      "priority": "high",
+      "affected_files": [
+        ".github/workflows/deploy_playstore.yml",
+        "android/fastlane/Fastfile",
+        "bin/release.dart",
+        "README.md",
+        ".agents/skills/playstore-release/SKILL.md",
         ".agents/project_map.json"
       ]
     }

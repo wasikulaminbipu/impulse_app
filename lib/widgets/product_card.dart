@@ -217,29 +217,40 @@ class _ProductCardState extends State<ProductCard> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                            const SizedBox(height: 6),
-                            Wrap(
-                              spacing: 6,
-                              runSpacing: 4,
-                              children: widget.product.presentations.map((
-                                presentation,
-                              ) {
-                                return CustomBadge(
-                                  text: presentation.size ?? '',
-                                  color: colorScheme.surfaceContainerHighest,
-                                  textStyle: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    fontFeatures: const [
-                                      FontFeature.tabularFigures(),
-                                    ],
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface,
-                                  ),
-                                );
-                              }).toList(),
-                            ),
+                            if (widget.product.presentations.any(
+                              (p) =>
+                                  p.size != null && p.size!.trim().isNotEmpty,
+                            )) ...[
+                              const SizedBox(height: 6),
+                              Wrap(
+                                spacing: 6,
+                                runSpacing: 4,
+                                children: widget.product.presentations
+                                    .where(
+                                      (p) =>
+                                          p.size != null &&
+                                          p.size!.trim().isNotEmpty,
+                                    )
+                                    .map((presentation) {
+                                      return CustomBadge(
+                                        text: presentation.size!.trim(),
+                                        color:
+                                            colorScheme.surfaceContainerHighest,
+                                        textStyle: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                          fontFeatures: const [
+                                            FontFeature.tabularFigures(),
+                                          ],
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface,
+                                        ),
+                                      );
+                                    })
+                                    .toList(),
+                              ),
+                            ],
                           ],
                         ),
                       ),

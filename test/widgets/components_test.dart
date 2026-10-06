@@ -43,6 +43,18 @@ void main() {
       await tester.pumpAndSettle();
       expect(tapped, isTrue);
     });
+
+    testWidgets('Renders SizedBox.shrink when text is empty or whitespace', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        createTestHarness(const CustomBadge(color: Colors.blue, text: '   ')),
+      );
+
+      expect(find.byType(CustomBadge), findsOneWidget);
+      expect(find.byType(Container), findsNothing);
+      expect(find.text('   '), findsNothing);
+    });
   });
 
   group('TactileButton Widget Tests', () {

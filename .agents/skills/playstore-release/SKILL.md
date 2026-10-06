@@ -474,15 +474,15 @@ on:
   workflow_dispatch:
     inputs:
       track:
-        description: 'Google Play Store Track (alpha / beta / closed testing / internal / production)'
+        description: 'Google Play Store Track (production / beta / alpha / internal)'
         required: true
-        default: 'alpha'
+        default: 'production'
         type: choice
         options:
-          - alpha
-          - beta
-          - internal
           - production
+          - beta
+          - alpha
+          - internal
       create_github_release:
         description: 'Create Official GitHub Release'
         required: false
