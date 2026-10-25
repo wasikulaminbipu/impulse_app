@@ -102,7 +102,7 @@ flutter_native_splash:
   image_dark: assets/images/app_logo.png
   branding: assets/images/logo_impulse.png
   branding_dark: assets/images/logo_impulse.png
-  fullscreen: true
+  fullscreen: false
   android_gravity: center
 
   android_12:
