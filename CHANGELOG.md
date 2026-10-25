@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.14] - 2026-10-25
+### What's Changed
+- Android 15 edge-to-edge transparent system bars and updated product database
+
 ## [1.0.13] - 2026-10-06
 ### What's Changed
 - Release build 14 (Version 1.0.13).

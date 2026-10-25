@@ -1,0 +1,3 @@
+What's new in v1.0.14:
+• Android 15 edge-to-edge transparent system bars and updated product database
+• Performance optimizations & stability improvements
